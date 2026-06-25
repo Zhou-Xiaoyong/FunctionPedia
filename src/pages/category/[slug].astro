@@ -31,12 +31,12 @@ functions.sort((a, b) => a.name.localeCompare(b.name));
 
 const title = `${catInfo.name} — Excel & Google Sheets Functions | ${SITE.title}`;
 const description = catInfo.description;
-const canonical = `${SITE.url}/category/${slug}`;
+const canonical = `${SITE.url}/category/${slug}/`;
 
 const breadcrumbs = [
   { name: 'Home', url: SITE.url },
-  { name: 'Categories', url: `${SITE.url}/category` },
-  { name: catInfo.name, url: `${SITE.url}/category/${slug}` },
+  { name: 'Categories', url: `${SITE.url}/category/` },
+  { name: catInfo.name, url: `${SITE.url}/category/${slug}/` },
 ];
 ---
 
@@ -46,7 +46,7 @@ const breadcrumbs = [
     <ol class="flex items-center gap-2 text-sm text-gray-500">
       <li><a href="/" class="hover:text-primary-500">Home</a></li>
       <li>/</li>
-      <li><a href="/category" class="hover:text-primary-500">Categories</a></li>
+      <li><a href="/category/" class="hover:text-primary-500">Categories</a></li>
       <li>/</li>
       <li class="font-medium text-gray-900">{catInfo.name}</li>
     </ol>
@@ -67,7 +67,7 @@ const breadcrumbs = [
     {functions.length > 0 ? (
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {functions.map((fn) => (
-          <a href={`/functions/${fn.slug}`} class="group block p-5 rounded-xl bg-white border border-gray-200 hover:border-primary-500 hover:shadow-lg transition-all">
+          <a href={`/functions/${fn.slug}/`} class="group block p-5 rounded-xl bg-white border border-gray-200 hover:border-primary-500 hover:shadow-lg transition-all">
             <div class="flex items-center justify-between mb-2">
               <h2 class="text-lg font-bold font-mono text-gray-900 group-hover:text-primary-500 transition-colors">{fn.name.toUpperCase()}</h2>
               <svg class="w-4 h-4 text-gray-300 group-hover:text-primary-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -79,7 +79,7 @@ const breadcrumbs = [
     ) : (
       <div class="text-center py-16">
         <p class="text-gray-500">Functions in this category are being added soon!</p>
-        <a href="/functions" class="mt-4 inline-flex items-center text-primary-500 font-medium hover:text-primary-600">Browse all functions →</a>
+        <a href="/functions/" class="mt-4 inline-flex items-center text-primary-500 font-medium hover:text-primary-600">Browse all functions →</a>
       </div>
     )}
 
@@ -88,7 +88,7 @@ const breadcrumbs = [
       <h2 class="text-xl font-bold text-gray-900 mb-6">Other Categories</h2>
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         {CATEGORIES.filter((c) => c.slug !== slug).map((cat) => (
-          <a href={`/category/${cat.slug}`} class="group block p-4 rounded-lg bg-white border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all">
+          <a href={`/category/${cat.slug}/`} class="group block p-4 rounded-lg bg-white border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all">
             <div class="flex items-center gap-2">
               <span class="text-lg">{cat.icon}</span>
               <h3 class="text-sm font-semibold text-gray-900 group-hover:text-primary-500 transition-colors">{cat.name}</h3>

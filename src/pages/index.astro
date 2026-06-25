@@ -21,7 +21,7 @@ const canonical = SITE.url;
         </p>
 
         <!-- Search Bar (Hero) -->
-        <form action="/functions" method="get" class="mt-8 max-w-lg mx-auto">
+        <form action="/functions/" method="get" class="mt-8 max-w-lg mx-auto">
           <div class="relative">
             <input
               type="search"
@@ -40,7 +40,7 @@ const canonical = SITE.url;
         <div class="mt-8 flex flex-wrap justify-center gap-2">
           {POPULAR_FUNCTIONS.map((fn) => (
             <a
-              href={`/functions/${fn}`}
+              href={`/functions/${fn}/`}
               class="inline-flex items-center px-4 py-2 rounded-full bg-white border border-gray-200 text-sm font-medium text-gray-700 hover:border-primary-500 hover:text-primary-500 hover:bg-primary-50 transition-all shadow-sm"
             >
               {fn.toUpperCase()}
@@ -59,7 +59,7 @@ const canonical = SITE.url;
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {CATEGORIES.map((cat) => (
         <a
-          href={`/category/${cat.slug}`}
+          href={`/category/${cat.slug}/`}
           class="group block p-6 rounded-xl bg-white border border-gray-200 hover:border-primary-500 hover:shadow-lg transition-all"
         >
           <div class="flex items-start justify-between">
@@ -83,7 +83,7 @@ const canonical = SITE.url;
           <h3 class="text-lg font-semibold text-gray-900">Google Sheets Functions</h3>
         </div>
         <p class="text-sm text-gray-600">Exclusive Google Sheets functions like QUERY, IMPORTRANGE, and ARRAYFORMULA — with examples that work in both platforms.</p>
-        <a href="/category/google-sheets" class="mt-4 inline-flex items-center text-sm font-medium text-accent-600 hover:text-accent-700">
+        <a href="/category/google-sheets/" class="mt-4 inline-flex items-center text-sm font-medium text-accent-600 hover:text-accent-700">
           Browse Google Sheets →
         </a>
       </div>
@@ -95,7 +95,7 @@ const canonical = SITE.url;
           <h3 class="text-lg font-semibold text-gray-900">Function Comparisons</h3>
         </div>
         <p class="text-sm text-gray-600">VLOOKUP vs XLOOKUP, SUMIF vs SUMIFS, IF vs IFS — clear side-by-side comparisons so you pick the right function.</p>
-        <a href="/compare" class="mt-4 inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-700">
+        <a href="/compare/" class="mt-4 inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-700">
           View comparisons →
         </a>
       </div>
@@ -107,7 +107,7 @@ const canonical = SITE.url;
           <h3 class="text-lg font-semibold text-gray-900">Fix Common Errors</h3>
         </div>
         <p class="text-sm text-gray-600">#N/A, #VALUE!, circular references — every function page includes a troubleshooting section with real fixes.</p>
-        <a href="/functions/vlookup#common-errors" class="mt-4 inline-flex items-center text-sm font-medium text-gray-600 hover:text-gray-700">
+        <a href="/functions/vlookup/#common-errors" class="mt-4 inline-flex items-center text-sm font-medium text-gray-600 hover:text-gray-700">
           See error fixes →
         </a>
       </div>

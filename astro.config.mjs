@@ -13,7 +13,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   output: 'static',
-  trailingSlash: 'never',
+  trailingSlash: 'always',
   build: {
     inlineStylesheets: 'auto',
   },

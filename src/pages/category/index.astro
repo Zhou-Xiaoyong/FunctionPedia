@@ -4,7 +4,7 @@ import { SITE, CATEGORIES } from '../../utils/config';
 
 const title = `All Categories | ${SITE.title}`;
 const description = 'Browse Excel and Google Sheets functions by category — financial, statistical, lookup, logical, and more.';
-const canonical = `${SITE.url}/category`;
+const canonical = `${SITE.url}/category/`;
 ---
 
 <BaseLayout title={title} description={description} canonical={canonical}>
@@ -14,7 +14,7 @@ const canonical = `${SITE.url}/category`;
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {CATEGORIES.map((cat) => (
-        <a href={`/category/${cat.slug}`} class="group block p-6 rounded-xl bg-white border border-gray-200 hover:border-primary-500 hover:shadow-lg transition-all">
+        <a href={`/category/${cat.slug}/`} class="group block p-6 rounded-xl bg-white border border-gray-200 hover:border-primary-500 hover:shadow-lg transition-all">
           <div class="flex items-start justify-between">
             <span class="text-2xl">{cat.icon}</span>
             <span class="text-xs font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded-full">{cat.count} fn</span>
