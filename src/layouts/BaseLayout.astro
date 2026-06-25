@@ -1,0 +1,170 @@
+---
+import { SITE } from '../utils/config';
+import { generateSearchActionSchema } from '../utils/seo';
+import '../styles/global.css';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  keywords?: string;
+  schema?: object[];
+}
+
+const { title = SITE.title, description = SITE.description, canonical = SITE.url, keywords, schema = [] } = Astro.props;
+
+const allSchema = [generateSearchActionSchema(), ...schema];
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <meta name="keywords" content={keywords || SITE.keywords.join(', ')} />
+  <link rel="canonical" href={canonical} />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content={SITE.title} />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <title>{title}</title>
+
+  <!-- JSON-LD Schema -->
+  {allSchema.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+</head>
+<body class="min-h-screen bg-white text-gray-900 font-sans antialiased">
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <a href="/" class="flex items-center gap-2 group">
+          <div class="w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center text-white font-mono font-bold text-sm group-hover:bg-primary-600 transition-colors">
+            fx
+          </div>
+          <span class="text-xl font-bold text-gray-900">Function<span class="text-primary-500">Pedia</span></span>
+        </a>
+
+        <!-- Navigation -->
+        <nav class="hidden md:flex items-center gap-6">
+          <a href="/functions" class="text-sm font-medium text-gray-600 hover:text-primary-500 transition-colors">Functions</a>
+          <a href="/category" class="text-sm font-medium text-gray-600 hover:text-primary-500 transition-colors">Categories</a>
+          <a href="/compare" class="text-sm font-medium text-gray-600 hover:text-primary-500 transition-colors">Compare</a>
+        </nav>
+
+        <!-- Search -->
+        <div class="flex-1 max-w-md mx-4 hidden sm:block">
+          <form action="/functions" method="get" class="relative">
+            <input
+              type="search"
+              name="q"
+              placeholder="Search 500+ functions..."
+              class="w-full h-10 pl-10 pr-4 rounded-full bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+            />
+            <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </form>
+        </div>
+
+        <!-- Mobile menu button -->
+        <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+          <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-gray-100 bg-white">
+      <div class="px-4 py-3 space-y-2">
+        <form action="/functions" method="get" class="sm:hidden">
+          <input type="search" name="q" placeholder="Search functions..." class="w-full h-10 px-4 rounded-lg bg-gray-50 border border-gray-200 text-sm" />
+        </form>
+        <a href="/functions" class="block py-2 text-sm font-medium text-gray-600 hover:text-primary-500">Functions</a>
+        <a href="/category" class="block py-2 text-sm font-medium text-gray-600 hover:text-primary-500">Categories</a>
+        <a href="/compare" class="block py-2 text-sm font-medium text-gray-600 hover:text-primary-500">Compare</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <slot />
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-20 border-t border-gray-100 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <!-- Brand -->
+        <div class="md:col-span-1">
+          <a href="/" class="flex items-center gap-2 mb-4">
+            <div class="w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center text-white font-mono font-bold text-sm">fx</div>
+            <span class="text-lg font-bold text-gray-900">Function<span class="text-primary-500">Pedia</span></span>
+          </a>
+          <p class="text-sm text-gray-500">Every Excel & Google Sheets function, explained with real examples and common errors.</p>
+        </div>
+        <!-- Quick Links -->
+        <div>
+          <h3 class="text-sm font-semibold text-gray-900 mb-3">Popular Functions</h3>
+          <ul class="space-y-2 text-sm text-gray-500">
+            <li><a href="/functions/vlookup" class="hover:text-primary-500 transition-colors">VLOOKUP</a></li>
+            <li><a href="/functions/xlookup" class="hover:text-primary-500 transition-colors">XLOOKUP</a></li>
+            <li><a href="/functions/if" class="hover:text-primary-500 transition-colors">IF</a></li>
+            <li><a href="/functions/sumif" class="hover:text-primary-500 transition-colors">SUMIF</a></li>
+            <li><a href="/functions/filter" class="hover:text-primary-500 transition-colors">FILTER</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-sm font-semibold text-gray-900 mb-3">Categories</h3>
+          <ul class="space-y-2 text-sm text-gray-500">
+            <li><a href="/category/financial" class="hover:text-primary-500 transition-colors">Financial</a></li>
+            <li><a href="/category/lookup" class="hover:text-primary-500 transition-colors">Lookup & Reference</a></li>
+            <li><a href="/category/statistical" class="hover:text-primary-500 transition-colors">Statistical</a></li>
+            <li><a href="/category/logical" class="hover:text-primary-500 transition-colors">Logical</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-sm font-semibold text-gray-900 mb-3">Resources</h3>
+          <ul class="space-y-2 text-sm text-gray-500">
+            <li><a href="/compare" class="hover:text-primary-500 transition-colors">Function Comparisons</a></li>
+            <li><a href="/category/google-sheets" class="hover:text-primary-500 transition-colors">Google Sheets Functions</a></li>
+            <li><a href="/privacy" class="hover:text-primary-500 transition-colors">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-8 pt-8 border-t border-gray-200 text-center text-sm text-gray-400">
+        &copy; {new Date().getFullYear()} FunctionPedia. All rights reserved. Built for spreadsheet lovers everywhere.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (menuBtn && mobileMenu) {
+      menuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+    }
+  </script>
+</body>
+</html>

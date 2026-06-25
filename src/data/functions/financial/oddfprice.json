@@ -1,0 +1,135 @@
+{
+  "name": "ODDFPRICE",
+  "slug": "oddfprice",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "ODDFPRICE returns the price per $100 face value of a bond that has an irregular first coupon period.",
+  "tldr": "Calculates the price of a security with an odd first coupon period.",
+  "syntax": "(settlement, maturity, issue, first_coupon, rate, yld, redemption, frequency, [basis])",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "issue",
+      "description": "Date the security was issued.",
+      "required": true
+    },
+    {
+      "name": "first_coupon",
+      "description": "Date of the first coupon payment.",
+      "required": true
+    },
+    {
+      "name": "rate",
+      "description": "Annual coupon rate.",
+      "required": true
+    },
+    {
+      "name": "yld",
+      "description": "Annual yield to maturity.",
+      "required": true
+    },
+    {
+      "name": "redemption",
+      "description": "Redemption value per $100 face value.",
+      "required": true
+    },
+    {
+      "name": "frequency",
+      "description": "Number of coupon payments per year (1, 2, or 4).",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Price of a bond with an odd first coupon period",
+    "formula": "=ODDFPRICE(DATE(2024,4,1), DATE(2034,4,1), DATE(2024,1,1), DATE(2024,7,1), 0.05, 0.06, 100, 2)",
+    "result": "Price per $100 face value",
+    "explanation": "Calculates the price of a bond issued January 1, 2024 with a first coupon on July 1, 2024."
+  },
+  "advancedExamples": [
+    {
+      "title": "With actual/actual basis",
+      "scenario": "Treasury bond",
+      "description": "Use basis 1 for actual/actual",
+      "formula": "=ODDFPRICE(DATE(2024,4,1), DATE(2034,4,1), DATE(2024,1,1), DATE(2024,7,1), 0.05, 0.06, 100, 2, 1)",
+      "result": "Price using actual/actual",
+      "explanation": "Basis 1 is common for Treasury bonds."
+    }
+  ],
+  "howItWorks": "ODDFPRICE handles bonds where the first coupon period is longer or shorter than a standard coupon period. It adjusts the price to account for the irregular accrual period.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter issue",
+      "text": "Type the issue"
+    },
+    {
+      "name": "Enter first_coupon",
+      "text": "Type the first_coupon"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "All dates must be valid Excel dates.",
+    "The first coupon date must be after the issue date but before maturity.",
+    "Settlement must be before maturity."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates or rates.",
+      "fix": "Verify the date order and that all inputs are valid."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "ODDFPRICE works identically in Google Sheets.",
+    "formula": "=ODDFPRICE(DATE(2024,4,1), DATE(2034,4,1), DATE(2024,1,1), DATE(2024,7,1), 0.05, 0.06, 100, 2)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is an odd first coupon period?",
+      "answer": "It is a first coupon period that is not a standard length because the bond was issued on an off-cycle date."
+    },
+    {
+      "question": "When is ODDFPRICE used?",
+      "answer": "It is used for new bond issues that settle between coupon dates."
+    }
+  ],
+  "relatedFunctions": [
+    "price",
+    "oddfyield",
+    "oddlyprice",
+    "oddfyield",
+    "yield",
+    "accrint"
+  ]
+}

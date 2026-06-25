@@ -1,0 +1,119 @@
+{
+  "name": "IPMT",
+  "slug": "ipmt",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "IPMT calculates the interest portion of a payment for a specific period of a loan or investment.",
+  "tldr": "Finds the interest portion of a loan payment in a given period.",
+  "syntax": "(rate, per, nper, pv, [fv], [type])",
+  "parameters": [
+    {
+      "name": "rate",
+      "description": "Interest rate per period.",
+      "required": true
+    },
+    {
+      "name": "per",
+      "description": "The period for which to calculate interest (1 to nper).",
+      "required": true
+    },
+    {
+      "name": "nper",
+      "description": "Total number of payment periods.",
+      "required": true
+    },
+    {
+      "name": "pv",
+      "description": "Present value or loan principal.",
+      "required": true
+    },
+    {
+      "name": "fv",
+      "description": "Future value or desired cash balance after the last payment (default 0).",
+      "required": false
+    },
+    {
+      "name": "type",
+      "description": "0 = end of period (default), 1 = beginning of period.",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Interest portion of the first payment on a loan",
+    "formula": "=IPMT(0.05/12, 1, 360, 300000)",
+    "result": "-$1,250.00",
+    "explanation": "For a $300,000 loan at 5% annual interest over 30 years, the first month's interest is $1,250."
+  },
+  "advancedExamples": [
+    {
+      "title": "Interest in a later period",
+      "scenario": "Amortization schedule",
+      "description": "Interest portion of the 60th payment",
+      "formula": "=IPMT(0.05/12, 60, 360, 300000)",
+      "result": "Interest portion",
+      "explanation": "The interest portion decreases as the principal is paid down."
+    }
+  ],
+  "howItWorks": "IPMT calculates the interest due in a specific period based on the outstanding principal at the start of that period. The result is negative because it represents a cash outflow.",
+  "howToSteps": [
+    {
+      "name": "Enter rate",
+      "text": "Use the periodic interest rate (annual rate divided by periods per year)."
+    },
+    {
+      "name": "Enter period",
+      "text": "Choose the period number to analyze."
+    },
+    {
+      "name": "Enter total periods",
+      "text": "Type the total number of payments."
+    },
+    {
+      "name": "Enter present value",
+      "text": "Input the loan amount or principal."
+    }
+  ],
+  "limitations": [
+    "Returns negative values by default because payments are outflows.",
+    "Requires consistent period units for rate, nper, and per.",
+    "Does not include fees or taxes."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "per is less than 1 or greater than nper.",
+      "fix": "Ensure per is between 1 and nper inclusive."
+    },
+    {
+      "error": "Wrong sign",
+      "cause": "The result is negative when expecting positive.",
+      "fix": "Multiply by -1 or use ABS if you need a positive value."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "IPMT works identically in Google Sheets.",
+    "formula": "=IPMT(0.05/12, 1, 360, 300000)",
+    "notes": "Same behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between IPMT and PPMT?",
+      "answer": "IPMT returns the interest portion of a payment. PPMT returns the principal portion."
+    },
+    {
+      "question": "Why is IPMT negative?",
+      "answer": "It represents a cash outflow. Use -IPMT or ABS to show a positive value."
+    },
+    {
+      "question": "Can IPMT calculate cumulative interest?",
+      "answer": "Sum IPMT over multiple periods or use CUMIPMT."
+    }
+  ],
+  "relatedFunctions": [
+    "ppmt",
+    "pmt",
+    "cumipmt",
+    "pv",
+    "rate"
+  ]
+}

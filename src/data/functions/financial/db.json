@@ -1,0 +1,113 @@
+{
+  "name": "DB",
+  "slug": "db",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "DB uses the fixed-declining balance method to compute depreciation for a particular period.",
+  "tldr": "Calculates declining balance depreciation for a specified period.",
+  "syntax": "(cost, salvage, life, period, [month])",
+  "parameters": [
+    {
+      "name": "cost",
+      "description": "Initial cost of the asset.",
+      "required": true
+    },
+    {
+      "name": "salvage",
+      "description": "Value at the end of the depreciation life.",
+      "required": true
+    },
+    {
+      "name": "life",
+      "description": "Number of periods over which the asset is depreciated.",
+      "required": true
+    },
+    {
+      "name": "period",
+      "description": "The period for which to calculate depreciation.",
+      "required": true
+    },
+    {
+      "name": "month",
+      "description": "Number of months in the first year (default 12).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Depreciation in the first year",
+    "formula": "=DB(10000, 2000, 5, 1)",
+    "result": "$1,840.00",
+    "explanation": "A $10,000 asset with a $2,000 salvage value and 5-year life depreciates $1,840 in the first year under declining balance."
+  },
+  "advancedExamples": [
+    {
+      "title": "Partial first year",
+      "scenario": "Mid-year purchase",
+      "description": "Asset purchased in April depreciates for 9 months the first year",
+      "formula": "=DB(10000, 2000, 5, 1, 9)",
+      "result": "$1,380.00",
+      "explanation": "Only 9 months of depreciation are taken in the first year."
+    }
+  ],
+  "howItWorks": "DB applies a declining depreciation rate to the remaining book value of the asset. The rate is calculated as 1 - (salvage/cost)^(1/life), rounded to three decimal places.",
+  "howToSteps": [
+    {
+      "name": "Enter cost",
+      "text": "Type the cost"
+    },
+    {
+      "name": "Enter salvage",
+      "text": "Type the salvage"
+    },
+    {
+      "name": "Enter life",
+      "text": "Type the life"
+    },
+    {
+      "name": "Enter period",
+      "text": "Type the period"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Uses a fixed rate that does not change.",
+    "Can result in total depreciation not reaching salvage value exactly.",
+    "The first and last periods can be adjusted with the month argument."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Period is less than 1 or greater than life, or cost < salvage.",
+      "fix": "Check period and ensure cost is greater than or equal to salvage."
+    },
+    {
+      "error": "Wrong depreciation",
+      "cause": "Month argument was omitted for a partial first year.",
+      "fix": "Include the month argument if the asset was not purchased at the start of the year."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "DB works identically in Google Sheets.",
+    "formula": "=DB(10000, 2000, 5, 1)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between DB and DDB?",
+      "answer": "DB uses a fixed declining rate. DDB lets you specify a higher rate, usually double the straight-line rate."
+    },
+    {
+      "question": "Does DB ever reach salvage value?",
+      "answer": "DB may not reach salvage exactly due to the fixed rate calculation."
+    }
+  ],
+  "relatedFunctions": [
+    "ddb",
+    "sln",
+    "syd",
+    "vdb"
+  ]
+}

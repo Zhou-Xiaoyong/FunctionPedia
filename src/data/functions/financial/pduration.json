@@ -1,0 +1,99 @@
+{
+  "name": "PDURATION",
+  "slug": "pduration",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "PDURATION returns the number of periods needed for an investment to grow from a present value to a future value at a constant rate.",
+  "tldr": "Calculates the number of periods required for an investment to reach a specified value.",
+  "syntax": "(rate, pv, fv)",
+  "parameters": [
+    {
+      "name": "rate",
+      "description": "Interest rate per period.",
+      "required": true
+    },
+    {
+      "name": "pv",
+      "description": "Present value of the investment.",
+      "required": true
+    },
+    {
+      "name": "fv",
+      "description": "Future value of the investment.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Years to double an investment",
+    "formula": "=PDURATION(0.07, 10000, 20000)",
+    "result": "10.24 years",
+    "explanation": "At 7% annual interest, it takes about 10.24 years for $10,000 to double to $20,000."
+  },
+  "advancedExamples": [
+    {
+      "title": "Months to reach a savings goal",
+      "scenario": "Savings plan",
+      "description": "Months for $5,000 to grow to $6,000 at 6% annual interest",
+      "formula": "=PDURATION(0.06/12, 5000, 6000)",
+      "result": "36.69 months",
+      "explanation": "It takes about 37 months to reach the goal."
+    }
+  ],
+  "howItWorks": "PDURATION uses the formula ln(fv / pv) / ln(1 + rate) to find the number of periods. It is a simpler way to solve for time in the compound-interest formula.",
+  "howToSteps": [
+    {
+      "name": "Enter rate",
+      "text": "Type the rate"
+    },
+    {
+      "name": "Enter pv",
+      "text": "Type the pv"
+    },
+    {
+      "name": "Enter fv",
+      "text": "Type the fv"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Requires a positive rate.",
+    "Result is in the same unit as the rate (years, months, etc.).",
+    "Does not include contributions or withdrawals."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Rate is zero or negative, or pv and fv have different signs.",
+      "fix": "Use a positive rate and ensure fv > pv for growth."
+    },
+    {
+      "error": "Wrong period unit",
+      "cause": "Annual rate was used but result interpreted as months.",
+      "fix": "Use a rate that matches the desired period unit."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "PDURATION works identically in Google Sheets.",
+    "formula": "=PDURATION(0.07, 10000, 20000)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between PDURATION and NPER?",
+      "answer": "PDURATION is for lump-sum growth. NPER is for annuities with periodic payments."
+    },
+    {
+      "question": "Can PDURATION handle negative growth?",
+      "answer": "No, it requires fv > pv and positive rate."
+    }
+  ],
+  "relatedFunctions": [
+    "nper",
+    "fv",
+    "pv",
+    "rate"
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "name": "IMAGE",
+  "slug": "image",
+  "category": "google-sheets",
+  "excelVersion": "Google Sheets only",
+  "description": "IMAGE displays an image directly inside a cell by providing a URL to the image file. It can also resize the image and choose how it fits inside the cell.",
+  "tldr": "IMAGE inserts a picture from a URL into a spreadsheet cell and lets you control its size and cropping.",
+  "syntax": "(url, [mode], [height], [width])",
+  "parameters": [
+    { "name": "url", "description": "The URL of the image to display. Must be a direct link to an image file (e.g., .png, .jpg, .svg).", "required": true },
+    { "name": "mode", "description": "Sizing mode: 1 = resize to fit, 2 = stretch to fill, 3 = original size, 4 = custom size. Default is 1.", "required": false },
+    { "name": "height", "description": "Image height in pixels. Used with mode 4.", "required": false },
+    { "name": "width", "description": "Image width in pixels. Used with mode 4.", "required": false }
+  ],
+  "basicExample": {
+    "description": "Show a logo from a URL inside a cell",
+    "formula": "=IMAGE('https://example.com/logo.png')",
+    "result": "Image displayed in cell",
+    "explanation": "The image is fetched from the URL and displayed in the cell, resized to fit."
+  },
+  "advancedExamples": [
+    {
+      "title": "Custom sized image",
+      "scenario": "Product catalog",
+      "description": "Display a product image at a fixed 100x100 pixel size",
+      "formula": "=IMAGE('https://example.com/product.jpg', 4, 100, 100)",
+      "result": "100x100 image in cell",
+      "explanation": "Mode 4 uses the custom height and width arguments."
+    },
+    {
+      "title": "Image from a dynamic cell URL",
+      "scenario": "Image gallery",
+      "description": "Show the image whose URL is stored in another cell",
+      "formula": "=IMAGE(A2, 2)",
+      "result": "Image stretched to fill the cell",
+      "explanation": "Mode 2 stretches the image to fill the cell dimensions. A2 contains the URL."
+    }
+  ],
+  "howItWorks": "IMAGE fetches the image from the provided URL and renders it inside the cell. The mode parameter controls how the image is sized: fit, stretch, original size, or custom dimensions. The URL must be publicly accessible and point directly to an image file.",
+  "howToSteps": [
+    { "name": "Get the image URL", "text": "Copy the direct link to the image file, not a webpage." },
+    { "name": "Choose a sizing mode", "text": "Use 1 to fit, 2 to stretch, 3 for original size, or 4 for custom dimensions." },
+    { "name": "Set dimensions if needed", "text": "For mode 4, add height and width in pixels." },
+    { "name": "Enter the formula", "text": "Type =IMAGE('URL', mode, height, width)." }
+  ],
+  "limitations": [
+    "IMAGE is Google Sheets only. Excel has limited support for images in cells via newer IMAGE function in some versions, but behavior differs.",
+    "The URL must be publicly accessible and directly link to an image file.",
+    "Images may not print or export to PDF consistently.",
+    "Some image hosting sites block direct linking."
+  ],
+  "commonErrors": [
+    { "error": "Image does not display", "cause": "The URL is not a direct image link or the site blocks embedding.", "fix": "Use a direct .jpg/.png URL and test it in a browser." },
+    { "error": "#VALUE! error", "cause": "The mode number is invalid or dimensions are missing for mode 4.", "fix": "Use 1, 2, 3, or 4. For mode 4, provide both height and width." },
+    { "error": "Very large image", "cause": "Mode 3 displays the image at original size, which may overflow the cell.", "fix": "Use mode 1 or 4 to resize the image." }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "IMAGE is native to Google Sheets. Excel has introduced IMAGE in Microsoft 365 for some users, but availability and behavior differ.",
+    "formula": "=IMAGE('https://example.com/logo.png', 1)",
+    "notes": "In Google Sheets, IMAGE works in all versions. In Excel, it depends on the subscription and version."
+  },
+  "faq": [
+    { "question": "Can I use IMAGE with Google Drive photos?", "answer": "Only if the image is publicly shared and you have a direct download URL. Standard Google Drive sharing links usually do not work." },
+    { "question": "Can I put an image behind text?", "answer": "No, IMAGE places the image inside a cell. For floating images, use Insert > Image instead." },
+    { "question": "Does IMAGE work in Excel?", "answer": "Excel 365 has added IMAGE for some users, but it is not as universally available as in Google Sheets." },
+    { "question": "Can I use SVG images?", "answer": "Google Sheets supports SVG in IMAGE, but rendering may vary depending on the browser." }
+  ],
+  "relatedFunctions": ["sparkline", "importrange", "hyperlink"]
+}

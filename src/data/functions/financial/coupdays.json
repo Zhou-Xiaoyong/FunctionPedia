@@ -1,0 +1,110 @@
+{
+  "name": "COUPDAYS",
+  "slug": "coupdays",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "COUPDAYS returns the total number of days in the current coupon period for a bond.",
+  "tldr": "Calculates the number of days in the coupon period that contains the settlement date.",
+  "syntax": "(settlement, maturity, frequency, [basis])",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "frequency",
+      "description": "Number of coupon payments per year (1, 2, or 4).",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Days in the current coupon period",
+    "formula": "=COUPDAYS(DATE(2024,4,1), DATE(2034,4,1), 2)",
+    "result": "Days in coupon period",
+    "explanation": "For a semi-annual bond, this typically returns 180 days under the 30/360 convention."
+  },
+  "advancedExamples": [
+    {
+      "title": "Actual days in coupon period",
+      "scenario": "Treasury bond",
+      "description": "Use basis 1 for actual days",
+      "formula": "=COUPDAYS(DATE(2024,4,1), DATE(2034,4,1), 2, 1)",
+      "result": "Actual days in coupon period",
+      "explanation": "Basis 1 counts the actual number of days in the period."
+    }
+  ],
+  "howItWorks": "COUPDAYS is used to determine the length of the coupon period, which is needed for accrued interest calculations.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter frequency",
+      "text": "Type the frequency"
+    },
+    {
+      "name": "Enter basis",
+      "text": "Type the basis"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Frequency must be 1, 2, or 4.",
+    "Basis affects the day count.",
+    "Settlement must be before maturity."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates, frequency, or basis.",
+      "fix": "Verify all inputs."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "COUPDAYS works identically in Google Sheets.",
+    "formula": "=COUPDAYS(DATE(2024,4,1), DATE(2034,4,1), 2)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between COUPDAYS and COUPDAYSNC?",
+      "answer": "COUPDAYS counts total days in the coupon period. COUPDAYSNC counts days from settlement to the next coupon."
+    },
+    {
+      "question": "Why does COUPDAYS return 180 for a semi-annual bond?",
+      "answer": "Under the 30/360 convention, each semi-annual period is assumed to have 180 days."
+    }
+  ],
+  "relatedFunctions": [
+    "coupdaybs",
+    "coupdaysnc",
+    "coupncd",
+    "coupnum",
+    "couppcd",
+    "accrint"
+  ]
+}

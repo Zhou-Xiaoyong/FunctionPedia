@@ -1,0 +1,100 @@
+{
+  "name": "TBILLYIELD",
+  "slug": "tbillyield",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "TBILLYIELD returns the yield for a Treasury bill based on its price.",
+  "tldr": "Calculates the yield for a Treasury bill.",
+  "syntax": "(settlement, maturity, pr)",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "pr",
+      "description": "Price per $100 face value.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Yield of a 6-month T-bill",
+    "formula": "=TBILLYIELD(DATE(2024,1,1), DATE(2024,7,1), 97.5)",
+    "result": "5.13%",
+    "explanation": "A 6-month T-bill priced at $97.50 per $100 face value has a yield of about 5.13%."
+  },
+  "advancedExamples": [
+    {
+      "title": "Short-term T-bill",
+      "scenario": "Money market analysis",
+      "description": "Yield of a 3-month T-bill",
+      "formula": "=TBILLYIELD(DATE(2024,1,1), DATE(2024,4,1), 98.75)",
+      "result": "Yield of T-bill",
+      "explanation": "Shorter maturities have lower yields for the same price discount."
+    }
+  ],
+  "howItWorks": "TBILLYIELD calculates the yield using the formula (100 - pr) / pr * (360 / days to maturity). This is the standard T-bill yield calculation based on the bank discount method.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter pr",
+      "text": "Type the pr"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Maturity must be within one year of settlement.",
+    "Price must be less than 100 for a positive yield.",
+    "Uses actual/360 day count."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Maturity is more than one year after settlement or price is invalid.",
+      "fix": "Verify dates are within one year and price is less than 100."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "TBILLYIELD works identically in Google Sheets.",
+    "formula": "=TBILLYIELD(DATE(2024,1,1), DATE(2024,7,1), 97.5)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between TBILLYIELD and TBILLEQ?",
+      "answer": "TBILLYIELD returns the T-bill discount yield. TBILLEQ returns the bond-equivalent yield for comparison with bonds."
+    },
+    {
+      "question": "When is TBILLYIELD used?",
+      "answer": "It is used for calculating the yield of US Treasury bills based on price."
+    }
+  ],
+  "relatedFunctions": [
+    "tbillprice",
+    "tbilleq",
+    "disc",
+    "pricedisc",
+    "intrate"
+  ]
+}

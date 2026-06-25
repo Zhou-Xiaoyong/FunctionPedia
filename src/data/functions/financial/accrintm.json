@@ -1,0 +1,115 @@
+{
+  "name": "ACCRINTM",
+  "slug": "accrintm",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "ACCRINTM returns the accrued interest from the issue date to the maturity date for a zero-coupon or maturity-paying security.",
+  "tldr": "Calculates accrued interest for a security that pays interest at maturity.",
+  "syntax": "(issue, settlement, rate, par, [basis])",
+  "parameters": [
+    {
+      "name": "issue",
+      "description": "Date the security was issued.",
+      "required": true
+    },
+    {
+      "name": "settlement",
+      "description": "Date the security matures or is sold.",
+      "required": true
+    },
+    {
+      "name": "rate",
+      "description": "Annual coupon rate.",
+      "required": true
+    },
+    {
+      "name": "par",
+      "description": "Par value of the security.",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Accrued interest for a maturity-paying bond",
+    "formula": "=ACCRINTM(DATE(2024,1,1), DATE(2024,12,31), 0.06, 1000)",
+    "result": "Accrued interest at maturity",
+    "explanation": "Calculates accrued interest for a full year on a 6% bond with $1,000 par value."
+  },
+  "advancedExamples": [
+    {
+      "title": "With actual/360 basis",
+      "scenario": "Money market instrument",
+      "description": "Use basis 2 for actual/360",
+      "formula": "=ACCRINTM(DATE(2024,1,1), DATE(2024,12,31), 0.06, 1000, 2)",
+      "result": "Accrued interest using actual/360",
+      "explanation": "Money market instruments often use actual/360 day count."
+    }
+  ],
+  "howItWorks": "ACCRINTM calculates the total interest accrued from issue to maturity. It is used for securities that pay all interest at maturity rather than periodically.",
+  "howToSteps": [
+    {
+      "name": "Enter issue",
+      "text": "Type the issue"
+    },
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter rate",
+      "text": "Type the rate"
+    },
+    {
+      "name": "Enter par",
+      "text": "Type the par"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Dates must be valid Excel dates.",
+    "Basis 0 is the most common convention for US bonds.",
+    "Par value is usually $1,000 or $100."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates or basis.",
+      "fix": "Verify dates and basis value."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "ACCRINTM works identically in Google Sheets.",
+    "formula": "=ACCRINTM(DATE(2024,1,1), DATE(2024,12,31), 0.06, 1000)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between ACCRINT and ACCRINTM?",
+      "answer": "ACCRINT is for periodic coupon payments. ACCRINTM is for securities that pay interest at maturity."
+    },
+    {
+      "question": "When should I use ACCRINTM?",
+      "answer": "Use it for zero-coupon bonds or Treasury bills that pay interest at maturity."
+    }
+  ],
+  "relatedFunctions": [
+    "accrint",
+    "disc",
+    "intrate",
+    "received",
+    "tbillprice",
+    "tbillyield"
+  ]
+}

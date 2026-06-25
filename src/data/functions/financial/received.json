@@ -1,0 +1,115 @@
+{
+  "name": "RECEIVED",
+  "slug": "received",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "RECEIVED returns the amount received at maturity for a discounted security, such as a Treasury bill, based on the investment amount and discount rate.",
+  "tldr": "Calculates the amount received at maturity for a fully invested security.",
+  "syntax": "(settlement, maturity, investment, discount, [basis])",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "investment",
+      "description": "Amount invested in the security.",
+      "required": true
+    },
+    {
+      "name": "discount",
+      "description": "Discount rate of the security.",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Maturity value of a discounted investment",
+    "formula": "=RECEIVED(DATE(2024,1,1), DATE(2024,12,31), 95000, 0.05)",
+    "result": "$100,000.00",
+    "explanation": "Investing $95,000 at a 5% discount rate for one year results in a $100,000 maturity value."
+  },
+  "advancedExamples": [
+    {
+      "title": "With actual/360 basis",
+      "scenario": "Money market",
+      "description": "Use basis 2 for actual/360",
+      "formula": "=RECEIVED(DATE(2024,1,1), DATE(2024,12,31), 95000, 0.05, 2)",
+      "result": "Maturity value using actual/360",
+      "explanation": "Basis 2 is common for money market instruments."
+    }
+  ],
+  "howItWorks": "RECEIVED calculates the maturity value by dividing the investment amount by (1 - discount * days to maturity / days per year). It is used for fully invested discount instruments.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter investment",
+      "text": "Type the investment"
+    },
+    {
+      "name": "Enter discount",
+      "text": "Type the discount"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Settlement must be before maturity.",
+    "Investment is the actual amount invested, not per $100.",
+    "Basis affects the day count and year length."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates, investment, or discount.",
+      "fix": "Verify all inputs."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "RECEIVED works identically in Google Sheets.",
+    "formula": "=RECEIVED(DATE(2024,1,1), DATE(2024,12,31), 95000, 0.05)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between RECEIVED and INTRATE?",
+      "answer": "RECEIVED calculates the maturity value from the investment and discount rate. INTRATE calculates the interest rate from the investment and maturity value."
+    },
+    {
+      "question": "When is RECEIVED used?",
+      "answer": "It is used for Treasury bills and other fully invested discount instruments."
+    }
+  ],
+  "relatedFunctions": [
+    "intrate",
+    "disc",
+    "pricemat",
+    "tbillprice",
+    "tbillyield",
+    "accrintm"
+  ]
+}

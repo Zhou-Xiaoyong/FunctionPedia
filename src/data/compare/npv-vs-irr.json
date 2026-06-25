@@ -1,0 +1,48 @@
+{
+  "title": "NPV vs IRR",
+  "slug": "npv-vs-irr",
+  "functionA": "npv",
+  "functionB": "irr",
+  "description": "Compare NPV and IRR to understand which investment metric to use.",
+  "intro": "NPV and IRR are both capital-budgeting tools. NPV tells you the dollar value an investment adds, while IRR tells you the percentage return. They often agree, but NPV is generally more reliable.",
+  "comparisonTable": [
+    {
+      "aspect": "Output",
+      "functionA": "Net present value in dollars",
+      "functionB": "Internal rate of return as a percentage"
+    },
+    {
+      "aspect": "Input required",
+      "functionA": "Discount rate and cash flows",
+      "functionB": "Only cash flows"
+    },
+    {
+      "aspect": "Decision rule",
+      "functionA": "Accept if NPV > 0",
+      "functionB": "Accept if IRR > required rate of return"
+    },
+    {
+      "aspect": "Reinvestment assumption",
+      "functionA": "Uses the explicit discount rate",
+      "functionB": "Assumes cash flows reinvest at the IRR"
+    },
+    {
+      "aspect": "Multiple IRRs",
+      "functionA": "Always gives a single value",
+      "functionB": "Can produce multiple solutions for alternating cash flows"
+    }
+  ],
+  "whenToUseA": "Use NPV when you need a dollar-value measure of value creation and you have a reliable discount rate.",
+  "whenToUseB": "Use IRR when communicating the percentage return of an investment or comparing projects of different sizes.",
+  "verdict": "NPV is generally preferred for decision-making because it directly measures value added and avoids the multiple-IRR problem.",
+  "faq": [
+    {
+      "question": "Can NPV and IRR conflict?",
+      "answer": "Yes, with non-conventional cash flows or mutually exclusive projects of different scales."
+    },
+    {
+      "question": "Which is better for ranking projects?",
+      "answer": "NPV is better for ranking because it reflects absolute value creation."
+    }
+  ]
+}

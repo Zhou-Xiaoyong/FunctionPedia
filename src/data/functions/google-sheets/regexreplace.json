@@ -1,0 +1,68 @@
+{
+  "name": "REGEXREPLACE",
+  "slug": "regexreplace",
+  "category": "google-sheets",
+  "excelVersion": "Google Sheets only",
+  "description": "REGEXREPLACE replaces text that matches a regular expression pattern with new text. It is more powerful than SUBSTITUTE because it can match patterns rather than fixed strings.",
+  "tldr": "REGEXREPLACE searches text for a pattern and replaces matching parts with new text.",
+  "syntax": "(text, regular_expression, replacement)",
+  "parameters": [
+    { "name": "text", "description": "The original text or cell reference.", "required": true },
+    { "name": "regular_expression", "description": "The RE2 pattern to find in the text.", "required": true },
+    { "name": "replacement", "description": "The text to replace matches with. Use $1, $2, etc. to refer to capture groups.", "required": true }
+  ],
+  "basicExample": {
+    "description": "Remove all digits from a product code",
+    "formula": "=REGEXREPLACE('ABC-123-XYZ', '\\d', '')",
+    "result": "ABC--XYZ",
+    "explanation": "The pattern \\d matches any digit. Replacing all digits with an empty string removes them."
+  },
+  "advancedExamples": [
+    {
+      "title": "Reformat a phone number",
+      "scenario": "Data cleaning",
+      "description": "Convert '(555) 123-4567' to '555-123-4567'",
+      "formula": "=REGEXREPLACE(A2, '\\((\\d{3})\\)\\s*(\\d{3})-(\\d{4})', '$1-$2-$3')",
+      "result": "555-123-4567",
+      "explanation": "Capture groups grab the area code, prefix, and line number. The replacement string uses $1, $2, $3."
+    },
+    {
+      "title": "Remove extra whitespace",
+      "scenario": "Text cleanup",
+      "description": "Replace multiple consecutive spaces with a single space",
+      "formula": "=REGEXREPLACE(A2, '\\s+', ' ')",
+      "result": "Text with single spaces",
+      "explanation": "\\s+ matches one or more whitespace characters. Replacing with a single space normalizes spacing."
+    }
+  ],
+  "howItWorks": "REGEXREPLACE scans the text for all matches of the pattern and replaces each match with the replacement string. The replacement can include references to capture groups using $1, $2, etc. It uses RE2 regex syntax.",
+  "howToSteps": [
+    { "name": "Select the text", "text": "Choose the cell or string to modify." },
+    { "name": "Define the pattern", "text": "Write a regular expression matching the text to replace." },
+    { "name": "Write the replacement", "text": "Use literal text or $1, $2 for capture groups." },
+    { "name": "Enter the formula", "text": "Type =REGEXREPLACE(text, 'pattern', 'replacement')." }
+  ],
+  "limitations": [
+    "REGEXREPLACE is Google Sheets only. Excel has no built-in regex replacement function.",
+    "It uses RE2 syntax, which lacks some advanced regex features like lookahead/lookbehind.",
+    "Replacement is global; there is no built-in option to replace only the first match.",
+    "Special characters in the replacement string may need escaping."
+  ],
+  "commonErrors": [
+    { "error": "#VALUE! error", "cause": "The regular expression is invalid or uses unsupported syntax.", "fix": "Validate the regex and use RE2-compatible patterns." },
+    { "error": "Replacement not applied", "cause": "The pattern does not match the text.", "fix": "Test the pattern with REGEXMATCH first to ensure it matches." },
+    { "error": "$1 not replaced", "cause": "Capture groups are not defined or the replacement syntax is wrong.", "fix": "Use parentheses in the pattern and $1, $2 in the replacement string." }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "REGEXREPLACE is exclusive to Google Sheets. Excel users can use SUBSTITUTE for fixed strings, Power Query, or VBA for regex replacement.",
+    "formula": "=REGEXREPLACE(A2, '\\d', '')",
+    "notes": "For fixed-string replacement in Excel, use SUBSTITUTE. For pattern replacement, use Power Query or VBA."
+  },
+  "faq": [
+    { "question": "Can REGEXREPLACE replace only the first match?", "answer": "No, it replaces all matches by default. To replace only the first match, you need a workaround or script." },
+    { "question": "Can I use REGEXREPLACE in Excel?", "answer": "No, Excel has no built-in regex replacement. Use SUBSTITUTE for fixed text or VBA/Power Query for patterns." },
+    { "question": "How do I reference capture groups in the replacement?", "answer": "Use $1, $2, etc. For a literal dollar sign, use $$." },
+    { "question": "Can I use REGEXREPLACE with ARRAYFORMULA?", "answer": "Yes, wrap it to apply the replacement to a whole range at once." }
+  ],
+  "relatedFunctions": ["regexmatch", "regexextract", "substitute", "arrayformula"]
+}

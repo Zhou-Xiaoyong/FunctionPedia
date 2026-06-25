@@ -1,0 +1,100 @@
+{
+  "name": "RRI",
+  "slug": "rri",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "RRI returns the compound annual growth rate (CAGR) that grows an investment from a present value to a future value over a number of periods.",
+  "tldr": "Calculates the equivalent compound interest rate for an investment.",
+  "syntax": "(nper, pv, fv)",
+  "parameters": [
+    {
+      "name": "nper",
+      "description": "Total number of periods.",
+      "required": true
+    },
+    {
+      "name": "pv",
+      "description": "Present value of the investment.",
+      "required": true
+    },
+    {
+      "name": "fv",
+      "description": "Future value of the investment.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Annual growth rate of an investment",
+    "formula": "=RRI(5, 10000, 15000)",
+    "result": "8.45%",
+    "explanation": "An investment that grew from $10,000 to $15,000 over 5 years had an annual growth rate of about 8.45%."
+  },
+  "advancedExamples": [
+    {
+      "title": "CAGR over years",
+      "scenario": "Investment performance",
+      "description": "Compound annual growth rate for a stock",
+      "formula": "=RRI(10, 5000, 12000)",
+      "result": "9.14%",
+      "explanation": "The stock grew at a compound annual rate of about 9.14% over 10 years."
+    }
+  ],
+  "howItWorks": "RRI uses the formula (fv / pv)^(1/nper) - 1 to compute the equivalent compound growth rate. It is the inverse of the future-value formula.",
+  "howToSteps": [
+    {
+      "name": "Enter nper",
+      "text": "Type the nper"
+    },
+    {
+      "name": "Enter pv",
+      "text": "Type the pv"
+    },
+    {
+      "name": "Enter fv",
+      "text": "Type the fv"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Requires pv and fv to have the same sign.",
+    "Result is the periodic rate, not annual unless periods are years.",
+    "Does not account for dividends or additional contributions."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "pv is zero or negative, or fv and pv have opposite signs.",
+      "fix": "Use positive pv and fv, with fv > pv for growth."
+    },
+    {
+      "error": "Wrong annual rate",
+      "cause": "nper is in months but result was interpreted as annual.",
+      "fix": "Use annual periods for annual CAGR, or multiply the monthly rate by 12."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "RRI works identically in Google Sheets.",
+    "formula": "=RRI(5, 10000, 15000)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between RRI and IRR?",
+      "answer": "RRI is for a single starting and ending value. IRR is for a series of cash flows."
+    },
+    {
+      "question": "Can RRI calculate CAGR?",
+      "answer": "Yes, RRI is essentially the CAGR formula."
+    }
+  ],
+  "relatedFunctions": [
+    "rate",
+    "fv",
+    "pv",
+    "nper",
+    "irr"
+  ]
+}

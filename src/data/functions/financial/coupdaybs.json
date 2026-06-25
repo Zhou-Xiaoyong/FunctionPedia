@@ -1,0 +1,110 @@
+{
+  "name": "COUPDAYBS",
+  "slug": "coupdaybs",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "COUPDAYBS returns the number of days between the start of the current coupon period and the settlement date for a bond.",
+  "tldr": "Calculates the number of days from the beginning of the coupon period to the settlement date.",
+  "syntax": "(settlement, maturity, frequency, [basis])",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "frequency",
+      "description": "Number of coupon payments per year (1, 2, or 4).",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Days from coupon start to settlement",
+    "formula": "=COUPDAYBS(DATE(2024,4,1), DATE(2034,4,1), 2)",
+    "result": "Days since coupon period began",
+    "explanation": "For a bond purchased on April 1, 2024 with semi-annual coupons, this returns the number of days since the coupon period began."
+  },
+  "advancedExamples": [
+    {
+      "title": "With actual/actual basis",
+      "scenario": "Treasury bond",
+      "description": "Use basis 1 for actual/actual",
+      "formula": "=COUPDAYBS(DATE(2024,4,1), DATE(2034,4,1), 2, 1)",
+      "result": "Days using actual/actual",
+      "explanation": "Basis 1 counts actual days in the actual year."
+    }
+  ],
+  "howItWorks": "COUPDAYBS is used in bond pricing to determine accrued interest. It identifies where the settlement date falls within the current coupon period.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter frequency",
+      "text": "Type the frequency"
+    },
+    {
+      "name": "Enter basis",
+      "text": "Type the basis"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Settlement date must be before maturity date.",
+    "Frequency must be 1, 2, or 4.",
+    "Basis affects the day count."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates, frequency, or basis.",
+      "fix": "Verify all inputs."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "COUPDAYBS works identically in Google Sheets.",
+    "formula": "=COUPDAYBS(DATE(2024,4,1), DATE(2034,4,1), 2)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between COUPDAYBS and COUPDAYS?",
+      "answer": "COUPDAYBS counts days from the coupon start to settlement. COUPDAYS counts days in the entire coupon period."
+    },
+    {
+      "question": "Why is COUPDAYBS used?",
+      "answer": "It is used to calculate accrued interest for bond trades."
+    }
+  ],
+  "relatedFunctions": [
+    "coupdays",
+    "coupdaysnc",
+    "coupncd",
+    "coupnum",
+    "couppcd",
+    "accrint"
+  ]
+}

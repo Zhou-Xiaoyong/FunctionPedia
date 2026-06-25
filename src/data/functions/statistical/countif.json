@@ -1,0 +1,74 @@
+{
+  "name": "COUNTIF",
+  "slug": "countif",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "COUNTIF counts the number of cells in a range that meet a specified condition. It's the counting counterpart of SUMIF — instead of summing matching values, it counts how many matches exist.",
+  "tldr": "COUNTIF counts cells that match a condition. Give it a range and a criterion (like '>100' or 'East') and it tells you how many cells pass the test.",
+  "syntax": "(range, criteria)",
+  "parameters": [
+    { "name": "range", "description": "The range of cells to count. Each cell is evaluated against the criteria.", "required": true },
+    { "name": "criteria", "description": "The condition that determines which cells to count. Can be a number, text, comparison, or wildcard pattern.", "required": true }
+  ],
+  "basicExample": {
+    "description": "Count how many students scored 80 or above",
+    "formula": "=COUNTIF(A2:A30, \">=80\")",
+    "result": "12",
+    "explanation": "The formula checks each cell in A2:A30 and counts how many contain a value of 80 or higher."
+  },
+  "advancedExamples": [
+    {
+      "title": "Count occurrences of specific text",
+      "scenario": "Survey analysis",
+      "description": "Count how many responses say 'Yes'",
+      "formula": "=COUNTIF(B2:B100, \"Yes\")",
+      "result": "67",
+      "explanation": "Exact text match (case-insensitive). Counts all cells containing exactly 'Yes' (or 'yes', 'YES')."
+    },
+    {
+      "title": "Count with wildcard for partial text",
+      "scenario": "Data analysis",
+      "description": "Count cells containing 'error' anywhere in the text",
+      "formula": "=COUNTIF(A2:A50, \"*error*\")",
+      "result": "5",
+      "explanation": "The asterisks match any surrounding text. '*error*' catches 'Error found', 'Type error', 'Syntax error message'."
+    },
+    {
+      "title": "Count non-blank cells",
+      "scenario": "Data quality",
+      "description": "Count how many cells in a range are not empty",
+      "formula": "=COUNTIF(A2:A100, \"<>\")",
+      "result": "85",
+      "explanation": "\"<>\" (not equal to empty) counts all cells that have any content — numbers, text, or formulas."
+    }
+  ],
+  "howItWorks": "COUNTIF scans each cell in the range and checks it against your criteria. For exact text matches, it does a case-insensitive comparison. For numeric criteria like '>100', it evaluates the comparison operator. For wildcards, * matches any sequence of characters and ? matches exactly one character. Each cell that passes the test increments the count by 1. The result is a single number: the total count of matching cells.",
+  "howToSteps": [
+    { "name": "Select the range", "text": "Choose the cells you want to count through (e.g., A2:A50)." },
+    { "name": "Define the criteria", "text": "Specify what to count: a number (5), text ('Yes'), comparison ('>=80'), or wildcard ('*error*')." },
+    { "name": "Enter the formula", "text": "Type =COUNTIF(range, criteria) and press Enter." }
+  ],
+  "limitations": [
+    "COUNTIF handles only one condition. For multiple conditions, use COUNTIFS.",
+    "Text criteria are case-insensitive — 'yes' and 'YES' both match.",
+    "COUNTIF cannot count cells by color, font, or other visual formatting.",
+    "For counting unique values, COUNTIF alone isn't sufficient — combine with UNIQUE or advanced formulas."
+  ],
+  "commonErrors": [
+    { "error": "0 result (criteria not matching)", "cause": "The criteria text/number doesn't exist in the range, or there's a formatting mismatch", "fix": "Double-check that the values in the range actually match your criteria. Watch for trailing spaces." },
+    { "error": "Unexpected count (text vs number)", "cause": "Numbers stored as text won't match numeric criteria like '>100'", "fix": "Convert text numbers to actual numbers, or use text criteria: =COUNTIF(A2:A50, \">100\") may not work on text-formatted numbers." },
+    { "error": "Wrong count with wildcards", "cause": "Wildcard criteria treating numbers as text", "fix": "Wildcards only work on text content. Numeric cells won't match wildcard patterns." }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "COUNTIF works identically in Google Sheets with the same syntax.",
+    "formula": "=COUNTIF(A2:A30, \">=80\")",
+    "notes": "Google Sheets COUNTIFS also works for multiple conditions, same as Excel."
+  },
+  "faq": [
+    { "question": "What's the difference between COUNTIF and COUNTIFS?", "answer": "COUNTIF uses one condition. COUNTIFS uses multiple conditions: =COUNTIFS(A2:A50, \"East\", B2:B50, \">100\") counts rows where both A is 'East' AND B is >100." },
+    { "question": "Can COUNTIF count blank cells?", "answer": "Yes. Use =COUNTIF(A2:A50, \"\") to count empty cells, or =COUNTIF(A2:A50, \"<>\") to count non-empty cells." },
+    { "question": "How do I count unique values?", "answer": "In Excel 365, use =COUNTA(UNIQUE(A2:A50)). In older Excel, use =SUMPRODUCT(1/COUNTIF(A2:A50, A2:A50)) for unique counts." },
+    { "question": "Can COUNTIF count by cell color?", "answer": "No. COUNTIF cannot filter by background or font color. You need VBA or manual filtering for color-based counting." }
+  ],
+  "relatedFunctions": ["countifs", "sumif", "counta", "unique", "countblank"]
+}

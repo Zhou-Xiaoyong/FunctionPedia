@@ -1,0 +1,108 @@
+{
+  "name": "SYD",
+  "slug": "syd",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "SYD returns the depreciation of an asset for a given period using the sum-of-years-digits method, which accelerates depreciation faster than straight-line but slower than double-declining.",
+  "tldr": "Calculates sum-of-years-digits depreciation for a specified period.",
+  "syntax": "(cost, salvage, life, per)",
+  "parameters": [
+    {
+      "name": "cost",
+      "description": "Initial cost of the asset.",
+      "required": true
+    },
+    {
+      "name": "salvage",
+      "description": "Value at the end of the depreciation life.",
+      "required": true
+    },
+    {
+      "name": "life",
+      "description": "Number of periods over which the asset is depreciated.",
+      "required": true
+    },
+    {
+      "name": "per",
+      "description": "The period for which to calculate depreciation.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "First-year SYD depreciation",
+    "formula": "=SYD(10000, 2000, 5, 1)",
+    "result": "$2,666.67",
+    "explanation": "A $10,000 asset with 5-year life depreciates $2,666.67 in the first year using sum-of-years-digits."
+  },
+  "advancedExamples": [
+    {
+      "title": "Later year depreciation",
+      "scenario": "Accelerated depreciation",
+      "description": "Depreciation in the fifth year",
+      "formula": "=SYD(10000, 2000, 5, 5)",
+      "result": "$533.33",
+      "explanation": "Depreciation is highest in early years and lowest in later years."
+    }
+  ],
+  "howItWorks": "SYD multiplies the depreciable cost (cost - salvage) by a fraction. The numerator is the remaining life, and the denominator is the sum of the years digits (e.g., 1+2+3+4+5 = 15).",
+  "howToSteps": [
+    {
+      "name": "Enter cost",
+      "text": "Type the cost"
+    },
+    {
+      "name": "Enter salvage",
+      "text": "Type the salvage"
+    },
+    {
+      "name": "Enter life",
+      "text": "Type the life"
+    },
+    {
+      "name": "Enter per",
+      "text": "Type the per"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Produces higher depreciation in early years.",
+    "Requires a salvage value.",
+    "Does not handle partial periods."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Per is less than 1 or greater than life.",
+      "fix": "Ensure per is between 1 and life."
+    },
+    {
+      "error": "Wrong year",
+      "cause": "Per argument refers to a different period than expected.",
+      "fix": "Confirm that per matches the period you want."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "SYD works identically in Google Sheets.",
+    "formula": "=SYD(10000, 2000, 5, 1)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between SYD and DDB?",
+      "answer": "SYD uses a declining fraction based on remaining life. DDB uses a fixed rate multiplied by remaining book value."
+    },
+    {
+      "question": "Is SYD still used for taxes?",
+      "answer": "It is less common now; many tax systems use MACRS or straight-line."
+    }
+  ],
+  "relatedFunctions": [
+    "sln",
+    "db",
+    "ddb",
+    "vdb"
+  ]
+}

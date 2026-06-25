@@ -1,0 +1,119 @@
+{
+  "name": "DURATION",
+  "slug": "duration",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "DURATION returns the weighted average time until a bond's cash flows are received, measured in years. It is used to estimate interest rate sensitivity.",
+  "tldr": "Calculates the Macaulay duration of a bond.",
+  "syntax": "(settlement, maturity, coupon, yld, frequency, [basis])",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "coupon",
+      "description": "Annual coupon rate.",
+      "required": true
+    },
+    {
+      "name": "yld",
+      "description": "Annual yield to maturity.",
+      "required": true
+    },
+    {
+      "name": "frequency",
+      "description": "Number of coupon payments per year (1, 2, or 4).",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Macaulay duration of a bond",
+    "formula": "=DURATION(DATE(2024,4,1), DATE(2034,4,1), 0.05, 0.06, 2)",
+    "result": "Duration in years",
+    "explanation": "For a 5% coupon bond yielding 6% with semi-annual payments, this returns the Macaulay duration."
+  },
+  "advancedExamples": [
+    {
+      "title": "With actual/actual basis",
+      "scenario": "Treasury bond analysis",
+      "description": "Use basis 1 for actual/actual",
+      "formula": "=DURATION(DATE(2024,4,1), DATE(2034,4,1), 0.05, 0.06, 2, 1)",
+      "result": "Duration using actual/actual",
+      "explanation": "Basis 1 uses actual days and actual years."
+    }
+  ],
+  "howItWorks": "DURATION calculates the Macaulay duration, which is the present-value-weighted average time until cash flows are received. Higher duration means greater sensitivity to interest rate changes.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter coupon",
+      "text": "Type the coupon"
+    },
+    {
+      "name": "Enter yld",
+      "text": "Type the yld"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Settlement must be before maturity.",
+    "Frequency must be 1, 2, or 4.",
+    "Does not measure modified duration or convexity."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates, rates, or frequency.",
+      "fix": "Verify all inputs."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "DURATION works identically in Google Sheets.",
+    "formula": "=DURATION(DATE(2024,4,1), DATE(2034,4,1), 0.05, 0.06, 2)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between DURATION and MDURATION?",
+      "answer": "DURATION is Macaulay duration. MDURATION is modified duration, which directly measures price sensitivity."
+    },
+    {
+      "question": "What does duration measure?",
+      "answer": "Duration measures the weighted average time to receive cash flows and is used to estimate interest rate risk."
+    }
+  ],
+  "relatedFunctions": [
+    "mduration",
+    "price",
+    "yield",
+    "accrint",
+    "coupdaybs"
+  ]
+}

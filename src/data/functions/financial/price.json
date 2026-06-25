@@ -1,0 +1,126 @@
+{
+  "name": "PRICE",
+  "slug": "price",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "PRICE returns the price per $100 face value of a bond based on its coupon, yield, redemption value, and time to maturity.",
+  "tldr": "Calculates the price of a security that pays periodic interest.",
+  "syntax": "(settlement, maturity, rate, yld, redemption, frequency, [basis])",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "rate",
+      "description": "Annual coupon rate.",
+      "required": true
+    },
+    {
+      "name": "yld",
+      "description": "Annual yield to maturity.",
+      "required": true
+    },
+    {
+      "name": "redemption",
+      "description": "Redemption value per $100 face value.",
+      "required": true
+    },
+    {
+      "name": "frequency",
+      "description": "Number of coupon payments per year (1, 2, or 4).",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Price of a semi-annual bond",
+    "formula": "=PRICE(DATE(2024,4,1), DATE(2034,4,1), 0.05, 0.06, 100, 2)",
+    "result": "$92.64",
+    "explanation": "A 10-year bond with a 5% coupon and 6% yield, priced at about $92.64 per $100 face value."
+  },
+  "advancedExamples": [
+    {
+      "title": "Annual pay bond",
+      "scenario": "European bond",
+      "description": "Price of an annual-pay bond",
+      "formula": "=PRICE(DATE(2024,4,1), DATE(2034,4,1), 0.05, 0.06, 100, 1, 1)",
+      "result": "Price using annual payments",
+      "explanation": "Frequency 1 means annual coupon payments."
+    }
+  ],
+  "howItWorks": "PRICE calculates the present value of all future coupon payments plus the redemption value, discounted at the yield to maturity. It assumes the bond pays regular periodic interest.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter rate",
+      "text": "Type the rate"
+    },
+    {
+      "name": "Enter yld",
+      "text": "Type the yld"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Settlement must be before maturity.",
+    "Frequency must be 1, 2, or 4.",
+    "For bonds with irregular coupon periods, use ODDFPRICE or ODDLPRICE."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates, rates, or frequency.",
+      "fix": "Verify all inputs."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "PRICE works identically in Google Sheets.",
+    "formula": "=PRICE(DATE(2024,4,1), DATE(2034,4,1), 0.05, 0.06, 100, 2)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between PRICE and PRICEDISC?",
+      "answer": "PRICE is for coupon-paying bonds. PRICEDISC is for discounted securities."
+    },
+    {
+      "question": "What does a price below 100 mean?",
+      "answer": "The bond is priced at a discount, typically because its coupon is below market yield."
+    }
+  ],
+  "relatedFunctions": [
+    "yield",
+    "disc",
+    "pricemat",
+    "pricedisc",
+    "oddfprice",
+    "oddlprice",
+    "accrint"
+  ]
+}

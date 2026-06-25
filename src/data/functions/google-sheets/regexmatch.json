@@ -1,0 +1,67 @@
+{
+  "name": "REGEXMATCH",
+  "slug": "regexmatch",
+  "category": "google-sheets",
+  "excelVersion": "Google Sheets only",
+  "description": "REGEXMATCH checks whether a text string matches a regular expression pattern and returns TRUE or FALSE.",
+  "tldr": "REGEXMATCH returns TRUE if the text matches a regular expression pattern, otherwise FALSE.",
+  "syntax": "(text, regular_expression)",
+  "parameters": [
+    { "name": "text", "description": "The text to test against the regular expression.", "required": true },
+    { "name": "regular_expression", "description": "The RE2 regular expression pattern to match. Some metacharacters need escaping.", "required": true }
+  ],
+  "basicExample": {
+    "description": "Check if an email address looks valid",
+    "formula": "=REGEXMATCH(A2, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$')",
+    "result": "TRUE or FALSE",
+    "explanation": "The pattern checks for a typical email format. It returns TRUE if A2 matches."
+  },
+  "advancedExamples": [
+    {
+      "title": "Check for a phone number pattern",
+      "scenario": "Data validation",
+      "description": "Detect if a cell contains a 10-digit US phone number",
+      "formula": "=REGEXMATCH(A2, '\\d{3}-\\d{3}-\\d{4}')",
+      "result": "TRUE if a phone number is found",
+      "explanation": "The pattern looks for three digits, a hyphen, three digits, a hyphen, and four digits."
+    },
+    {
+      "title": "Match whole column with ARRAYFORMULA",
+      "scenario": "Bulk validation",
+      "description": "Check every cell in a column for a valid code format",
+      "formula": "=ARRAYFORMULA(REGEXMATCH(A2:A100, '^CODE-[0-9]{4}$'))",
+      "result": "Column of TRUE/FALSE values",
+      "explanation": "ARRAYFORMULA applies REGEXMATCH to each row."
+    }
+  ],
+  "howItWorks": "REGEXMATCH evaluates the text against a regular expression using the RE2 syntax. It returns TRUE if the text contains a match anywhere (unless anchored), and FALSE otherwise. The pattern is case-sensitive by default.",
+  "howToSteps": [
+    { "name": "Write the text or reference", "text": "Select the cell containing the text to test." },
+    { "name": "Build the regex pattern", "text": "Create a regular expression that describes the pattern you want to match." },
+    { "name": "Enter the formula", "text": "Type =REGEXMATCH(text, 'pattern')." },
+    { "name": "Use with IF or FILTER", "text": "Wrap with IF to return custom messages, or use FILTER to extract matching rows." }
+  ],
+  "limitations": [
+    "REGEXMATCH is Google Sheets only. Excel uses ISNUMBER(SEARCH(...)) or VBA/User-Defined Functions for regex.",
+    "It uses RE2 syntax, which does not support all features of PCRE or .NET regex.",
+    "Lookahead and lookbehind assertions are not supported in RE2.",
+    "The pattern is case-sensitive; use character classes like [A-Za-z] for case-insensitive matching."
+  ],
+  "commonErrors": [
+    { "error": "#VALUE! error", "cause": "The regular expression is invalid or uses unsupported syntax.", "fix": "Test the pattern in a regex tester and ensure it uses RE2-compatible syntax." },
+    { "error": "Unexpected match", "cause": "The pattern matches part of the text because it is not anchored.", "fix": "Add ^ at the start and $ at the end to match the entire string." },
+    { "error": "Case-sensitive mismatch", "cause": "REGEXMATCH is case-sensitive.", "fix": "Use character classes like [A-Za-z] or convert the text with LOWER/UPPER first." }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "REGEXMATCH is exclusive to Google Sheets. Excel does not have a built-in regex function.",
+    "formula": "=REGEXMATCH(A2, '^[A-Z]+$')",
+    "notes": "In Excel, use SEARCH with wildcards or Power Query for pattern matching."
+  },
+  "faq": [
+    { "question": "Can REGEXMATCH return the matched text?", "answer": "No, it returns only TRUE or FALSE. Use REGEXEXTRACT to capture matched text." },
+    { "question": "Is REGEXMATCH case-sensitive?", "answer": "Yes. Use [A-Za-z] or LOWER/UPPER to handle case." },
+    { "question": "Can I use REGEXMATCH in Excel?", "answer": "Excel does not have a built-in REGEXMATCH function. You can use VBA or Office Scripts." },
+    { "question": "Does it support capture groups?", "answer": "No, REGEXMATCH only checks for a match. Use REGEXEXTRACT for capture groups." }
+  ],
+  "relatedFunctions": ["regexextract", "regexreplace", "arrayformula", "filter"]
+}

@@ -1,0 +1,222 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../utils/config';
+import { generateBreadcrumbSchema, generateArticleSchema, generateFAQSchema } from '../../utils/seo';
+
+// Export static paths for all comparisons
+export function getStaticPaths() {
+  const comparisons = [];
+  const dataModules = import.meta.glob('../../data/compare/*.json', { eager: true });
+  for (const path in dataModules) {
+    const cmp = dataModules[path];
+    if (cmp && cmp.slug) {
+      comparisons.push(cmp);
+    }
+  }
+  return comparisons.map((cmp) => ({
+    params: { slug: cmp.slug },
+    props: { cmp },
+  }));
+}
+
+const { cmp } = Astro.props;
+
+if (!cmp) {
+  return Astro.redirect('/compare');
+}
+
+// Load function details
+const allFunctions = [];
+const functionModules = import.meta.glob('../../data/functions/**/*.json', { eager: true });
+for (const path in functionModules) {
+  const fn = functionModules[path];
+  if (fn && fn.name) {
+    allFunctions.push(fn);
+  }
+}
+
+const fnA = allFunctions.find((f) => f.slug === cmp.functionA);
+const fnB = allFunctions.find((f) => f.slug === cmp.functionB);
+const fnC = cmp.functionC ? allFunctions.find((f) => f.slug === cmp.functionC) : null;
+
+const functionNameA = fnA ? fnA.name.toUpperCase() : cmp.functionA.toUpperCase();
+const functionNameB = fnB ? fnB.name.toUpperCase() : cmp.functionB.toUpperCase();
+const functionNameC = fnC ? fnC.name.toUpperCase() : (cmp.functionC ? cmp.functionC.toUpperCase() : null);
+
+// Breadcrumb
+const breadcrumbs = [
+  { name: 'Home', url: SITE.url },
+  { name: 'Compare', url: `${SITE.url}/compare` },
+  { name: cmp.title, url: `${SITE.url}/compare/${cmp.slug}` },
+];
+
+// Schema.org
+const articleSchema = generateArticleSchema(cmp.title, cmp.description, `${SITE.url}/compare/${cmp.slug}`, 'compare');
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+const faqSchema = cmp.faq ? generateFAQSchema(cmp.faq) : null;
+
+const allSchema = [articleSchema, breadcrumbSchema];
+if (faqSchema) allSchema.push(faqSchema);
+
+const title = `${cmp.title} | Excel & Google Sheets | ${SITE.title}`;
+const description = cmp.description;
+const canonical = `${SITE.url}/compare/${cmp.slug}`;
+---
+
+<BaseLayout title={title} description={description} canonical={canonical} schema={allSchema}>
+  <!-- Breadcrumb -->
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+    <ol class="flex items-center gap-2 text-sm text-gray-500">
+      <li><a href="/" class="hover:text-primary-500 transition-colors">Home</a></li>
+      <li>/</li>
+      <li><a href="/compare" class="hover:text-primary-500 transition-colors">Compare</a></li>
+      <li>/</li>
+      <li class="font-medium text-gray-900">{cmp.title}</li>
+    </ol>
+  </nav>
+
+  <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+    <!-- Header -->
+    <section class="mb-10">
+      <div class="p-6 rounded-xl bg-primary-50 border border-primary-200">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
+          <span class="text-primary-500">{cmp.title}</span>
+        </h1>
+        <p class="text-lg text-gray-700 leading-relaxed">{cmp.intro}</p>
+      </div>
+    </section>
+
+    <!-- Function cards -->
+    <section class="mb-10">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href={fnA ? `/functions/${fnA.slug}` : undefined} class={`block p-5 rounded-xl border transition-all ${fnA ? 'bg-white border-gray-200 hover:border-primary-500 hover:shadow-md' : 'bg-gray-50 border-gray-200'}`}>
+          <div class="text-xs font-semibold text-primary-600 uppercase tracking-wider mb-1">Function A</div>
+          <h2 class="text-2xl font-bold font-mono text-gray-900">{functionNameA}</h2>
+          {fnA && <p class="mt-2 text-sm text-gray-600">{fnA.tldr}</p>}
+          {!fnA && <p class="mt-2 text-sm text-gray-500 italic">Detailed page coming soon</p>}
+        </a>
+        <a href={fnB ? `/functions/${fnB.slug}` : undefined} class={`block p-5 rounded-xl border transition-all ${fnB ? 'bg-white border-gray-200 hover:border-primary-500 hover:shadow-md' : 'bg-gray-50 border-gray-200'}`}>
+          <div class="text-xs font-semibold text-primary-600 uppercase tracking-wider mb-1">Function B</div>
+          <h2 class="text-2xl font-bold font-mono text-gray-900">{functionNameB}</h2>
+          {fnB && <p class="mt-2 text-sm text-gray-600">{fnB.tldr}</p>}
+          {!fnB && <p class="mt-2 text-sm text-gray-500 italic">Detailed page coming soon</p>}
+        </a>
+      </div>
+      {fnC && (
+        <div class="mt-4">
+          <a href={`/functions/${fnC.slug}`} class="block p-5 rounded-xl bg-white border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all">
+            <div class="text-xs font-semibold text-primary-600 uppercase tracking-wider mb-1">Function C</div>
+            <h2 class="text-2xl font-bold font-mono text-gray-900">{functionNameC}</h2>
+            <p class="mt-2 text-sm text-gray-600">{fnC.tldr}</p>
+          </a>
+        </div>
+      )}
+    </section>
+
+    <!-- Comparison table -->
+    <section id="comparison" class="mb-10">
+      <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/></svg>
+        Side-by-Side Comparison
+      </h2>
+      <div class="overflow-x-auto rounded-xl border border-gray-200">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-gray-50 border-b border-gray-200">
+              <th class="px-4 py-3 text-left font-semibold text-gray-700">Aspect</th>
+              <th class="px-4 py-3 text-left font-semibold text-gray-700">{functionNameA}</th>
+              <th class="px-4 py-3 text-left font-semibold text-gray-700">{functionNameB}</th>
+              {functionNameC && <th class="px-4 py-3 text-left font-semibold text-gray-700">{functionNameC}</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {cmp.comparisonTable.map((row) => (
+              <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                <td class="px-4 py-3 font-medium text-gray-900">{row.aspect}</td>
+                <td class="px-4 py-3 text-gray-600">{row.functionA}</td>
+                <td class="px-4 py-3 text-gray-600">{row.functionB}</td>
+                {functionNameC && <td class="px-4 py-3 text-gray-600">{row.functionC}</td>}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- When to use -->
+    <section id="when-to-use" class="mb-10">
+      <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <svg class="w-5 h-5 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        When to Use Each
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-5 rounded-xl bg-white border border-gray-200">
+          <h3 class="text-sm font-semibold text-primary-600 uppercase tracking-wider mb-2">Use {functionNameA}</h3>
+          <p class="text-gray-700">{cmp.whenToUseA}</p>
+        </div>
+        <div class="p-5 rounded-xl bg-white border border-gray-200">
+          <h3 class="text-sm font-semibold text-primary-600 uppercase tracking-wider mb-2">Use {functionNameB}</h3>
+          <p class="text-gray-700">{cmp.whenToUseB}</p>
+        </div>
+      </div>
+      {cmp.whenToUseC && functionNameC && (
+        <div class="mt-4 p-5 rounded-xl bg-white border border-gray-200">
+          <h3 class="text-sm font-semibold text-primary-600 uppercase tracking-wider mb-2">Use {functionNameC}</h3>
+          <p class="text-gray-700">{cmp.whenToUseC}</p>
+        </div>
+      )}
+    </section>
+
+    <!-- Verdict -->
+    <section id="verdict" class="mb-10">
+      <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+        Verdict
+      </h2>
+      <div class="p-6 rounded-xl bg-accent-50 border border-accent-200">
+        <p class="text-gray-700 leading-relaxed">{cmp.verdict}</p>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    {cmp.faq && cmp.faq.length > 0 && (
+      <section id="faq" class="mb-10">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.533-4.079 2.837-7.083 6.058-7.083 3.268 0 5.83 3.025 5.83 7.083 0 3.268-2.837 6.058-5.83 6.058-1.324 0-2.417-.472-3.283-1.203-.867-.731-1.403-1.772-1.403-3.042h2.234"/></svg>
+          Frequently Asked Questions
+        </h2>
+        <div class="space-y-4">
+          {cmp.faq.map((item) => (
+            <details class="group bg-white border border-gray-200 rounded-xl overflow-hidden">
+              <summary class="p-4 cursor-pointer flex items-center justify-between hover:bg-gray-50 transition-colors">
+                <span class="text-sm font-semibold text-gray-900">{item.question}</span>
+                <svg class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class="p-4 border-t border-gray-100 text-sm text-gray-600 leading-relaxed">
+                {item.answer}
+              </div>
+            </details>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Related comparisons -->
+    <section id="related" class="mb-10">
+      <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+        Explore More Comparisons
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <a href="/compare/vlookup-vs-xlookup" class="group block p-4 rounded-lg bg-white border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all">
+          <h3 class="text-sm font-semibold text-gray-900 group-hover:text-primary-500 transition-colors">VLOOKUP vs XLOOKUP</h3>
+          <p class="mt-1 text-xs text-gray-500">The classic lookup showdown</p>
+        </a>
+        <a href="/compare/index-match-vs-xlookup" class="group block p-4 rounded-lg bg-white border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all">
+          <h3 class="text-sm font-semibold text-gray-900 group-hover:text-primary-500 transition-colors">INDEX/MATCH vs XLOOKUP</h3>
+          <p class="mt-1 text-xs text-gray-500">Which flexible lookup wins?</p>
+        </a>
+      </div>
+    </section>
+  </article>
+</BaseLayout>

@@ -1,0 +1,54 @@
+{
+  "name": "DETECTLANGUAGE",
+  "slug": "detectlanguage",
+  "category": "google-sheets",
+  "excelVersion": "Google Sheets only",
+  "description": "DETECTLANGUAGE identifies the language of a given text and returns the two-letter language code.",
+  "tldr": "DETECTLANGUAGE tells you what language a piece of text is written in.",
+  "syntax": "(text)",
+  "parameters": [
+    { "name": "text", "description": "The text whose language should be detected. Can be a string literal or a cell reference.", "required": true }
+  ],
+  "basicExample": {
+    "description": "Detect the language of a sentence",
+    "formula": "=DETECTLANGUAGE('Hola, mundo')",
+    "result": "es",
+    "explanation": "The text 'Hola, mundo' is detected as Spanish, returning the code 'es'."
+  },
+  "advancedExamples": [
+    {
+      "title": "Detect language for a column",
+      "scenario": "Customer support tickets",
+      "description": "Find the language of each support ticket in a list",
+      "formula": "=ARRAYFORMULA(DETECTLANGUAGE(A2:A100))",
+      "result": "Language codes for each row",
+      "explanation": "ARRAYFORMULA applies DETECTLANGUAGE to each cell in the range."
+    }
+  ],
+  "howItWorks": "DETECTLANGUAGE analyzes the provided text and returns the most likely ISO 639-1 language code. It uses the same language detection service as Google Translate.",
+  "howToSteps": [
+    { "name": "Select the text", "text": "Choose the cell or string to analyze." },
+    { "name": "Enter the formula", "text": "Type =DETECTLANGUAGE(text)." },
+    { "name": "Read the result", "text": "The result is a two-letter code like 'en', 'es', or 'zh'." }
+  ],
+  "limitations": [
+    "DETECTLANGUAGE is Google Sheets only and has no native Excel equivalent.",
+    "Short texts or mixed languages may be detected incorrectly.",
+    "It returns only the language code, not the language name or confidence score."
+  ],
+  "commonErrors": [
+    { "error": "#VALUE! error", "cause": "The input is empty or not valid text.", "fix": "Ensure the cell contains text and is not blank." },
+    { "error": "Wrong language code", "cause": "The text is too short or mixed with another language.", "fix": "Provide more text for better detection accuracy." }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "DETECTLANGUAGE is exclusive to Google Sheets. Excel has no built-in language detection function.",
+    "formula": "=DETECTLANGUAGE(A2)",
+    "notes": "Returns ISO 639-1 language codes such as 'en', 'fr', 'de', 'ja'."
+  },
+  "faq": [
+    { "question": "Can it detect multiple languages in one cell?", "answer": "No, it returns a single language code for the entire text." },
+    { "question": "What code does it return for Chinese?", "answer": "It returns 'zh' for Chinese. Simplified and Traditional are not distinguished." },
+    { "question": "Does it work offline?", "answer": "No, it requires an internet connection to use Google's language detection service." }
+  ],
+  "relatedFunctions": ["googletranslate", "arrayformula"]
+}

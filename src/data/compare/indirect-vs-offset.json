@@ -1,0 +1,48 @@
+{
+  "title": "INDIRECT vs OFFSET",
+  "slug": "indirect-vs-offset",
+  "functionA": "indirect",
+  "functionB": "offset",
+  "description": "Compare INDIRECT and OFFSET for creating dynamic references in Excel.",
+  "intro": "INDIRECT and OFFSET both create dynamic references, but they work differently. INDIRECT converts text to a reference. OFFSET returns a reference shifted by rows and columns.",
+  "comparisonTable": [
+    {
+      "aspect": "How it works",
+      "functionA": "Converts a text string to a reference",
+      "functionB": "Shifts from a starting cell by row/column offsets"
+    },
+    {
+      "aspect": "Input",
+      "functionA": "Text string that looks like a reference",
+      "functionB": "Starting reference plus numeric offsets"
+    },
+    {
+      "aspect": "Common use",
+      "functionA": "Dynamic sheet names, named ranges",
+      "functionB": "Dynamic ranges that grow with data"
+    },
+    {
+      "aspect": "Volatility",
+      "functionA": "Volatile",
+      "functionB": "Volatile"
+    },
+    {
+      "aspect": "Debugging",
+      "functionA": "Hard to see the resulting range",
+      "functionB": "Hard to see the resulting range"
+    }
+  ],
+  "whenToUseA": "Use INDIRECT when the reference is stored as text, such as a sheet name selected from a dropdown.",
+  "whenToUseB": "Use OFFSET when you need a range that moves or resizes based on numeric calculations.",
+  "verdict": "Both are volatile and can slow workbooks. Use modern alternatives like structured tables or FILTER when possible.",
+  "faq": [
+    {
+      "question": "Are INDIRECT and OFFSET volatile?",
+      "answer": "Yes, both recalculate whenever the workbook changes."
+    },
+    {
+      "question": "Which is better for dynamic charts?",
+      "answer": "OFFSET is commonly used for dynamic named ranges, but modern Excel often prefers structured tables or FILTER."
+    }
+  ]
+}

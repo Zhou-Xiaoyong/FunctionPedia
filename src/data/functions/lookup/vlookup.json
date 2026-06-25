@@ -1,0 +1,82 @@
+{
+  "name": "VLOOKUP",
+  "slug": "vlookup",
+  "category": "lookup",
+  "excelVersion": "All versions",
+  "description": "VLOOKUP searches for a value in the first column of a table and returns a value from another column in the same row. It is one of the most widely used Excel functions for looking up data.",
+  "tldr": "VLOOKUP finds a value in the leftmost column of a range and returns the corresponding value from any column to the right. Think of it as a vertical search — it scans down a column, finds your match, then pulls data from across that row.",
+  "syntax": "(lookup_value, table_array, col_index_num, [range_lookup])",
+  "parameters": [
+    { "name": "lookup_value", "description": "The value you want to find in the first column of the table. Can be a number, text, or cell reference.", "required": true },
+    { "name": "table_array", "description": "The range of cells that contains the data. The first column must contain the lookup values.", "required": true },
+    { "name": "col_index_num", "description": "The column number (starting from 1) in the table from which to retrieve the matching value.", "required": true },
+    { "name": "range_lookup", "description": "TRUE (or omitted) for approximate match (requires sorted data); FALSE for exact match.", "required": false }
+  ],
+  "basicExample": {
+    "description": "Find a product price by looking up the product ID",
+    "formula": "=VLOOKUP(\"A102\", B2:E50, 4, FALSE)",
+    "result": "$29.99",
+    "explanation": "This searches for product ID \"A102\" in column B (the first column of B2:E50), finds the matching row, and returns the value from column 4 (column E), which contains the price."
+  },
+  "advancedExamples": [
+    {
+      "title": "Employee salary lookup",
+      "scenario": "HR",
+      "description": "Look up an employee's salary from a payroll table using their employee ID",
+      "formula": "=VLOOKUP(E2, A:D, 4, FALSE)",
+      "result": "$75,000",
+      "explanation": "E2 contains the employee ID. The function searches column A of the table, finds the matching row, and returns the 4th column value (salary)."
+    },
+    {
+      "title": "Grade assignment from score",
+      "scenario": "Education",
+      "description": "Assign letter grades based on numeric scores using approximate match",
+      "formula": "=VLOOKUP(85, A2:B6, 2, TRUE)",
+      "result": "B",
+      "explanation": "With TRUE (approximate match), VLOOKUP finds the closest match in a sorted grade table. 85 falls in the B range (80-89)."
+    },
+    {
+      "title": "VLOOKUP with IFERROR for clean results",
+      "scenario": "Data cleaning",
+      "description": "Wrap VLOOKUP in IFERROR to show a custom message instead of #N/A when a value is not found",
+      "formula": "=IFERROR(VLOOKUP(E2, A:D, 4, FALSE), \"Not found\")",
+      "result": "Not found (if lookup fails)",
+      "explanation": "When VLOOKUP can't find the lookup value, it returns #N/A. IFERROR catches this and displays \"Not found\" instead."
+    }
+  ],
+  "howItWorks": "VLOOKUP works in four steps: (1) It takes your lookup value and scans down the first column of the table range. (2) When it finds a match (or the closest match for approximate mode), it identifies that row. (3) It then moves across that row to the column number you specified. (4) It returns the value in that cell. The key limitation is that VLOOKUP only looks right — it cannot search in columns to the left of the lookup column. This is why INDEX/MATCH and XLOOKUP are often preferred for more flexible lookups.",
+  "howToSteps": [
+    { "name": "Identify your lookup value", "text": "Decide what value you're searching for (e.g., a product ID, employee name)." },
+    { "name": "Set up the table range", "text": "Select the range where your data lives. The lookup column must be the first column in this range." },
+    { "name": "Choose the return column", "text": "Count which column number (1-based) contains the data you want to retrieve." },
+    { "name": "Choose match type", "text": "Use FALSE for exact matches (most common) or TRUE for approximate matches (requires sorted data)." },
+    { "name": "Enter the formula", "text": "Type =VLOOKUP(lookup_value, table_range, column_number, match_type) in the cell where you want the result." }
+  ],
+  "limitations": [
+    "VLOOKUP only searches the first (leftmost) column of the table — you cannot look left.",
+    "Column index is a number, not a reference. If you insert or delete columns, the col_index_num won't adjust automatically.",
+    "Approximate match (TRUE) requires the first column to be sorted ascending — otherwise results are unpredictable.",
+    "VLOOKUP returns only the first match. If there are duplicates in the lookup column, you only get the first one.",
+    "It cannot look up values based on multiple criteria without workarounds."
+  ],
+  "commonErrors": [
+    { "error": "#N/A", "cause": "The lookup value doesn't exist in the first column", "fix": "Check that the lookup value exists in the data, or use IFERROR to handle missing values gracefully." },
+    { "error": "#REF!", "cause": "The col_index_num is greater than the number of columns in the table", "fix": "Count your columns carefully. If your range is A:D (4 columns), col_index_num must be 1-4." },
+    { "error": "#VALUE!", "cause": "The col_index_num is less than 1 or non-numeric", "fix": "col_index_num must be a positive integer starting from 1." },
+    { "error": "Wrong result (approximate match)", "cause": "Using TRUE when you need an exact match, or data isn't sorted", "fix": "Use FALSE for exact matches. If using TRUE, ensure the first column is sorted ascending." }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "VLOOKUP works identically in Google Sheets with the same syntax and behavior.",
+    "formula": "=VLOOKUP(\"A102\", B2:E50, 4, FALSE)",
+    "notes": "Google Sheets VLOOKUP has the same limitations as Excel. For more powerful lookups, consider using Google Sheets' FILTER or QUERY functions."
+  },
+  "faq": [
+    { "question": "Can VLOOKUP look to the left?", "answer": "No. VLOOKUP always searches the first column of the range and returns values from columns to the right. To look left, use INDEX/MATCH or XLOOKUP instead." },
+    { "question": "What's the difference between TRUE and FALSE in VLOOKUP?", "answer": "FALSE gives an exact match — it only returns a result if the lookup value is found precisely. TRUE gives an approximate match — it finds the closest value that is less than or equal to the lookup value, but requires the first column to be sorted ascending." },
+    { "question": "Why does my VLOOKUP return #N/A?", "answer": "The most common causes are: (1) the lookup value doesn't exist in the first column, (2) you're using approximate match (TRUE) on unsorted data, (3) there are trailing spaces or formatting differences between the lookup value and the data." },
+    { "question": "Is VLOOKUP better than INDEX/MATCH?", "answer": "INDEX/MATCH is more flexible — it can look in any direction and isn't broken by column insertions. XLOOKUP (Excel 365) is the best modern replacement. However, VLOOKUP is simpler to write and is still widely used." },
+    { "question": "Can I use VLOOKUP with multiple criteria?", "answer": "Not directly. You can create a helper column that concatenates your criteria (e.g., =A2&B2), then use VLOOKUP on that combined column. Alternatively, use FILTER or XLOOKUP with multiple conditions." },
+    { "question": "Does VLOOKUP work with text and numbers mixed?", "answer": "It can, but beware of type mismatches. If you're looking up a number but the column contains text-formatted numbers, VLOOKUP may return #N/A. Ensure consistent formatting." }
+  ],
+  "relatedFunctions": ["xlookup", "index", "match", "hlookup", "filter"]
+}

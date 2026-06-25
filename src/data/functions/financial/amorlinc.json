@@ -1,0 +1,125 @@
+{
+  "name": "AMORLINC",
+  "slug": "amorlinc",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "AMORLINC returns the straight-line depreciation of an asset for a given period, commonly used in French accounting.",
+  "tldr": "Calculates depreciation for a specific period using the French straight-line method.",
+  "syntax": "(cost, date_purchased, first_period, salvage, period, rate, [basis])",
+  "parameters": [
+    {
+      "name": "cost",
+      "description": "Initial cost of the asset.",
+      "required": true
+    },
+    {
+      "name": "date_purchased",
+      "description": "Date the asset was purchased.",
+      "required": true
+    },
+    {
+      "name": "first_period",
+      "description": "End date of the first period.",
+      "required": true
+    },
+    {
+      "name": "salvage",
+      "description": "Salvage value at the end of the asset life.",
+      "required": true
+    },
+    {
+      "name": "period",
+      "description": "Period for which to calculate depreciation.",
+      "required": true
+    },
+    {
+      "name": "rate",
+      "description": "Depreciation rate.",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Year basis (0 = 360 days, 1 = actual, 3 = 365 days).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "French straight-line depreciation",
+    "formula": "=AMORLINC(10000, DATE(2024,1,1), DATE(2024,12,31), 1000, 1, 0.2)",
+    "result": "Depreciation for period 1",
+    "explanation": "Calculates first-year straight-line depreciation for a $10,000 asset with a 20% rate."
+  },
+  "advancedExamples": [
+    {
+      "title": "With 365-day basis",
+      "scenario": "French accounting",
+      "description": "Use basis 3 for a 365-day year",
+      "formula": "=AMORLINC(10000, DATE(2024,1,1), DATE(2024,12,31), 1000, 1, 0.2, 3)",
+      "result": "Depreciation with 365-day basis",
+      "explanation": "Basis 3 uses a 365-day year."
+    }
+  ],
+  "howItWorks": "AMORLINC calculates depreciation by dividing the depreciable amount by the asset life. It is the French straight-line equivalent.",
+  "howToSteps": [
+    {
+      "name": "Enter cost",
+      "text": "Type the cost"
+    },
+    {
+      "name": "Enter date_purchased",
+      "text": "Type the date_purchased"
+    },
+    {
+      "name": "Enter first_period",
+      "text": "Type the first_period"
+    },
+    {
+      "name": "Enter salvage",
+      "text": "Type the salvage"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Used mainly in French accounting standards.",
+    "Rate is typically 1 / useful life.",
+    "First and last periods may be prorated based on the basis."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates or period.",
+      "fix": "Verify dates and period are valid."
+    },
+    {
+      "error": "Wrong depreciation",
+      "cause": "Rate does not match the expected straight-line rate.",
+      "fix": "Use rate = 1 / useful life."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "AMORLINC works identically in Google Sheets.",
+    "formula": "=AMORLINC(10000, DATE(2024,1,1), DATE(2024,12,31), 1000, 1, 0.2)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between AMORLINC and AMORDEGRC?",
+      "answer": "AMORLINC uses straight-line depreciation. AMORDEGRC uses declining balance."
+    },
+    {
+      "question": "When is AMORLINC used?",
+      "answer": "It is used in French accounting for straight-line depreciation."
+    }
+  ],
+  "relatedFunctions": [
+    "amordegrc",
+    "sln",
+    "db",
+    "ddb",
+    "syd",
+    "vdb"
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "name": "ISPMT",
+  "slug": "ispmt",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "ISPMT returns the interest paid in a given period, assuming the principal is repaid in equal installments rather than equal payments.",
+  "tldr": "Calculates the interest paid during a specific period of a loan with equal principal payments.",
+  "syntax": "(rate, per, nper, pv)",
+  "parameters": [
+    {
+      "name": "rate",
+      "description": "Interest rate per period.",
+      "required": true
+    },
+    {
+      "name": "per",
+      "description": "The period for which to calculate interest.",
+      "required": true
+    },
+    {
+      "name": "nper",
+      "description": "Total number of payment periods.",
+      "required": true
+    },
+    {
+      "name": "pv",
+      "description": "Present value or loan principal.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Interest for a specific period of an interest-only or equal-principal loan",
+    "formula": "=ISPMT(0.05/12, 1, 12, 12000)",
+    "result": "-$50.00",
+    "explanation": "For a $12,000 loan at 5% annual interest, the first month's interest is $50 if principal is repaid equally."
+  },
+  "advancedExamples": [
+    {
+      "title": "Later period interest",
+      "scenario": "Amortization schedule",
+      "description": "Interest decreases as principal is repaid",
+      "formula": "=ISPMT(0.05/12, 6, 12, 12000)",
+      "result": "Interest for period 6",
+      "explanation": "Because the principal balance declines, the interest also declines each period."
+    }
+  ],
+  "howItWorks": "ISPMT calculates interest based on the outstanding principal balance at the start of the period. Unlike IPMT, it assumes equal principal payments rather than equal total payments.",
+  "howToSteps": [
+    {
+      "name": "Enter rate",
+      "text": "Type the rate"
+    },
+    {
+      "name": "Enter per",
+      "text": "Type the per"
+    },
+    {
+      "name": "Enter nper",
+      "text": "Type the nper"
+    },
+    {
+      "name": "Enter pv",
+      "text": "Type the pv"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "ISPMT is different from IPMT. IPMT is for loans with equal payments.",
+    "Returns negative values by default.",
+    "Requires consistent period units."
+  ],
+  "commonErrors": [
+    {
+      "error": "Wrong result",
+      "cause": "Confused ISPMT with IPMT.",
+      "fix": "Use IPMT for standard amortized loans with equal payments."
+    },
+    {
+      "error": "#NUM! error",
+      "cause": "Per is outside the range 1 to nper.",
+      "fix": "Ensure per is valid."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "ISPMT works identically in Google Sheets.",
+    "formula": "=ISPMT(0.05/12, 1, 12, 12000)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between ISPMT and IPMT?",
+      "answer": "ISPMT assumes equal principal payments. IPMT assumes equal total payments."
+    },
+    {
+      "question": "When should I use ISPMT?",
+      "answer": "Use it for loans where the principal is repaid in equal installments, not typical amortized loans."
+    }
+  ],
+  "relatedFunctions": [
+    "ipmt",
+    "ppmt",
+    "pmt",
+    "rate",
+    "nper"
+  ]
+}

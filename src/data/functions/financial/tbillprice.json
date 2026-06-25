@@ -1,0 +1,100 @@
+{
+  "name": "TBILLPRICE",
+  "slug": "tbillprice",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "TBILLPRICE returns the price per $100 face value of a Treasury bill based on its discount rate.",
+  "tldr": "Calculates the price of a Treasury bill per $100 face value.",
+  "syntax": "(settlement, maturity, discount)",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "discount",
+      "description": "Discount rate of the T-bill.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Price of a 6-month T-bill",
+    "formula": "=TBILLPRICE(DATE(2024,1,1), DATE(2024,7,1), 0.05)",
+    "result": "$97.50",
+    "explanation": "A 6-month T-bill with a 5% discount rate is priced at $97.50 per $100 face value."
+  },
+  "advancedExamples": [
+    {
+      "title": "Short-term T-bill",
+      "scenario": "Money market analysis",
+      "description": "Price of a 3-month T-bill",
+      "formula": "=TBILLPRICE(DATE(2024,1,1), DATE(2024,4,1), 0.05)",
+      "result": "Price per $100 face value",
+      "explanation": "Shorter maturities have smaller discounts."
+    }
+  ],
+  "howItWorks": "TBILLPRICE calculates the price using the formula 100 * (1 - discount * days to maturity / 360). Treasury bills use a 360-day year for pricing.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter discount",
+      "text": "Type the discount"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Maturity must be within one year of settlement.",
+    "Discount is entered as a decimal.",
+    "Uses actual/360 day count."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Maturity is more than one year after settlement or discount is invalid.",
+      "fix": "Verify dates are within one year and discount is valid."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "TBILLPRICE works identically in Google Sheets.",
+    "formula": "=TBILLPRICE(DATE(2024,1,1), DATE(2024,7,1), 0.05)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between TBILLPRICE and PRICEDISC?",
+      "answer": "TBILLPRICE is specifically for Treasury bills with a 360-day year. PRICEDISC is more general and can use different bases."
+    },
+    {
+      "question": "When is TBILLPRICE used?",
+      "answer": "It is used for pricing US Treasury bills."
+    }
+  ],
+  "relatedFunctions": [
+    "tbillyield",
+    "tbilleq",
+    "disc",
+    "pricedisc",
+    "received"
+  ]
+}

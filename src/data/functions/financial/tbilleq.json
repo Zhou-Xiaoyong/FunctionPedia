@@ -1,0 +1,100 @@
+{
+  "name": "TBILLEQ",
+  "slug": "tbilleq",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "TBILLEQ returns the bond-equivalent yield for a Treasury bill, allowing comparison with bond yields.",
+  "tldr": "Calculates the bond-equivalent yield for a Treasury bill.",
+  "syntax": "(settlement, maturity, discount)",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "discount",
+      "description": "Discount rate of the T-bill.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Bond-equivalent yield for a T-bill",
+    "formula": "=TBILLEQ(DATE(2024,1,1), DATE(2024,7,1), 0.05)",
+    "result": "5.18%",
+    "explanation": "Converts a 5% T-bill discount rate to a bond-equivalent yield of about 5.18%."
+  },
+  "advancedExamples": [
+    {
+      "title": "Short-term T-bill",
+      "scenario": "Money market analysis",
+      "description": "Bond-equivalent yield for a 3-month T-bill",
+      "formula": "=TBILLEQ(DATE(2024,1,1), DATE(2024,4,1), 0.05)",
+      "result": "Bond-equivalent yield",
+      "explanation": "For short-term T-bills, the conversion can be significant."
+    }
+  ],
+  "howItWorks": "TBILLEQ converts the T-bill discount rate to a bond-equivalent yield using the formula (365 * discount) / (360 - discount * days to maturity). This allows comparison with coupon-bearing bonds.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter discount",
+      "text": "Type the discount"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Maturity must be within one year of settlement.",
+    "Discount is entered as a decimal.",
+    "Uses actual/365 day count for the conversion."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Maturity is more than one year after settlement or discount is invalid.",
+      "fix": "Verify dates are within one year and discount is a valid decimal."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "TBILLEQ works identically in Google Sheets.",
+    "formula": "=TBILLEQ(DATE(2024,1,1), DATE(2024,7,1), 0.05)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the bond-equivalent yield?",
+      "answer": "It is a yield measure that allows comparison of T-bills with coupon-bearing bonds."
+    },
+    {
+      "question": "What is the difference between TBILLEQ and TBILLYIELD?",
+      "answer": "TBILLEQ converts the discount rate to a bond-equivalent yield. TBILLYIELD calculates the yield based on the price."
+    }
+  ],
+  "relatedFunctions": [
+    "tbillprice",
+    "tbillyield",
+    "disc",
+    "received",
+    "intrate"
+  ]
+}

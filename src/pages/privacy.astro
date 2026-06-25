@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../utils/config';
+
+const title = `Privacy Policy | ${SITE.title}`;
+const description = 'Privacy policy for FunctionPedia — how we handle your data.';
+const canonical = `${SITE.url}/privacy`;
+---
+
+<BaseLayout title={title} description={description} canonical={canonical}>
+  <section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Privacy Policy</h1>
+    <p class="text-sm text-gray-500 mb-8">Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+
+    <div class="prose prose-gray max-w-none">
+      <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">1. Information We Collect</h2>
+      <p class="text-gray-600 mb-4">FunctionPedia is a static reference website. We do not collect personal information directly. However, third-party services we use may collect certain data:</p>
+      <ul class="list-disc pl-6 text-gray-600 space-y-2 mb-4">
+        <li><strong>Analytics:</strong> We use Google Analytics to understand how visitors use our site. This collects anonymized data such as page views, time on site, and general geographic location.</li>
+        <li><strong>Advertising:</strong> We may display ads through Google AdSense or other ad networks. These services may use cookies to serve relevant ads.</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">2. Cookies</h2>
+      <p class="text-gray-600 mb-4">Our site uses cookies for:</p>
+      <ul class="list-disc pl-6 text-gray-600 space-y-2 mb-4">
+        <li>Analytics tracking (Google Analytics cookies)</li>
+        <li>Ad personalization (Google AdSense cookies)</li>
+        <li>Site functionality (search preferences)</li>
+      </ul>
+      <p class="text-gray-600 mb-4">You can control cookie settings through your browser preferences.</p>
+
+      <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">3. Third-Party Services</h2>
+      <p class="text-gray-600 mb-4">We use the following third-party services:</p>
+      <ul class="list-disc pl-6 text-gray-600 space-y-2 mb-4">
+        <li>Google Analytics — <a href="https://policies.google.com/privacy" class="text-primary-500 hover:underline">Privacy Policy</a></li>
+        <li>Google AdSense — <a href="https://policies.google.com/technologies/ads" class="text-primary-500 hover:underline">Ad Privacy</a></li>
+        <li>Google Fonts — used for typography</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">4. Data Security</h2>
+      <p class="text-gray-600 mb-4">Since FunctionPedia is a static website hosted on Cloudflare's global CDN, no user data is stored on our servers. All content is pre-generated and served as static HTML files.</p>
+
+      <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">5. Children's Privacy</h2>
+      <p class="text-gray-600 mb-4">Our website is not directed to children under 13. We do not knowingly collect personal information from children.</p>
+
+      <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">6. Changes to This Policy</h2>
+      <p class="text-gray-600 mb-4">We may update this privacy policy from time to time. Changes will be posted on this page with an updated date.</p>
+
+      <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">7. Contact</h2>
+      <p class="text-gray-600 mb-4">If you have questions about this privacy policy, please contact us at privacy@functionpedia.com.</p>
+    </div>
+  </section>
+</BaseLayout>

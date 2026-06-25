@@ -1,0 +1,78 @@
+{
+  "name": "GOOGLEFINANCE",
+  "slug": "googlefinance",
+  "category": "google-sheets",
+  "excelVersion": "Google Sheets only",
+  "description": "GOOGLEFINANCE fetches current and historical stock market data, currency exchange rates, and mutual fund prices directly into a Google Sheet.",
+  "tldr": "GOOGLEFINANCE pulls live stock prices, currency rates, and historical market data into your spreadsheet.",
+  "syntax": "(ticker, [attribute], [start_date], [end_date|num_days], [interval])",
+  "parameters": [
+    { "name": "ticker", "description": "The ticker symbol to look up, including exchange prefix when needed, e.g. 'NASDAQ:GOOG' or 'EURUSD'. For currency pairs, use 'CURRENCY:EURUSD'.", "required": true },
+    { "name": "attribute", "description": "The data point to retrieve, e.g. 'price', 'change', 'changepct', 'high', 'low', 'volume', 'marketcap', 'eps', 'pe', 'name', 'close', 'open', 'high52', 'low52'. Default is 'price'.", "required": false },
+    { "name": "start_date", "description": "For historical data, the start date of the range. Omit for current data.", "required": false },
+    { "name": "end_date", "description": "For historical data, the end date of the range, or a number of days (e.g. 30) to retrieve from the start_date.", "required": false },
+    { "name": "interval", "description": "Frequency of historical data: 'DAILY' or 'WEEKLY'. Default is 'DAILY'.", "required": false }
+  ],
+  "basicExample": {
+    "description": "Get the current stock price for Apple",
+    "formula": "=GOOGLEFINANCE('AAPL', 'price')",
+    "result": "Current AAPL price",
+    "explanation": "The first argument is the ticker. The second argument asks for the current price."
+  },
+  "advancedExamples": [
+    {
+      "title": "Historical closing prices for the last 30 days",
+      "scenario": "Stock analysis",
+      "description": "Pull daily closing prices for Tesla over the past 30 days",
+      "formula": "=GOOGLEFINANCE('TSLA', 'close', TODAY()-30, TODAY())",
+      "result": "Two-column table of dates and closing prices",
+      "explanation": "TODAY()-30 and TODAY() define the date range. The function returns a table with dates and 'close' values."
+    },
+    {
+      "title": "Currency exchange rate",
+      "scenario": "Forex lookup",
+      "description": "Get the current EUR to USD exchange rate",
+      "formula": "=GOOGLEFINANCE('CURRENCY:EURUSD')",
+      "result": "Current EUR/USD rate",
+      "explanation": "The CURRENCY: prefix tells Google Finance to return the exchange rate for the pair."
+    },
+    {
+      "title": "Company fundamentals",
+      "scenario": "Fundamental analysis",
+      "description": "Retrieve the P/E ratio and market cap for Microsoft",
+      "formula": "=GOOGLEFINANCE('MSFT', 'pe')",
+      "result": "Microsoft P/E ratio",
+      "explanation": "Attributes like 'pe', 'eps', 'marketcap', and 'high52' return company fundamentals."
+    }
+  ],
+  "howItWorks": "GOOGLEFINANCE connects to Google Finance and returns live or historical market data. The ticker argument identifies the security or currency pair. Attributes specify which metric to retrieve. For historical data, dates and interval control the returned table.",
+  "howToSteps": [
+    { "name": "Find the ticker", "text": "Use the stock symbol or add an exchange prefix, e.g. 'NASDAQ:TSLA'." },
+    { "name": "Choose an attribute", "text": "Pick 'price' for current price, 'close' for historical, or 'pe', 'eps', etc. for fundamentals." },
+    { "name": "Add dates for history", "text": "For historical data, include start_date and end_date or a number of days." },
+    { "name": "Set the interval", "text": "Use 'DAILY' or 'WEEKLY' for historical data. Default is daily." }
+  ],
+  "limitations": [
+    "GOOGLEFINANCE is Google Sheets only and does not work in Excel.",
+    "Data may be delayed (typically 15-20 minutes) and is not suitable for real-time trading.",
+    "Some attributes are not available for all tickers or exchanges.",
+    "Google may limit the number of GOOGLEFINANCE calls in a spreadsheet."
+  ],
+  "commonErrors": [
+    { "error": "#N/A error", "cause": "Ticker is unrecognized or the attribute is not supported for that ticker.", "fix": "Try a different exchange prefix (e.g. 'NYSE:T' instead of 'T') or verify the attribute name." },
+    { "error": "Blank result", "cause": "The market is closed or the ticker has no data.", "fix": "Check the ticker and try again during market hours." },
+    { "error": "Wrong currency rate", "cause": "Currency pair syntax is incorrect.", "fix": "Use 'CURRENCY:EURUSD' for EUR to USD, not 'EURUSD' alone." }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "GOOGLEFINANCE is exclusive to Google Sheets. Excel users typically use STOCKHISTORY or external data connectors.",
+    "formula": "=GOOGLEFINANCE('AAPL', 'price')",
+    "notes": "Excel 365 offers STOCKHISTORY for historical data, but it does not cover all GOOGLEFINANCE attributes."
+  },
+  "faq": [
+    { "question": "Is GOOGLEFINANCE data real-time?", "answer": "No, it is delayed by about 15-20 minutes for most exchanges." },
+    { "question": "Can I get options or futures data?", "answer": "GOOGLEFINANCE does not support options or futures directly. It covers stocks, ETFs, mutual funds, and currency pairs." },
+    { "question": "How do I get historical dividends?", "answer": "Use the attribute 'dividend' or 'yield' for current yield; full historical dividend series is not available through GOOGLEFINANCE." },
+    { "question": "Can I use GOOGLEFINANCE with Excel?", "answer": "No, it is a Google Sheets function. In Excel, use STOCKHISTORY or Power Query with a financial data source." }
+  ],
+  "relatedFunctions": ["query", "importrange", "sparkline", "image"]
+}

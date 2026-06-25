@@ -1,0 +1,67 @@
+{
+  "name": "SPARKLINE",
+  "slug": "sparkline",
+  "category": "google-sheets",
+  "excelVersion": "Google Sheets only",
+  "description": "SPARKLINE creates a miniature chart inside a single cell, perfect for visualizing trends in a row or column of data without taking up much space.",
+  "tldr": "SPARKLINE draws a tiny chart in a cell from a range of numbers, with options for line, bar, column, and win/loss charts.",
+  "syntax": "(data, [options])",
+  "parameters": [
+    { "name": "data", "description": "The range or array of numeric values to chart. Must be one-dimensional (a single row or column).", "required": true },
+    { "name": "options", "description": "An optional string or array of options to customize the chart, such as charttype, color, linewidth, max, min, etc.", "required": false }
+  ],
+  "basicExample": {
+    "description": "Create a simple line sparkline for monthly sales",
+    "formula": "=SPARKLINE(A2:A13)",
+    "result": "Mini line chart in cell",
+    "explanation": "A2:A13 contains monthly sales numbers. SPARKLINE draws a small line chart in the cell."
+  },
+  "advancedExamples": [
+    {
+      "title": "Column sparkline with color",
+      "scenario": "Daily performance",
+      "description": "Show daily values as colored columns",
+      "formula": "=SPARKLINE(B2:B31, {'charttype', 'column'; 'color', 'blue'})",
+      "result": "Mini column chart in blue",
+      "explanation": "The options specify a column chart with blue bars. Options are passed as an array of key-value pairs."
+    },
+    {
+      "title": "Win/loss sparkline",
+      "scenario": "Profit/loss tracking",
+      "description": "Show positive values as blue wins and negative values as red losses",
+      "formula": "=SPARKLINE(C2:C20, {'charttype', 'winloss'; 'negcolor', 'red'; 'poscolor', 'green'})",
+      "result": "Win/loss chart in cell",
+      "explanation": "Win/loss charts show only whether each value is positive or negative, not the magnitude."
+    }
+  ],
+  "howItWorks": "SPARKLINE takes a one-dimensional range of numbers and renders a small chart in the cell. The chart type and appearance are controlled by an options array. Supported types include line, bar, column, and win/loss. The chart resizes automatically with the cell.",
+  "howToSteps": [
+    { "name": "Select the data range", "text": "Choose a single row or column of numbers." },
+    { "name": "Choose a chart type", "text": "Default is line. Use 'column', 'bar', or 'winloss' for other styles." },
+    { "name": "Add options", "text": "Pass options as {'option', value; ...} to customize color, min, max, etc." },
+    { "name": "Enter the formula", "text": "Type =SPARKLINE(data, options)." }
+  ],
+  "limitations": [
+    "SPARKLINE is Google Sheets only. Excel has its own Sparkline feature via Insert > Sparkline, but not as a worksheet function.",
+    "Only one-dimensional data works; a 2D range will cause an error.",
+    "Advanced chart customization is limited compared to full charts.",
+    "Text and empty cells in the data range may cause errors or gaps."
+  ],
+  "commonErrors": [
+    { "error": "#VALUE! error", "cause": "The data range is two-dimensional or contains non-numeric values.", "fix": "Use a single row or column and ensure all values are numbers." },
+    { "error": "Chart not appearing", "cause": "The cell is too small or the formula returned an error.", "fix": "Widen the cell and check the formula for errors." },
+    { "error": "Options not applied", "cause": "Options syntax is incorrect.", "fix": "Use the array syntax {'key', value; 'key2', value2} with semicolons separating rows." }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "SPARKLINE is native to Google Sheets. Excel offers Sparkline charts via the Insert menu, not as a function.",
+    "formula": "=SPARKLINE(A2:A13, {'charttype', 'line'; 'color', 'green'})",
+    "notes": "Excel's Sparkline feature is a chart object, while Google Sheets uses a formula-based approach."
+  },
+  "faq": [
+    { "question": "Can SPARKLINE show multiple series?", "answer": "No, it only supports one-dimensional data. For multiple series, use a full chart." },
+    { "question": "Can I use SPARKLINE in Excel?", "answer": "Excel has Sparkline charts via Insert > Sparkline, but not a SPARKLINE worksheet function." },
+    { "question": "How do I change the line color?", "answer": "Use the color option: =SPARKLINE(A2:A13, {'color', 'red'})." },
+    { "question": "Can I highlight the maximum value?", "answer": "Yes, use the highcolor option or combine with max in a custom formula for conditional coloring." }
+  ],
+  "relatedFunctions": ["image", "googlefinance", "query", "arrayformula"]
+}

@@ -1,0 +1,76 @@
+{
+  "name": "IRR",
+  "slug": "irr",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "IRR (Internal Rate of Return) calculates the annualized percentage return of an investment based on a series of regular cash flows. It's the rate at which the net present value of all cash flows equals zero.",
+  "tldr": "IRR tells you the annual return rate of an investment given its cash flows (initial cost + periodic returns). If IRR exceeds your required return, the investment is worthwhile.",
+  "syntax": "(values, [guess])",
+  "parameters": [
+    { "name": "values", "description": "An array or range of cash flows. Must include at least one negative value (investment/cost) and one positive value (return/income).", "required": true },
+    { "name": "guess", "description": "An estimated starting value for the iterative calculation. Default is 0.1 (10%). Usually unnecessary.", "required": false }
+  ],
+  "basicExample": {
+    "description": "Calculate the annual return rate of a $100,000 investment that returns $25,000 each year for 5 years",
+    "formula": "=IRR({-100000, 25000, 25000, 25000, 25000, 25000})",
+    "result": "7.94%",
+    "explanation": "The initial investment of -$100,000 (negative = cost) and 5 years of $25,000 returns (positive = income) yield an IRR of ~7.94%."
+  },
+  "advancedExamples": [
+    {
+      "title": "Real estate investment IRR",
+      "scenario": "Property investment",
+      "description": "Evaluate a property purchase with varying annual rental income and a final sale",
+      "formula": "=IRR(B2:B8)",
+      "result": "12.3%",
+      "explanation": "B2:B8 contains: -$500K (purchase), $30K, $32K, $35K, $38K, $40K (rental income), $650K (sale price + final rent). IRR is 12.3%."
+    },
+    {
+      "title": "IRR with irregular cash flows",
+      "scenario": "Venture capital",
+      "description": "Calculate return for an investment with highly variable yearly returns",
+      "formula": "=IRR({-200000, 0, 50000, 80000, 150000, 300000})",
+      "result": "15.6%",
+      "explanation": "Year 1 has no return, years 2-5 have increasing returns. IRR still computes the annualized rate that makes NPV=0."
+    },
+    {
+      "title": "Compare IRR vs required return",
+      "scenario": "Investment decision",
+      "description": "Use IF to compare IRR against a hurdle rate for investment decisions",
+      "formula": "=IF(IRR(B2:B7)>C1, \"Invest\", \"Reject\")",
+      "result": "Invest (if IRR > hurdle rate)",
+      "explanation": "C1 contains the required minimum return (hurdle rate). If IRR exceeds it, the investment meets the threshold."
+    }
+  ],
+  "howItWorks": "IRR uses an iterative algorithm to find the discount rate that makes the Net Present Value (NPV) of all cash flows exactly zero. Think of it this way: if you discount every future cash flow back to today at the IRR rate, the total exactly equals your initial investment. The calculation starts with the guess value (default 10%) and iteratively adjusts until NPV ≈ 0. Cash flows must be equally spaced in time (annual, monthly, etc.) and include at least one negative (cost) and one positive (return) value.",
+  "howToSteps": [
+    { "name": "List all cash flows", "text": "Arrange cash flows in chronological order: initial investment (negative), then each period's return (positive or negative)." },
+    { "name": "Enter values in cells", "text": "Put the cash flows in a column: B1 = initial cost (-$100K), B2-B6 = yearly returns ($25K each)." },
+    { "name": "Calculate IRR", "text": "Type =IRR(B1:B6) to get the annualized return rate." },
+    { "name": "Compare to hurdle rate", "text": "If IRR > your required return, the investment is worth making." }
+  ],
+  "limitations": [
+    "IRR assumes equally-spaced time periods. For irregular timing, use XIRR instead.",
+    "IRR can produce multiple valid rates if cash flows change sign more than once (non-conventional cash flows).",
+    "IRR doesn't account for the scale of the investment — a 50% IRR on $1K is different from 50% on $1M.",
+    "The iterative calculation may fail to converge if the guess is far from the actual rate."
+  ],
+  "commonErrors": [
+    { "error": "#NUM!", "cause": "IRR cannot find a solution after 20 iterations, or values contain no negative/positive numbers", "fix": "Provide a guess closer to the expected rate, or ensure values include at least one negative and one positive value." },
+    { "error": "Multiple IRRs", "cause": "Cash flows change sign more than once (e.g., cost, profit, then cost again)", "fix": "For non-conventional cash flows, use MIRR (Modified IRR) which gives a single, meaningful rate." },
+    { "error": "Misleading IRR", "cause": "IRR ignores investment scale and reinvestment rate assumptions", "fix": "Use NPV alongside IRR for better decision-making. NPV accounts for scale and is more reliable." }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "IRR works identically in Google Sheets with the same syntax and behavior.",
+    "formula": "=IRR({-100000, 25000, 25000, 25000, 25000, 25000})",
+    "notes": "Google Sheets also supports XIRR for irregular-timed cash flows and MIRR for modified rate calculations."
+  },
+  "faq": [
+    { "question": "What's the difference between IRR and NPV?", "answer": "NPV tells you the dollar value of an investment at a given discount rate. IRR tells you the discount rate that makes NPV=0. Use both: IRR for rate comparison, NPV for absolute value." },
+    { "question": "When should I use XIRR instead of IRR?", "answer": "Use XIRR when cash flows happen at irregular dates (not evenly spaced). XIRR takes specific dates for each cash flow, while IRR assumes equal time periods." },
+    { "question": "What is MIRR and when should I use it?", "answer": "MIRR (Modified IRR) fixes IRR's unrealistic reinvestment assumption. It assumes reinvestment at your finance rate and return at your reinvestment rate, giving a single, more realistic result." },
+    { "question": "Why is IRR returning #NUM!?", "answer": "Most common causes: (1) no negative values in the range (no initial cost), (2) no positive values (no returns), (3) the algorithm can't converge. Try providing a guess value." },
+    { "question": "Is a higher IRR always better?", "answer": "Not necessarily. A 100% IRR on a $100 investment earns less than a 20% IRR on a $1M investment. Always compare IRR alongside NPV for informed decisions." }
+  ],
+  "relatedFunctions": ["npv", "xirr", "mirr", "pv", "rate", "pmt"]
+}

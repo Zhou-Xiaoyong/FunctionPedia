@@ -1,0 +1,130 @@
+{
+  "name": "ACCRINT",
+  "slug": "accrint",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "ACCRINT returns the accrued interest from the issue date to the settlement date for a bond or other fixed-income security.",
+  "tldr": "Calculates accrued interest for a security that pays periodic interest.",
+  "syntax": "(issue, first_interest, settlement, rate, par, frequency, [basis], [calc_method])",
+  "parameters": [
+    {
+      "name": "issue",
+      "description": "Date the security was issued.",
+      "required": true
+    },
+    {
+      "name": "first_interest",
+      "description": "Date of the first interest payment.",
+      "required": true
+    },
+    {
+      "name": "settlement",
+      "description": "Date the security is sold to the buyer.",
+      "required": true
+    },
+    {
+      "name": "rate",
+      "description": "Annual coupon rate.",
+      "required": true
+    },
+    {
+      "name": "par",
+      "description": "Par value of the security (default $1,000).",
+      "required": true
+    },
+    {
+      "name": "frequency",
+      "description": "Number of coupon payments per year (1, 2, or 4).",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    },
+    {
+      "name": "calc_method",
+      "description": "TRUE = calculated from issue date (default), FALSE = from first_interest.",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Accrued interest for a semi-annual bond",
+    "formula": "=ACCRINT(DATE(2024,1,1), DATE(2024,7,1), DATE(2024,4,1), 0.05, 1000, 2)",
+    "result": "Accrued interest amount",
+    "explanation": "Calculates accrued interest from January 1 to April 1 for a 5% semi-annual bond with $1,000 par value."
+  },
+  "advancedExamples": [
+    {
+      "title": "Accrued interest with actual/365 day count",
+      "scenario": "Bond trading",
+      "description": "Use basis 3 for actual/365",
+      "formula": "=ACCRINT(DATE(2024,1,1), DATE(2024,7,1), DATE(2024,4,1), 0.05, 1000, 2, 3)",
+      "result": "Accrued interest using actual/365",
+      "explanation": "Basis 3 counts actual days and uses a 365-day year."
+    }
+  ],
+  "howItWorks": "ACCRINT calculates the interest that has accumulated since the last coupon payment. The result is based on the coupon rate, par value, and the number of days between the issue date and settlement date.",
+  "howToSteps": [
+    {
+      "name": "Enter issue",
+      "text": "Type the issue"
+    },
+    {
+      "name": "Enter first_interest",
+      "text": "Type the first_interest"
+    },
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter rate",
+      "text": "Type the rate"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Dates must be entered as valid Excel dates or with the DATE function.",
+    "Frequency must be 1 (annual), 2 (semi-annual), or 4 (quarterly).",
+    "Different basis values produce different day-count results."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates, frequency, or basis.",
+      "fix": "Verify dates are valid and frequency/basis are correct."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized as dates.",
+      "fix": "Use DATE(year, month, day) or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "ACCRINT works identically in Google Sheets.",
+    "formula": "=ACCRINT(DATE(2024,1,1), DATE(2024,7,1), DATE(2024,4,1), 0.05, 1000, 2)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is accrued interest?",
+      "answer": "Accrued interest is the interest earned but not yet paid since the last coupon date."
+    },
+    {
+      "question": "What is the default par value in ACCRINT?",
+      "answer": "The default par value is $1,000 if omitted in some implementations, but Excel requires it."
+    }
+  ],
+  "relatedFunctions": [
+    "accrintm",
+    "coupdaybs",
+    "coupdays",
+    "coupdaysnc",
+    "price",
+    "yield"
+  ]
+}

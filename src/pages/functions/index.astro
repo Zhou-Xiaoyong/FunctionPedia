@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE, CATEGORIES } from '../../utils/config';
+
+// Collect all function data
+const functions = [];
+const categories = {};
+
+// Dynamically import all JSON data files
+const dataModules = import.meta.glob('../../data/functions/**/*.json', { eager: true });
+
+for (const path in dataModules) {
+  const fn = dataModules[path];
+  if (fn && fn.name) {
+    functions.push(fn);
+    const cat = fn.category || 'other';
+    if (!categories[cat]) categories[cat] = [];
+    categories[cat].push(fn);
+  }
+}
+
+// Sort functions alphabetically
+functions.sort((a, b) => a.name.localeCompare(b.name));
+
+// Handle search query
+const query = Astro.url.searchParams.get('q') || '';
+const filtered = query
+  ? functions.filter((fn) =>
+      fn.name.toLowerCase().includes(query.toLowerCase()) ||
+      (fn.description || '').toLowerCase().includes(query.toLowerCase()) ||
+      (fn.category || '').toLowerCase().includes(query.toLowerCase())
+    )
+  : functions;
+
+const title = query ? `Search: "${query}" | ${SITE.title}` : `All Functions | ${SITE.title}`;
+const description = 'Browse all Excel and Google Sheets functions by name or category.';
+const canonical = `${SITE.url}/functions`;
+---
+
+<BaseLayout title={title} description={description} canonical={canonical}>
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">All Functions</h1>
+      <p class="mt-2 text-gray-600">Complete reference for {functions.length} Excel & Google Sheets functions</p>
+    </div>
+
+    <!-- Search -->
+    <form action="/functions" method="get" class="mb-8">
+      <div class="relative max-w-md">
+        <input
+          type="search"
+          name="q"
+          value={query}
+          placeholder="Filter functions..."
+          class="w-full h-12 pl-10 pr-4 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+        />
+        <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+    </form>
+
+    {query && (
+      <div class="mb-6 text-sm text-gray-600">
+        Found {filtered.length} functions matching "<span class="font-medium text-primary-500">{query}</span>"
+        <a href="/functions" class="ml-2 text-gray-400 hover:text-gray-600 underline">Clear search</a>
+      </div>
+    )}
+
+    <!-- Category sections -->
+    {!query && CATEGORIES.map((cat) => {
+      const catFunctions = categories[cat.slug] || [];
+      if (catFunctions.length === 0) return null;
+      return (
+        <div class="mb-10">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="text-xl">{cat.icon}</span>
+            <h2 class="text-xl font-semibold text-gray-900">{cat.name}</h2>
+            <span class="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded-full">{catFunctions.length}</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {catFunctions.map((fn) => (
+              <a
+                href={`/functions/${fn.slug}`}
+                class="group block p-4 rounded-lg bg-white border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all"
+              >
+                <div class="flex items-center justify-between">
+                  <h3 class="text-base font-semibold text-gray-900 group-hover:text-primary-500 transition-colors font-mono">{fn.name.toUpperCase()}</h3>
+                  <svg class="w-4 h-4 text-gray-300 group-hover:text-primary-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+                <p class="mt-1 text-sm text-gray-500 line-clamp-2">{fn.tldr || fn.description}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      );
+    })}
+
+    <!-- Search results (flat list) -->
+    {query && (
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {filtered.map((fn) => (
+          <a
+            href={`/functions/${fn.slug}`}
+            class="group block p-4 rounded-lg bg-white border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all"
+          >
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-semibold text-gray-900 group-hover:text-primary-500 transition-colors font-mono">{fn.name.toUpperCase()}</h3>
+              <span class="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded-full">{fn.category}</span>
+            </div>
+            <p class="mt-1 text-sm text-gray-500 line-clamp-2">{fn.tldr || fn.description}</p>
+          </a>
+        ))}
+      </div>
+    )}
+
+    {!query && Object.keys(categories).length === 0 && (
+      <div class="text-center py-16">
+        <p class="text-gray-500">No functions yet. Content is being added!</p>
+      </div>
+    )}
+  </section>
+</BaseLayout>

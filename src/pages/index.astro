@@ -1,0 +1,140 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE, CATEGORIES, POPULAR_FUNCTIONS } from '../utils/config';
+
+const title = SITE.title;
+const description = SITE.description;
+const canonical = SITE.url;
+---
+
+<BaseLayout title={title} description={description} canonical={canonical}>
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-accent-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+      <div class="text-center">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight">
+          Every Excel & Google Sheets Function,
+          <span class="text-primary-500 block mt-1">Explained with Real Examples</span>
+        </h1>
+        <p class="mt-6 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+          The complete reference for 500+ spreadsheet functions — with syntax, step-by-step examples, common errors, and Google Sheets equivalents.
+        </p>
+
+        <!-- Search Bar (Hero) -->
+        <form action="/functions" method="get" class="mt-8 max-w-lg mx-auto">
+          <div class="relative">
+            <input
+              type="search"
+              name="q"
+              placeholder="Search functions — e.g. VLOOKUP, IF, PMT..."
+              class="w-full h-14 pl-12 pr-4 rounded-2xl bg-white border-2 border-gray-200 text-base shadow-lg focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all"
+              autofocus
+            />
+            <svg class="absolute left-4 top-4 w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+        </form>
+
+        <!-- Popular Function Tags -->
+        <div class="mt-8 flex flex-wrap justify-center gap-2">
+          {POPULAR_FUNCTIONS.map((fn) => (
+            <a
+              href={`/functions/${fn}`}
+              class="inline-flex items-center px-4 py-2 rounded-full bg-white border border-gray-200 text-sm font-medium text-gray-700 hover:border-primary-500 hover:text-primary-500 hover:bg-primary-50 transition-all shadow-sm"
+            >
+              {fn.toUpperCase()}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Category Cards -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-2">Browse by Category</h2>
+    <p class="text-gray-600 text-center mb-10">From financial calculations to dynamic arrays — find the function you need</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      {CATEGORIES.map((cat) => (
+        <a
+          href={`/category/${cat.slug}`}
+          class="group block p-6 rounded-xl bg-white border border-gray-200 hover:border-primary-500 hover:shadow-lg transition-all"
+        >
+          <div class="flex items-start justify-between">
+            <span class="text-2xl">{cat.icon}</span>
+            <span class="text-xs font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded-full">{cat.count} fn</span>
+          </div>
+          <h3 class="mt-3 text-base font-semibold text-gray-900 group-hover:text-primary-500 transition-colors">{cat.name}</h3>
+          <p class="mt-1 text-sm text-gray-500 line-clamp-2">{cat.description}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Feature Highlights -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Google Sheets -->
+      <div class="p-6 rounded-xl bg-accent-50 border border-accent-200">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-lg bg-accent-500 flex items-center justify-center text-white text-xl">🟢</div>
+          <h3 class="text-lg font-semibold text-gray-900">Google Sheets Functions</h3>
+        </div>
+        <p class="text-sm text-gray-600">Exclusive Google Sheets functions like QUERY, IMPORTRANGE, and ARRAYFORMULA — with examples that work in both platforms.</p>
+        <a href="/category/google-sheets" class="mt-4 inline-flex items-center text-sm font-medium text-accent-600 hover:text-accent-700">
+          Browse Google Sheets →
+        </a>
+      </div>
+
+      <!-- Function Comparisons -->
+      <div class="p-6 rounded-xl bg-primary-50 border border-primary-200">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-lg bg-primary-500 flex items-center justify-center text-white text-xl">🆚</div>
+          <h3 class="text-lg font-semibold text-gray-900">Function Comparisons</h3>
+        </div>
+        <p class="text-sm text-gray-600">VLOOKUP vs XLOOKUP, SUMIF vs SUMIFS, IF vs IFS — clear side-by-side comparisons so you pick the right function.</p>
+        <a href="/compare" class="mt-4 inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-700">
+          View comparisons →
+        </a>
+      </div>
+
+      <!-- Common Errors -->
+      <div class="p-6 rounded-xl bg-surface-50 border border-surface-300">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-lg bg-surface-500 flex items-center justify-center text-white text-xl">🔧</div>
+          <h3 class="text-lg font-semibold text-gray-900">Fix Common Errors</h3>
+        </div>
+        <p class="text-sm text-gray-600">#N/A, #VALUE!, circular references — every function page includes a troubleshooting section with real fixes.</p>
+        <a href="/functions/vlookup#common-errors" class="mt-4 inline-flex items-center text-sm font-medium text-gray-600 hover:text-gray-700">
+          See error fixes →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Bar -->
+  <section class="bg-gray-900 text-white py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div>
+          <div class="text-3xl font-bold">500+</div>
+          <div class="text-sm text-gray-400 mt-1">Functions Covered</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold">12</div>
+          <div class="text-sm text-gray-400 mt-1">Categories</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold">2</div>
+          <div class="text-sm text-gray-400 mt-1">Platforms (Excel + Sheets)</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold">900+</div>
+          <div class="text-sm text-gray-400 mt-1">Words per Guide</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

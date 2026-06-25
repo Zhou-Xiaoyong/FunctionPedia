@@ -1,0 +1,43 @@
+{
+  "title": "SUMIF vs SUMIFS",
+  "slug": "sumif-vs-sumifs",
+  "functionA": "sumif",
+  "functionB": "sumifs",
+  "description": "Choose between SUMIF for one condition and SUMIFS for multiple conditions.",
+  "intro": "SUMIF and SUMIFS both sum values based on criteria. SUMIF handles one condition, while SUMIFS handles one or more conditions.",
+  "comparisonTable": [
+    {
+      "aspect": "Number of criteria",
+      "functionA": "One criterion",
+      "functionB": "One or more criteria"
+    },
+    {
+      "aspect": "Argument order",
+      "functionA": "SUMIF(range, criteria, [sum_range])",
+      "functionB": "SUMIFS(sum_range, criteria_range1, criteria1, ...)"
+    },
+    {
+      "aspect": "Logic",
+      "functionA": "Single condition",
+      "functionB": "All conditions must be true (AND)"
+    },
+    {
+      "aspect": "Availability",
+      "functionA": "Excel 2003+",
+      "functionB": "Excel 2007+"
+    }
+  ],
+  "whenToUseA": "Use SUMIF when you have exactly one condition and want a slightly shorter formula.",
+  "whenToUseB": "Use SUMIFS for any scenario with multiple conditions, or even a single condition if you want consistency with multi-criteria formulas.",
+  "verdict": "SUMIFS is more flexible and future-proof. Use SUMIFS for any condition-based summing unless you specifically need Excel 2003 compatibility.",
+  "faq": [
+    {
+      "question": "Can SUMIFS do OR logic?",
+      "answer": "No, it uses AND logic. Add multiple SUMIFS results for OR logic."
+    },
+    {
+      "question": "Is SUMIF deprecated?",
+      "answer": "No, but SUMIFS can replace it in most cases."
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "name": "YIELD",
+  "slug": "yield",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "YIELD returns the annual yield to maturity for a bond based on its price, coupon, redemption value, and payment frequency.",
+  "tldr": "Calculates the yield to maturity of a security that pays periodic interest.",
+  "syntax": "(settlement, maturity, rate, pr, redemption, frequency, [basis])",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "rate",
+      "description": "Annual coupon rate.",
+      "required": true
+    },
+    {
+      "name": "pr",
+      "description": "Price per $100 face value.",
+      "required": true
+    },
+    {
+      "name": "redemption",
+      "description": "Redemption value per $100 face value.",
+      "required": true
+    },
+    {
+      "name": "frequency",
+      "description": "Number of coupon payments per year (1, 2, or 4).",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Yield of a semi-annual bond",
+    "formula": "=YIELD(DATE(2024,4,1), DATE(2034,4,1), 0.05, 92.64, 100, 2)",
+    "result": "6.00%",
+    "explanation": "A 10-year bond with a 5% coupon, priced at $92.64, has a yield to maturity of about 6%."
+  },
+  "advancedExamples": [
+    {
+      "title": "Annual-pay bond",
+      "scenario": "European bond",
+      "description": "Yield of an annual-pay bond",
+      "formula": "=YIELD(DATE(2024,4,1), DATE(2034,4,1), 0.05, 92.64, 100, 1, 1)",
+      "result": "Yield using annual payments",
+      "explanation": "Frequency 1 means annual coupon payments."
+    }
+  ],
+  "howItWorks": "YIELD solves for the discount rate that makes the present value of all future coupon payments plus the redemption value equal to the current price.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter rate",
+      "text": "Type the rate"
+    },
+    {
+      "name": "Enter pr",
+      "text": "Type the pr"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Settlement must be before maturity.",
+    "Frequency must be 1, 2, or 4.",
+    "For bonds with irregular coupon periods, use ODDFYIELD or ODDLYIELD."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates, price, or rates.",
+      "fix": "Verify all inputs."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "YIELD works identically in Google Sheets.",
+    "formula": "=YIELD(DATE(2024,4,1), DATE(2034,4,1), 0.05, 92.64, 100, 2)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between YIELD and YIELDMAT?",
+      "answer": "YIELD is for periodic coupon bonds. YIELDMAT is for securities that pay interest at maturity."
+    },
+    {
+      "question": "What does yield to maturity measure?",
+      "answer": "It is the total annual return if the bond is held to maturity and all payments are made as scheduled."
+    }
+  ],
+  "relatedFunctions": [
+    "price",
+    "yielddisc",
+    "yieldmat",
+    "oddfyield",
+    "oddlyield",
+    "accrint"
+  ]
+}

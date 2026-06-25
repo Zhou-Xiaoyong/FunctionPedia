@@ -1,0 +1,117 @@
+{
+  "name": "COUNTIFS",
+  "slug": "countifs",
+  "category": "statistical",
+  "excelVersion": "Excel 2007+",
+  "description": "COUNTIFS counts cells that satisfy multiple criteria across one or more ranges.",
+  "tldr": "Counts cells that meet all of the specified conditions.",
+  "syntax": "(criteria_range1, criteria1, [criteria_range2, criteria2], ...)",
+  "parameters": [
+    {
+      "name": "criteria_range1",
+      "description": "The range to evaluate with the first criteria.",
+      "required": true
+    },
+    {
+      "name": "criteria1",
+      "description": "The condition that criteria_range1 must satisfy.",
+      "required": true
+    },
+    {
+      "name": "criteria_range2, criteria2",
+      "description": "Additional range/criteria pairs (optional).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Count orders from the East region",
+    "formula": "=COUNTIFS(A2:A100, \"East\")",
+    "result": "Number of East orders",
+    "explanation": "Counts how many cells in A2:A100 contain \"East\"."
+  },
+  "advancedExamples": [
+    {
+      "title": "Multiple criteria",
+      "scenario": "Orders by region and status",
+      "description": "Count orders where region is East and status is Completed",
+      "formula": "=COUNTIFS(A2:A100, \"East\", B2:B100, \"Completed\")",
+      "result": "Count of completed East orders",
+      "explanation": "Only rows matching both criteria are counted."
+    },
+    {
+      "title": "Numeric range",
+      "scenario": "Sales values",
+      "description": "Count sales between 1000 and 5000",
+      "formula": "=COUNTIFS(B2:B100, \">=1000\", B2:B100, \"<=5000\")",
+      "result": "Count of values in range",
+      "explanation": "Uses two criteria on the same numeric range."
+    }
+  ],
+  "howItWorks": "COUNTIFS iterates through each cell in the criteria ranges. It counts a row only if every criterion is satisfied. Empty cells are ignored unless the criteria explicitly matches blank.",
+  "howToSteps": [
+    {
+      "name": "Select criteria range",
+      "text": "Choose the range for the first condition."
+    },
+    {
+      "name": "Enter criteria",
+      "text": "Type the condition, e.g. \"Completed\" or \">50\"."
+    },
+    {
+      "name": "Add more pairs",
+      "text": "Include additional range/criteria pairs for more conditions."
+    }
+  ],
+  "limitations": [
+    "All criteria ranges must be the same size and shape.",
+    "Criteria are combined with AND logic.",
+    "Counts cells, not numeric values; use SUMIFS for adding values."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! error",
+      "cause": "Criteria ranges have different sizes.",
+      "fix": "Make all ranges the same dimensions."
+    },
+    {
+      "error": "Unexpected count",
+      "cause": "Criteria includes hidden spaces or wrong data type.",
+      "fix": "Use TRIM to clean text and check number formatting."
+    },
+    {
+      "error": "0 result",
+      "cause": "No cells match all criteria.",
+      "fix": "Verify criteria and values."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "COUNTIFS works identically in Google Sheets.",
+    "formula": "=COUNTIFS(A2:A100, \"East\")",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between COUNTIF and COUNTIFS?",
+      "answer": "COUNTIF handles one condition. COUNTIFS handles multiple conditions."
+    },
+    {
+      "question": "Can COUNTIFS count blank cells?",
+      "answer": "Yes, use \"\" as the criteria to count empty cells."
+    },
+    {
+      "question": "Does COUNTIFS count text or numbers?",
+      "answer": "It counts cells that match the criteria, regardless of whether they contain text or numbers."
+    },
+    {
+      "question": "Can I use cell references as criteria?",
+      "answer": "Yes, use the cell reference directly without quotes."
+    }
+  ],
+  "relatedFunctions": [
+    "countif",
+    "sumifs",
+    "averageifs",
+    "sumif",
+    "if"
+  ]
+}

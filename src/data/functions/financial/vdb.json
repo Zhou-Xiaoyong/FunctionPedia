@@ -1,0 +1,123 @@
+{
+  "name": "VDB",
+  "slug": "vdb",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "VDB returns depreciation for any interval, including partial periods, and can switch to straight-line depreciation when beneficial.",
+  "tldr": "Calculates variable declining balance depreciation for any period you specify.",
+  "syntax": "(cost, salvage, life, start_period, end_period, [factor], [no_switch])",
+  "parameters": [
+    {
+      "name": "cost",
+      "description": "Initial cost of the asset.",
+      "required": true
+    },
+    {
+      "name": "salvage",
+      "description": "Value at the end of the depreciation life.",
+      "required": true
+    },
+    {
+      "name": "life",
+      "description": "Number of periods over which the asset is depreciated.",
+      "required": true
+    },
+    {
+      "name": "start_period",
+      "description": "Starting period for which to calculate depreciation.",
+      "required": true
+    },
+    {
+      "name": "end_period",
+      "description": "Ending period for which to calculate depreciation.",
+      "required": true
+    },
+    {
+      "name": "factor",
+      "description": "Rate of decline (default 2 for double-declining).",
+      "required": false
+    },
+    {
+      "name": "no_switch",
+      "description": "If TRUE, does not switch to straight-line (default FALSE).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Depreciation for the first year using declining balance with straight-line switch",
+    "formula": "=VDB(10000, 2000, 5, 0, 1)",
+    "result": "$4,000.00",
+    "explanation": "First-year depreciation for a $10,000 asset using double-declining balance, switching to straight-line if beneficial."
+  },
+  "advancedExamples": [
+    {
+      "title": "Cumulative depreciation for years 2-4",
+      "scenario": "Tax reporting",
+      "description": "Total depreciation from the start of year 2 to the end of year 4",
+      "formula": "=VDB(10000, 2000, 5, 1, 4)",
+      "result": "Total depreciation for years 2-4",
+      "explanation": "VDB can calculate depreciation over a range of periods."
+    }
+  ],
+  "howItWorks": "VDB combines the declining balance method with an optional straight-line switch. By default, it switches to straight-line when that gives higher depreciation. This maximizes the deduction while ensuring the asset is not depreciated below salvage value.",
+  "howToSteps": [
+    {
+      "name": "Enter cost",
+      "text": "Type the cost"
+    },
+    {
+      "name": "Enter salvage",
+      "text": "Type the salvage"
+    },
+    {
+      "name": "Enter life",
+      "text": "Type the life"
+    },
+    {
+      "name": "Enter start_period",
+      "text": "Type the start_period"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Can calculate depreciation for a single period or a range of periods.",
+    "Automatically switches to straight-line unless no_switch is TRUE.",
+    "More flexible than DDB for partial periods and range calculations."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Start or end period is invalid or cost < salvage.",
+      "fix": "Check period values and ensure cost >= salvage."
+    },
+    {
+      "error": "Too much depreciation",
+      "cause": "no_switch was set to TRUE.",
+      "fix": "Use the default or FALSE for no_switch to allow straight-line switch."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "VDB works identically in Google Sheets.",
+    "formula": "=VDB(10000, 2000, 5, 0, 1)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between VDB and DDB?",
+      "answer": "VDB can switch to straight-line and can calculate depreciation over a range. DDB uses pure declining balance."
+    },
+    {
+      "question": "When should I use VDB?",
+      "answer": "Use VDB when you want the most tax-efficient depreciation method that combines declining balance and straight-line."
+    }
+  ],
+  "relatedFunctions": [
+    "ddb",
+    "db",
+    "sln",
+    "syd"
+  ]
+}

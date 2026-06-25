@@ -1,0 +1,115 @@
+{
+  "name": "DISC",
+  "slug": "disc",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "DISC returns the discount rate for a bond or Treasury bill based on its price, redemption value, and time to maturity.",
+  "tldr": "Calculates the discount rate for a security.",
+  "syntax": "(settlement, maturity, pr, redemption, [basis])",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "pr",
+      "description": "Price per $100 face value.",
+      "required": true
+    },
+    {
+      "name": "redemption",
+      "description": "Redemption value per $100 face value.",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Discount rate for a Treasury bill",
+    "formula": "=DISC(DATE(2024,1,1), DATE(2024,12,31), 95, 100)",
+    "result": "5.26%",
+    "explanation": "A T-bill priced at $95 that redeems at $100 in one year has a discount rate of about 5.26%."
+  },
+  "advancedExamples": [
+    {
+      "title": "With actual/360 basis",
+      "scenario": "Money market instrument",
+      "description": "Use basis 2 for actual/360",
+      "formula": "=DISC(DATE(2024,1,1), DATE(2024,12,31), 95, 100, 2)",
+      "result": "Discount rate using actual/360",
+      "explanation": "Basis 2 counts actual days and uses a 360-day year."
+    }
+  ],
+  "howItWorks": "DISC calculates the annual discount rate using the formula (redemption - pr) / redemption * (days per year / days to maturity). It is commonly used for short-term instruments.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter pr",
+      "text": "Type the pr"
+    },
+    {
+      "name": "Enter redemption",
+      "text": "Type the redemption"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Settlement must be before maturity.",
+    "Price and redemption are per $100 face value.",
+    "Basis affects the day count and year length."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates, price, or redemption.",
+      "fix": "Verify all inputs."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "DISC works identically in Google Sheets.",
+    "formula": "=DISC(DATE(2024,1,1), DATE(2024,12,31), 95, 100)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between DISC and YIELD?",
+      "answer": "DISC is for discount instruments. YIELD is for coupon-paying bonds."
+    },
+    {
+      "question": "When is DISC used?",
+      "answer": "It is used for Treasury bills and commercial paper that are priced at a discount."
+    }
+  ],
+  "relatedFunctions": [
+    "tbillprice",
+    "tbillyield",
+    "intrate",
+    "received",
+    "accrintm",
+    "pricemat"
+  ]
+}

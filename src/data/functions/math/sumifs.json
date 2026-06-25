@@ -1,0 +1,127 @@
+{
+  "name": "SUMIFS",
+  "slug": "sumifs",
+  "category": "math",
+  "excelVersion": "Excel 2007+",
+  "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges.",
+  "tldr": "Adds numbers that meet all of the specified conditions.",
+  "syntax": "(sum_range, criteria_range1, criteria1, [criteria_range2, criteria2], ...)",
+  "parameters": [
+    {
+      "name": "sum_range",
+      "description": "The range of cells to sum.",
+      "required": true
+    },
+    {
+      "name": "criteria_range1",
+      "description": "The range to evaluate with the first criteria.",
+      "required": true
+    },
+    {
+      "name": "criteria1",
+      "description": "The condition that criteria_range1 must satisfy.",
+      "required": true
+    },
+    {
+      "name": "criteria_range2, criteria2",
+      "description": "Additional range/criteria pairs (optional).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Sum sales in the East region",
+    "formula": "=SUMIFS(B2:B100, A2:A100, \"East\")",
+    "result": "Total East sales",
+    "explanation": "Adds values from B2:B100 only where A2:A100 equals \"East\"."
+  },
+  "advancedExamples": [
+    {
+      "title": "Multiple criteria",
+      "scenario": "Sales by region and product",
+      "description": "Sum sales where region is East and product is Widget",
+      "formula": "=SUMIFS(C2:C100, A2:A100, \"East\", B2:B100, \"Widget\")",
+      "result": "Widget sales in East",
+      "explanation": "Both conditions must be true for the row to be included."
+    },
+    {
+      "title": "Date range criteria",
+      "scenario": "Monthly totals",
+      "description": "Sum sales in January 2024",
+      "formula": "=SUMIFS(B2:B100, A2:A100, \">=2024-01-01\", A2:A100, \"<=2024-01-31\")",
+      "result": "January 2024 total sales",
+      "explanation": "Uses two date criteria on the same date column to define a range."
+    }
+  ],
+  "howItWorks": "SUMIFS iterates through each row in the criteria ranges. A row is included only if every criterion is met. Then it sums the corresponding values from sum_range.",
+  "howToSteps": [
+    {
+      "name": "Select sum range",
+      "text": "Choose the cells you want to add."
+    },
+    {
+      "name": "Add criteria range",
+      "text": "Select the range that contains the first condition."
+    },
+    {
+      "name": "Add criteria",
+      "text": "Enter the condition, e.g. \"East\" or \">1000\"."
+    },
+    {
+      "name": "Repeat for more criteria",
+      "text": "Add additional range/criteria pairs as needed."
+    }
+  ],
+  "limitations": [
+    "All criteria ranges must be the same size and shape as sum_range.",
+    "Criteria are combined with AND logic; every condition must be true.",
+    "To sum if any condition is true (OR logic), use multiple SUMIF or SUM with addition.",
+    "Criteria cannot reference a cell outside the range."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! error",
+      "cause": "Criteria ranges are not the same size as sum_range.",
+      "fix": "Ensure all ranges have the same number of rows and columns."
+    },
+    {
+      "error": "Wrong sum",
+      "cause": "Criteria string includes operators incorrectly, e.g. \">1000\" without quotes.",
+      "fix": "Use quotes for text and operators: \">1000\" or cell reference."
+    },
+    {
+      "error": "0 result",
+      "cause": "No rows match all criteria.",
+      "fix": "Check criteria spelling and data types."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "SUMIFS works identically in Google Sheets.",
+    "formula": "=SUMIFS(B2:B100, A2:A100, \"East\")",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between SUMIF and SUMIFS?",
+      "answer": "SUMIF handles one condition. SUMIFS handles one or more conditions."
+    },
+    {
+      "question": "Can SUMIFS do OR logic?",
+      "answer": "No, it uses AND logic. For OR logic, add multiple SUMIFS results together."
+    },
+    {
+      "question": "Can I use wildcards in SUMIFS?",
+      "answer": "Yes, use * for any characters and ? for a single character."
+    },
+    {
+      "question": "Can criteria be in different columns?",
+      "answer": "Yes, each condition can reference a different column as long as ranges are the same size."
+    }
+  ],
+  "relatedFunctions": [
+    "sumif",
+    "countifs",
+    "averageifs",
+    "countif",
+    "if"
+  ]
+}

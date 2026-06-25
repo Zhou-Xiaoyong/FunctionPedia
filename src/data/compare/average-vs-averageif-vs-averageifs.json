@@ -1,0 +1,49 @@
+{
+  "title": "AVERAGE vs AVERAGEIF vs AVERAGEIFS",
+  "slug": "average-vs-averageif-vs-averageifs",
+  "functionA": "average",
+  "functionB": "averageif",
+  "functionC": "averageifs",
+  "description": "Learn when to use AVERAGE, AVERAGEIF, and AVERAGEIFS for different averaging needs.",
+  "intro": "AVERAGE calculates the mean of all values. AVERAGEIF averages values that meet one condition. AVERAGEIFS averages values that meet multiple conditions.",
+  "comparisonTable": [
+    {
+      "aspect": "Conditions",
+      "functionA": "None",
+      "functionB": "One condition",
+      "functionC": "Multiple conditions"
+    },
+    {
+      "aspect": "Syntax",
+      "functionA": "AVERAGE(range)",
+      "functionB": "AVERAGEIF(range, criteria, [average_range])",
+      "functionC": "AVERAGEIFS(average_range, criteria_range1, criteria1, ...)"
+    },
+    {
+      "aspect": "Use case",
+      "functionA": "Overall mean",
+      "functionB": "Mean of one category",
+      "functionC": "Mean of filtered data"
+    },
+    {
+      "aspect": "Availability",
+      "functionA": "All versions",
+      "functionB": "Excel 2007+",
+      "functionC": "Excel 2007+"
+    }
+  ],
+  "whenToUseA": "Use AVERAGE when you want the mean of all numeric values in a range.",
+  "whenToUseB": "Use AVERAGEIF when you need to filter by one condition, such as averaging scores for a single class.",
+  "whenToUseC": "Use AVERAGEIFS when you need to filter by two or more conditions.",
+  "verdict": "Start with AVERAGE for simple means. Use AVERAGEIF or AVERAGEIFS when you need conditional averages.",
+  "faq": [
+    {
+      "question": "Does AVERAGEIF ignore blanks?",
+      "answer": "Yes, blanks in the average_range are ignored."
+    },
+    {
+      "question": "Can AVERAGEIFS use OR logic?",
+      "answer": "No, it uses AND logic. Add multiple AVERAGEIFS for OR logic."
+    }
+  ]
+}

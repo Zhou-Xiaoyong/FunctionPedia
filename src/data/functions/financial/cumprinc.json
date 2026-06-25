@@ -1,0 +1,123 @@
+{
+  "name": "CUMPRINC",
+  "slug": "cumprinc",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "CUMPRINC returns the total principal paid over a specified range of periods for a loan with constant payments and a constant interest rate.",
+  "tldr": "Calculates the cumulative principal paid on a loan between two periods.",
+  "syntax": "(rate, nper, pv, start_period, end_period, type)",
+  "parameters": [
+    {
+      "name": "rate",
+      "description": "Interest rate per period.",
+      "required": true
+    },
+    {
+      "name": "nper",
+      "description": "Total number of payment periods.",
+      "required": true
+    },
+    {
+      "name": "pv",
+      "description": "Present value or loan principal.",
+      "required": true
+    },
+    {
+      "name": "start_period",
+      "description": "First period in the range to include.",
+      "required": true
+    },
+    {
+      "name": "end_period",
+      "description": "Last period in the range to include.",
+      "required": true
+    },
+    {
+      "name": "type",
+      "description": "0 = end of period, 1 = beginning of period.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Total principal paid in the first year of a mortgage",
+    "formula": "=CUMPRINC(0.05/12, 360, 300000, 1, 12, 0)",
+    "result": "-$4,424.67",
+    "explanation": "For a $300,000 mortgage at 5% over 30 years, about $4,425 of principal is paid in the first year."
+  },
+  "advancedExamples": [
+    {
+      "title": "Principal paid in later years",
+      "scenario": "Equity tracking",
+      "description": "Principal paid in years 6-10",
+      "formula": "=CUMPRINC(0.05/12, 360, 300000, 61, 120, 0)",
+      "result": "Total principal for years 6-10",
+      "explanation": "As the loan balance decreases, more principal is paid each period."
+    }
+  ],
+  "howItWorks": "CUMPRINC sums the principal portions of all payments from start_period to end_period. It is the counterpart of CUMIPMT.",
+  "howToSteps": [
+    {
+      "name": "Enter rate",
+      "text": "Type the rate"
+    },
+    {
+      "name": "Enter nper",
+      "text": "Type the nper"
+    },
+    {
+      "name": "Enter pv",
+      "text": "Type the pv"
+    },
+    {
+      "name": "Enter start_period",
+      "text": "Type the start_period"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Requires consistent period units.",
+    "The type argument is required.",
+    "Returns a negative value because principal payments are outflows."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Period values are invalid or type is not 0 or 1.",
+      "fix": "Check that 1 <= start_period <= end_period <= nper and type is 0 or 1."
+    },
+    {
+      "error": "Annual rate not divided",
+      "cause": "Rate was not adjusted for period.",
+      "fix": "Use monthly rate for monthly periods."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "CUMPRINC works identically in Google Sheets.",
+    "formula": "=CUMPRINC(0.05/12, 360, 300000, 1, 12, 0)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between CUMPRINC and PPMT?",
+      "answer": "PPMT returns principal for one period. CUMPRINC sums principal over a range."
+    },
+    {
+      "question": "Can CUMPRINC be negative?",
+      "answer": "Yes, it returns negative because principal payments are outflows."
+    },
+    {
+      "question": "How do I track loan payoff?",
+      "answer": "Use CUMPRINC to see how much principal has been paid over time."
+    }
+  ],
+  "relatedFunctions": [
+    "ppmt",
+    "ipmt",
+    "pmt",
+    "cumipmt",
+    "rate"
+  ]
+}

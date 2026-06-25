@@ -1,0 +1,115 @@
+{
+  "name": "PRICEDISC",
+  "slug": "pricedisc",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "PRICEDISC returns the price per $100 face value of a security that is priced at a discount, such as a Treasury bill.",
+  "tldr": "Calculates the price of a discounted security.",
+  "syntax": "(settlement, maturity, discount, redemption, [basis])",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "discount",
+      "description": "Discount rate of the security.",
+      "required": true
+    },
+    {
+      "name": "redemption",
+      "description": "Redemption value per $100 face value.",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Price of a discounted Treasury bill",
+    "formula": "=PRICEDISC(DATE(2024,1,1), DATE(2024,12,31), 0.05, 100)",
+    "result": "$95.00",
+    "explanation": "A T-bill with a 5% discount rate redeeming at $100 in one year is priced at $95."
+  },
+  "advancedExamples": [
+    {
+      "title": "With actual/360 basis",
+      "scenario": "Money market",
+      "description": "Use basis 2 for actual/360",
+      "formula": "=PRICEDISC(DATE(2024,1,1), DATE(2024,12,31), 0.05, 100, 2)",
+      "result": "Price using actual/360",
+      "explanation": "Basis 2 is common for money market instruments."
+    }
+  ],
+  "howItWorks": "PRICEDISC calculates the price of a discount instrument using the formula redemption - (discount * redemption * days to maturity / days per year). It is used for zero-coupon and short-term instruments.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter discount",
+      "text": "Type the discount"
+    },
+    {
+      "name": "Enter redemption",
+      "text": "Type the redemption"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Settlement must be before maturity.",
+    "Discount rate is entered as a decimal.",
+    "Basis affects the day count and year length."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates, discount, or redemption.",
+      "fix": "Verify all inputs."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "PRICEDISC works identically in Google Sheets.",
+    "formula": "=PRICEDISC(DATE(2024,1,1), DATE(2024,12,31), 0.05, 100)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between PRICEDISC and DISC?",
+      "answer": "PRICEDISC calculates price from a discount rate. DISC calculates the discount rate from a price."
+    },
+    {
+      "question": "When is PRICEDISC used?",
+      "answer": "It is used for Treasury bills and commercial paper."
+    }
+  ],
+  "relatedFunctions": [
+    "disc",
+    "tbillprice",
+    "pricemat",
+    "price",
+    "yield",
+    "accrintm"
+  ]
+}

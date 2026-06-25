@@ -1,0 +1,101 @@
+{
+  "name": "SEARCH",
+  "slug": "search",
+  "category": "text",
+  "excelVersion": "All versions",
+  "description": "SEARCH returns the position of one text string inside another. It is case-insensitive and supports wildcards.",
+  "tldr": "Finds the position of text within another text string, case-insensitive.",
+  "syntax": "(find_text, within_text, [start_num])",
+  "parameters": [
+    {
+      "name": "find_text",
+      "description": "The text to find. Supports wildcards * and ?.",
+      "required": true
+    },
+    {
+      "name": "within_text",
+      "description": "The text to search within.",
+      "required": true
+    },
+    {
+      "name": "start_num",
+      "description": "The character position to start searching from (default 1).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Find the position of text regardless of case",
+    "formula": "=SEARCH(\"abc\", \"ABC-123\")",
+    "result": "1",
+    "explanation": "SEARCH is case-insensitive, so it finds \"abc\" at position 1."
+  },
+  "advancedExamples": [
+    {
+      "title": "Wildcard search",
+      "scenario": "Product codes",
+      "description": "Find any three-digit number in a code",
+      "formula": "=SEARCH(\"???\", \"ABC-123\")",
+      "result": "5",
+      "explanation": "The first three-character sequence appears at position 5."
+    }
+  ],
+  "howItWorks": "SEARCH scans within_text for find_text and returns the position of the first match. It is case-insensitive and allows * and ? wildcards. If not found, it returns #VALUE!.",
+  "howToSteps": [
+    {
+      "name": "Enter text to find",
+      "text": "Type the substring, optionally using wildcards."
+    },
+    {
+      "name": "Enter text to search",
+      "text": "Type the cell or string containing the text."
+    },
+    {
+      "name": "Optional start position",
+      "text": "Add a start number to skip earlier characters."
+    }
+  ],
+  "limitations": [
+    "Case-insensitive only; cannot force case-sensitive matching.",
+    "Returns #VALUE! if the text is not found.",
+    "Wildcard ? matches any single character; * matches any sequence."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! error",
+      "cause": "The text was not found.",
+      "fix": "Use IFERROR to handle missing text."
+    },
+    {
+      "error": "Wrong position",
+      "cause": "Wildcards match differently than expected.",
+      "fix": "Adjust the pattern or use FIND for literal matching."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "SEARCH works identically in Google Sheets.",
+    "formula": "=SEARCH(\"abc\", \"ABC-123\")",
+    "notes": "Same case-insensitive behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between SEARCH and FIND?",
+      "answer": "SEARCH is case-insensitive and supports wildcards. FIND is case-sensitive and does not support wildcards."
+    },
+    {
+      "question": "Can SEARCH use regular expressions?",
+      "answer": "No. In Google Sheets, use REGEXMATCH for regex search."
+    },
+    {
+      "question": "How do I search for a literal * or ??",
+      "answer": "Use a tilde (~) before the wildcard: SEARCH(\"~*\", A2)."
+    }
+  ],
+  "relatedFunctions": [
+    "find",
+    "substitute",
+    "mid",
+    "left",
+    "right",
+    "regexmatch"
+  ]
+}

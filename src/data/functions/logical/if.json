@@ -1,0 +1,76 @@
+{
+  "name": "IF",
+  "slug": "if",
+  "category": "logical",
+  "excelVersion": "All versions",
+  "description": "The IF function performs a logical test and returns one value if the condition is TRUE and another if it's FALSE. It's the foundation of conditional logic in Excel.",
+  "tldr": "IF checks a condition: if it's true, return one result; if it's false, return another. It's the 'decision maker' of Excel — every conditional formula starts with IF.",
+  "syntax": "(logical_test, value_if_true, value_if_false)",
+  "parameters": [
+    { "name": "logical_test", "description": "Any value or expression that can be evaluated as TRUE or FALSE (e.g., A1>100, B1=\"Yes\", C1<>0).", "required": true },
+    { "name": "value_if_true", "description": "The value to return when logical_test is TRUE. Can be a number, text, formula, or cell reference.", "required": true },
+    { "name": "value_if_false", "description": "The value to return when logical_test is FALSE. If omitted, FALSE is returned by default.", "required": false }
+  ],
+  "basicExample": {
+    "description": "Check if a score is passing (≥60) and return 'Pass' or 'Fail'",
+    "formula": "=IF(A1>=60, \"Pass\", \"Fail\")",
+    "result": "Pass (if A1=85)",
+    "explanation": "A1>=60 is the logical test. If the score in A1 is 60 or higher, the formula returns 'Pass'. Otherwise, it returns 'Fail'."
+  },
+  "advancedExamples": [
+    {
+      "title": "Nested IF for multiple conditions",
+      "scenario": "Grade assignment",
+      "description": "Assign letter grades based on numeric score ranges using nested IF functions",
+      "formula": "=IF(A1>=90, \"A\", IF(A1>=80, \"B\", IF(A1>=70, \"C\", IF(A1>=60, \"D\", \"F\"))))",
+      "result": "B (if A1=85)",
+      "explanation": "Each IF checks a condition. If TRUE, it returns the grade. If FALSE, it moves to the next IF. This creates a tiered grading system."
+    },
+    {
+      "title": "IF with AND for multi-condition check",
+      "scenario": "Bonus eligibility",
+      "description": "Check if an employee qualifies for a bonus (sales>$50K AND tenure>2 years)",
+      "formula": "=IF(AND(B1>50000, C1>2), \"Eligible\", \"Not eligible\")",
+      "result": "Eligible (if both conditions met)",
+      "explanation": "AND checks both conditions simultaneously. IF then returns 'Eligible' only when both are TRUE."
+    },
+    {
+      "title": "IF for blank cell check",
+      "scenario": "Data validation",
+      "description": "Return a message if a required cell is empty",
+      "formula": "=IF(ISBLANK(A1), \"Missing data\", A1*1.1)",
+      "explanation": "ISBLANK checks if A1 is empty. If so, return 'Missing data'. Otherwise, calculate A1×1.1 (a 10% increase)."
+    }
+  ],
+  "howItWorks": "The IF function evaluates a logical expression — anything that results in TRUE or FALSE. Common comparison operators include: = (equal), <> (not equal), > (greater), < (less), >= (greater or equal), <= (less or equal). When the test is TRUE, IF returns the second argument. When FALSE, it returns the third argument. IF can be nested (an IF inside another IF) for multiple conditions, but IFS (Excel 2019+) is cleaner for 3+ conditions.",
+  "howToSteps": [
+    { "name": "Define the condition", "text": "Write a logical test like A1>100, B1=\"Yes\", or C1<>0 that evaluates to TRUE or FALSE." },
+    { "name": "Set the TRUE result", "text": "Specify what happens when the condition is met — a number, text string, or another formula." },
+    { "name": "Set the FALSE result", "text": "Specify the fallback value when the condition is not met." },
+    { "name": "Enter the formula", "text": "Type =IF(condition, true_value, false_value) in the cell." }
+  ],
+  "limitations": [
+    "Nested IFs become hard to read beyond 3-4 levels. Use IFS or SWITCH for cleaner multi-condition logic.",
+    "IF can only test one condition at a time (unless combined with AND/OR).",
+    "The logical test must evaluate to TRUE or FALSE — it cannot return ambiguous results.",
+    "Excel has a maximum nesting depth of 64 IF levels, but practical readability limits are much lower."
+  ],
+  "commonErrors": [
+    { "error": "#VALUE!", "cause": "The logical_test doesn't evaluate to TRUE or FALSE (e.g., passing a text string instead of a condition)", "fix": "Ensure the first argument is a proper comparison like A1>10, not just a value like \"Hello\"." },
+    { "error": "Wrong result (text vs number mismatch)", "cause": "Comparing numbers stored as text to actual numbers", "fix": "Ensure both sides of the comparison are the same data type. Use VALUE() or TEXT() to convert." },
+    { "error": "Unexpected FALSE result", "cause": "Missing or incorrect value_if_false argument", "fix": "Always specify both value_if_true and value_if_false explicitly to avoid unexpected FALSE returns." }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "IF works identically in Google Sheets with the same syntax.",
+    "formula": "=IF(A1>=60, \"Pass\", \"Fail\")",
+    "notes": "Google Sheets also supports IFS for multiple conditions. Google Sheets IF has no practical nesting limit."
+  },
+  "faq": [
+    { "question": "Can I use multiple conditions in one IF?", "answer": "Yes. Combine conditions with AND (all must be true) or OR (at least one must be true): =IF(AND(A1>50, B1>20), \"Both met\", \"Not met\")." },
+    { "question": "What's the difference between IF and IFS?", "answer": "IF handles one condition per function. IFS (Excel 2019+/365) handles multiple conditions in a single function: =IFS(A1>=90,\"A\", A1>=80,\"B\", A1>=70,\"C\") — no nesting needed." },
+    { "question": "Can IF return a formula, not just a value?", "answer": "Yes. Both value_if_true and value_if_false can be formulas: =IF(A1>0, A1*B1, 0) calculates A1×B1 when A1 is positive, otherwise returns 0." },
+    { "question": "How many IFs can I nest?", "answer": "Excel allows up to 64 nested IF levels, but beyond 3-4 it becomes very hard to read. Use IFS or SWITCH instead." },
+    { "question": "What happens if I omit value_if_false?", "answer": "If the condition is FALSE and you didn't specify a value, Excel returns the logical value FALSE (displayed as 'FALSE' in the cell)." }
+  ],
+  "relatedFunctions": ["ifs", "and", "or", "switch", "iferror"]
+}

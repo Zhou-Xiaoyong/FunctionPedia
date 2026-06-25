@@ -1,0 +1,118 @@
+{
+  "name": "PV",
+  "slug": "pv",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "PV returns the current value of a future stream of cash flows discounted at a constant rate.",
+  "tldr": "Calculates the present value of a series of future payments or a future lump sum.",
+  "syntax": "(rate, nper, pmt, [fv], [type])",
+  "parameters": [
+    {
+      "name": "rate",
+      "description": "Interest rate per period.",
+      "required": true
+    },
+    {
+      "name": "nper",
+      "description": "Total number of payment periods.",
+      "required": true
+    },
+    {
+      "name": "pmt",
+      "description": "Payment made each period (default 0).",
+      "required": true
+    },
+    {
+      "name": "fv",
+      "description": "Future value or cash balance after the last payment (default 0).",
+      "required": false
+    },
+    {
+      "name": "type",
+      "description": "0 = end of period (default), 1 = beginning of period.",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Present value of monthly payments",
+    "formula": "=PV(0.05/12, 360, -1000)",
+    "result": "$186,281.62",
+    "explanation": "The value today of receiving $1,000 per month for 30 years at 5% annual interest."
+  },
+  "advancedExamples": [
+    {
+      "title": "Present value of a future goal",
+      "scenario": "Savings target",
+      "description": "How much do I need today to have $50,000 in 10 years at 7%?",
+      "formula": "=PV(0.07, 10, 0, -50000)",
+      "result": "$25,417.35",
+      "explanation": "You need $25,417 today to grow to $50,000 in 10 years at 7% interest."
+    }
+  ],
+  "howItWorks": "PV discounts each future cash flow back to today using the discount rate. The result is positive when future payments are entered as negative outflows.",
+  "howToSteps": [
+    {
+      "name": "Enter rate",
+      "text": "Type the rate"
+    },
+    {
+      "name": "Enter nper",
+      "text": "Type the nper"
+    },
+    {
+      "name": "Enter pmt",
+      "text": "Type the pmt"
+    },
+    {
+      "name": "Enter fv",
+      "text": "Type the fv"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "All inputs must use the same period unit.",
+    "Assumes constant payments and a constant discount rate.",
+    "Does not account for inflation, taxes, or fees."
+  ],
+  "commonErrors": [
+    {
+      "error": "Wrong present value",
+      "cause": "The rate was not adjusted for the period.",
+      "fix": "Divide annual rate by the number of periods per year."
+    },
+    {
+      "error": "Sign confusion",
+      "cause": "Future value or payments have the wrong sign.",
+      "fix": "Use negative for outflows and positive for inflows."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "PV works identically in Google Sheets.",
+    "formula": "=PV(0.05/12, 360, -1000)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the present value formula?",
+      "answer": "PV = FV / (1 + r)^n, where r is the rate and n is the number of periods."
+    },
+    {
+      "question": "Can PV calculate a perpetuity?",
+      "answer": "Excel PV does not directly support infinite cash flows, but a perpetuity equals payment divided by rate."
+    },
+    {
+      "question": "Why is PV negative?",
+      "answer": "PV is positive when future payments are negative. The sign follows cash-flow convention."
+    }
+  ],
+  "relatedFunctions": [
+    "fv",
+    "pmt",
+    "nper",
+    "rate",
+    "npv"
+  ]
+}

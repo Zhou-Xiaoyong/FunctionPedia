@@ -1,0 +1,100 @@
+{
+  "name": "NPV",
+  "slug": "npv",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "NPV calculates the net present value of an investment based on a discount rate and a series of future cash flows.",
+  "tldr": "Finds the present value of future cash flows minus the initial investment.",
+  "syntax": "(rate, value1, [value2], ...)",
+  "parameters": [
+    {
+      "name": "rate",
+      "description": "The discount rate per period.",
+      "required": true
+    },
+    {
+      "name": "value1",
+      "description": "The first future cash flow (must occur at the end of the first period).",
+      "required": true
+    },
+    {
+      "name": "value2",
+      "description": "Additional future cash flows (optional).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "NPV of an investment with initial outlay and future returns",
+    "formula": "=NPV(0.1, 10000, 12000, 15000) + (-20000)",
+    "result": "Net present value",
+    "explanation": "Discounts the future cash flows at 10% and then subtracts the initial $20,000 investment."
+  },
+  "advancedExamples": [
+    {
+      "title": "NPV with a range",
+      "scenario": "Project evaluation",
+      "description": "Calculate NPV using a range of cash flows",
+      "formula": "=NPV(0.08, B2:B5) + B1",
+      "result": "Project NPV",
+      "explanation": "B1 contains the initial investment (negative) and B2:B5 contain future cash flows."
+    }
+  ],
+  "howItWorks": "NPV discounts each future cash flow back to its present value using the discount rate, then sums them. The initial investment is not included in the NPV argument list and must be added separately, typically as a negative value.",
+  "howToSteps": [
+    {
+      "name": "Enter discount rate",
+      "text": "Type the rate per period, e.g. 0.1 for 10%."
+    },
+    {
+      "name": "List future cash flows",
+      "text": "Enter the cash flows that occur at the end of each period."
+    },
+    {
+      "name": "Add initial investment",
+      "text": "Add the initial outlay as a negative number outside the NPV function."
+    }
+  ],
+  "limitations": [
+    "Assumes cash flows occur at the end of each period and are equally spaced.",
+    "Does not include the initial investment in the cash-flow list.",
+    "For irregular cash-flow intervals, use XNPV."
+  ],
+  "commonErrors": [
+    {
+      "error": "Wrong NPV",
+      "cause": "Initial investment was included inside NPV instead of added outside.",
+      "fix": "Add the initial investment separately: =NPV(rate, cashflows) + initial_investment."
+    },
+    {
+      "error": "Negative NPV confusion",
+      "cause": "Cash flow signs are incorrect.",
+      "fix": "Use positive for inflows and negative for outflows."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "NPV works identically in Google Sheets.",
+    "formula": "=NPV(0.1, 10000, 12000, 15000) - 20000",
+    "notes": "Same behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between NPV and XNPV?",
+      "answer": "NPV assumes equal-period cash flows. XNPV uses specific dates for irregular intervals."
+    },
+    {
+      "question": "Should I include the initial investment in NPV?",
+      "answer": "No, add it outside the NPV formula as a negative value."
+    },
+    {
+      "question": "What does a positive NPV mean?",
+      "answer": "The investment is expected to add value and should be accepted if other factors are equal."
+    }
+  ],
+  "relatedFunctions": [
+    "irr",
+    "xnpv",
+    "pmt",
+    "pv",
+    "fv"
+  ]
+}

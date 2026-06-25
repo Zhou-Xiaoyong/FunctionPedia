@@ -1,0 +1,110 @@
+{
+  "name": "COUPPCD",
+  "slug": "couppcd",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "COUPPCD returns the date of the coupon payment immediately before the settlement date for a bond.",
+  "tldr": "Calculates the previous coupon date before the settlement date.",
+  "syntax": "(settlement, maturity, frequency, [basis])",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "frequency",
+      "description": "Number of coupon payments per year (1, 2, or 4).",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Previous coupon date for a semi-annual bond",
+    "formula": "=COUPPCD(DATE(2024,4,1), DATE(2034,4,1), 2)",
+    "result": "Previous coupon date serial number",
+    "explanation": "Returns the date of the coupon payment before settlement. Format the cell as a date."
+  },
+  "advancedExamples": [
+    {
+      "title": "Format the result as a date",
+      "scenario": "Bond schedule",
+      "description": "Display the previous coupon date",
+      "formula": "=TEXT(COUPPCD(DATE(2024,4,1), DATE(2034,4,1), 2), \"yyyy-mm-dd\")",
+      "result": "Formatted previous coupon date",
+      "explanation": "Uses TEXT to display the date serial number as a string."
+    }
+  ],
+  "howItWorks": "COUPPCD uses the maturity date and frequency to calculate the coupon schedule and returns the most recent coupon date before settlement.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter frequency",
+      "text": "Type the frequency"
+    },
+    {
+      "name": "Enter basis",
+      "text": "Type the basis"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Returns a date serial number.",
+    "Frequency must be 1, 2, or 4.",
+    "Basis affects date calculations in some edge cases."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates or frequency.",
+      "fix": "Verify all inputs."
+    },
+    {
+      "error": "Shows as a number",
+      "cause": "Result is a date serial number.",
+      "fix": "Format the cell as a date."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "COUPPCD works identically in Google Sheets.",
+    "formula": "=COUPPCD(DATE(2024,4,1), DATE(2034,4,1), 2)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between COUPPCD and COUPNCD?",
+      "answer": "COUPPCD returns the previous coupon date. COUPNCD returns the next coupon date."
+    },
+    {
+      "question": "How do I display the result of COUPPCD?",
+      "answer": "Format the cell as a date or use TEXT."
+    }
+  ],
+  "relatedFunctions": [
+    "coupdaybs",
+    "coupdays",
+    "coupdaysnc",
+    "coupncd",
+    "coupnum",
+    "accrint"
+  ]
+}

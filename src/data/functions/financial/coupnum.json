@@ -1,0 +1,110 @@
+{
+  "name": "COUPNUM",
+  "slug": "coupnum",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "COUPNUM returns the number of coupon payments remaining from settlement to maturity for a bond.",
+  "tldr": "Calculates the number of coupons payable between the settlement date and maturity date.",
+  "syntax": "(settlement, maturity, frequency, [basis])",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "frequency",
+      "description": "Number of coupon payments per year (1, 2, or 4).",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Number of remaining coupon payments",
+    "formula": "=COUPNUM(DATE(2024,4,1), DATE(2034,4,1), 2)",
+    "result": "Number of coupons remaining",
+    "explanation": "For a 10-year bond purchased on April 1, 2024 with semi-annual coupons, this returns 20."
+  },
+  "advancedExamples": [
+    {
+      "title": "Quarterly coupons",
+      "scenario": "Corporate bond",
+      "description": "Count quarterly coupon payments",
+      "formula": "=COUPNUM(DATE(2024,4,1), DATE(2034,4,1), 4)",
+      "result": "Number of quarterly coupons",
+      "explanation": "Frequency 4 means quarterly payments."
+    }
+  ],
+  "howItWorks": "COUPNUM calculates the remaining coupon payments based on the maturity date, frequency, and settlement date. It rounds up to the nearest whole coupon if settlement falls between coupon dates.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter frequency",
+      "text": "Type the frequency"
+    },
+    {
+      "name": "Enter basis",
+      "text": "Type the basis"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Frequency must be 1, 2, or 4.",
+    "Settlement must be before maturity.",
+    "Basis affects date calculations in some edge cases."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates or frequency.",
+      "fix": "Verify all inputs."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "COUPNUM works identically in Google Sheets.",
+    "formula": "=COUPNUM(DATE(2024,4,1), DATE(2034,4,1), 2)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between COUPNUM and COUPNCD?",
+      "answer": "COUPNUM returns the count of remaining coupons. COUPNCD returns the date of the next coupon."
+    },
+    {
+      "question": "Does COUPNUM include the current coupon?",
+      "answer": "It counts all coupons from settlement to maturity, including partial periods."
+    }
+  ],
+  "relatedFunctions": [
+    "coupdaybs",
+    "coupdays",
+    "coupdaysnc",
+    "coupncd",
+    "couppcd",
+    "accrint"
+  ]
+}

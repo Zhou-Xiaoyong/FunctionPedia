@@ -1,0 +1,53 @@
+{
+  "title": "INDEX MATCH vs XLOOKUP",
+  "slug": "index-match-vs-xlookup",
+  "functionA": "index",
+  "functionB": "xlookup",
+  "description": "See how the flexible INDEX/MATCH combination compares to the modern XLOOKUP function.",
+  "intro": "INDEX combined with MATCH was the most flexible lookup method before XLOOKUP existed. It can look left, right, and handle dynamic ranges. XLOOKUP now provides similar power with simpler syntax.",
+  "comparisonTable": [
+    {
+      "aspect": "Syntax complexity",
+      "functionA": "Requires two nested functions",
+      "functionB": "Single, straightforward function"
+    },
+    {
+      "aspect": "Lookup direction",
+      "functionA": "Can look left or right",
+      "functionB": "Can look left or right"
+    },
+    {
+      "aspect": "Performance",
+      "functionA": "Fast with small datasets; can be slower than XLOOKUP on very large ranges",
+      "functionB": "Optimized for modern Excel"
+    },
+    {
+      "aspect": "Error handling",
+      "functionA": "Requires IFERROR/IFNA",
+      "functionB": "Built-in if_not_found argument"
+    },
+    {
+      "aspect": "Availability",
+      "functionA": "All Excel versions",
+      "functionB": "Excel 365 / Excel 2021+"
+    },
+    {
+      "aspect": "2D lookup",
+      "functionA": "Easy with row and column MATCH",
+      "functionB": "Possible with array return"
+    }
+  ],
+  "whenToUseA": "Use INDEX/MATCH when you need maximum compatibility with older Excel versions or when you need a 2D lookup with separate row and column match.",
+  "whenToUseB": "Use XLOOKUP when it is available and you want cleaner, more maintainable formulas.",
+  "verdict": "XLOOKUP is generally preferred for new work, but INDEX/MATCH remains essential for backward compatibility and complex 2D lookups.",
+  "faq": [
+    {
+      "question": "Is INDEX MATCH obsolete?",
+      "answer": "No, it is still widely used and works in all Excel versions."
+    },
+    {
+      "question": "Can XLOOKUP do 2D lookup?",
+      "answer": "Yes, by returning an array and matching both dimensions, but INDEX/MATCH is often simpler for 2D."
+    }
+  ]
+}

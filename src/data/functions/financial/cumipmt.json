@@ -1,0 +1,123 @@
+{
+  "name": "CUMIPMT",
+  "slug": "cumipmt",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "CUMIPMT returns the total interest paid over a specified range of periods for a loan with constant payments and a constant interest rate.",
+  "tldr": "Calculates the cumulative interest paid on a loan between two periods.",
+  "syntax": "(rate, nper, pv, start_period, end_period, type)",
+  "parameters": [
+    {
+      "name": "rate",
+      "description": "Interest rate per period.",
+      "required": true
+    },
+    {
+      "name": "nper",
+      "description": "Total number of payment periods.",
+      "required": true
+    },
+    {
+      "name": "pv",
+      "description": "Present value or loan principal.",
+      "required": true
+    },
+    {
+      "name": "start_period",
+      "description": "First period in the range to include.",
+      "required": true
+    },
+    {
+      "name": "end_period",
+      "description": "Last period in the range to include.",
+      "required": true
+    },
+    {
+      "name": "type",
+      "description": "0 = end of period, 1 = beginning of period.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Total interest paid in the first year of a loan",
+    "formula": "=CUMIPMT(0.05/12, 360, 300000, 1, 12, 0)",
+    "result": "-$14,935.43",
+    "explanation": "For a $300,000 mortgage at 5% over 30 years, the first year of interest is about $14,935."
+  },
+  "advancedExamples": [
+    {
+      "title": "Cumulative interest over several years",
+      "scenario": "Amortization analysis",
+      "description": "Interest paid in years 6-10 of a mortgage",
+      "formula": "=CUMIPMT(0.05/12, 360, 300000, 61, 120, 0)",
+      "result": "Total interest for years 6-10",
+      "explanation": "Calculates interest paid during the 61st through 120th monthly payments."
+    }
+  ],
+  "howItWorks": "CUMIPMT sums the interest portions of all payments from start_period to end_period. It uses the same amortization logic as PMT and IPMT.",
+  "howToSteps": [
+    {
+      "name": "Enter rate",
+      "text": "Type the rate"
+    },
+    {
+      "name": "Enter nper",
+      "text": "Type the nper"
+    },
+    {
+      "name": "Enter pv",
+      "text": "Type the pv"
+    },
+    {
+      "name": "Enter start_period",
+      "text": "Type the start_period"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Requires consistent period units.",
+    "The type argument is required, not optional.",
+    "Returns a negative value because interest is an outflow."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "start_period or end_period is invalid, or type is not 0 or 1.",
+      "fix": "Ensure 1 <= start_period <= end_period <= nper and type is 0 or 1."
+    },
+    {
+      "error": "Wrong result",
+      "cause": "Annual rate was not divided by 12.",
+      "fix": "Use the monthly rate for monthly periods."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "CUMIPMT works identically in Google Sheets.",
+    "formula": "=CUMIPMT(0.05/12, 360, 300000, 1, 12, 0)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between CUMIPMT and IPMT?",
+      "answer": "IPMT returns interest for one period. CUMIPMT returns interest summed over a range of periods."
+    },
+    {
+      "question": "Can CUMIPMT be used for taxes?",
+      "answer": "Yes, mortgage interest is often tax-deductible, and CUMIPMT can help estimate annual interest."
+    },
+    {
+      "question": "Why is CUMIPMT negative?",
+      "answer": "It represents interest paid out. Use -CUMIPMT or ABS for a positive value."
+    }
+  ],
+  "relatedFunctions": [
+    "ipmt",
+    "ppmt",
+    "pmt",
+    "cumprinc",
+    "rate"
+  ]
+}

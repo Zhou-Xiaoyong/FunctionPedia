@@ -1,0 +1,77 @@
+{
+  "name": "SUMIF",
+  "slug": "sumif",
+  "category": "math",
+  "excelVersion": "All versions",
+  "description": "SUMIF adds up all numbers in a range that meet a specified condition. It's the go-to function for conditional summing — like totaling sales for a specific region or summing expenses above a threshold.",
+  "tldr": "SUMIF adds values that match a condition. Give it a range to check, a condition to test, and a range of numbers to sum — it only adds the ones that pass the test.",
+  "syntax": "(range, criteria, [sum_range])",
+  "parameters": [
+    { "name": "range", "description": "The range of cells to evaluate with the criteria. Each cell is tested against the condition.", "required": true },
+    { "name": "criteria", "description": "The condition that determines which cells to sum. Can be a number, text, comparison (>100, \"<>0\"), or wildcard (*apples*).", "required": true },
+    { "name": "sum_range", "description": "The actual cells to sum. If omitted, the 'range' itself is summed (must contain numbers).", "required": false }
+  ],
+  "basicExample": {
+    "description": "Sum all sales from the 'East' region",
+    "formula": "=SUMIF(A2:A50, \"East\", B2:B50)",
+    "result": "$12,500",
+    "explanation": "Column A contains region names. The formula checks each cell for 'East' and sums the corresponding sales values from column B."
+  },
+  "advancedExamples": [
+    {
+      "title": "Sum values greater than a threshold",
+      "scenario": "Budgeting",
+      "description": "Sum all expenses that exceed $500",
+      "formula": "=SUMIF(B2:B100, \">500\")",
+      "result": "$4,200",
+      "explanation": "When sum_range is omitted, SUMIF sums the range itself. Only values >500 in B2:B100 are added."
+    },
+    {
+      "title": "SUMIF with wildcard for partial match",
+      "scenario": "Sales analysis",
+      "description": "Sum sales for all products containing 'phone' in the name",
+      "formula": "=SUMIF(A2:A100, \"*phone*\", B2:B100)",
+      "result": "$28,750",
+      "explanation": "The asterisk wildcard matches any characters. '*phone*' catches 'Smartphone', 'Phone case', 'Cellphone accessories'."
+    },
+    {
+      "title": "SUMIF with date criteria",
+      "scenario": "Reporting",
+      "description": "Sum transactions that occurred after a specific date",
+      "formula": "=SUMIF(A2:A200, \">\"&DATE(2024,1,1), B2:B200)",
+      "result": "$15,300",
+      "explanation": "Concatenate the comparison operator with a DATE function to create a date-based criteria."
+    }
+  ],
+  "howItWorks": "SUMIF works in two phases. First, it scans the 'range' cell by cell, checking each against your criteria. For text criteria, it does an exact match (case-insensitive) unless you use wildcards. For number criteria with operators (>100, <=50), it evaluates the comparison. Second, for cells that pass the test, it takes the corresponding cell from 'sum_range' (or from 'range' itself if sum_range is omitted) and adds them all together.",
+  "howToSteps": [
+    { "name": "Select the criteria range", "text": "Choose the column or range containing the values you want to test (e.g., the region column)." },
+    { "name": "Define your criteria", "text": "Specify what to match — exact text like \"East\", a comparison like \">500\", or a wildcard like \"*phone*\"." },
+    { "name": "Select the sum range", "text": "Pick the column of numbers to add up. If omitted, the criteria range itself is summed." },
+    { "name": "Enter the formula", "text": "Type =SUMIF(criteria_range, condition, sum_range) and press Enter." }
+  ],
+  "limitations": [
+    "SUMIF handles only one condition. For multiple conditions (e.g., region='East' AND year=2024), use SUMIFS.",
+    "Text criteria are case-insensitive — 'east' and 'East' match the same cells.",
+    "SUMIF doesn't work well with 2D ranges — both range and sum_range should be 1D (single row or column).",
+    "Criteria must be a string, number, or cell reference — you can't pass a complex logical expression directly."
+  ],
+  "commonErrors": [
+    { "error": "0 result (wrong sum_range size)", "cause": "sum_range is a different size than range — mismatched dimensions", "fix": "Make sure sum_range has the same number of rows/columns as range. If range is A2:A50, sum_range should be B2:B50 (not B1:B49)." },
+    { "error": "0 result (numbers stored as text)", "cause": "The sum_range contains numbers formatted as text, which SUMIF ignores", "fix": "Convert text numbers to actual numbers using VALUE() or reformatting the cells as Number." },
+    { "error": "Wrong result (criteria text mismatch)", "cause": "Trailing spaces or different formatting in the criteria range", "fix": "Use TRIM() to clean data, or use wildcards like \"*East*\" to handle minor differences." }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "SUMIF works identically in Google Sheets with the same syntax and behavior.",
+    "formula": "=SUMIF(A2:A50, \"East\", B2:B50)",
+    "notes": "Google Sheets also supports SUMIFS for multiple conditions. The behavior is the same as Excel."
+  },
+  "faq": [
+    { "question": "What's the difference between SUMIF and SUMIFS?", "answer": "SUMIF handles one condition. SUMIFS handles multiple conditions and has a different argument order: =SUMIFS(sum_range, criteria_range1, criteria1, criteria_range2, criteria2, ...). The sum_range comes first in SUMIFS." },
+    { "question": "Can SUMIF use cell references for criteria?", "answer": "Yes. =SUMIF(A2:A50, D1, B2:B50) uses the value in cell D1 as the criteria. Combine with operators: =SUMIF(A2:A50, \">\"&D1, B2:B50)." },
+    { "question": "Why does SUMIF return 0?", "answer": "Common causes: (1) numbers stored as text in sum_range, (2) mismatched range sizes, (3) criteria not matching any cells. Check data formatting first." },
+    { "question": "Can SUMIF sum based on color?", "answer": "No. SUMIF cannot filter by cell color or font color. You'd need a VBA macro or manual filtering for color-based summing." },
+    { "question": "How do I sum with two conditions?", "answer": "Use SUMIFS instead: =SUMIFS(B2:B50, A2:A50, \"East\", C2:C50, \"2024\") sums column B where A is 'East' AND C is '2024'." }
+  ],
+  "relatedFunctions": ["sumifs", "countif", "averageif", "filter"]
+}

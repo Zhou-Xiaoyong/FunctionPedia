@@ -1,0 +1,118 @@
+{
+  "name": "FV",
+  "slug": "fv",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "FV returns the future value of an investment based on periodic, constant payments and a constant interest rate.",
+  "tldr": "Calculates the future value of a series of equal payments and/or a lump sum.",
+  "syntax": "(rate, nper, pmt, [pv], [type])",
+  "parameters": [
+    {
+      "name": "rate",
+      "description": "Interest rate per period.",
+      "required": true
+    },
+    {
+      "name": "nper",
+      "description": "Total number of payment periods.",
+      "required": true
+    },
+    {
+      "name": "pmt",
+      "description": "Payment made each period (must remain constant).",
+      "required": true
+    },
+    {
+      "name": "pv",
+      "description": "Present value or lump-sum amount (default 0).",
+      "required": false
+    },
+    {
+      "name": "type",
+      "description": "0 = end of period (default), 1 = beginning of period.",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Future value of monthly savings",
+    "formula": "=FV(0.06/12, 120, -500)",
+    "result": "$81,939.67",
+    "explanation": "Saves $500 per month at 6% annual interest for 10 years. Result is positive because it is a future balance."
+  },
+  "advancedExamples": [
+    {
+      "title": "FV with a starting balance",
+      "scenario": "Retirement planning",
+      "description": "Future value of an IRA with an initial balance and monthly contributions",
+      "formula": "=FV(0.07/12, 240, -500, -10000)",
+      "result": "$315,512.77",
+      "explanation": "Starts with $10,000 and adds $500 monthly for 20 years at 7% annual interest."
+    }
+  ],
+  "howItWorks": "FV discounts each payment back to the start and compounds it forward to the end of the investment term. Payments are treated as outflows, so they are typically entered as negative values.",
+  "howToSteps": [
+    {
+      "name": "Enter rate",
+      "text": "Type the rate"
+    },
+    {
+      "name": "Enter nper",
+      "text": "Type the nper"
+    },
+    {
+      "name": "Enter pmt",
+      "text": "Type the pmt"
+    },
+    {
+      "name": "Enter pv",
+      "text": "Type the pv"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "All inputs must use the same period unit (e.g., monthly rate and monthly nper).",
+    "Returns negative if all cash flows are positive, because Excel treats the result as the opposite cash flow.",
+    "Does not account for taxes or fees."
+  ],
+  "commonErrors": [
+    {
+      "error": "Wrong magnitude",
+      "cause": "Annual rate was not divided by periods per year.",
+      "fix": "Divide the annual rate by the number of periods per year."
+    },
+    {
+      "error": "Negative result",
+      "cause": "Payments were entered as positive numbers.",
+      "fix": "Enter payments as negative numbers to represent outflows."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "FV works identically in Google Sheets.",
+    "formula": "=FV(0.06/12, 120, -500)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between FV and PV?",
+      "answer": "FV calculates the future value of cash flows. PV calculates the present value of future cash flows."
+    },
+    {
+      "question": "Can FV handle a single lump sum?",
+      "answer": "Yes, set pmt to 0 and enter the lump sum as pv."
+    },
+    {
+      "question": "Why is FV negative?",
+      "answer": "Because payments are positive inflows but the future value is an outflow in the same cash-flow convention. Use -FV or ABS to display a positive balance."
+    }
+  ],
+  "relatedFunctions": [
+    "pv",
+    "pmt",
+    "nper",
+    "rate",
+    "fvschedule"
+  ]
+}

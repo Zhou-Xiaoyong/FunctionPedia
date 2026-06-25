@@ -1,0 +1,103 @@
+{
+  "name": "AVERAGE",
+  "slug": "average",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "AVERAGE returns the arithmetic mean of a set of numbers.",
+  "tldr": "Calculates the mean of the provided numbers.",
+  "syntax": "(number1, [number2], ...)",
+  "parameters": [
+    {
+      "name": "number1",
+      "description": "The first number, range, or cell reference.",
+      "required": true
+    },
+    {
+      "name": "number2",
+      "description": "Additional numbers, ranges, or cell references (optional).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Average of test scores",
+    "formula": "=AVERAGE(A2:A10)",
+    "result": "Mean score",
+    "explanation": "Adds all values in A2:A10 and divides by the count of numeric values."
+  },
+  "advancedExamples": [
+    {
+      "title": "Average with multiple ranges",
+      "scenario": "Quarterly sales",
+      "description": "Average two separate ranges",
+      "formula": "=AVERAGE(B2:B10, D2:D10)",
+      "result": "Mean of both ranges",
+      "explanation": "Combines both ranges and computes the overall mean."
+    },
+    {
+      "title": "Average excluding blanks",
+      "scenario": "Survey data",
+      "description": "AVERAGE ignores empty cells and text automatically",
+      "formula": "=AVERAGE(A2:A100)",
+      "result": "Mean of numeric responses",
+      "explanation": "Blank cells and text are ignored."
+    }
+  ],
+  "howItWorks": "AVERAGE sums the numeric values and divides by the count of numeric values. It ignores text, logical values, and empty cells.",
+  "howToSteps": [
+    {
+      "name": "Select range",
+      "text": "Choose the cells containing numbers."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =AVERAGE(range)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The mean appears in the cell."
+    }
+  ],
+  "limitations": [
+    "Ignores text and empty cells, which may affect the denominator count.",
+    "Does not ignore zero values.",
+    "Cells with logical TRUE/FALSE are ignored."
+  ],
+  "commonErrors": [
+    {
+      "error": "#DIV/0! error",
+      "cause": "No numeric values in the range.",
+      "fix": "Ensure the range contains at least one number."
+    },
+    {
+      "error": "Wrong average",
+      "cause": "Text-formatted numbers are treated as text.",
+      "fix": "Convert text to numbers first."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "AVERAGE works identically in Google Sheets.",
+    "formula": "=AVERAGE(A2:A10)",
+    "notes": "Same behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "Does AVERAGE include zero?",
+      "answer": "Yes, zero is counted as a numeric value."
+    },
+    {
+      "question": "How is AVERAGE different from AVERAGEA?",
+      "answer": "AVERAGEA counts text and FALSE as 0 and TRUE as 1."
+    },
+    {
+      "question": "Can AVERAGE ignore errors?",
+      "answer": "No, use AVERAGEIF or FILTER to exclude errors."
+    }
+  ],
+  "relatedFunctions": [
+    "averageif",
+    "averageifs",
+    "median",
+    "sum",
+    "count"
+  ]
+}

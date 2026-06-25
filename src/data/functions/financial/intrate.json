@@ -1,0 +1,115 @@
+{
+  "name": "INTRATE",
+  "slug": "intrate",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "INTRATE returns the simple annual interest rate for a security that is purchased at a discount and redeemed at par.",
+  "tldr": "Calculates the interest rate for a fully invested security.",
+  "syntax": "(settlement, maturity, investment, redemption, [basis])",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "investment",
+      "description": "Amount invested in the security.",
+      "required": true
+    },
+    {
+      "name": "redemption",
+      "description": "Amount received at maturity.",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Interest rate for a short-term investment",
+    "formula": "=INTRATE(DATE(2024,1,1), DATE(2024,12,31), 95000, 100000)",
+    "result": "5.41%",
+    "explanation": "Investing $95,000 and receiving $100,000 after one year implies a simple annual interest rate of about 5.41%."
+  },
+  "advancedExamples": [
+    {
+      "title": "With actual/365 basis",
+      "scenario": "Money market instrument",
+      "description": "Use basis 3 for actual/365",
+      "formula": "=INTRATE(DATE(2024,1,1), DATE(2024,12,31), 95000, 100000, 3)",
+      "result": "Interest rate using actual/365",
+      "explanation": "Basis 3 uses actual days and a 365-day year."
+    }
+  ],
+  "howItWorks": "INTRATE calculates the simple interest rate using the formula (redemption - investment) / investment * (days per year / days to maturity). It is used for short-term discount instruments.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter investment",
+      "text": "Type the investment"
+    },
+    {
+      "name": "Enter redemption",
+      "text": "Type the redemption"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Settlement must be before maturity.",
+    "Investment and redemption are absolute amounts, not per $100.",
+    "Basis affects the day count."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates or investment/redemption values.",
+      "fix": "Verify all inputs."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "INTRATE works identically in Google Sheets.",
+    "formula": "=INTRATE(DATE(2024,1,1), DATE(2024,12,31), 95000, 100000)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between INTRATE and DISC?",
+      "answer": "INTRATE is based on the investment amount. DISC is based on the redemption value."
+    },
+    {
+      "question": "When is INTRATE used?",
+      "answer": "It is used for fully invested short-term securities."
+    }
+  ],
+  "relatedFunctions": [
+    "disc",
+    "received",
+    "tbillprice",
+    "tbillyield",
+    "accrintm",
+    "pricemat"
+  ]
+}

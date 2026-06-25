@@ -1,0 +1,43 @@
+{
+  "title": "FIND vs SEARCH",
+  "slug": "find-vs-search",
+  "functionA": "find",
+  "functionB": "search",
+  "description": "Compare FIND and SEARCH to choose the right text search function.",
+  "intro": "FIND and SEARCH both return the position of text within a string. FIND is case-sensitive and literal. SEARCH is case-insensitive and supports wildcards.",
+  "comparisonTable": [
+    {
+      "aspect": "Case sensitivity",
+      "functionA": "Case-sensitive",
+      "functionB": "Case-insensitive"
+    },
+    {
+      "aspect": "Wildcards",
+      "functionA": "Not supported",
+      "functionB": "Supports * and ?"
+    },
+    {
+      "aspect": "Use case",
+      "functionA": "Exact text matching",
+      "functionB": "Flexible text matching"
+    },
+    {
+      "aspect": "Error if not found",
+      "functionA": "#VALUE!",
+      "functionB": "#VALUE!"
+    }
+  ],
+  "whenToUseA": "Use FIND when the case of the text matters and you need an exact match.",
+  "whenToUseB": "Use SEARCH when you want case-insensitive matching or need wildcard support.",
+  "verdict": "Use SEARCH for flexible matching and FIND for precise, case-sensitive searches.",
+  "faq": [
+    {
+      "question": "Can I make FIND case-insensitive?",
+      "answer": "No. Use SEARCH or convert both strings to the same case with UPPER/LOWER."
+    },
+    {
+      "question": "Can SEARCH use regular expressions?",
+      "answer": "Not in Excel. In Google Sheets, use REGEXMATCH for regex."
+    }
+  ]
+}

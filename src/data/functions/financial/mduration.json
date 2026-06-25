@@ -1,0 +1,119 @@
+{
+  "name": "MDURATION",
+  "slug": "mduration",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "MDURATION returns the modified Macaulay duration, which measures the percentage price change of a bond for a 1% change in yield.",
+  "tldr": "Calculates the modified duration of a bond.",
+  "syntax": "(settlement, maturity, coupon, yld, frequency, [basis])",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "coupon",
+      "description": "Annual coupon rate.",
+      "required": true
+    },
+    {
+      "name": "yld",
+      "description": "Annual yield to maturity.",
+      "required": true
+    },
+    {
+      "name": "frequency",
+      "description": "Number of coupon payments per year (1, 2, or 4).",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Modified duration of a bond",
+    "formula": "=MDURATION(DATE(2024,4,1), DATE(2034,4,1), 0.05, 0.06, 2)",
+    "result": "Modified duration in years",
+    "explanation": "For a 5% coupon bond yielding 6% with semi-annual payments, this returns the modified duration."
+  },
+  "advancedExamples": [
+    {
+      "title": "Estimate price sensitivity",
+      "scenario": "Interest rate risk",
+      "description": "If MDURATION is 7.5, a 1% yield increase causes roughly a 7.5% price drop.",
+      "formula": "=MDURATION(DATE(2024,4,1), DATE(2034,4,1), 0.05, 0.06, 2, 1)",
+      "result": "Modified duration using actual/actual",
+      "explanation": "Basis 1 is used for Treasury bonds."
+    }
+  ],
+  "howItWorks": "MDURATION adjusts Macaulay duration for yield to measure price sensitivity. Modified duration = Macaulay duration / (1 + yld/frequency).",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter coupon",
+      "text": "Type the coupon"
+    },
+    {
+      "name": "Enter yld",
+      "text": "Type the yld"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Settlement must be before maturity.",
+    "Frequency must be 1, 2, or 4.",
+    "Modified duration is a linear approximation; convexity improves accuracy for large yield changes."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates, rates, or frequency.",
+      "fix": "Verify all inputs."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "MDURATION works identically in Google Sheets.",
+    "formula": "=MDURATION(DATE(2024,4,1), DATE(2034,4,1), 0.05, 0.06, 2)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between DURATION and MDURATION?",
+      "answer": "DURATION is Macaulay duration. MDURATION is modified duration, which measures price sensitivity directly."
+    },
+    {
+      "question": "How do I use MDURATION to estimate price change?",
+      "answer": "Approximate percentage price change = -MDURATION * yield change."
+    }
+  ],
+  "relatedFunctions": [
+    "duration",
+    "price",
+    "yield",
+    "coupdaybs",
+    "accrint"
+  ]
+}

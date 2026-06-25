@@ -1,0 +1,100 @@
+{
+  "name": "XIRR",
+  "slug": "xirr",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "XIRR returns the annualized internal rate of return for cash flows occurring at irregular intervals.",
+  "tldr": "Calculates the internal rate of return for a schedule of cash flows that is not necessarily periodic.",
+  "syntax": "(values, dates, [guess])",
+  "parameters": [
+    {
+      "name": "values",
+      "description": "Series of cash flows corresponding to the dates.",
+      "required": true
+    },
+    {
+      "name": "dates",
+      "description": "Series of dates corresponding to the cash flows.",
+      "required": true
+    },
+    {
+      "name": "guess",
+      "description": "Initial guess for the rate (default 10%).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "IRR for irregular cash flows",
+    "formula": "=XIRR(B2:B5, A2:A5)",
+    "result": "Annual IRR",
+    "explanation": "A2:A5 contains dates, and B2:B5 contains the corresponding cash flows."
+  },
+  "advancedExamples": [
+    {
+      "title": "Add a guess",
+      "scenario": "Non-converging IRR",
+      "description": "Provide a guess to help the solver converge",
+      "formula": "=XIRR(B2:B5, A2:A5, 0.2)",
+      "result": "Annual IRR",
+      "explanation": "A 20% guess can help when the default guess fails."
+    }
+  ],
+  "howItWorks": "XIRR solves for the rate that makes the net present value of the irregular cash flows equal to zero. It uses an annualized rate based on the 365-day year.",
+  "howToSteps": [
+    {
+      "name": "Enter values",
+      "text": "Type the values"
+    },
+    {
+      "name": "Enter dates",
+      "text": "Type the dates"
+    },
+    {
+      "name": "Enter guess",
+      "text": "Type the guess"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Dates must be valid and in chronological order.",
+    "Requires at least one positive and one negative cash flow.",
+    "Result is an annualized rate."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "The solver cannot converge or the cash flows have the same sign.",
+      "fix": "Add a guess or check that cash flows have both signs."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not valid or do not align with values.",
+      "fix": "Ensure dates are valid Excel dates and match the values array."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "XIRR works identically in Google Sheets.",
+    "formula": "=XIRR(B2:B5, A2:A5)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between IRR and XIRR?",
+      "answer": "IRR assumes equal-period cash flows. XIRR uses actual dates for irregular intervals."
+    },
+    {
+      "question": "Can XIRR handle monthly contributions?",
+      "answer": "Yes, as long as the dates are provided, the intervals can be any length."
+    }
+  ],
+  "relatedFunctions": [
+    "irr",
+    "mirr",
+    "xnpv",
+    "npv",
+    "rate"
+  ]
+}

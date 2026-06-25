@@ -1,0 +1,91 @@
+{
+  "name": "FVSCHEDULE",
+  "slug": "fvschedule",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "FVSCHEDULE returns the future value of an investment using a schedule of varying interest rates.",
+  "tldr": "Calculates the future value of a principal after applying a series of compound interest rates.",
+  "syntax": "(principal, schedule)",
+  "parameters": [
+    {
+      "name": "principal",
+      "description": "Present value or initial investment.",
+      "required": true
+    },
+    {
+      "name": "schedule",
+      "description": "Array of interest rates to apply for each period.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Future value with varying annual rates",
+    "formula": "=FVSCHEDULE(10000, B2:B5)",
+    "result": "Future value",
+    "explanation": "B2:B5 contains the annual interest rates for each period."
+  },
+  "advancedExamples": [
+    {
+      "title": "Fixed rates entered directly",
+      "scenario": "Forecasting",
+      "description": "Future value after three years of varying rates",
+      "formula": "=FVSCHEDULE(10000, {0.05, 0.06, 0.04})",
+      "result": "$11,552.00",
+      "explanation": "Principal grows at 5%, then 6%, then 4% over three years."
+    }
+  ],
+  "howItWorks": "FVSCHEDULE multiplies the principal by (1 + rate1) * (1 + rate2) * ... for each rate in the schedule. This models compound growth with changing rates.",
+  "howToSteps": [
+    {
+      "name": "Enter principal",
+      "text": "Type the principal"
+    },
+    {
+      "name": "Enter schedule",
+      "text": "Type the schedule"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Schedule values must be decimal rates (e.g., 0.05 for 5%).",
+    "Schedule values can be negative for losses.",
+    "Does not handle periodic payments."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! error",
+      "cause": "Schedule values are text or non-numeric.",
+      "fix": "Ensure rates are numeric."
+    },
+    {
+      "error": "Wrong result",
+      "cause": "Rates were entered as percentages (e.g., 5) instead of decimals (e.g., 0.05).",
+      "fix": "Use decimal rates."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "FVSCHEDULE works identically in Google Sheets.",
+    "formula": "=FVSCHEDULE(10000, {0.05, 0.06, 0.04})",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between FV and FVSCHEDULE?",
+      "answer": "FV uses a constant rate. FVSCHEDULE uses a series of different rates."
+    },
+    {
+      "question": "Can FVSCHEDULE handle payments?",
+      "answer": "No, it only handles a single principal and a rate schedule."
+    }
+  ],
+  "relatedFunctions": [
+    "fv",
+    "pv",
+    "rate",
+    "nper",
+    "pmt"
+  ]
+}

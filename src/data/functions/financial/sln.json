@@ -1,0 +1,99 @@
+{
+  "name": "SLN",
+  "slug": "sln",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "SLN returns the constant depreciation amount for each period using the straight-line method.",
+  "tldr": "Calculates straight-line depreciation of an asset for one period.",
+  "syntax": "(cost, salvage, life)",
+  "parameters": [
+    {
+      "name": "cost",
+      "description": "Initial cost of the asset.",
+      "required": true
+    },
+    {
+      "name": "salvage",
+      "description": "Value at the end of the depreciation life.",
+      "required": true
+    },
+    {
+      "name": "life",
+      "description": "Number of periods over which the asset is depreciated.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Annual depreciation of equipment",
+    "formula": "=SLN(10000, 2000, 5)",
+    "result": "$1,600.00",
+    "explanation": "A $10,000 asset with a $2,000 salvage value and 5-year life depreciates $1,600 per year."
+  },
+  "advancedExamples": [
+    {
+      "title": "Monthly depreciation",
+      "scenario": "Asset accounting",
+      "description": "Monthly straight-line depreciation",
+      "formula": "=SLN(12000, 2000, 60)",
+      "result": "$166.67",
+      "explanation": "Same asset depreciated over 60 months."
+    }
+  ],
+  "howItWorks": "SLN subtracts salvage value from cost and divides the result by the asset life. This gives the same depreciation amount every period.",
+  "howToSteps": [
+    {
+      "name": "Enter cost",
+      "text": "Type the cost"
+    },
+    {
+      "name": "Enter salvage",
+      "text": "Type the salvage"
+    },
+    {
+      "name": "Enter life",
+      "text": "Type the life"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Assumes constant depreciation each period.",
+    "Does not account for accelerated depreciation methods.",
+    "Life must be in the same units as the desired output (years, months, etc.)."
+  ],
+  "commonErrors": [
+    {
+      "error": "#DIV/0! error",
+      "cause": "Life is zero.",
+      "fix": "Ensure life is greater than zero."
+    },
+    {
+      "error": "Negative depreciation",
+      "cause": "Salvage value is greater than cost.",
+      "fix": "Verify that salvage value is less than or equal to cost."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "SLN works identically in Google Sheets.",
+    "formula": "=SLN(10000, 2000, 5)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between SLN and SYD?",
+      "answer": "SLN uses straight-line depreciation. SYD uses sum-of-years-digits accelerated depreciation."
+    },
+    {
+      "question": "Can SLN produce fractional periods?",
+      "answer": "No, SLN returns the same amount for each full period."
+    }
+  ],
+  "relatedFunctions": [
+    "ddb",
+    "db",
+    "syd",
+    "vdb"
+  ]
+}

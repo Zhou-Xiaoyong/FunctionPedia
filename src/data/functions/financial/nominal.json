@@ -1,0 +1,89 @@
+{
+  "name": "NOMINAL",
+  "slug": "nominal",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "NOMINAL returns the nominal annual rate given the effective annual rate and the number of compounding periods per year.",
+  "tldr": "Calculates the nominal annual interest rate from an effective rate.",
+  "syntax": "(effect_rate, npery)",
+  "parameters": [
+    {
+      "name": "effect_rate",
+      "description": "Effective annual interest rate.",
+      "required": true
+    },
+    {
+      "name": "npery",
+      "description": "Number of compounding periods per year.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Nominal rate from an effective annual rate",
+    "formula": "=NOMINAL(0.0617, 12)",
+    "result": "6.00%",
+    "explanation": "An effective annual rate of 6.17% with monthly compounding corresponds to a 6% nominal rate."
+  },
+  "advancedExamples": [
+    {
+      "title": "Annual percentage rate calculation",
+      "scenario": "Loan disclosure",
+      "description": "Find the nominal APR from an effective rate",
+      "formula": "=NOMINAL(0.08, 12)",
+      "result": "7.72%",
+      "explanation": "An 8% effective annual rate with monthly compounding corresponds to a 7.72% nominal rate."
+    }
+  ],
+  "howItWorks": "NOMINAL is the inverse of EFFECT. It computes the nominal rate that, when compounded npery times per year, produces the given effective annual rate.",
+  "howToSteps": [
+    {
+      "name": "Enter effect_rate",
+      "text": "Type the effect_rate"
+    },
+    {
+      "name": "Enter npery",
+      "text": "Type the npery"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Requires npery >= 1.",
+    "Result is the nominal annual rate, not the periodic rate."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "npery is less than 1 or effect_rate is invalid.",
+      "fix": "Ensure npery >= 1 and effect_rate is a positive decimal."
+    },
+    {
+      "error": "Wrong rate",
+      "cause": "Effective rate was entered as a percentage instead of a decimal.",
+      "fix": "Enter 0.0617 for 6.17%, not 6.17."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "NOMINAL works identically in Google Sheets.",
+    "formula": "=NOMINAL(0.0617, 12)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between NOMINAL and EFFECT?",
+      "answer": "NOMINAL converts effective to nominal. EFFECT converts nominal to effective."
+    },
+    {
+      "question": "When do I need NOMINAL?",
+      "answer": "When you know the effective annual rate and want to express it as a nominal annual rate for disclosure or comparison."
+    }
+  ],
+  "relatedFunctions": [
+    "effect",
+    "rate",
+    "pmt",
+    "nper"
+  ]
+}

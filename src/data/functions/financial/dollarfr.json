@@ -1,0 +1,91 @@
+{
+  "name": "DOLLARFR",
+  "slug": "dollarfr",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "DOLLARFR converts a decimal dollar value into fractional notation, commonly used for bond prices quoted in 32nds or 64ths.",
+  "tldr": "Converts a decimal dollar price into a fractional dollar price.",
+  "syntax": "(decimal_dollar, fraction)",
+  "parameters": [
+    {
+      "name": "decimal_dollar",
+      "description": "Decimal number to convert to a fraction.",
+      "required": true
+    },
+    {
+      "name": "fraction",
+      "description": "Integer to use in the denominator of the fraction.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Convert 1.125 to sixteenths",
+    "formula": "=DOLLARFR(1.125, 16)",
+    "result": "1.02",
+    "explanation": "1.125 equals 1 and 2/16, so the result is 1.02."
+  },
+  "advancedExamples": [
+    {
+      "title": "Bond price in 32nds",
+      "scenario": "Fixed income quoting",
+      "description": "Convert 100.50 to 32nds",
+      "formula": "=DOLLARFR(100.50, 32)",
+      "result": "100.16",
+      "explanation": "100.50 equals 100 and 16/32."
+    }
+  ],
+  "howItWorks": "DOLLARFR converts a decimal value to a number where the integer part is the whole dollar amount and the decimal part is the numerator over the specified fraction.",
+  "howToSteps": [
+    {
+      "name": "Enter decimal_dollar",
+      "text": "Type the decimal_dollar"
+    },
+    {
+      "name": "Enter fraction",
+      "text": "Type the fraction"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Fraction must be an integer.",
+    "Result is not a true fraction but a number in fractional notation.",
+    "Use DOLLARDE to convert back to decimal."
+  ],
+  "commonErrors": [
+    {
+      "error": "#DIV/0! error",
+      "cause": "Fraction is zero.",
+      "fix": "Use a non-zero integer."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Fraction is not an integer.",
+      "fix": "Use an integer for the fraction."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "DOLLARFR works identically in Google Sheets.",
+    "formula": "=DOLLARFR(1.125, 16)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between DOLLARFR and DOLLARDE?",
+      "answer": "DOLLARFR converts decimal to fractional. DOLLARDE converts fractional to decimal."
+    },
+    {
+      "question": "When is DOLLARFR used?",
+      "answer": "It is used to display bond prices in fractional notation."
+    }
+  ],
+  "relatedFunctions": [
+    "dollarde",
+    "price",
+    "yield",
+    "disc",
+    "tbillprice"
+  ]
+}

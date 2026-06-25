@@ -1,0 +1,100 @@
+{
+  "name": "XNPV",
+  "slug": "xnpv",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "XNPV returns the net present value of cash flows occurring at irregular intervals using a discount rate.",
+  "tldr": "Calculates the net present value for a schedule of cash flows that is not necessarily periodic.",
+  "syntax": "(rate, values, dates)",
+  "parameters": [
+    {
+      "name": "rate",
+      "description": "Discount rate to apply to the cash flows.",
+      "required": true
+    },
+    {
+      "name": "values",
+      "description": "Series of cash flows corresponding to the dates.",
+      "required": true
+    },
+    {
+      "name": "dates",
+      "description": "Series of dates corresponding to the cash flows.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "NPV for irregular cash flows",
+    "formula": "=XNPV(0.1, B2:B5, A2:A5)",
+    "result": "Net present value",
+    "explanation": "A2:A5 contains dates and B2:B5 contains the cash flows, discounted at 10%."
+  },
+  "advancedExamples": [
+    {
+      "title": "Include initial investment",
+      "scenario": "Project evaluation",
+      "description": "Initial investment is included in the values array on the first date",
+      "formula": "=XNPV(0.12, B2:B6, A2:A6)",
+      "result": "Project NPV",
+      "explanation": "Unlike NPV, XNPV includes the initial investment in the values array because it is tied to a date."
+    }
+  ],
+  "howItWorks": "XNPV discounts each cash flow to the first date using the actual number of days between dates. The discount rate is annualized.",
+  "howToSteps": [
+    {
+      "name": "Enter rate",
+      "text": "Type the rate"
+    },
+    {
+      "name": "Enter values",
+      "text": "Type the values"
+    },
+    {
+      "name": "Enter dates",
+      "text": "Type the dates"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Dates must be valid and the values array must match the dates array in length.",
+    "The initial investment is included in the values array, not added separately.",
+    "Uses a 365-day year for annualization."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates and values arrays have different lengths or dates are invalid.",
+      "fix": "Ensure arrays match and dates are valid."
+    },
+    {
+      "error": "Wrong NPV",
+      "cause": "Initial investment was added outside the formula.",
+      "fix": "Include the initial investment in the values array with its date."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "XNPV works identically in Google Sheets.",
+    "formula": "=XNPV(0.1, B2:B5, A2:A5)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between NPV and XNPV?",
+      "answer": "NPV assumes equal periods. XNPV uses actual dates for irregular intervals."
+    },
+    {
+      "question": "Do I add the initial investment separately in XNPV?",
+      "answer": "No, include it in the values array with its date."
+    }
+  ],
+  "relatedFunctions": [
+    "npv",
+    "xirr",
+    "irr",
+    "pmt",
+    "rate"
+  ]
+}

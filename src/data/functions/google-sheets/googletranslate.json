@@ -1,0 +1,68 @@
+{
+  "name": "GOOGLETRANSLATE",
+  "slug": "googletranslate",
+  "category": "google-sheets",
+  "excelVersion": "Google Sheets only",
+  "description": "GOOGLETRANSLATE translates text from one language to another using Google Translate directly inside a spreadsheet.",
+  "tldr": "GOOGLETRANSLATE translates text in a cell from a source language to a target language.",
+  "syntax": "(text, [source_language], [target_language])",
+  "parameters": [
+    { "name": "text", "description": "The text to translate. Can be a string literal or a cell reference.", "required": true },
+    { "name": "source_language", "description": "The two-letter language code of the original text, e.g. 'en' for English. If omitted, Google auto-detects the language.", "required": false },
+    { "name": "target_language", "description": "The two-letter language code to translate into, e.g. 'es' for Spanish. Default is the sheet's locale language.", "required": false }
+  ],
+  "basicExample": {
+    "description": "Translate 'Hello' from English to Spanish",
+    "formula": "=GOOGLETRANSLATE('Hello', 'en', 'es')",
+    "result": "Hola",
+    "explanation": "The text 'Hello' is translated from English ('en') to Spanish ('es')."
+  },
+  "advancedExamples": [
+    {
+      "title": "Translate a whole column",
+      "scenario": "Localization",
+      "description": "Translate customer feedback from French to English for all rows",
+      "formula": "=ARRAYFORMULA(GOOGLETRANSLATE(A2:A100, 'fr', 'en'))",
+      "result": "English translations of French feedback",
+      "explanation": "ARRAYFORMULA applies GOOGLETRANSLATE to each cell in A2:A100."
+    },
+    {
+      "title": "Auto-detect source language",
+      "scenario": "Mixed-language data",
+      "description": "Translate text without knowing the source language",
+      "formula": "=GOOGLETRANSLATE(A2, 'auto', 'en')",
+      "result": "English translation",
+      "explanation": "Using 'auto' lets Google detect the source language automatically."
+    }
+  ],
+  "howItWorks": "GOOGLETRANSLATE sends the provided text to Google Translate and returns the translated result. It supports two-letter language codes (ISO 639-1). If the source language is omitted, it is auto-detected. If the target language is omitted, the sheet's default language is used.",
+  "howToSteps": [
+    { "name": "Select the text", "text": "Click the cell containing the text you want to translate, or type a string literal." },
+    { "name": "Choose languages", "text": "Provide source and target language codes, e.g. 'en' and 'es'." },
+    { "name": "Enter the formula", "text": "Type =GOOGLETRANSLATE(text, source, target)." },
+    { "name": "Copy down if needed", "text": "Use ARRAYFORMULA or fill down to translate multiple cells." }
+  ],
+  "limitations": [
+    "GOOGLETRANSLATE is Google Sheets only and has no native Excel equivalent.",
+    "It requires an internet connection to call Google Translate.",
+    "Translation quality may vary for technical or idiomatic text.",
+    "Heavy use may be rate-limited by Google."
+  ],
+  "commonErrors": [
+    { "error": "#VALUE! error", "cause": "Language code is not recognized or is not two letters.", "fix": "Use valid ISO 639-1 codes such as 'en', 'es', 'fr', 'de', 'zh'." },
+    { "error": "No translation returned", "cause": "The text is empty or the source and target languages are the same.", "fix": "Check that the cell contains text and the languages are different." },
+    { "error": "Loading...", "cause": "The formula is waiting for the Google Translate service to respond.", "fix": "Wait a moment; if it persists, check your internet connection." }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "GOOGLETRANSLATE is exclusive to Google Sheets. Excel has no built-in equivalent; you would need a Microsoft Translator API or Power Query connector.",
+    "formula": "=GOOGLETRANSLATE('Hello', 'en', 'es')",
+    "notes": "Language codes are two-letter ISO 639-1 values. 'auto' can be used for source detection."
+  },
+  "faq": [
+    { "question": "Can I translate an entire sheet?", "answer": "Yes, wrap GOOGLETRANSLATE in ARRAYFORMULA or copy the formula down a column." },
+    { "question": "Does it work offline?", "answer": "No, it requires an internet connection to reach Google Translate." },
+    { "question": "What language codes should I use?", "answer": "Use ISO 639-1 codes like 'en' for English, 'es' for Spanish, 'de' for German, 'fr' for French, 'ja' for Japanese, 'zh' for Chinese." },
+    { "question": "Can I translate in Excel?", "answer": "Excel has no built-in GOOGLETRANSLATE. You can use the Microsoft Translator add-in or an API call with Power Query." }
+  ],
+  "relatedFunctions": ["arrayformula", "detectlanguage", "importrange"]
+}

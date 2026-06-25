@@ -1,0 +1,110 @@
+{
+  "name": "COUPDAYSNC",
+  "slug": "coupdaysnc",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "COUPDAYSNC returns the number of days between settlement and the next coupon payment for a bond.",
+  "tldr": "Calculates the number of days from the settlement date to the next coupon date.",
+  "syntax": "(settlement, maturity, frequency, [basis])",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "frequency",
+      "description": "Number of coupon payments per year (1, 2, or 4).",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Days until next coupon payment",
+    "formula": "=COUPDAYSNC(DATE(2024,4,1), DATE(2034,4,1), 2)",
+    "result": "Days to next coupon",
+    "explanation": "For a semi-annual bond purchased on April 1, 2024, this returns the days until the next coupon payment."
+  },
+  "advancedExamples": [
+    {
+      "title": "Actual days to next coupon",
+      "scenario": "Treasury bond",
+      "description": "Use basis 1 for actual days",
+      "formula": "=COUPDAYSNC(DATE(2024,4,1), DATE(2034,4,1), 2, 1)",
+      "result": "Actual days to next coupon",
+      "explanation": "Basis 1 counts actual days."
+    }
+  ],
+  "howItWorks": "COUPDAYSNC is used to determine how many days remain until the next coupon payment, which affects the clean vs. dirty price of a bond.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter frequency",
+      "text": "Type the frequency"
+    },
+    {
+      "name": "Enter basis",
+      "text": "Type the basis"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Frequency must be 1, 2, or 4.",
+    "Basis affects the day count.",
+    "Settlement must be before maturity."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates, frequency, or basis.",
+      "fix": "Verify all inputs."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "COUPDAYSNC works identically in Google Sheets.",
+    "formula": "=COUPDAYSNC(DATE(2024,4,1), DATE(2034,4,1), 2)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between COUPDAYSNC and COUPDAYBS?",
+      "answer": "COUPDAYSNC counts days from settlement to the next coupon. COUPDAYBS counts days from the coupon start to settlement."
+    },
+    {
+      "question": "How is COUPDAYSNC used in bond pricing?",
+      "answer": "It helps determine the accrued interest and the dirty price of a bond."
+    }
+  ],
+  "relatedFunctions": [
+    "coupdaybs",
+    "coupdays",
+    "coupncd",
+    "coupnum",
+    "couppcd",
+    "accrint"
+  ]
+}

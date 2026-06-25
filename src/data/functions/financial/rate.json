@@ -1,0 +1,124 @@
+{
+  "name": "RATE",
+  "slug": "rate",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "RATE returns the periodic interest rate for an annuity based on the number of periods, payment amount, present value, and future value.",
+  "tldr": "Calculates the interest rate per period of a loan or investment.",
+  "syntax": "(nper, pmt, pv, [fv], [type], [guess])",
+  "parameters": [
+    {
+      "name": "nper",
+      "description": "Total number of payment periods.",
+      "required": true
+    },
+    {
+      "name": "pmt",
+      "description": "Payment made each period.",
+      "required": true
+    },
+    {
+      "name": "pv",
+      "description": "Present value or loan principal.",
+      "required": true
+    },
+    {
+      "name": "fv",
+      "description": "Future value (default 0).",
+      "required": false
+    },
+    {
+      "name": "type",
+      "description": "0 = end of period (default), 1 = beginning of period.",
+      "required": false
+    },
+    {
+      "name": "guess",
+      "description": "Initial guess for the rate (default 10%).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Interest rate on a loan",
+    "formula": "=RATE(60, -400, 20000)",
+    "result": "0.63%",
+    "explanation": "A $20,000 loan paid back with $400 monthly payments for 5 years has a monthly interest rate of about 0.63%."
+  },
+  "advancedExamples": [
+    {
+      "title": "Annual interest rate",
+      "scenario": "Loan comparison",
+      "description": "Convert the monthly rate to an annual rate",
+      "formula": "=RATE(60, -400, 20000) * 12",
+      "result": "7.56%",
+      "explanation": "Multiply the monthly rate by 12 to estimate the nominal annual rate."
+    }
+  ],
+  "howItWorks": "RATE uses an iterative method to find the interest rate that makes the net present value of the cash flows equal to zero. If the formula fails to converge, try a different guess.",
+  "howToSteps": [
+    {
+      "name": "Enter nper",
+      "text": "Type the nper"
+    },
+    {
+      "name": "Enter pmt",
+      "text": "Type the pmt"
+    },
+    {
+      "name": "Enter pv",
+      "text": "Type the pv"
+    },
+    {
+      "name": "Enter fv",
+      "text": "Type the fv"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Requires consistent period units.",
+    "May fail to converge for unusual cash-flow patterns; use a guess value to help.",
+    "Returns the periodic rate, not the annual rate."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "The formula cannot converge to a solution.",
+      "fix": "Add a reasonable guess, e.g. =RATE(60, -400, 20000, 0, 0, 0.05)."
+    },
+    {
+      "error": "Annual rate too low",
+      "cause": "Result is monthly but was interpreted as annual.",
+      "fix": "Multiply by the number of periods per year."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "RATE works identically in Google Sheets.",
+    "formula": "=RATE(60, -400, 20000)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "How do I convert RATE to an annual rate?",
+      "answer": "Multiply the periodic rate by the number of periods per year."
+    },
+    {
+      "question": "What is the guess argument?",
+      "answer": "It is an initial estimate for the iterative solver. Default is 10%."
+    },
+    {
+      "question": "Can RATE return multiple rates?",
+      "answer": "No, it returns the first rate it finds. For multiple IRRs, use IRR or MIRR."
+    }
+  ],
+  "relatedFunctions": [
+    "pmt",
+    "nper",
+    "pv",
+    "fv",
+    "irr",
+    "mirr"
+  ]
+}

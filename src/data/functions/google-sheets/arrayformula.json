@@ -1,0 +1,65 @@
+{
+  "name": "ARRAYFORMULA",
+  "slug": "arrayformula",
+  "category": "google-sheets",
+  "excelVersion": "Google Sheets only",
+  "description": "ARRAYFORMULA lets you apply a single formula to an entire range of cells automatically, expanding results into neighboring rows and columns without manually filling down or across.",
+  "tldr": "ARRAYFORMULA wraps a formula and applies it to every cell in a range at once, so you don't need to copy formulas down.",
+  "syntax": "(array_formula)",
+  "parameters": [
+    { "name": "array_formula", "description": "Any formula or expression that returns an array or range result. The formula is evaluated once for each row/column in the input ranges.", "required": true }
+  ],
+  "basicExample": {
+    "description": "Multiply two columns row by row using a single formula",
+    "formula": "=ARRAYFORMULA(A2:A10 * B2:B10)",
+    "result": "Column of products for each row",
+    "explanation": "Instead of writing =A2*B2 in C2 and copying down, ARRAYFORMULA calculates the product for every row in A2:A10 and B2:B10 in one cell."
+  },
+  "advancedExamples": [
+    {
+      "title": "Conditional array with IF",
+      "scenario": "Sales commission",
+      "description": "Calculate 10% commission only for sales greater than $1,000",
+      "formula": "=ARRAYFORMULA(IF(A2:A100 > 1000, A2:A100 * 0.1, 0))",
+      "result": "Commission per row",
+      "explanation": "The IF statement is applied to each row. Only rows above $1,000 get a 10% commission; others return 0."
+    },
+    {
+      "title": "Combine with FILTER",
+      "scenario": "Data extraction",
+      "description": "Filter and transform a dataset in one formula",
+      "formula": "=ARRAYFORMULA(FILTER(A2:C, B2:B > 50) * 1.1)",
+      "result": "Filtered rows with values increased by 10%",
+      "explanation": "FILTER returns qualifying rows, and ARRAYFORMULA applies the 10% increase to the numeric columns."
+    }
+  ],
+  "howItWorks": "ARRAYFORMULA evaluates the inner expression for each element of the input arrays and returns a spilled array. Any range references inside the formula are iterated element-by-element. It works especially well with IF, mathematical operators, and functions that normally return scalar values.",
+  "howToSteps": [
+    { "name": "Pick a scalar formula", "text": "Write a formula you would normally copy down, such as =A2*B2." },
+    { "name": "Replace ranges with arrays", "text": "Change the references to full ranges, e.g. =A2:A10*B2:B10." },
+    { "name": "Wrap with ARRAYFORMULA", "text": "Type =ARRAYFORMULA(...) around the formula." },
+    { "name": "Place in one cell", "text": "Enter the formula in a single cell and it will expand automatically." }
+  ],
+  "limitations": [
+    "ARRAYFORMULA is Google Sheets only; Excel uses dynamic arrays (e.g. =A2:A10*B2:B10 spills automatically).",
+    "Some functions like SUM, COUNT, or AVERAGE return a single value and do not spill inside ARRAYFORMULA.",
+    "If the output range overlaps existing data, the formula returns a #REF! error."
+  ],
+  "commonErrors": [
+    { "error": "#REF! error", "cause": "The spilled array is blocked by existing data in adjacent cells.", "fix": "Clear the cells below or to the right where the formula is trying to expand." },
+    { "error": "Single value instead of array", "cause": "A function inside the formula is aggregating the result (e.g., SUM, COUNT).", "fix": "Use row-by-row equivalents or remove the aggregator; SUM cannot be arrayed directly." },
+    { "error": "Mismatched range sizes", "cause": "Input ranges have different numbers of rows or columns.", "fix": "Ensure all referenced ranges have the same dimensions." }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "ARRAYFORMULA is native to Google Sheets. Excel 365 achieves similar behavior through implicit dynamic arrays without needing to wrap the formula.",
+    "formula": "=ARRAYFORMULA(A2:A10 * B2:B10)",
+    "notes": "In Excel 365, =A2:A10*B2:B10 spills automatically. Older Excel versions require array entry (Ctrl+Shift+Enter)."
+  },
+  "faq": [
+    { "question": "Can ARRAYFORMULA work with SUM?", "answer": "No, SUM returns a single number. For row-by-row sums, use =ARRAYFORMULA(A2:A10+B2:B10) or =SUMPRODUCT(A2:A10, B2:B10)." },
+    { "question": "Why does ARRAYFORMULA return #REF?", "answer": "The array is trying to expand into cells that already contain data. Clear those cells." },
+    { "question": "Can I use ARRAYFORMULA with VLOOKUP?", "answer": "Yes, but only if the lookup value is an array. For example: =ARRAYFORMULA(VLOOKUP(A2:A10, Sheet2!A:B, 2, FALSE))." },
+    { "question": "Does ARRAYFORMULA slow down a sheet?", "answer": "It can on very large ranges because the formula is calculated for every cell at once. For huge datasets, consider using QUERY or pivot tables." }
+  ],
+  "relatedFunctions": ["query", "filter", "unique", "sort", "importrange", "sparkline"]
+}

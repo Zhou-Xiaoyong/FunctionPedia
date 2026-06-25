@@ -1,0 +1,120 @@
+{
+  "name": "PRICEMAT",
+  "slug": "pricemat",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "PRICEMAT returns the price per $100 face value of a security that pays all interest at maturity.",
+  "tldr": "Calculates the price of a security that pays interest at maturity.",
+  "syntax": "(settlement, maturity, issue, rate, yld, [basis])",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "issue",
+      "description": "Date the security was issued.",
+      "required": true
+    },
+    {
+      "name": "rate",
+      "description": "Annual interest rate at issue.",
+      "required": true
+    },
+    {
+      "name": "yld",
+      "description": "Annual yield to maturity.",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Price of a maturity-paying security",
+    "formula": "=PRICEMAT(DATE(2024,4,1), DATE(2024,12,31), DATE(2024,1,1), 0.06, 0.05)",
+    "result": "Price per $100 face value",
+    "explanation": "Calculates the price of a security issued January 1, 2024 with a 6% issue rate and 5% yield."
+  },
+  "advancedExamples": [
+    {
+      "title": "With actual/365 basis",
+      "scenario": "Money market instrument",
+      "description": "Use basis 3 for actual/365",
+      "formula": "=PRICEMAT(DATE(2024,4,1), DATE(2024,12,31), DATE(2024,1,1), 0.06, 0.05, 3)",
+      "result": "Price using actual/365",
+      "explanation": "Basis 3 counts actual days and uses a 365-day year."
+    }
+  ],
+  "howItWorks": "PRICEMAT calculates the price of a security that pays interest at maturity by discounting the redemption and interest payment at the yield.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter issue",
+      "text": "Type the issue"
+    },
+    {
+      "name": "Enter rate",
+      "text": "Type the rate"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Settlement must be before maturity.",
+    "Issue date must be before maturity.",
+    "Basis affects the day count."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates or rates.",
+      "fix": "Verify all inputs and date order."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "PRICEMAT works identically in Google Sheets.",
+    "formula": "=PRICEMAT(DATE(2024,4,1), DATE(2024,12,31), DATE(2024,1,1), 0.06, 0.05)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between PRICEMAT and PRICE?",
+      "answer": "PRICEMAT is for securities that pay interest at maturity. PRICE is for periodic coupon-paying bonds."
+    },
+    {
+      "question": "When is PRICEMAT used?",
+      "answer": "It is used for zero-coupon bonds and certificates of deposit that pay interest at maturity."
+    }
+  ],
+  "relatedFunctions": [
+    "pricemat",
+    "intrate",
+    "received",
+    "disc",
+    "tbillprice",
+    "accrintm"
+  ]
+}

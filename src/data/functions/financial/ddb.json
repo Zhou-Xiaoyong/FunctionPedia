@@ -1,0 +1,113 @@
+{
+  "name": "DDB",
+  "slug": "ddb",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "DDB returns the depreciation of an asset for a specified period using the declining balance method, typically double the straight-line rate.",
+  "tldr": "Calculates double-declining balance depreciation for a specified period.",
+  "syntax": "(cost, salvage, life, period, [factor])",
+  "parameters": [
+    {
+      "name": "cost",
+      "description": "Initial cost of the asset.",
+      "required": true
+    },
+    {
+      "name": "salvage",
+      "description": "Value at the end of the depreciation life.",
+      "required": true
+    },
+    {
+      "name": "life",
+      "description": "Number of periods over which the asset is depreciated.",
+      "required": true
+    },
+    {
+      "name": "period",
+      "description": "The period for which to calculate depreciation.",
+      "required": true
+    },
+    {
+      "name": "factor",
+      "description": "Rate at which the balance declines (default 2 for double-declining).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "First-year double-declining depreciation",
+    "formula": "=DDB(10000, 2000, 5, 1)",
+    "result": "$4,000.00",
+    "explanation": "A $10,000 asset with 5-year life depreciates $4,000 in the first year using double-declining balance."
+  },
+  "advancedExamples": [
+    {
+      "title": "Custom declining factor",
+      "scenario": "150% declining balance",
+      "description": "Use a factor of 1.5 for 150% declining balance",
+      "formula": "=DDB(10000, 2000, 5, 1, 1.5)",
+      "result": "$3,000.00",
+      "explanation": "Factor 1.5 produces a slower decline than the default factor of 2."
+    }
+  ],
+  "howItWorks": "DDB applies a fixed rate multiplied by the factor to the remaining book value. The default factor of 2 creates double-declining balance. The method does not switch to straight-line automatically.",
+  "howToSteps": [
+    {
+      "name": "Enter cost",
+      "text": "Type the cost"
+    },
+    {
+      "name": "Enter salvage",
+      "text": "Type the salvage"
+    },
+    {
+      "name": "Enter life",
+      "text": "Type the life"
+    },
+    {
+      "name": "Enter period",
+      "text": "Type the period"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Total depreciation may exceed salvage value if not monitored.",
+    "Does not switch to straight-line automatically like VDB.",
+    "Factor can be changed for different depreciation speeds."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Period is invalid or cost < salvage.",
+      "fix": "Check that period is between 1 and life and cost >= salvage."
+    },
+    {
+      "error": "Depreciation exceeds book value",
+      "cause": "DDB does not stop at salvage value automatically.",
+      "fix": "Use VDB or manually limit the final period."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "DDB works identically in Google Sheets.",
+    "formula": "=DDB(10000, 2000, 5, 1)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the default factor for DDB?",
+      "answer": "2, which is double-declining balance."
+    },
+    {
+      "question": "Can DDB switch to straight-line?",
+      "answer": "No, use VDB for a method that switches to straight-line."
+    }
+  ],
+  "relatedFunctions": [
+    "db",
+    "sln",
+    "syd",
+    "vdb"
+  ]
+}

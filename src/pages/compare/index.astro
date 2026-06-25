@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../utils/config';
+
+const title = `Function Comparisons | ${SITE.title}`;
+const description = 'Side-by-side comparisons of popular Excel and Google Sheets functions. Learn when to use VLOOKUP vs XLOOKUP, SUMIF vs SUMIFS, and more.';
+const canonical = `${SITE.url}/compare`;
+
+const comparisons = [];
+const dataModules = import.meta.glob('../../data/compare/*.json', { eager: true });
+for (const path in dataModules) {
+  const cmp = dataModules[path];
+  if (cmp && cmp.slug) {
+    comparisons.push(cmp);
+  }
+}
+comparisons.sort((a, b) => a.title.localeCompare(b.title));
+---
+
+<BaseLayout title={title} description={description} canonical={canonical}>
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Function Comparisons</h1>
+    <p class="text-lg text-gray-600 mb-8">Side-by-side guides to choose the right function for your spreadsheet task.</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {comparisons.map((cmp) => (
+        <a href={`/compare/${cmp.slug}`} class="group block p-6 rounded-xl bg-white border border-gray-200 hover:border-primary-500 hover:shadow-lg transition-all">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-lg font-bold text-gray-900 group-hover:text-primary-500 transition-colors">{cmp.title}</h2>
+            <svg class="w-5 h-5 text-gray-300 group-hover:text-primary-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </div>
+          <p class="text-sm text-gray-500 line-clamp-3">{cmp.description}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

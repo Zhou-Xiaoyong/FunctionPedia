@@ -1,0 +1,80 @@
+{
+  "name": "PMT",
+  "slug": "pmt",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "PMT calculates the periodic payment for a loan or investment based on constant payments and a constant interest rate. It's the function you need for mortgage, car loan, and any fixed-rate payment calculations.",
+  "tldr": "PMT tells you how much each payment will be on a fixed-rate loan. Give it the interest rate, number of payments, and loan amount — it returns the payment per period (monthly, yearly, etc.).",
+  "syntax": "(rate, nper, pv, [fv], [type])",
+  "parameters": [
+    { "name": "rate", "description": "The interest rate per period. For a 6% annual loan with monthly payments, use 6%/12 = 0.5%.", "required": true },
+    { "name": "nper", "description": "Total number of payment periods. For a 30-year mortgage with monthly payments, use 30×12 = 360.", "required": true },
+    { "name": "pv", "description": "Present value — the total amount of the loan (the principal). Enter as a positive number.", "required": true },
+    { "name": "fv", "description": "Future value — the balance after all payments. Usually 0 (loan fully paid off). Default is 0.", "required": false },
+    { "name": "type", "description": "When payments are due: 0 = end of period (default), 1 = beginning of period.", "required": false }
+  ],
+  "basicExample": {
+    "description": "Calculate monthly payment for a $200,000 mortgage at 6% annual rate over 30 years",
+    "formula": "=PMT(6%/12, 360, 200000)",
+    "result": "$1,199.10",
+    "explanation": "6%/12 converts the annual rate to monthly. 360 is 30×12 monthly periods. 200000 is the loan amount. The result is the monthly payment."
+  },
+  "advancedExamples": [
+    {
+      "title": "Car loan payment calculation",
+      "scenario": "Auto financing",
+      "description": "Calculate monthly payment for a $35,000 car loan at 4.5% APR over 5 years",
+      "formula": "=PMT(4.5%/12, 60, 35000)",
+      "result": "$652.66",
+      "explanation": "4.5%/12 = monthly rate. 60 = 5×12 monthly periods. 35000 = loan amount. Monthly payment is $652.66."
+    },
+    {
+      "title": "Investment goal — how much to save monthly",
+      "scenario": "Retirement planning",
+      "description": "Calculate how much to save monthly to reach $500,000 in 20 years at 8% annual return",
+      "formula": "=PMT(8%/12, 240, 0, -500000)",
+      "result": "$1,057.81",
+      "explanation": "pv=0 (no starting balance), fv=-500000 (goal amount, negative because you're paying into it). You need to save ~$1,058/month."
+    },
+    {
+      "title": "PMT with beginning-of-period payments",
+      "scenario": "Lease/annuity",
+      "description": "Calculate lease payment when payments start at the beginning of each month",
+      "formula": "=PMT(5%/12, 36, 25000, 0, 1)",
+      "result": "$745.32",
+      "explanation": "type=1 means payments at the beginning of each period (common for leases). This results in a slightly lower payment."
+    }
+  ],
+  "howItWorks": "PMT uses the standard annuity formula to calculate equal periodic payments. The formula balances three forces: (1) the principal grows over time due to interest, (2) each payment reduces the balance, and (3) after all payments, the remaining balance equals the future value (typically 0). The key trick is matching your rate and nper to the same period — if you pay monthly, both rate and nper must be monthly. The result is negative by convention (representing money flowing out), so you can wrap it in ABS() for positive display.",
+  "howToSteps": [
+    { "name": "Convert annual rate to period rate", "text": "Divide the annual rate by the number of periods per year: annual_rate/12 for monthly, annual_rate/4 for quarterly." },
+    { "name": "Convert years to total periods", "text": "Multiply years by periods per year: years×12 for monthly, years×4 for quarterly." },
+    { "name": "Enter the loan amount (pv)", "text": "The present value is the total amount borrowed. Enter as a positive number." },
+    { "name": "Set future value and type", "text": "fv=0 for fully amortized loans. type=0 for end-of-period (default), type=1 for beginning-of-period." },
+    { "name": "Enter the formula", "text": "Type =PMT(rate, nper, pv, fv, type). Wrap in ABS() if you want a positive result." }
+  ],
+  "limitations": [
+    "PMT assumes constant interest rate and equal payments — it doesn't handle variable-rate loans.",
+    "The rate and nper must use the same period unit (both monthly, both annual, etc.).",
+    "PMT returns a negative number by convention (cash outflow). Use ABS() to display as positive.",
+    "PMT doesn't include fees, taxes, or insurance — it's purely the principal+interest payment."
+  ],
+  "commonErrors": [
+    { "error": "Wrong payment amount", "cause": "Mismatched rate and nper periods — e.g., annual rate with monthly periods", "fix": "Always match periods: monthly rate = annual/12, monthly nper = years×12. Using 6% with 360 gives a tiny payment because 6% is treated as the monthly rate." },
+    { "error": "Negative result", "cause": "PMT returns negative values by convention (payment is cash outflow)", "fix": "Wrap in ABS(): =ABS(PMT(6%/12, 360, 200000)) to display as a positive number." },
+    { "error": "Much higher payment than expected", "cause": "Using annual rate without dividing by periods per year", "fix": "A 6% annual rate for monthly payments must be entered as 6%/12 (0.5%), not 6%." }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "PMT works identically in Google Sheets with the same syntax and behavior.",
+    "formula": "=PMT(6%/12, 360, 200000)",
+    "notes": "Google Sheets PMT produces the same results as Excel. All financial functions (PV, FV, RATE, NPER, IPMT, PPMT) also work identically."
+  },
+  "faq": [
+    { "question": "Why does PMT return a negative number?", "answer": "By Excel's cash flow convention, payments are negative (money going out) and received amounts are positive. Use ABS() or multiply by -1 to display as positive." },
+    { "question": "How do I calculate just the interest portion of a payment?", "answer": "Use IPMT for the interest portion and PPMT for the principal portion of each specific payment period." },
+    { "question": "Can PMT handle variable interest rates?", "answer": "No. PMT assumes a constant rate throughout. For variable rates, you'd need a custom amortization table or iterative calculations." },
+    { "question": "What if I want to know the total cost of the loan?", "answer": "Multiply PMT by nper: =ABS(PMT(6%/12,360,200000))*360 gives total payments ($431,676). Subtract the principal to find total interest paid." },
+    { "question": "Does PMT work for savings/investments?", "answer": "Yes. Set pv=0 and fv=your goal amount (negative for savings): =PMT(8%/12, 240, 0, -500000) calculates how much to save monthly to reach $500K." }
+  ],
+  "relatedFunctions": ["pv", "fv", "rate", "nper", "ipmt", "ppmt", "irr"]
+}

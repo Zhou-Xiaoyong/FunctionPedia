@@ -1,0 +1,90 @@
+{
+  "name": "EFFECT",
+  "slug": "effect",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "EFFECT returns the actual annual rate when compounding occurs more than once per year.",
+  "tldr": "Calculates the effective annual interest rate from a nominal rate.",
+  "syntax": "(nominal_rate, npery)",
+  "parameters": [
+    {
+      "name": "nominal_rate",
+      "description": "Nominal annual interest rate.",
+      "required": true
+    },
+    {
+      "name": "npery",
+      "description": "Number of compounding periods per year.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Effective annual rate for a 6% nominal rate compounded monthly",
+    "formula": "=EFFECT(0.06, 12)",
+    "result": "6.17%",
+    "explanation": "A 6% nominal rate compounded monthly equals an effective annual rate of about 6.17%."
+  },
+  "advancedExamples": [
+    {
+      "title": "Compare loans with different compounding",
+      "scenario": "Loan shopping",
+      "description": "Effective rate for quarterly compounding",
+      "formula": "=EFFECT(0.06, 4)",
+      "result": "6.14%",
+      "explanation": "Quarterly compounding gives a slightly lower effective rate than monthly compounding."
+    }
+  ],
+  "howItWorks": "EFFECT uses the formula (1 + nominal_rate / npery)^npery - 1 to convert the nominal rate to the effective annual rate.",
+  "howToSteps": [
+    {
+      "name": "Enter nominal_rate",
+      "text": "Type the nominal_rate"
+    },
+    {
+      "name": "Enter npery",
+      "text": "Type the npery"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Requires npery >= 1.",
+    "Does not include fees.",
+    "Useful for comparing loans with different compounding frequencies."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "npery is less than 1.",
+      "fix": "Ensure npery is at least 1."
+    },
+    {
+      "error": "Wrong rate",
+      "cause": "Nominal rate was entered as a percentage instead of a decimal.",
+      "fix": "Enter 0.06 for 6%, not 6."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "EFFECT works identically in Google Sheets.",
+    "formula": "=EFFECT(0.06, 12)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between NOMINAL and EFFECT?",
+      "answer": "NOMINAL converts an effective rate to a nominal rate. EFFECT converts a nominal rate to an effective rate."
+    },
+    {
+      "question": "Why is the effective rate higher than the nominal rate?",
+      "answer": "Because interest is earned on interest within the year."
+    }
+  ],
+  "relatedFunctions": [
+    "nominal",
+    "rate",
+    "pmt",
+    "nper"
+  ]
+}

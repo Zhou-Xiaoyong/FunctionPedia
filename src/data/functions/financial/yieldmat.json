@@ -1,0 +1,119 @@
+{
+  "name": "YIELDMAT",
+  "slug": "yieldmat",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "YIELDMAT returns the yield to maturity for a security that pays all interest at maturity, such as a zero-coupon bond or certificate of deposit.",
+  "tldr": "Calculates the annual yield of a security that pays interest at maturity.",
+  "syntax": "(settlement, maturity, issue, rate, pr, [basis])",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "issue",
+      "description": "Date the security was issued.",
+      "required": true
+    },
+    {
+      "name": "rate",
+      "description": "Annual interest rate at issue.",
+      "required": true
+    },
+    {
+      "name": "pr",
+      "description": "Price per $100 face value.",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Yield of a maturity-paying security",
+    "formula": "=YIELDMAT(DATE(2024,4,1), DATE(2024,12,31), DATE(2024,1,1), 0.06, 98)",
+    "result": "Annual yield to maturity",
+    "explanation": "Calculates the yield for a security issued January 1, 2024, paying 6% interest at maturity, and priced at $98."
+  },
+  "advancedExamples": [
+    {
+      "title": "With actual/365 basis",
+      "scenario": "Money market instrument",
+      "description": "Use basis 3 for actual/365",
+      "formula": "=YIELDMAT(DATE(2024,4,1), DATE(2024,12,31), DATE(2024,1,1), 0.06, 98, 3)",
+      "result": "Yield using actual/365",
+      "explanation": "Basis 3 counts actual days and uses a 365-day year."
+    }
+  ],
+  "howItWorks": "YIELDMAT solves for the yield that equates the present value of the maturity payment, including accrued interest, to the current price.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter issue",
+      "text": "Type the issue"
+    },
+    {
+      "name": "Enter rate",
+      "text": "Type the rate"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Settlement must be before maturity.",
+    "Issue date must be before maturity.",
+    "Basis affects the day count."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates, rate, or price.",
+      "fix": "Verify all inputs and date order."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "YIELDMAT works identically in Google Sheets.",
+    "formula": "=YIELDMAT(DATE(2024,4,1), DATE(2024,12,31), DATE(2024,1,1), 0.06, 98)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between YIELDMAT and YIELD?",
+      "answer": "YIELDMAT is for securities that pay interest at maturity. YIELD is for periodic coupon bonds."
+    },
+    {
+      "question": "When is YIELDMAT used?",
+      "answer": "It is used for zero-coupon bonds and certificates of deposit."
+    }
+  ],
+  "relatedFunctions": [
+    "yield",
+    "pricemat",
+    "disc",
+    "intrate",
+    "received"
+  ]
+}

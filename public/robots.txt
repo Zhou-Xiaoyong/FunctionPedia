@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /downloads/
+Sitemap: https://functionpedia.com/sitemap-index.xml

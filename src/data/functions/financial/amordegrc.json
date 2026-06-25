@@ -1,0 +1,125 @@
+{
+  "name": "AMORDEGRC",
+  "slug": "amordegrc",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "AMORDEGRC returns the depreciation of an asset for a given period based on a depreciation coefficient used in French accounting.",
+  "tldr": "Calculates depreciation for a specific period using the French declining balance method.",
+  "syntax": "(cost, date_purchased, first_period, salvage, period, rate, [basis])",
+  "parameters": [
+    {
+      "name": "cost",
+      "description": "Initial cost of the asset.",
+      "required": true
+    },
+    {
+      "name": "date_purchased",
+      "description": "Date the asset was purchased.",
+      "required": true
+    },
+    {
+      "name": "first_period",
+      "description": "End date of the first period.",
+      "required": true
+    },
+    {
+      "name": "salvage",
+      "description": "Salvage value at the end of the asset life.",
+      "required": true
+    },
+    {
+      "name": "period",
+      "description": "Period for which to calculate depreciation.",
+      "required": true
+    },
+    {
+      "name": "rate",
+      "description": "Depreciation rate.",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Year basis (0 = 360 days, 1 = actual, 3 = 365 days).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "French declining balance depreciation",
+    "formula": "=AMORDEGRC(10000, DATE(2024,1,1), DATE(2024,12,31), 1000, 1, 0.2)",
+    "result": "Depreciation for period 1",
+    "explanation": "Calculates first-year depreciation for a $10,000 asset with a 20% depreciation rate."
+  },
+  "advancedExamples": [
+    {
+      "title": "With actual year basis",
+      "scenario": "French accounting",
+      "description": "Use basis 1 for actual days",
+      "formula": "=AMORDEGRC(10000, DATE(2024,1,1), DATE(2024,12,31), 1000, 1, 0.2, 1)",
+      "result": "Depreciation with actual year basis",
+      "explanation": "Basis 1 uses actual days for the period."
+    }
+  ],
+  "howItWorks": "AMORDEGRC applies a depreciation coefficient based on the asset life and calculates declining balance depreciation. It is used primarily in French accounting systems.",
+  "howToSteps": [
+    {
+      "name": "Enter cost",
+      "text": "Type the cost"
+    },
+    {
+      "name": "Enter date_purchased",
+      "text": "Type the date_purchased"
+    },
+    {
+      "name": "Enter first_period",
+      "text": "Type the first_period"
+    },
+    {
+      "name": "Enter salvage",
+      "text": "Type the salvage"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Used mainly in French accounting standards.",
+    "Rate is determined by asset life and a coefficient table.",
+    "Basis determines how days are counted."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates, period, or rate.",
+      "fix": "Verify all inputs are valid."
+    },
+    {
+      "error": "Wrong depreciation",
+      "cause": "Rate does not match the French coefficient for the asset life.",
+      "fix": "Use the correct coefficient based on asset life."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "AMORDEGRC works identically in Google Sheets.",
+    "formula": "=AMORDEGRC(10000, DATE(2024,1,1), DATE(2024,12,31), 1000, 1, 0.2)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between AMORDEGRC and AMORLINC?",
+      "answer": "AMORDEGRC uses declining balance. AMORLINC uses straight-line depreciation."
+    },
+    {
+      "question": "When is AMORDEGRC used?",
+      "answer": "It is used in French accounting for accelerated depreciation."
+    }
+  ],
+  "relatedFunctions": [
+    "amorlinc",
+    "db",
+    "ddb",
+    "sln",
+    "syd",
+    "vdb"
+  ]
+}

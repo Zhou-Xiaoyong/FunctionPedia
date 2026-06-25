@@ -1,0 +1,91 @@
+{
+  "name": "DOLLARDE",
+  "slug": "dollarde",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "DOLLARDE converts a dollar value expressed in fractional notation (e.g., bond prices quoted in 32nds) into a decimal number.",
+  "tldr": "Converts a dollar price expressed as a fraction into a decimal number.",
+  "syntax": "(fractional_dollar, fraction)",
+  "parameters": [
+    {
+      "name": "fractional_dollar",
+      "description": "Number expressed as a fraction, such as 1.02 for 1 and 2/16.",
+      "required": true
+    },
+    {
+      "name": "fraction",
+      "description": "Integer to use in the denominator of the fraction.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Convert 1.02 (1 and 2/16) to decimal",
+    "formula": "=DOLLARDE(1.02, 16)",
+    "result": "1.125",
+    "explanation": "1 and 2/16 equals 1.125 in decimal."
+  },
+  "advancedExamples": [
+    {
+      "title": "Bond price in 32nds",
+      "scenario": "Fixed income",
+      "description": "Convert 100.16 (100 and 16/32) to decimal",
+      "formula": "=DOLLARDE(100.16, 32)",
+      "result": "100.50",
+      "explanation": "100 and 16/32 equals 100.50 in decimal."
+    }
+  ],
+  "howItWorks": "DOLLARDE takes the integer part of the input as the whole dollar amount and the decimal part as the numerator over the specified fraction. For example, 1.02 with fraction 16 becomes 1 + 2/16.",
+  "howToSteps": [
+    {
+      "name": "Enter fractional_dollar",
+      "text": "Type the fractional_dollar"
+    },
+    {
+      "name": "Enter fraction",
+      "text": "Type the fraction"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Fraction must be an integer.",
+    "Integer part of the input is the whole dollar amount.",
+    "Decimal part is the numerator."
+  ],
+  "commonErrors": [
+    {
+      "error": "#DIV/0! error",
+      "cause": "Fraction is zero.",
+      "fix": "Use a non-zero integer for the fraction."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Fraction is not an integer.",
+      "fix": "Use an integer value for the fraction."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "DOLLARDE works identically in Google Sheets.",
+    "formula": "=DOLLARDE(1.02, 16)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between DOLLARDE and DOLLARFR?",
+      "answer": "DOLLARDE converts a fractional dollar price to decimal. DOLLARFR converts a decimal dollar price to fractional."
+    },
+    {
+      "question": "When is DOLLARDE used?",
+      "answer": "It is used for bond prices quoted in fractions, such as 32nds or 64ths."
+    }
+  ],
+  "relatedFunctions": [
+    "dollarfr",
+    "price",
+    "yield",
+    "disc",
+    "tbillprice"
+  ]
+}

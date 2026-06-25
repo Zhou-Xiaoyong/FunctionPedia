@@ -1,0 +1,114 @@
+{
+  "name": "YIELDDISC",
+  "slug": "yielddisc",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "YIELDDISC returns the annual yield for a security that is priced at a discount, such as a Treasury bill.",
+  "tldr": "Calculates the annual yield of a discounted security.",
+  "syntax": "(settlement, maturity, pr, redemption, [basis])",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "pr",
+      "description": "Price per $100 face value.",
+      "required": true
+    },
+    {
+      "name": "redemption",
+      "description": "Redemption value per $100 face value.",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Yield of a discounted Treasury bill",
+    "formula": "=YIELDDISC(DATE(2024,1,1), DATE(2024,12,31), 95, 100)",
+    "result": "5.41%",
+    "explanation": "A T-bill priced at $95 that redeems at $100 in one year has an annual yield of about 5.41%."
+  },
+  "advancedExamples": [
+    {
+      "title": "With actual/360 basis",
+      "scenario": "Money market",
+      "description": "Use basis 2 for actual/360",
+      "formula": "=YIELDDISC(DATE(2024,1,1), DATE(2024,12,31), 95, 100, 2)",
+      "result": "Yield using actual/360",
+      "explanation": "Basis 2 is common for money market instruments."
+    }
+  ],
+  "howItWorks": "YIELDDISC calculates the annual yield using the formula (redemption - pr) / pr * (days per year / days to maturity). It is used for zero-coupon and short-term discount instruments.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter pr",
+      "text": "Type the pr"
+    },
+    {
+      "name": "Enter redemption",
+      "text": "Type the redemption"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Settlement must be before maturity.",
+    "Price and redemption are per $100 face value.",
+    "Basis affects the day count and year length."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates, price, or redemption.",
+      "fix": "Verify all inputs."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "YIELDDISC works identically in Google Sheets.",
+    "formula": "=YIELDDISC(DATE(2024,1,1), DATE(2024,12,31), 95, 100)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between YIELDDISC and DISC?",
+      "answer": "YIELDDISC calculates yield based on price. DISC calculates the discount rate based on price."
+    },
+    {
+      "question": "When is YIELDDISC used?",
+      "answer": "It is used for Treasury bills and other discount securities."
+    }
+  ],
+  "relatedFunctions": [
+    "yield",
+    "disc",
+    "tbillyield",
+    "pricedisc",
+    "pricemat"
+  ]
+}

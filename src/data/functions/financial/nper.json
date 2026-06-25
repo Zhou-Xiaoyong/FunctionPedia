@@ -1,0 +1,118 @@
+{
+  "name": "NPER",
+  "slug": "nper",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "NPER returns the total number of payment periods required to reach a target value given a fixed interest rate and payment.",
+  "tldr": "Calculates the number of periods for a loan or investment.",
+  "syntax": "(rate, pmt, pv, [fv], [type])",
+  "parameters": [
+    {
+      "name": "rate",
+      "description": "Interest rate per period.",
+      "required": true
+    },
+    {
+      "name": "pmt",
+      "description": "Payment made each period.",
+      "required": true
+    },
+    {
+      "name": "pv",
+      "description": "Present value or loan principal.",
+      "required": true
+    },
+    {
+      "name": "fv",
+      "description": "Future value (default 0).",
+      "required": false
+    },
+    {
+      "name": "type",
+      "description": "0 = end of period (default), 1 = beginning of period.",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Number of payments to pay off a loan",
+    "formula": "=NPER(0.06/12, -500, 10000)",
+    "result": "22.43 months",
+    "explanation": "Paying $500 per month on a $10,000 loan at 6% annual interest takes about 22.43 months."
+  },
+  "advancedExamples": [
+    {
+      "title": "Reach a savings goal",
+      "scenario": "Savings plan",
+      "description": "How many months to reach $10,000 by saving $300 per month at 5%?",
+      "formula": "=NPER(0.05/12, -300, 0, 10000)",
+      "result": "31.49 months",
+      "explanation": "It takes about 32 months to reach the goal."
+    }
+  ],
+  "howItWorks": "NPER solves for the number of periods in the time-value-of-money equation. It is the inverse of PMT.",
+  "howToSteps": [
+    {
+      "name": "Enter rate",
+      "text": "Type the rate"
+    },
+    {
+      "name": "Enter pmt",
+      "text": "Type the pmt"
+    },
+    {
+      "name": "Enter pv",
+      "text": "Type the pv"
+    },
+    {
+      "name": "Enter fv",
+      "text": "Type the fv"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Payments must remain constant.",
+    "Returns a decimal; round up if you need a whole number of periods.",
+    "Requires consistent period units."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "The payment is too small to reach the future value at the given rate.",
+      "fix": "Increase the payment, lower the rate, or reduce the target amount."
+    },
+    {
+      "error": "Decimal periods",
+      "cause": "Result is not a whole number.",
+      "fix": "Use ROUNDUP or CEILING to get the next whole period."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "NPER works identically in Google Sheets.",
+    "formula": "=NPER(0.06/12, -500, 10000)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between NPER and PMT?",
+      "answer": "NPER solves for the number of payments. PMT solves for the payment amount."
+    },
+    {
+      "question": "Can NPER handle zero interest?",
+      "answer": "Yes, NPER divides the target by the payment when rate is zero."
+    },
+    {
+      "question": "Why is NPER negative?",
+      "answer": "The sign depends on the cash-flow convention. Use ABS to display a positive number."
+    }
+  ],
+  "relatedFunctions": [
+    "pmt",
+    "pv",
+    "fv",
+    "rate",
+    "nper"
+  ]
+}

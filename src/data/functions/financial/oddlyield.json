@@ -1,0 +1,130 @@
+{
+  "name": "ODDLYIELD",
+  "slug": "oddlyield",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "ODDLYIELD returns the yield to maturity for a bond with an irregular last coupon period.",
+  "tldr": "Calculates the yield of a security with an odd last coupon period.",
+  "syntax": "(settlement, maturity, last_interest, rate, pr, redemption, frequency, [basis])",
+  "parameters": [
+    {
+      "name": "settlement",
+      "description": "Date the security is purchased.",
+      "required": true
+    },
+    {
+      "name": "maturity",
+      "description": "Date the security expires.",
+      "required": true
+    },
+    {
+      "name": "last_interest",
+      "description": "Date of the last coupon payment before settlement.",
+      "required": true
+    },
+    {
+      "name": "rate",
+      "description": "Annual coupon rate.",
+      "required": true
+    },
+    {
+      "name": "pr",
+      "description": "Price per $100 face value.",
+      "required": true
+    },
+    {
+      "name": "redemption",
+      "description": "Redemption value per $100 face value.",
+      "required": true
+    },
+    {
+      "name": "frequency",
+      "description": "Number of coupon payments per year (1, 2, or 4).",
+      "required": true
+    },
+    {
+      "name": "basis",
+      "description": "Day-count convention (0 = US 30/360, default).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Yield of a bond with an odd last coupon period",
+    "formula": "=ODDLYIELD(DATE(2024,4,1), DATE(2034,4,1), DATE(2024,1,1), 0.05, 95, 100, 2)",
+    "result": "Yield to maturity",
+    "explanation": "Calculates the yield for a bond priced at $95 with an irregular last coupon period."
+  },
+  "advancedExamples": [
+    {
+      "title": "With actual/actual basis",
+      "scenario": "Treasury bond",
+      "description": "Use basis 1 for actual/actual",
+      "formula": "=ODDLYIELD(DATE(2024,4,1), DATE(2034,4,1), DATE(2024,1,1), 0.05, 95, 100, 2, 1)",
+      "result": "Yield using actual/actual",
+      "explanation": "Basis 1 is common for Treasury bonds."
+    }
+  ],
+  "howItWorks": "ODDLYIELD solves for the yield that equates the present value of the bond's cash flows, including the irregular last coupon, to the purchase price.",
+  "howToSteps": [
+    {
+      "name": "Enter settlement",
+      "text": "Type the settlement"
+    },
+    {
+      "name": "Enter maturity",
+      "text": "Type the maturity"
+    },
+    {
+      "name": "Enter last_interest",
+      "text": "Type the last_interest"
+    },
+    {
+      "name": "Enter rate",
+      "text": "Type the rate"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "All dates must be valid Excel dates.",
+    "Last interest date must be before maturity.",
+    "Settlement must be before maturity."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid dates, price, or rates.",
+      "fix": "Verify all inputs and date order."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Dates are not recognized.",
+      "fix": "Use DATE function or valid date serial numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "ODDLYIELD works identically in Google Sheets.",
+    "formula": "=ODDLYIELD(DATE(2024,4,1), DATE(2034,4,1), DATE(2024,1,1), 0.05, 95, 100, 2)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between ODDLYIELD and YIELD?",
+      "answer": "ODDLYIELD is for bonds with an irregular last coupon period. YIELD is for standard bonds."
+    },
+    {
+      "question": "When is ODDLYIELD used?",
+      "answer": "It is used for bonds that mature on an off-cycle date."
+    }
+  ],
+  "relatedFunctions": [
+    "yield",
+    "oddlyprice",
+    "oddfprice",
+    "oddfyield",
+    "price",
+    "accrint"
+  ]
+}

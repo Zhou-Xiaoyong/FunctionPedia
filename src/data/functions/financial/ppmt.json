@@ -1,0 +1,119 @@
+{
+  "name": "PPMT",
+  "slug": "ppmt",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "PPMT calculates the principal portion of a payment for a specific period of a loan or investment.",
+  "tldr": "Finds the principal portion of a loan payment in a given period.",
+  "syntax": "(rate, per, nper, pv, [fv], [type])",
+  "parameters": [
+    {
+      "name": "rate",
+      "description": "Interest rate per period.",
+      "required": true
+    },
+    {
+      "name": "per",
+      "description": "The period for which to calculate principal (1 to nper).",
+      "required": true
+    },
+    {
+      "name": "nper",
+      "description": "Total number of payment periods.",
+      "required": true
+    },
+    {
+      "name": "pv",
+      "description": "Present value or loan principal.",
+      "required": true
+    },
+    {
+      "name": "fv",
+      "description": "Future value or desired cash balance after the last payment (default 0).",
+      "required": false
+    },
+    {
+      "name": "type",
+      "description": "0 = end of period (default), 1 = beginning of period.",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Principal portion of the first payment on a loan",
+    "formula": "=PPMT(0.05/12, 1, 360, 300000)",
+    "result": "-$348.55",
+    "explanation": "For a $300,000 loan at 5% annual interest over 30 years, the first month's principal payment is about $348.55."
+  },
+  "advancedExamples": [
+    {
+      "title": "Principal in a later period",
+      "scenario": "Amortization schedule",
+      "description": "Principal portion of the 60th payment",
+      "formula": "=PPMT(0.05/12, 60, 360, 300000)",
+      "result": "Principal portion",
+      "explanation": "The principal portion increases as the loan balance decreases."
+    }
+  ],
+  "howItWorks": "PPMT calculates the principal portion of a specific payment. The total payment (PMT) equals the interest portion (IPMT) plus the principal portion (PPMT) for that period.",
+  "howToSteps": [
+    {
+      "name": "Enter rate",
+      "text": "Use the periodic interest rate."
+    },
+    {
+      "name": "Enter period",
+      "text": "Choose the period number."
+    },
+    {
+      "name": "Enter total periods",
+      "text": "Type the total number of payments."
+    },
+    {
+      "name": "Enter present value",
+      "text": "Input the loan amount."
+    }
+  ],
+  "limitations": [
+    "Returns negative values by default.",
+    "Requires consistent period units.",
+    "Does not include fees or taxes."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "per is outside the range 1 to nper.",
+      "fix": "Ensure per is valid."
+    },
+    {
+      "error": "Wrong sign",
+      "cause": "Principal is negative when expecting positive.",
+      "fix": "Use -PPMT or ABS."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "PPMT works identically in Google Sheets.",
+    "formula": "=PPMT(0.05/12, 1, 360, 300000)",
+    "notes": "Same behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between PPMT and IPMT?",
+      "answer": "PPMT returns the principal portion; IPMT returns the interest portion."
+    },
+    {
+      "question": "Does PPMT + IPMT equal PMT?",
+      "answer": "Yes, for a fixed-rate loan, PPMT + IPMT = PMT for the same period."
+    },
+    {
+      "question": "Can PPMT calculate cumulative principal?",
+      "answer": "Sum PPMT over multiple periods or use CUMPRINC."
+    }
+  ],
+  "relatedFunctions": [
+    "ipmt",
+    "pmt",
+    "cumprinc",
+    "pv",
+    "rate"
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "title": "COUNTIF vs COUNTIFS",
+  "slug": "countif-vs-countifs",
+  "functionA": "countif",
+  "functionB": "countifs",
+  "description": "Compare COUNTIF and COUNTIFS to count cells based on one or multiple conditions.",
+  "intro": "COUNTIF counts cells that meet a single condition. COUNTIFS counts cells that meet multiple conditions. If you ever plan to add more criteria, start with COUNTIFS.",
+  "comparisonTable": [
+    {
+      "aspect": "Number of criteria",
+      "functionA": "One criterion",
+      "functionB": "Multiple criteria"
+    },
+    {
+      "aspect": "Syntax",
+      "functionA": "COUNTIF(range, criteria)",
+      "functionB": "COUNTIFS(criteria_range1, criteria1, ...)"
+    },
+    {
+      "aspect": "Logic",
+      "functionA": "Single condition",
+      "functionB": "AND logic across all conditions"
+    },
+    {
+      "aspect": "Availability",
+      "functionA": "All Excel versions",
+      "functionB": "Excel 2007+"
+    }
+  ],
+  "whenToUseA": "Use COUNTIF when you have a simple, single condition and no plans to add more criteria.",
+  "whenToUseB": "Use COUNTIFS when you have two or more conditions, or when you want a formula that can easily grow.",
+  "verdict": "COUNTIFS is the better choice for any new counting work, especially if multiple criteria are possible.",
+  "faq": [
+    {
+      "question": "Can COUNTIF count blank cells?",
+      "answer": "Yes, use \"\" as the criteria."
+    },
+    {
+      "question": "What is the maximum criteria for COUNTIFS?",
+      "answer": "Excel supports up to 127 range/criteria pairs."
+    }
+  ]
+}

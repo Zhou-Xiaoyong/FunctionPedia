@@ -1,0 +1,128 @@
+{
+  "name": "OFFSET",
+  "slug": "offset",
+  "category": "lookup",
+  "excelVersion": "All versions",
+  "description": "OFFSET returns a reference that is a specified number of rows and columns from a starting cell or range.",
+  "tldr": "Returns a range shifted by a given number of rows and columns from a starting point.",
+  "syntax": "(reference, rows, cols, [height], [width])",
+  "parameters": [
+    {
+      "name": "reference",
+      "description": "The starting cell or range.",
+      "required": true
+    },
+    {
+      "name": "rows",
+      "description": "Number of rows to shift down (positive) or up (negative).",
+      "required": true
+    },
+    {
+      "name": "cols",
+      "description": "Number of columns to shift right (positive) or left (negative).",
+      "required": true
+    },
+    {
+      "name": "height",
+      "description": "Height of the returned range in rows (optional).",
+      "required": false
+    },
+    {
+      "name": "width",
+      "description": "Width of the returned range in columns (optional).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Return the value one row below A1",
+    "formula": "=OFFSET(A1, 1, 0)",
+    "result": "Value in A2",
+    "explanation": "Starts at A1 and shifts down 1 row, returning A2."
+  },
+  "advancedExamples": [
+    {
+      "title": "Dynamic range",
+      "scenario": "Rolling average",
+      "description": "Create a range that grows as data is added",
+      "formula": "=AVERAGE(OFFSET(A1, 0, 0, COUNTA(A:A), 1))",
+      "result": "Average of all populated cells in column A",
+      "explanation": "COUNTA determines the height of the range dynamically."
+    },
+    {
+      "title": "2D offset",
+      "scenario": "Matrix lookup",
+      "description": "Return a 3x2 range starting 2 rows down and 1 column right from A1",
+      "formula": "=SUM(OFFSET(A1, 2, 1, 3, 2))",
+      "result": "Sum of range B3:C5",
+      "explanation": "OFFSET returns a 3-row by 2-column range starting at B3."
+    }
+  ],
+  "howItWorks": "OFFSET starts at the reference and moves the specified number of rows and columns. It then optionally expands the result to a range of the given height and width. It returns a reference, not a value, so it is typically used inside another function.",
+  "howToSteps": [
+    {
+      "name": "Choose starting cell",
+      "text": "Select the anchor cell or range."
+    },
+    {
+      "name": "Specify row offset",
+      "text": "Enter how many rows to move down (positive) or up (negative)."
+    },
+    {
+      "name": "Specify column offset",
+      "text": "Enter how many columns to move right (positive) or left (negative)."
+    },
+    {
+      "name": "Optional size",
+      "text": "Set height and width to return a range larger than one cell."
+    }
+  ],
+  "limitations": [
+    "Volatile: recalculates on every workbook change, which can slow performance.",
+    "Can be hard to debug because the returned range is not visible.",
+    "Does not work across closed workbooks.",
+    "Using it with entire-column references can cause performance issues."
+  ],
+  "commonErrors": [
+    {
+      "error": "#REF! error",
+      "cause": "The offset points outside the worksheet boundaries.",
+      "fix": "Reduce the row or column offset values."
+    },
+    {
+      "error": "Performance issues",
+      "cause": "OFFSET is volatile and used in many cells.",
+      "fix": "Use INDEX or structured references instead where possible."
+    },
+    {
+      "error": "Wrong range size",
+      "cause": "Height or width parameters are incorrect.",
+      "fix": "Double-check the height and width values."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "OFFSET works identically in Google Sheets.",
+    "formula": "=OFFSET(A1, 1, 0)",
+    "notes": "Same behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between OFFSET and INDEX?",
+      "answer": "OFFSET returns a reference by shifting from a starting point. INDEX returns a value or reference at a specific position in an array."
+    },
+    {
+      "question": "Is OFFSET volatile?",
+      "answer": "Yes, it recalculates whenever the sheet changes."
+    },
+    {
+      "question": "Can I use OFFSET for dynamic named ranges?",
+      "answer": "Yes, but modern Excel often prefers structured tables or FILTER."
+    }
+  ],
+  "relatedFunctions": [
+    "indirect",
+    "index",
+    "match",
+    "vlookup",
+    "xlookup"
+  ]
+}

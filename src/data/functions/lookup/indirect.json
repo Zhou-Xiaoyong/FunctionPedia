@@ -1,0 +1,109 @@
+{
+  "name": "INDIRECT",
+  "slug": "indirect",
+  "category": "lookup",
+  "excelVersion": "All versions",
+  "description": "INDIRECT converts a text string into a cell reference that Excel can use in a formula.",
+  "tldr": "Turns text that looks like a cell reference into an actual reference.",
+  "syntax": "(ref_text, [a1])",
+  "parameters": [
+    {
+      "name": "ref_text",
+      "description": "A text string that describes a cell reference or named range.",
+      "required": true
+    },
+    {
+      "name": "a1",
+      "description": "If TRUE, ref_text is interpreted in A1 style. If FALSE, R1C1 style. Default is TRUE.",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Reference a cell from text",
+    "formula": "=INDIRECT(\"A1\")",
+    "result": "Value in A1",
+    "explanation": "The text \"A1\" is converted to the cell reference A1."
+  },
+  "advancedExamples": [
+    {
+      "title": "Dynamic sheet reference",
+      "scenario": "Multi-sheet summary",
+      "description": "Pull a value from a sheet named in cell B2",
+      "formula": "=INDIRECT(B2 & \"!A1\")",
+      "result": "Value from sheet A1",
+      "explanation": "If B2 contains \"Sheet2\", the formula references Sheet2!A1."
+    },
+    {
+      "title": "Dynamic named range",
+      "scenario": "Dashboard",
+      "description": "Sum a named range selected from a dropdown",
+      "formula": "=SUM(INDIRECT(A2))",
+      "result": "Sum of selected named range",
+      "explanation": "A2 contains a named range name, and INDIRECT converts it to a reference for SUM."
+    }
+  ],
+  "howItWorks": "INDIRECT takes a text string and evaluates it as a cell reference. This allows dynamic references based on formulas or user input. However, the resulting reference is not updated when cells move or insert.",
+  "howToSteps": [
+    {
+      "name": "Build reference text",
+      "text": "Create a string that looks like a cell reference, e.g. \"A1\" or \"Sheet2!B2\"."
+    },
+    {
+      "name": "Wrap with INDIRECT",
+      "text": "Type =INDIRECT(ref_text)."
+    },
+    {
+      "name": "Use the reference",
+      "text": "Use it inside other functions like SUM, VLOOKUP, etc."
+    }
+  ],
+  "limitations": [
+    "Volatile: recalculates whenever the workbook changes, which can slow down large workbooks.",
+    "Does not update if rows/columns are inserted or deleted.",
+    "Cannot reference closed workbooks.",
+    "A1 parameter defaults to TRUE (A1 style)."
+  ],
+  "commonErrors": [
+    {
+      "error": "#REF! error",
+      "cause": "The text string is not a valid reference or the sheet does not exist.",
+      "fix": "Verify the text string and sheet names."
+    },
+    {
+      "error": "Sheet name error",
+      "cause": "Sheet names with spaces need single quotes.",
+      "fix": "Use 'Sheet Name'!A1 in the text string."
+    },
+    {
+      "error": "Circular reference",
+      "cause": "The text string refers to the cell containing the formula.",
+      "fix": "Restructure the formula to avoid self-reference."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "INDIRECT works similarly in Google Sheets.",
+    "formula": "=INDIRECT(\"Sheet2!A1\")",
+    "notes": "Google Sheets supports INDIRECT but cannot reference closed external sheets."
+  },
+  "faq": [
+    {
+      "question": "Is INDIRECT volatile?",
+      "answer": "Yes, it recalculates on every change, which can slow performance."
+    },
+    {
+      "question": "Can INDIRECT reference another workbook?",
+      "answer": "Only if the workbook is open. Closed workbooks return #REF!."
+    },
+    {
+      "question": "How do I use INDIRECT with data validation?",
+      "answer": "Create a dropdown that selects a named range, then use INDIRECT to pull that range."
+    }
+  ],
+  "relatedFunctions": [
+    "offset",
+    "index",
+    "vlookup",
+    "address",
+    "cell"
+  ]
+}

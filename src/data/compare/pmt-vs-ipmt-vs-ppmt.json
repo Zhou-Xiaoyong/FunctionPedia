@@ -1,0 +1,49 @@
+{
+  "title": "PMT vs IPMT vs PPMT",
+  "slug": "pmt-vs-ipmt-vs-ppmt",
+  "functionA": "pmt",
+  "functionB": "ipmt",
+  "functionC": "ppmt",
+  "description": "Understand the difference between total payment, interest portion, and principal portion of a loan.",
+  "intro": "PMT calculates the total periodic payment on a loan. IPMT and PPMT split that payment into the interest and principal portions for a specific period.",
+  "comparisonTable": [
+    {
+      "aspect": "What it returns",
+      "functionA": "Total payment amount",
+      "functionB": "Interest portion of a specific payment",
+      "functionC": "Principal portion of a specific payment"
+    },
+    {
+      "aspect": "Period argument",
+      "functionA": "Not required",
+      "functionB": "Required (per)",
+      "functionC": "Required (per)"
+    },
+    {
+      "aspect": "Use case",
+      "functionA": "Budgeting monthly payments",
+      "functionB": "Building an amortization schedule",
+      "functionC": "Tracking loan balance reduction"
+    },
+    {
+      "aspect": "Relationship",
+      "functionA": "PMT = IPMT + PPMT",
+      "functionB": "Part of PMT",
+      "functionC": "Part of PMT"
+    }
+  ],
+  "whenToUseA": "Use PMT when you need to know the total periodic payment amount for budgeting or loan qualification.",
+  "whenToUseB": "Use IPMT when building an amortization schedule or analyzing interest expense in a specific period.",
+  "whenToUseC": "Use PPMT when tracking principal repayment or calculating remaining loan balance.",
+  "verdict": "These functions work together: PMT gives the total payment, while IPMT and PPMT split it into interest and principal.",
+  "faq": [
+    {
+      "question": "Why are IPMT and PPMT negative?",
+      "answer": "They represent cash outflows. Multiply by -1 or use ABS for positive values."
+    },
+    {
+      "question": "Does PMT equal IPMT plus PPMT?",
+      "answer": "Yes, for a fixed-rate loan, PMT = IPMT + PPMT for the same period."
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "name": "REGEXEXTRACT",
+  "slug": "regexextract",
+  "category": "google-sheets",
+  "excelVersion": "Google Sheets only",
+  "description": "REGEXEXTRACT extracts a substring from text that matches a regular expression pattern. It is useful for pulling specific pieces of text out of larger strings.",
+  "tldr": "REGEXEXTRACT pulls out the part of a text that matches a regular expression pattern.",
+  "syntax": "(text, regular_expression)",
+  "parameters": [
+    { "name": "text", "description": "The text to search.", "required": true },
+    { "name": "regular_expression", "description": "The RE2 regular expression pattern. Use parentheses to define capture groups.", "required": true }
+  ],
+  "basicExample": {
+    "description": "Extract the domain from an email address",
+    "formula": "=REGEXEXTRACT('name@example.com', '@(.+)$')",
+    "result": "example.com",
+    "explanation": "The pattern captures everything after the @ symbol and before the end of the string."
+  },
+  "advancedExamples": [
+    {
+      "title": "Extract first and last name from a full name",
+      "scenario": "Name parsing",
+      "description": "Pull first and last names from 'John Smith'",
+      "formula": "=REGEXEXTRACT(A2, '^(.+)\\s+(.+)$')",
+      "result": "John Smith (two capture groups)",
+      "explanation": "The first capture group matches the first name, the second matches the last name. In Google Sheets, multiple groups are returned as a horizontal array."
+    },
+    {
+      "title": "Extract an order number",
+      "scenario": "Text parsing",
+      "description": "Pull the numeric order ID from 'Order #12345'",
+      "formula": "=REGEXEXTRACT(A2, 'Order #(\\d+)')",
+      "result": "12345",
+      "explanation": "The pattern matches 'Order #' followed by one or more digits and captures the digits."
+    }
+  ],
+  "howItWorks": "REGEXEXTRACT searches the text for the first match of the regular expression. If the pattern contains capture groups, the captured text is returned. Without capture groups, the entire match is returned. If there is no match, the function returns #N/A.",
+  "howToSteps": [
+    { "name": "Identify the text to parse", "text": "Select the cell or string containing the text." },
+    { "name": "Write a capture pattern", "text": "Use parentheses around the part of the pattern you want to extract." },
+    { "name": "Enter the formula", "text": "Type =REGEXEXTRACT(text, 'pattern')." },
+    { "name": "Handle no match", "text": "Wrap with IFERROR if missing matches are expected." }
+  ],
+  "limitations": [
+    "REGEXEXTRACT is Google Sheets only. Excel has no built-in regex extraction function.",
+    "It uses RE2 syntax, which lacks lookahead/lookbehind and some advanced features.",
+    "Only the first match is returned. For multiple matches, you need a more complex approach or REGEXREPLACE.",
+    "Multiple capture groups return a horizontal array, which may spill across columns."
+  ],
+  "commonErrors": [
+    { "error": "#N/A error", "cause": "No match was found for the pattern.", "fix": "Check the pattern or wrap with IFERROR to return a default value." },
+    { "error": "#VALUE! error", "cause": "The regular expression is invalid.", "fix": "Validate the regex syntax and ensure it is RE2-compatible." },
+    { "error": "Wrong extraction", "cause": "Capture groups are not defined correctly.", "fix": "Place parentheses around only the text you want to extract." }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "REGEXEXTRACT is exclusive to Google Sheets. Excel users can use Power Query, VBA, or TEXTBEFORE/TEXTAFTER functions.",
+    "formula": "=REGEXEXTRACT(A2, 'Order #(\\d+)')",
+    "notes": "IFERROR is useful to avoid #N/A when the pattern does not match."
+  },
+  "faq": [
+    { "question": "Can REGEXEXTRACT return all matches?", "answer": "No, it returns only the first match. For all matches, you need a helper formula or script." },
+    { "question": "What if there are multiple capture groups?", "answer": "Google Sheets returns them as a horizontal array across adjacent cells." },
+    { "question": "Can I use REGEXEXTRACT in Excel?", "answer": "No. Excel has no native regex extraction function." },
+    { "question": "How do I avoid #N/A when there is no match?", "answer": "Use IFERROR: =IFERROR(REGEXEXTRACT(A2, 'pattern'), 'Not found')." }
+  ],
+  "relatedFunctions": ["regexmatch", "regexreplace", "arrayformula", "iferror"]
+}

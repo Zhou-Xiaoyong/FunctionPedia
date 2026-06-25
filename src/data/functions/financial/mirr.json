@@ -1,0 +1,100 @@
+{
+  "name": "MIRR",
+  "slug": "mirr",
+  "category": "financial",
+  "excelVersion": "All versions",
+  "description": "MIRR is a more conservative version of IRR that assumes positive cash flows are reinvested at a specified rate and financing costs are explicit.",
+  "tldr": "Calculates the modified internal rate of return for a series of cash flows.",
+  "syntax": "(values, finance_rate, reinvest_rate)",
+  "parameters": [
+    {
+      "name": "values",
+      "description": "Array or reference to cash flows, including the initial investment.",
+      "required": true
+    },
+    {
+      "name": "finance_rate",
+      "description": "Interest rate paid on the money used in the cash flows.",
+      "required": true
+    },
+    {
+      "name": "reinvest_rate",
+      "description": "Interest rate received on reinvested cash flows.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "MIRR for a project with reinvestment assumption",
+    "formula": "=MIRR(B2:B6, 0.05, 0.08)",
+    "result": "MIRR value",
+    "explanation": "Calculates the modified IRR for cash flows in B2:B6, assuming 5% financing cost and 8% reinvestment return."
+  },
+  "advancedExamples": [
+    {
+      "title": "Compare MIRR and IRR",
+      "scenario": "Investment analysis",
+      "description": "MIRR usually gives a lower rate than IRR because it uses a conservative reinvestment rate.",
+      "formula": "=MIRR(B2:B6, 0.05, 0.07)",
+      "result": "Modified IRR",
+      "explanation": "Uses 7% as the reinvestment rate for positive cash flows."
+    }
+  ],
+  "howItWorks": "MIRR separates cash flows into negative and positive streams. Negative flows are discounted to the present at the finance rate, and positive flows are compounded to the end at the reinvest rate. The result is the rate that equates the present value of outflows to the future value of inflows.",
+  "howToSteps": [
+    {
+      "name": "Enter values",
+      "text": "Type the values"
+    },
+    {
+      "name": "Enter finance_rate",
+      "text": "Type the finance_rate"
+    },
+    {
+      "name": "Enter reinvest_rate",
+      "text": "Type the reinvest_rate"
+    },
+    {
+      "name": "Calculate",
+      "text": "Press Enter to get the result."
+    }
+  ],
+  "limitations": [
+    "Requires at least one positive and one negative cash flow.",
+    "Assumes cash flows occur at regular intervals.",
+    "Generally more realistic than IRR because it uses explicit reinvestment and finance rates."
+  ],
+  "commonErrors": [
+    {
+      "error": "#DIV/0! error",
+      "cause": "All cash flows have the same sign.",
+      "fix": "Ensure there is at least one positive and one negative cash flow."
+    },
+    {
+      "error": "#NUM! error",
+      "cause": "Invalid finance or reinvest rate.",
+      "fix": "Use positive decimal rates."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "MIRR works identically in Google Sheets.",
+    "formula": "=MIRR(B2:B6, 0.05, 0.08)",
+    "notes": "Same syntax and behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between IRR and MIRR?",
+      "answer": "MIRR uses explicit finance and reinvestment rates, while IRR assumes reinvestment at the IRR itself."
+    },
+    {
+      "question": "Why is MIRR lower than IRR?",
+      "answer": "Because MIRR typically assumes a lower reinvestment rate than the IRR."
+    }
+  ],
+  "relatedFunctions": [
+    "irr",
+    "npv",
+    "xirr",
+    "pmt",
+    "rate"
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "name": "QUERY",
+  "slug": "query",
+  "category": "google-sheets",
+  "excelVersion": "Google Sheets only",
+  "description": "QUERY runs a Google Visualization API Query Language statement on a range of data. It's Google Sheets' most powerful data function — essentially SQL for your spreadsheet.",
+  "tldr": "QUERY lets you run SQL-like commands on your spreadsheet data. Filter, sort, aggregate, pivot — all in one formula. It's the Swiss Army knife of Google Sheets data manipulation.",
+  "syntax": "(data, query, [headers])",
+  "parameters": [
+    { "name": "data", "description": "The range of cells to query. Include header row if you want to reference columns by name.", "required": true },
+    { "name": "query", "description": "A query string using Google Visualization API Query Language (similar to SQL). E.g., 'SELECT A, B WHERE C > 100 ORDER BY B DESC'.", "required": true },
+    { "name": "headers", "description": "Number of header rows at the top of data. -1 = auto-detect, 0 = no headers. Default is -1.", "required": false }
+  ],
+  "basicExample": {
+    "description": "Select all rows where the region is 'East' and sort by sales descending",
+    "formula": "=QUERY(A1:E50, \"SELECT A, B, D WHERE C = 'East' ORDER BY D DESC\", 1)",
+    "result": "Filtered and sorted table",
+    "explanation": "SELECT A, B, D picks 3 columns. WHERE C='East' filters by region. ORDER BY D DESC sorts by sales. 1 header row."
+  },
+  "advancedExamples": [
+    {
+      "title": "QUERY with aggregation (GROUP BY)",
+      "scenario": "Reporting",
+      "description": "Sum sales by region using GROUP BY",
+      "formula": "=QUERY(A1:E50, \"SELECT C, SUM(D) GROUP BY C ORDER BY SUM(D) DESC\", 1)",
+      "result": "Region | Total Sales",
+      "explanation": "GROUP BY C groups rows by region. SUM(D) totals sales per group. Results are sorted by total descending."
+    },
+    {
+      "title": "QUERY with multiple conditions",
+      "scenario": "Complex filtering",
+      "description": "Filter for East region sales above $5000 in Q1",
+      "formula": "=QUERY(A1:F50, \"SELECT A, B, D WHERE C='East' AND D>5000 AND F='Q1'\", 1)",
+      "result": "Filtered table",
+      "explanation": "Multiple WHERE conditions combined with AND. Each condition is evaluated independently before results are combined."
+    },
+    {
+      "title": "QUERY with IMPORTRANGE for cross-sheet analysis",
+      "scenario": "Multi-sheet data",
+      "description": "Query data from another spreadsheet entirely",
+      "formula": "=QUERY(IMPORTRANGE(\"sheet_url\", \"Sheet1!A1:E100\"), \"SELECT Col1, Col4 WHERE Col3='East'\", 1)",
+      "result": "Cross-sheet filtered data",
+      "explanation": "IMPORTRANGE pulls data from another spreadsheet. QUERY then filters it. Use Col1, Col2 (not A, B) when querying IMPORTRANGE data."
+    }
+  ],
+  "howItWorks": "QUERY treats your spreadsheet range like a database table. The query string uses a SQL-like language: SELECT chooses columns, WHERE filters rows, GROUP BY aggregates, ORDER BY sorts, LIMIT restricts row count. Column references use letters (A, B, C) when querying a direct range, or Col1, Col2, Col3 when querying computed arrays like IMPORTRANGE results. The function evaluates the query and returns a dynamic result set that spills into adjacent cells.",
+  "howToSteps": [
+    { "name": "Set up your data range", "text": "Select the full range including headers (e.g., A1:E50). Headers allow column name references." },
+    { "name": "Write your query string", "text": "Use SQL-like syntax: SELECT columns, WHERE conditions, ORDER BY, GROUP BY. Enclose in quotes." },
+    { "name": "Specify header rows", "text": "Set headers parameter: 1 if one header row, -1 for auto-detect." },
+    { "name": "Enter the formula", "text": "Type =QUERY(range, \"SELECT A WHERE B > 100\", 1) in a cell with space for spilled results." }
+  ],
+  "limitations": [
+    "QUERY is exclusive to Google Sheets — there is no equivalent in Excel.",
+    "QUERY cannot reference columns by letter (A, B) when the data comes from IMPORTRANGE — use Col1, Col2 instead.",
+    "QUERY has limited date handling — dates must be formatted carefully in the query string.",
+    "Complex queries may be slow on very large datasets (10K+ rows).",
+    "QUERY doesn't support JOIN operations between different ranges."
+  ],
+  "commonErrors": [
+    { "error": "#VALUE! (Col not found)", "cause": "Referencing column by letter (A, B) when data comes from IMPORTRANGE or computed arrays", "fix": "Use Col1, Col2, Col3 notation for computed array sources. Letters only work with direct range references." },
+    { "error": "Empty result", "cause": "WHERE condition doesn't match any rows, or date format is wrong", "fix": "Check that your conditions actually match data. For dates, use date 'YYYY-MM-DD' format in the query." },
+    { "error": "#N/A (query parse error)", "cause": "Syntax error in the query string", "fix": "Verify SQL syntax: quotes around text values, proper SELECT/WHERE/ORDER BY structure, no typos." }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "QUERY is a Google Sheets exclusive function — there is no direct Excel equivalent.",
+    "formula": "=QUERY(A1:E50, \"SELECT A, B WHERE C = 'East' ORDER BY B DESC\", 1)",
+    "notes": "In Excel, use FILTER + SORT for similar functionality, or Power Query for advanced data manipulation."
+  },
+  "faq": [
+    { "question": "What's the Excel equivalent of QUERY?", "answer": "There's no direct equivalent. FILTER + SORT can handle basic filtering and sorting. For aggregation (GROUP BY), use PivotTables or Power Query. For complex analysis, Power Query is the closest match." },
+    { "question": "Can QUERY reference another sheet?", "answer": "Yes. Use the sheet name in the range: =QUERY(Sheet2!A1:E50, ...) or use IMPORTRANGE for cross-spreadsheet data." },
+    { "question": "How do I handle dates in QUERY?", "answer": "Use the date keyword: WHERE A > date '2024-01-01'. The date must be in YYYY-MM-DD format regardless of your spreadsheet date formatting." },
+    { "question": "Can QUERY do pivot tables?", "answer": "Yes! Use PIVOT in the query: =QUERY(A1:E50, \"SELECT C, SUM(D) GROUP BY C PIVOT B\", 1) creates a pivot-like summary." },
+    { "question": "Why does QUERY return Col1 instead of A?", "answer": "When QUERY operates on computed arrays (IMPORTRANGE results, {array} literals), columns are referenced as Col1, Col2, etc. Letter references (A, B) only work with direct spreadsheet ranges." }
+  ],
+  "relatedFunctions": ["filter", "sort", "importrange", "arrayformula", "unique"]
+}

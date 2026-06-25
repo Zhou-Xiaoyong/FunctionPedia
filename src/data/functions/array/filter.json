@@ -1,0 +1,78 @@
+{
+  "name": "FILTER",
+  "slug": "filter",
+  "category": "array",
+  "excelVersion": "365 / 2021+",
+  "description": "FILTER extracts rows from a range that meet a condition, returning a dynamic array of matching results. It's the array-era replacement for complex IF/INDEX combinations.",
+  "tldr": "FILTER pulls out matching rows from a table based on a condition. Unlike VLOOKUP (which returns one value), FILTER can return entire rows and multiple matches — all in one formula.",
+  "syntax": "(array, include, [if_empty])",
+  "parameters": [
+    { "name": "array", "description": "The range or array to filter. Can be a single column or a multi-column table.", "required": true },
+    { "name": "include", "description": "A Boolean array (TRUE/FALSE) of the same height as the array. TRUE rows are included, FALSE rows are excluded.", "required": true },
+    { "name": "if_empty", "description": "The value to return when no results match the filter. Default is #CALC!.", "required": false }
+  ],
+  "basicExample": {
+    "description": "Filter a product table to show only items in the 'Electronics' category",
+    "formula": "=FILTER(A2:D50, C2:C50=\"Electronics\")",
+    "result": "Shows all electronics rows (name, price, category, stock)",
+    "explanation": "C2:C50=\"Electronics\" creates a TRUE/FALSE array. FILTER keeps only rows where the category is 'Electronics' and spills the matching rows."
+  },
+  "advancedExamples": [
+    {
+      "title": "Multiple condition filter (AND logic)",
+      "scenario": "Data analysis",
+      "description": "Filter for Electronics items priced under $100",
+      "formula": "=FILTER(A2:D50, (C2:C50=\"Electronics\")*(B2:B50<100))",
+      "result": "Only electronics under $100",
+      "explanation": "Multiply conditions with * for AND logic. TRUE×TRUE=1 (included), TRUE×FALSE=0 (excluded). Both must be TRUE."
+    },
+    {
+      "title": "Multiple condition filter (OR logic)",
+      "scenario": "Flexible search",
+      "description": "Filter for items that are either 'Electronics' OR 'Books'",
+      "formula": "=FILTER(A2:D50, (C2:C50=\"Electronics\")+(C2:C50=\"Books\")>0)",
+      "result": "All electronics AND books",
+      "explanation": "Add conditions with + for OR logic. TRUE+TRUE=2, TRUE+FALSE=1, FALSE+FALSE=0. >0 means at least one condition is met."
+    },
+    {
+      "title": "FILTER with custom empty message",
+      "scenario": "User-friendly output",
+      "description": "Return 'No results found' when the filter produces no matches",
+      "formula": "=FILTER(A2:D50, C2:C50=\"Furniture\", \"No results found\")",
+      "result": "No results found (if no furniture exists)",
+      "explanation": "The third argument replaces the #CALC! error with your custom message when no rows match."
+    }
+  ],
+  "howItWorks": "FILTER works by creating a Boolean mask over your data. The 'include' argument evaluates each row against your condition, producing an array of TRUE/FALSE values. Rows where the result is TRUE are kept; FALSE rows are dropped. The remaining rows spill into adjacent cells as a dynamic array. For multiple conditions, multiply (*) for AND logic or add (+) for OR logic — this converts TRUE/FALSE to 1/0, allowing math-based combination.",
+  "howToSteps": [
+    { "name": "Select the data range", "text": "Choose the full table or column you want to filter (e.g., A2:D50)." },
+    { "name": "Define the condition", "text": "Write a condition that produces TRUE/FALSE for each row: C2:C50=\"Electronics\", B2:B50>100, etc." },
+    { "name": "Combine conditions if needed", "text": "Use * for AND: (cond1)*(cond2). Use + for OR: (cond1)+(cond2)>0." },
+    { "name": "Set empty result text", "text": "Add a third argument like \"No results\" for when no rows match." },
+    { "name": "Enter the formula", "text": "Type =FILTER(range, condition, empty_text) in a cell with enough space below for spilled results." }
+  ],
+  "limitations": [
+    "FILTER is only available in Excel 365 and Excel 2021+ — not in earlier versions.",
+    "Results spill into adjacent cells — those cells must be empty or you'll get a #SPILL! error.",
+    "FILTER returns all matching rows — there's no built-in way to limit to top N results (use SORT + INDEX for that).",
+    "Large datasets may slow down recalculation since FILTER re-evaluates on every change."
+  ],
+  "commonErrors": [
+    { "error": "#CALC!", "cause": "No rows match the filter condition and no if_empty argument was provided", "fix": "Add a third argument: =FILTER(range, condition, \"No results\") to display a custom message instead of the error." },
+    { "error": "#SPILL!", "cause": "Filtered results need to spill into cells that already contain data", "fix": "Clear the cells below and to the right of the FILTER formula to give it room to spill results." },
+    { "error": "#VALUE!", "cause": "The include array has a different number of rows than the data array", "fix": "Ensure both arrays have the same height. If data is A2:D50 (49 rows), include must also span 49 rows." }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "Google Sheets has FILTER with the same syntax and behavior, plus it's available in all versions.",
+    "formula": "=FILTER(A2:D50, C2:C50=\"Electronics\")",
+    "notes": "Google Sheets FILTER has been available longer than Excel's. It works identically. In Sheets, you can also use QUERY for SQL-like filtering."
+  },
+  "faq": [
+    { "question": "How do I filter with multiple AND conditions?", "answer": "Multiply conditions: =FILTER(A2:D50, (C2:C50=\"Electronics\")*(B2:B50<100)). Both must be TRUE for a row to be included." },
+    { "question": "How do I filter with multiple OR conditions?", "answer": "Add conditions and check >0: =FILTER(A2:D50, (C2:C50=\"Electronics\")+(C2:C50=\"Books\")>0). At least one must be TRUE." },
+    { "question": "Can FILTER return just one column?", "answer": "Yes. Set the array to a single column: =FILTER(B2:B50, C2:C50=\"Electronics\") returns only the prices of electronics." },
+    { "question": "Does FILTER work in Excel 2019?", "answer": "No. FILTER requires Excel 365 or Excel 2021+. In older versions, use INDEX/MATCH or VLOOKUP for similar (but less powerful) functionality." },
+    { "question": "How do I sort filtered results?", "answer": "Wrap FILTER in SORT: =SORT(FILTER(A2:D50, C2:C50=\"Electronics\"), 2, -1) filters electronics and sorts by price descending." }
+  ],
+  "relatedFunctions": ["sort", "unique", "vlookup", "xlookup", "query"]
+}

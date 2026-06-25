@@ -1,0 +1,48 @@
+{
+  "title": "IF vs IFS",
+  "slug": "if-vs-ifs",
+  "functionA": "if",
+  "functionB": "ifs",
+  "description": "See when to use the classic IF function and when to switch to the newer IFS function.",
+  "intro": "IF is the classic branching function, but nesting multiple IFs can become hard to read. IFS provides a flat list of conditions that is easier to manage.",
+  "comparisonTable": [
+    {
+      "aspect": "Syntax",
+      "functionA": "Nested IF for multiple outcomes",
+      "functionB": "Flat list of condition/value pairs"
+    },
+    {
+      "aspect": "Readability",
+      "functionA": "Harder to read with many conditions",
+      "functionB": "Easier to read and maintain"
+    },
+    {
+      "aspect": "Default value",
+      "functionA": "value_if_false handles defaults",
+      "functionB": "Use TRUE as the final condition for a default"
+    },
+    {
+      "aspect": "Availability",
+      "functionA": "All Excel versions",
+      "functionB": "Excel 2019+ / Excel 365"
+    },
+    {
+      "aspect": "Maximum conditions",
+      "functionA": "Nested IF limit depends on version",
+      "functionB": "Up to 127 condition/value pairs"
+    }
+  ],
+  "whenToUseA": "Use IF for a single condition or when sharing files with users on older Excel versions.",
+  "whenToUseB": "Use IFS when you have multiple conditions and everyone uses Excel 2019 or later.",
+  "verdict": "IFS is cleaner for multiple conditions, but IF is still essential for compatibility.",
+  "faq": [
+    {
+      "question": "Can I use IFS in Excel 2016?",
+      "answer": "No, IFS requires Excel 2019, Excel 365, or Google Sheets."
+    },
+    {
+      "question": "How do I add a default in IFS?",
+      "answer": "Add TRUE, \"default value\" as the final pair."
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "name": "IMPORTRANGE",
+  "slug": "importrange",
+  "category": "google-sheets",
+  "excelVersion": "Google Sheets only",
+  "description": "IMPORTRANGE pulls data from a different Google Sheets spreadsheet into the current one. It is the standard way to connect workbooks in Google Sheets without copying and pasting.",
+  "tldr": "IMPORTRANGE imports a range from another Google Sheets file by its spreadsheet URL and a range reference.",
+  "syntax": "(spreadsheet_url, range_string)",
+  "parameters": [
+    { "name": "spreadsheet_url", "description": "The full URL of the Google Sheets workbook to import from. The workbook must be accessible to you.", "required": true },
+    { "name": "range_string", "description": "The sheet name and range to import, e.g. 'Sheet1'!A1:C10. If the sheet name contains spaces, wrap it in single quotes.", "required": true }
+  ],
+  "basicExample": {
+    "description": "Import sales data from another spreadsheet",
+    "formula": "=IMPORTRANGE('https://docs.google.com/spreadsheets/d/abc123', 'Sales'!A1:C100)",
+    "result": "Data from the other sheet",
+    "explanation": "The first time you use this formula, you must authorize access to the source spreadsheet. After that, the range updates automatically when the source changes."
+  },
+  "advancedExamples": [
+    {
+      "title": "Import and wrap with QUERY",
+      "scenario": "Cross-sheet reporting",
+      "description": "Import only columns A and B where column C is 'Approved'",
+      "formula": "=QUERY(IMPORTRANGE('https://docs.google.com/spreadsheets/d/abc123', 'Orders'!A1:D1000'), 'SELECT Col1, Col2 WHERE Col4 = \"Approved\"')",
+      "result": "Filtered imported data",
+      "explanation": "QUERY filters the imported data after it arrives. Col1 refers to the first imported column."
+    },
+    {
+      "title": "Dynamic source sheet via cell reference",
+      "scenario": "Multi-location consolidation",
+      "description": "Build the IMPORTRANGE URL from cells so it is easy to change",
+      "formula": "=IMPORTRANGE(A2, B2&\"!A1:C100\")",
+      "result": "Range pulled from the workbook in A2 and sheet in B2",
+      "explanation": "You can concatenate the sheet name and range to make the formula dynamic."
+    }
+  ],
+  "howItWorks": "IMPORTRANGE connects to the Google Sheets API, reads the specified range from the source workbook, and returns the values into the target sheet. The first use requires explicit authorization. It refreshes automatically on a schedule, typically within a few minutes of source changes.",
+  "howToSteps": [
+    { "name": "Copy the source spreadsheet URL", "text": "Open the source workbook and copy the URL from the browser address bar." },
+    { "name": "Identify the range", "text": "Note the sheet name and the cell range you want to import, e.g. 'Sheet1'!A1:D50." },
+    { "name": "Enter the formula", "text": "Type =IMPORTRANGE('URL', 'Sheet'!A1:D50) in the target cell." },
+    { "name": "Authorize access", "text": "Click the Allow access button that appears the first time the formula runs." },
+    { "name": "Filter or transform", "text": "Wrap the formula with QUERY, FILTER, or ARRAYFORMULA if needed." }
+  ],
+  "limitations": [
+    "IMPORTRANGE is Google Sheets only; Excel uses Power Query, external links, or workbook links instead.",
+    "The first use requires manual authorization, which can break automated reports until allowed.",
+    "Heavy use of IMPORTRANGE can slow down a spreadsheet or hit Google Sheets limits.",
+    "It only imports values; formulas, formatting, and conditional formatting are not carried over."
+  ],
+  "commonErrors": [
+    { "error": "#REF! or loading error", "cause": "The source spreadsheet is not shared or the URL is incorrect.", "fix": "Check the URL, ensure the source workbook is accessible, and re-authorize IMPORTRANGE." },
+    { "error": "Formula result not updating", "cause": "Google Sheets caches IMPORTRANGE results and updates on a schedule.", "fix": "Wait a few minutes, edit the source to trigger recalculation, or use a helper cell to force refresh." },
+    { "error": "Sheet name error", "cause": "The sheet name is misspelled or contains spaces without quotes.", "fix": "Wrap sheet names with spaces in single quotes: 'Sales Data'!A1:C100." }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "IMPORTRANGE is a native Google Sheets function. Excel has no direct equivalent; use Power Query or external workbook links.",
+    "formula": "=IMPORTRANGE('https://docs.google.com/spreadsheets/d/abc123', 'Sheet1'!A1:C100)",
+    "notes": "Always ensure the source workbook is shared with the user running the target sheet."
+  },
+  "faq": [
+    { "question": "Can I import from an Excel file?", "answer": "No, IMPORTRANGE only works with Google Sheets. For Excel, convert the file to Google Sheets first or use Power Query." },
+    { "question": "How do I update IMPORTRANGE data?", "answer": "It updates automatically, but not instantly. Edits in the source propagate within minutes." },
+    { "question": "Can I import filtered data?", "answer": "Yes, wrap IMPORTRANGE with QUERY or FILTER to pull only the rows you need." },
+    { "question": "Why do I keep seeing 'Loading...'?", "answer": "The source may be large, access may not be authorized, or the source sheet may be private. Check sharing and permissions." }
+  ],
+  "relatedFunctions": ["query", "filter", "arrayformula", "googlefinance"]
+}

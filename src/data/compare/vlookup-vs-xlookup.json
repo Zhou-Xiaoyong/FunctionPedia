@@ -1,0 +1,58 @@
+{
+  "title": "VLOOKUP vs XLOOKUP",
+  "slug": "vlookup-vs-xlookup",
+  "functionA": "vlookup",
+  "functionB": "xlookup",
+  "description": "Compare VLOOKUP and XLOOKUP to decide which lookup function fits your spreadsheet needs.",
+  "intro": "VLOOKUP has been the standard lookup function for decades, but XLOOKUP is a modern replacement that fixes many of VLOOKUP's limitations. If you have Excel 365 or Excel 2021, XLOOKUP is usually the better choice.",
+  "comparisonTable": [
+    {
+      "aspect": "Lookup direction",
+      "functionA": "Only searches to the right of the lookup column",
+      "functionB": "Can search left or right of the return column"
+    },
+    {
+      "aspect": "Default match",
+      "functionA": "Approximate match (TRUE) unless FALSE is specified",
+      "functionB": "Exact match by default"
+    },
+    {
+      "aspect": "Insert/delete safety",
+      "functionA": "Column index breaks when columns are inserted or deleted",
+      "functionB": "Uses direct column reference, so column changes are safe"
+    },
+    {
+      "aspect": "Return multiple values",
+      "functionA": "Can only return one value",
+      "functionB": "Can return an array of values"
+    },
+    {
+      "aspect": "Error handling",
+      "functionA": "Requires IFERROR or IFNA wrapped around it",
+      "functionB": "Built-in if_not_found argument"
+    },
+    {
+      "aspect": "Wildcard search",
+      "functionA": "Supported with FALSE for exact match",
+      "functionB": "Supported with match_mode 2"
+    },
+    {
+      "aspect": "Availability",
+      "functionA": "All Excel versions",
+      "functionB": "Excel 365, Excel 2021, and Google Sheets"
+    }
+  ],
+  "whenToUseA": "Use VLOOKUP when you share files with users on older Excel versions (pre-2021) or when the return value is always in a column to the right of the lookup column.",
+  "whenToUseB": "Use XLOOKUP whenever it is available. It is more flexible, safer, and easier to read.",
+  "verdict": "XLOOKUP is the clear winner for modern Excel users. Only use VLOOKUP for backward compatibility with older versions.",
+  "faq": [
+    {
+      "question": "Can XLOOKUP replace VLOOKUP in all cases?",
+      "answer": "Almost all VLOOKUP use cases can be replaced by XLOOKUP, except for 2D array lookups in older versions."
+    },
+    {
+      "question": "Is VLOOKUP deprecated?",
+      "answer": "No, Microsoft still supports VLOOKUP, but XLOOKUP is recommended for new work."
+    }
+  ]
+}
