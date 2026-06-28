@@ -1,7 +1,10 @@
 # Cloudflare Pages redirects
 # Redirect non-trailing-slash URLs to trailing-slash versions
-# This ensures /functions/vlookup redirects to /functions/vlookup/
+# Note: /functions/ is a reserved path in Cloudflare Pages, using /function/ instead
 
-/functions/:slug  /functions/:slug/  302
+/function/:slug   /function/:slug/   302
 /category/:slug   /category/:slug/   302
 /compare/:slug    /compare/:slug/    302
+
+# Redirect old /functions/ URLs to /function/ (in case of cached links)
+/functions/:slug  /function/:slug/   301

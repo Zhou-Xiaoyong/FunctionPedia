@@ -92,7 +92,7 @@ export function generateSearchActionSchema() {
     url: SITE.url,
     potentialAction: {
       '@type': 'SearchAction',
-      target: `${SITE.url}/functions/?q={search_term_string}`,
+      target: `${SITE.url}/function/?q={search_term_string}`,
       queryInput: 'required name=search_term_string',
     },
   };

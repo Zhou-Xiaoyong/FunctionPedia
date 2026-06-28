@@ -67,7 +67,7 @@ const breadcrumbs = [
     {functions.length > 0 ? (
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {functions.map((fn) => (
-          <a href={`/functions/${fn.slug}/`} class="group block p-5 rounded-xl bg-white border border-gray-200 hover:border-primary-500 hover:shadow-lg transition-all">
+          <a href={`/function/${fn.slug}/`} class="group block p-5 rounded-xl bg-white border border-gray-200 hover:border-primary-500 hover:shadow-lg transition-all">
             <div class="flex items-center justify-between mb-2">
               <h2 class="text-lg font-bold font-mono text-gray-900 group-hover:text-primary-500 transition-colors">{fn.name.toUpperCase()}</h2>
               <svg class="w-4 h-4 text-gray-300 group-hover:text-primary-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -79,7 +79,7 @@ const breadcrumbs = [
     ) : (
       <div class="text-center py-16">
         <p class="text-gray-500">Functions in this category are being added soon!</p>
-        <a href="/functions/" class="mt-4 inline-flex items-center text-primary-500 font-medium hover:text-primary-600">Browse all functions →</a>
+        <a href="/function/" class="mt-4 inline-flex items-center text-primary-500 font-medium hover:text-primary-600">Browse all functions →</a>
       </div>
     )}
 

@@ -23,7 +23,7 @@ export function getStaticPaths() {
 const { fn } = Astro.props;
 
 if (!fn) {
-  return Astro.redirect('/functions');
+  return Astro.redirect('/function/');
 }
 
 // Load all functions for related lookup
@@ -48,11 +48,11 @@ const related = allFunctions
 const breadcrumbs = [
   { name: 'Home', url: SITE.url },
   { name: catInfo ? catInfo.name : fn.category, url: `${SITE.url}/category/${fn.category}/` },
-  { name: fn.name.toUpperCase(), url: `${SITE.url}/functions/${fn.slug}/` },
+  { name: fn.name.toUpperCase(), url: `${SITE.url}/function/${fn.slug}/` },
 ];
 
 // Schema.org
-const articleSchema = generateArticleSchema(fn.name, fn.description, `${SITE.url}/functions/${fn.slug}/`, fn.category);
+const articleSchema = generateArticleSchema(fn.name, fn.description, `${SITE.url}/function/${fn.slug}/`, fn.category);
 const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
 const faqSchema = fn.faq ? generateFAQSchema(fn.faq) : null;
 const howToSchema = fn.howToSteps ? generateHowToSchema(fn.name, fn.howToSteps) : null;
@@ -63,7 +63,7 @@ if (howToSchema) allSchema.push(howToSchema);
 
 const title = `${fn.name.toUpperCase()} Function — Excel & Google Sheets`;
 const description = fn.tldr || fn.description;
-const canonical = `${SITE.url}/functions/${fn.slug}/`;
+const canonical = `${SITE.url}/function/${fn.slug}/`;
 const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} google sheets, ${fn.name} formula, ${fn.category} functions`;
 ---
 
@@ -301,7 +301,7 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {related.map((r) => (
-            <a href={`/functions/${r.slug}/`} class="group block p-4 rounded-lg bg-white border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all">
+            <a href={`/function/${r.slug}/`} class="group block p-4 rounded-lg bg-white border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all">
               <h3 class="text-sm font-semibold font-mono text-gray-900 group-hover:text-primary-500 transition-colors">{r.name.toUpperCase()}</h3>
               <p class="mt-1 text-xs text-gray-500 line-clamp-2">{r.tldr || r.description}</p>
             </a>
