@@ -8,3 +8,6 @@
 
 # Redirect old /functions/ URLs to /function/ (in case of cached links)
 /functions/:slug  /function/:slug/   301
+
+# Sitemap: Astro generates sitemap-index.xml, redirect conventional /sitemap.xml to it
+/sitemap.xml  /sitemap-index.xml  302
