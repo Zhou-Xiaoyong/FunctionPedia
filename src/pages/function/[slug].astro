@@ -1,7 +1,5 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import AdSense from '../../components/AdSense.astro';
-import AffiliateCourses from '../../components/AffiliateCourses.astro';
 import { SITE, CATEGORIES } from '../../utils/config';
 import { generateBreadcrumbSchema, generateArticleSchema, generateFAQSchema, generateHowToSchema } from '../../utils/seo';
 
@@ -82,8 +80,6 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
   </nav>
 
   <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-    <AdSense slot="1234567890" format="fluid" />
-
     <!-- 1. TL;DR -->
     <section class="mb-10">
       <div class="p-6 rounded-xl bg-primary-50 border border-primary-200">
@@ -359,8 +355,6 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
       </section>
     )}
 
-    <AdSense slot="0987654321" format="fluid" />
-
     <!-- 11. Download -->
     {fn.downloadExample && (
       <section id="download" class="mb-10">
@@ -375,7 +369,5 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
         <p class="mt-3 text-sm text-gray-500">{fn.downloadExample.description}</p>
       </section>
     )}
-
-    <AffiliateCourses category={fn.category} functionName={fn.name} />
   </article>
 </BaseLayout>
