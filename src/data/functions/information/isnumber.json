@@ -1,0 +1,40 @@
+{
+  "name": "ISNUMBER",
+  "slug": "isnumber",
+  "category": "information",
+  "excelVersion": "All versions",
+  "description": "ISNUMBER is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "ISNUMBER is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(isnumber)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the ISNUMBER function",
+    "formula": "=ISNUMBER(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the ISNUMBER function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The ISNUMBER function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =ISNUMBER(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "ISNUMBER works identically in Google Sheets with the same syntax.",
+    "formula": "=ISNUMBER(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

@@ -3,74 +3,85 @@
   "slug": "index",
   "category": "lookup",
   "excelVersion": "All versions",
-  "description": "INDEX returns a value from a specific position in a range or array, given a row number and optional column number. Combined with MATCH, it creates the most flexible lookup system in Excel.",
-  "tldr": "INDEX grabs a value at a specific row/column position in a range. Think of it as 'go to row 3, column 2, and return whatever's there.' Combined with MATCH, it becomes a lookup that can search in any direction.",
-  "syntax": "(array, row_num, [col_num])",
+  "description": "INDEX returns the value at a specified position in a range or array.",
+  "tldr": "INDEX retrieves a value from a specific row and column in a range.",
+  "syntax": "(array, row_num, [column_num])",
   "parameters": [
-    { "name": "array", "description": "The range or array from which to retrieve a value.", "required": true },
-    { "name": "row_num", "description": "The row position within the array (1-based). Use 0 to return the entire row.", "required": true },
-    { "name": "col_num", "description": "The column position within the array (1-based). Use 0 to return the entire column. Omit for 1D ranges.", "required": false }
+    {
+      "name": "array",
+      "description": "The range or array from which to retrieve the value.",
+      "required": true
+    },
+    {
+      "name": "row_num",
+      "description": "The row number from which to retrieve the value.",
+      "required": true
+    },
+    {
+      "name": "column_num",
+      "description": "Optional. The column number from which to retrieve the value.",
+      "required": false
+    }
   ],
   "basicExample": {
-    "description": "Get the value in row 3, column 2 of a data table",
-    "formula": "=INDEX(A2:D10, 3, 2)",
-    "result": "Marketing",
-    "explanation": "Returns the value at the 3rd row and 2nd column of the range A2:D10. The row/column numbers are relative to the range, not the worksheet."
+    "description": "Get value from specific position",
+    "formula": "=INDEX(A1:C5, 3, 2)",
+    "result": "Value at row 3, column 2",
+    "explanation": "Returns the value from the 3rd row and 2nd column of the range."
   },
   "advancedExamples": [
     {
-      "title": "INDEX + MATCH for flexible lookup",
-      "scenario": "Data retrieval",
-      "description": "Replace VLOOKUP with INDEX/MATCH — search any column, return any column",
-      "formula": "=INDEX(B2:B100, MATCH(E2, A2:A100, 0))",
-      "result": "John Smith",
-      "explanation": "MATCH finds the position of E2 in column A (the row number). INDEX then retrieves the corresponding value from column B. This can look left or right."
-    },
-    {
-      "title": "INDEX + MATCH two-way lookup",
-      "scenario": "Matrix lookup",
-      "description": "Look up a value using both row and column criteria (row header + column header)",
-      "formula": "=INDEX(B2:F10, MATCH(H2, A2:A10, 0), MATCH(H3, B1:F1, 0))",
-      "result": "4,250",
-      "explanation": "First MATCH finds the row position by matching H2 in the row headers. Second MATCH finds the column position by matching H3 in the column headers. INDEX retrieves the intersecting value."
-    },
-    {
-      "title": "INDEX to return an entire row or column",
-      "scenario": "Dynamic arrays",
-      "description": "Return all values in a specific row by setting col_num to 0",
-      "formula": "=INDEX(A2:F10, 3, 0)",
-      "result": "Spills entire row 3 across 6 cells",
-      "explanation": "Setting col_num to 0 returns the entire row as a horizontal array. In Excel 365, this spills across adjacent cells."
+      "title": "INDEX with MATCH for flexible lookup",
+      "scenario": "Advanced lookup",
+      "description": "Create a lookup that can search left",
+      "formula": "=INDEX(B:B, MATCH(A1, C:C, 0))",
+      "result": "Lookup result",
+      "explanation": "Combines INDEX and MATCH for powerful two-way lookups."
     }
   ],
-  "howItWorks": "INDEX works like a coordinate system for your data. You give it a range (the map), a row number (the y-coordinate), and optionally a column number (the x-coordinate), and it returns whatever value sits at that intersection. The row and column numbers are relative to the range itself — row 1 of INDEX(A5:D15) refers to row 5 of the worksheet, not row 1. When combined with MATCH, INDEX becomes a dynamic lookup: MATCH finds the position, INDEX retrieves the value at that position.",
+  "howItWorks": "INDEX finds the value at the intersection of the specified row and column in the range.",
   "howToSteps": [
-    { "name": "Select your data range", "text": "Define the range (array) where your data lives — e.g., A2:D100." },
-    { "name": "Specify the row position", "text": "Enter the row number (1-based, relative to the range). Often this is a MATCH result." },
-    { "name": "Specify the column position (optional)", "text": "For 2D ranges, add the column number. For a single column range, you can omit this." },
-    { "name": "Enter the formula", "text": "Type =INDEX(range, row_num, col_num) or =INDEX(range, row_num) for single-column ranges." }
+    {
+      "name": "Select range",
+      "text": "Define the range containing your data."
+    },
+    {
+      "name": "Specify row",
+      "text": "Choose the row number to retrieve from."
+    },
+    {
+      "name": "Specify column",
+      "text": "Choose the column number (optional for single-column ranges)."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =INDEX(range, row, column)."
+    }
   ],
   "limitations": [
-    "INDEX alone requires knowing the exact row/column position. You need MATCH to find positions dynamically.",
-    "If row_num or col_num is out of range, INDEX returns #REF!.",
-    "INDEX doesn't handle missing values — you need IFERROR or IFNA wrappers.",
-    "For large datasets, INDEX/MATCH may be slower than XLOOKUP (which has built-in binary search)."
+    "Row and column numbers must be within the range.",
+    "For dynamic arrays, INDEX can return multiple values."
   ],
   "commonErrors": [
-    { "error": "#REF!", "cause": "row_num or col_num exceeds the dimensions of the array", "fix": "Check that your row/column numbers are within the range. For A2:D10 (9 rows, 4 columns), row_num must be 1-9 and col_num must be 1-4." },
-    { "error": "#VALUE!", "cause": "row_num or col_num is 0 when the array is 1-dimensional", "fix": "For single-row or single-column ranges, omit col_num or set it to 1." },
-    { "error": "Wrong value", "cause": "Using absolute row numbers instead of relative numbers", "fix": "INDEX row/column numbers are relative to the range, not the worksheet. Row 1 of INDEX(A5:D15) is worksheet row 5." }
+    {
+      "error": "#REF!",
+      "cause": "Row/column number exceeds range size",
+      "fix": "Check your row and column numbers."
+    }
   ],
   "googleSheetsEquivalent": {
-    "description": "INDEX works identically in Google Sheets with the same syntax and behavior.",
-    "formula": "=INDEX(B2:B100, MATCH(E2, A2:A100, 0))",
-    "notes": "Google Sheets INDEX/MATCH is the primary alternative to XLOOKUP since Google Sheets lacks that function."
+    "description": "INDEX works identically in Google Sheets.",
+    "formula": "=INDEX(A1:C5, 3, 2)"
   },
   "faq": [
-    { "question": "Is INDEX/MATCH better than VLOOKUP?", "answer": "In most cases, yes. INDEX/MATCH can look left, isn't broken by column insertions, and uses less memory. XLOOKUP (Excel 365) is even better, but INDEX/MATCH is the gold standard for compatibility." },
-    { "question": "Can INDEX return multiple values?", "answer": "Yes. In Excel 365, setting row_num or col_num to 0 returns the entire row or column as a spilled array." },
-    { "question": "What does MATCH do?", "answer": "MATCH finds the position of a value in a range. =MATCH(\"John\", A2:A100, 0) returns 5 if 'John' is in the 5th cell of the range. The 0 means exact match." },
-    { "question": "Can INDEX work with 3D ranges (multiple sheets)?", "answer": "Yes. INDEX can reference ranges across multiple sheets: =INDEX(Sheet1:Sheet3!A2:D10, 2, 3) — but you'd need to specify which sheet." }
+    {
+      "question": "Can INDEX return an entire row or column?",
+      "answer": "Yes, omit row_num or column_num to return an entire column or row."
+    },
+    {
+      "question": "What is INDEX/MATCH?",
+      "answer": "INDEX/MATCH is a powerful combination that can look up values in any direction, unlike VLOOKUP."
+    }
   ],
-  "relatedFunctions": ["match", "vlookup", "xlookup", "choose", "offset"]
+  "relatedFunctions": []
 }

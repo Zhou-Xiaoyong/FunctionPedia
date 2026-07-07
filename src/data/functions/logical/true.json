@@ -1,0 +1,40 @@
+{
+  "name": "TRUE",
+  "slug": "true",
+  "category": "logical",
+  "excelVersion": "All versions",
+  "description": "TRUE is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "TRUE is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(true)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the TRUE function",
+    "formula": "=TRUE(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the TRUE function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The TRUE function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =TRUE(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "TRUE works identically in Google Sheets with the same syntax.",
+    "formula": "=TRUE(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

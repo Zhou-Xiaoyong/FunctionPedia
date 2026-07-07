@@ -1,0 +1,86 @@
+{
+  "name": "CONCAT",
+  "slug": "concat",
+  "category": "text",
+  "excelVersion": "Excel 2019 and later",
+  "description": "CONCAT joins two or more text strings into one string.",
+  "tldr": "CONCAT combines multiple text strings into a single string.",
+  "syntax": "(text1, [text2], ...)",
+  "parameters": [
+    {
+      "name": "text1",
+      "description": "The first text string to concatenate.",
+      "required": true
+    },
+    {
+      "name": "text2",
+      "description": "Optional additional text strings to concatenate.",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Combine first and last name",
+    "formula": "=CONCAT(\"John \", \"Smith\")",
+    "result": "John Smith",
+    "explanation": "Combines \"John \" and \"Smith\" into \"John Smith\"."
+  },
+  "advancedExamples": [
+    {
+      "title": "Create email from name",
+      "scenario": "Email generation",
+      "description": "Combine first and last name to create an email address",
+      "formula": "=CONCAT(LOWER(A1), \".\", LOWER(B1), \"@company.com\")",
+      "result": "john.smith@company.com",
+      "explanation": "Creates a standardized email from first and last name."
+    },
+    {
+      "title": "Concatenate with array",
+      "scenario": "Dynamic arrays",
+      "description": "Combine values from a range into one string",
+      "formula": "=CONCAT(A1:A5)",
+      "result": "ABCDE",
+      "explanation": "In Excel 365, CONCAT automatically handles arrays."
+    }
+  ],
+  "howItWorks": "CONCAT joins text strings in the order they are provided, without any separator. For adding separators, use TEXTJOIN instead.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the result should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =CONCAT(text1, text2, ...)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the combined text."
+    }
+  ],
+  "limitations": [
+    "CONCAT has no built-in separator.",
+    "For older Excel versions, use CONCATENATE or the & operator."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NAME?",
+      "cause": "Function not supported in Excel version",
+      "fix": "Use CONCATENATE or & operator instead."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "CONCAT works identically in Google Sheets.",
+    "formula": "=CONCAT(\"John \", \"Smith\")"
+  },
+  "faq": [
+    {
+      "question": "What is the difference between CONCAT and CONCATENATE?",
+      "answer": "CONCAT is newer and supports ranges, while CONCATENATE only supports individual arguments."
+    },
+    {
+      "question": "Can I use CONCAT with numbers?",
+      "answer": "Yes, numbers are automatically converted to text."
+    }
+  ],
+  "relatedFunctions": []
+}

@@ -1,0 +1,40 @@
+{
+  "name": "CORREL",
+  "slug": "correl",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "CORREL is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "CORREL is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(correl)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the CORREL function",
+    "formula": "=CORREL(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the CORREL function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The CORREL function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =CORREL(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "CORREL works identically in Google Sheets with the same syntax.",
+    "formula": "=CORREL(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

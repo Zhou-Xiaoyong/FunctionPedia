@@ -1,0 +1,91 @@
+{
+  "name": "MID",
+  "slug": "mid",
+  "category": "text",
+  "excelVersion": "All versions",
+  "description": "MID returns a specific number of characters from a text string starting at a specified position.",
+  "tldr": "MID extracts characters from the middle of a text string at a specified starting position.",
+  "syntax": "(text, start_num, num_chars)",
+  "parameters": [
+    {
+      "name": "text",
+      "description": "The text string from which to extract characters.",
+      "required": true
+    },
+    {
+      "name": "start_num",
+      "description": "The starting position of the extraction (1-based).",
+      "required": true
+    },
+    {
+      "name": "num_chars",
+      "description": "The number of characters to extract.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Extract 5 characters starting at position 7",
+    "formula": "=MID(\"Hello World\", 7, 5)",
+    "result": "World",
+    "explanation": "Extracts 5 characters starting from position 7 in \"Hello World\"."
+  },
+  "advancedExamples": [
+    {
+      "title": "Extract middle initial from name",
+      "scenario": "Name parsing",
+      "description": "Get the middle initial from \"John D. Smith\"",
+      "formula": "=MID(A1, FIND(\" \", A1)+1, 1)",
+      "result": "D",
+      "explanation": "Finds the first space, then extracts one character after it."
+    },
+    {
+      "title": "Extract substring between two delimiters",
+      "scenario": "Data extraction",
+      "description": "Get text between two dashes",
+      "formula": "=MID(A1, FIND(\"-\", A1)+1, FIND(\"-\", A1, FIND(\"-\", A1)+1)-FIND(\"-\", A1)-1)",
+      "result": "middle",
+      "explanation": "Extracts text between the first and second dash."
+    }
+  ],
+  "howItWorks": "MID starts at the specified position (1-based) and extracts the specified number of characters. Position 1 is the first character.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the result should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =MID(text, start_position, number_of_characters)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the extracted text."
+    }
+  ],
+  "limitations": [
+    "start_num must be at least 1.",
+    "If start_num + num_chars exceeds the text length, MID returns as many characters as available."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "start_num is less than 1",
+      "fix": "Ensure start_num is at least 1."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "MID works identically in Google Sheets.",
+    "formula": "=MID(\"Hello World\", 7, 5)"
+  },
+  "faq": [
+    {
+      "question": "Is MID position 0-based or 1-based?",
+      "answer": "MID is 1-based — the first character is position 1."
+    },
+    {
+      "question": "Can MID extract to the end of the string?",
+      "answer": "Yes, use a large num_chars value or calculate it with LEN."
+    }
+  ],
+  "relatedFunctions": []
+}

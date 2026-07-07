@@ -1,0 +1,40 @@
+{
+  "name": "DAYS",
+  "slug": "days",
+  "category": "datetime",
+  "excelVersion": "All versions",
+  "description": "DAYS is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "DAYS is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(days)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the DAYS function",
+    "formula": "=DAYS(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the DAYS function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The DAYS function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =DAYS(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "DAYS works identically in Google Sheets with the same syntax.",
+    "formula": "=DAYS(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

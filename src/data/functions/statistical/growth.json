@@ -1,0 +1,40 @@
+{
+  "name": "GROWTH",
+  "slug": "growth",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "GROWTH is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "GROWTH is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(growth)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the GROWTH function",
+    "formula": "=GROWTH(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the GROWTH function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The GROWTH function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =GROWTH(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "GROWTH works identically in Google Sheets with the same syntax.",
+    "formula": "=GROWTH(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

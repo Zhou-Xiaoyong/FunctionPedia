@@ -1,0 +1,86 @@
+{
+  "name": "ROUND",
+  "slug": "round",
+  "category": "math",
+  "excelVersion": "All versions",
+  "description": "ROUND rounds a number to a specified number of decimal places.",
+  "tldr": "ROUND rounds numbers to a given number of decimal places, following standard rounding rules.",
+  "syntax": "(number, num_digits)",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The number to round.",
+      "required": true
+    },
+    {
+      "name": "num_digits",
+      "description": "The number of decimal places to round to. Use 0 for whole numbers.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Round to 2 decimal places",
+    "formula": "=ROUND(3.14159, 2)",
+    "result": "3.14",
+    "explanation": "Rounds 3.14159 to 2 decimal places, resulting in 3.14."
+  },
+  "advancedExamples": [
+    {
+      "title": "Round to nearest 100",
+      "scenario": "Financial reporting",
+      "description": "Round numbers to the nearest hundred",
+      "formula": "=ROUND(A1, -2)",
+      "result": "500",
+      "explanation": "Using -2 rounds to the nearest hundred: 456 becomes 500."
+    },
+    {
+      "title": "Round to whole number",
+      "scenario": "Inventory management",
+      "description": "Round decimal quantities to whole units",
+      "formula": "=ROUND(A1, 0)",
+      "result": "12",
+      "explanation": "Rounds 12.6 to 13 and 12.4 to 12."
+    }
+  ],
+  "howItWorks": "ROUND uses standard mathematical rounding: 0.5 and above rounds up, below 0.5 rounds down. Positive num_digits rounds to decimal places, negative num_digits rounds to tens, hundreds, etc.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the rounded result should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =ROUND(number, decimal_places)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the rounded number."
+    }
+  ],
+  "limitations": [
+    "ROUND always rounds 0.5 up (bankers rounding uses MROUND instead).",
+    "For always rounding up, use ROUNDUP; for always rounding down, use ROUNDDOWN."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "Non-numeric arguments",
+      "fix": "Ensure both arguments are numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "ROUND works identically in Google Sheets.",
+    "formula": "=ROUND(3.14159, 2)"
+  },
+  "faq": [
+    {
+      "question": "What does negative num_digits mean?",
+      "answer": "Negative values round to tens, hundreds, thousands, etc. -1 rounds to nearest 10, -2 to nearest 100."
+    },
+    {
+      "question": "What is bankers rounding?",
+      "answer": "Bankers rounding (MROUND) rounds 0.5 to the nearest even number to reduce bias. Standard ROUND always rounds 0.5 up."
+    }
+  ],
+  "relatedFunctions": []
+}

@@ -1,0 +1,40 @@
+{
+  "name": "VARP",
+  "slug": "varp",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "VARP is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "VARP is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(varp)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the VARP function",
+    "formula": "=VARP(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the VARP function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The VARP function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =VARP(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "VARP works identically in Google Sheets with the same syntax.",
+    "formula": "=VARP(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

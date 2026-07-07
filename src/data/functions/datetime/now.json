@@ -1,0 +1,61 @@
+{
+  "name": "NOW",
+  "slug": "now",
+  "category": "datetime",
+  "excelVersion": "All versions",
+  "description": "NOW returns the current date and time, updated each time the worksheet recalculates.",
+  "tldr": "NOW displays the current date and time, updating automatically.",
+  "syntax": "()",
+  "parameters": [],
+  "basicExample": {
+    "description": "Get current date and time",
+    "formula": "=NOW()",
+    "result": "7/7/2026 14:30",
+    "explanation": "Returns the current date and time as a serial number."
+  },
+  "advancedExamples": [
+    {
+      "title": "Calculate hours since an event",
+      "scenario": "Time tracking",
+      "description": "Find how many hours have passed since a specific time",
+      "formula": "=(NOW()-A1)*24",
+      "result": "2.5",
+      "explanation": "Subtracts the event time from now and multiplies by 24 to get hours."
+    }
+  ],
+  "howItWorks": "NOW returns the current date and time as a serial number, where the integer part is the date and the decimal part is the time.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the result should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =NOW()."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows current date and time."
+    }
+  ],
+  "limitations": [
+    "NOW includes both date and time.",
+    "For date only, use TODAY() instead."
+  ],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "NOW works identically in Google Sheets.",
+    "formula": "=NOW()"
+  },
+  "faq": [
+    {
+      "question": "Does NOW update in real-time?",
+      "answer": "NOW updates when the worksheet recalculates, not continuously."
+    },
+    {
+      "question": "How do I format NOW to show only time?",
+      "answer": "Apply a time-only number format to the cell."
+    }
+  ],
+  "relatedFunctions": []
+}

@@ -1,0 +1,40 @@
+{
+  "name": "STDEV",
+  "slug": "stdev",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "STDEV is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "STDEV is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(stdev)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the STDEV function",
+    "formula": "=STDEV(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the STDEV function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The STDEV function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =STDEV(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "STDEV works identically in Google Sheets with the same syntax.",
+    "formula": "=STDEV(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

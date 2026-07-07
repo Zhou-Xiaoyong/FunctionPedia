@@ -1,0 +1,40 @@
+{
+  "name": "ISERROR",
+  "slug": "iserror",
+  "category": "information",
+  "excelVersion": "All versions",
+  "description": "ISERROR is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "ISERROR is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(iserror)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the ISERROR function",
+    "formula": "=ISERROR(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the ISERROR function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The ISERROR function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =ISERROR(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "ISERROR works identically in Google Sheets with the same syntax.",
+    "formula": "=ISERROR(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

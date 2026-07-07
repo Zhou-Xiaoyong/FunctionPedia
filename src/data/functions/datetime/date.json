@@ -1,0 +1,40 @@
+{
+  "name": "DATE",
+  "slug": "date",
+  "category": "datetime",
+  "excelVersion": "All versions",
+  "description": "DATE is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "DATE is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(date)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the DATE function",
+    "formula": "=DATE(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the DATE function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The DATE function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =DATE(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "DATE works identically in Google Sheets with the same syntax.",
+    "formula": "=DATE(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

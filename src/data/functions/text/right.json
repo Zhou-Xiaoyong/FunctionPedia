@@ -1,0 +1,86 @@
+{
+  "name": "RIGHT",
+  "slug": "right",
+  "category": "text",
+  "excelVersion": "All versions",
+  "description": "RIGHT returns the last character(s) from the end of a text string.",
+  "tldr": "RIGHT extracts a specified number of characters from the right side of a text string.",
+  "syntax": "(text, [num_chars])",
+  "parameters": [
+    {
+      "name": "text",
+      "description": "The text string from which to extract characters.",
+      "required": true
+    },
+    {
+      "name": "num_chars",
+      "description": "Optional. The number of characters to extract (default is 1).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Extract last 4 characters",
+    "formula": "=RIGHT(\"Hello World\", 4)",
+    "result": "orld",
+    "explanation": "Extracts the last 4 characters from \"Hello World\"."
+  },
+  "advancedExamples": [
+    {
+      "title": "Extract file extension",
+      "scenario": "File management",
+      "description": "Get the extension from a filename",
+      "formula": "=RIGHT(A1, LEN(A1)-FIND(\".\", A1))",
+      "result": ".txt",
+      "explanation": "Combines RIGHT with LEN and FIND to extract text after the dot."
+    },
+    {
+      "title": "Extract last name",
+      "scenario": "Name parsing",
+      "description": "Get the last name from \"First Last\" format",
+      "formula": "=RIGHT(A1, LEN(A1)-FIND(\" \", A1))",
+      "result": "Smith",
+      "explanation": "Extracts text after the first space."
+    }
+  ],
+  "howItWorks": "RIGHT counts from the end of the text string and returns the specified number of characters. If num_chars is omitted, it returns just the last character.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the result should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =RIGHT(text, number_of_characters)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the extracted text."
+    }
+  ],
+  "limitations": [
+    "RIGHT counts each character as 1, including spaces.",
+    "Use LEFT to extract from the beginning, or MID to extract from the middle."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "num_chars is negative",
+      "fix": "Ensure num_chars is a positive number."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "RIGHT works identically in Google Sheets.",
+    "formula": "=RIGHT(\"Hello World\", 4)"
+  },
+  "faq": [
+    {
+      "question": "Does RIGHT work with numbers?",
+      "answer": "Yes, numbers are treated as text."
+    },
+    {
+      "question": "What if num_chars exceeds the text length?",
+      "answer": "RIGHT returns the entire text string."
+    }
+  ],
+  "relatedFunctions": []
+}

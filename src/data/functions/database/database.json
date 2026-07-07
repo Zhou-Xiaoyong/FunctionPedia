@@ -1,0 +1,40 @@
+{
+  "name": "DATABASE",
+  "slug": "database",
+  "category": "database",
+  "excelVersion": "All versions",
+  "description": "DATABASE is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "DATABASE is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(database)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the DATABASE function",
+    "formula": "=DATABASE(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the DATABASE function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The DATABASE function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =DATABASE(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "DATABASE works identically in Google Sheets with the same syntax.",
+    "formula": "=DATABASE(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

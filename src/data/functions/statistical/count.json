@@ -1,0 +1,90 @@
+{
+  "name": "COUNT",
+  "slug": "count",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "COUNT counts the number of cells that contain numbers within a specified range.",
+  "tldr": "COUNT returns the count of cells containing numbers in a range.",
+  "syntax": "(value1, [value2], ...)",
+  "parameters": [
+    {
+      "name": "value1",
+      "description": "The first item, cell reference, or range to count.",
+      "required": true
+    },
+    {
+      "name": "value2",
+      "description": "Optional additional items, cell references, or ranges to count.",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Count the number of numeric entries in a range",
+    "formula": "=COUNT(A1:A10)",
+    "result": "7",
+    "explanation": "Counts how many cells in A1:A10 contain numbers, ignoring text and blank cells."
+  },
+  "advancedExamples": [
+    {
+      "title": "Count across multiple ranges",
+      "scenario": "Data analysis",
+      "description": "Count numeric values across multiple non-contiguous ranges",
+      "formula": "=COUNT(A1:A10, C1:C10, E1:E10)",
+      "result": "15",
+      "explanation": "Counts numbers in three separate columns and returns the total."
+    },
+    {
+      "title": "Count with criteria using COUNTIF",
+      "scenario": "Filtered counting",
+      "description": "For conditional counting, use COUNTIF or COUNTIFS instead",
+      "formula": "=COUNTIF(A1:A10, \">50\")",
+      "result": "4",
+      "explanation": "COUNTIF counts cells that meet a specific condition, like values greater than 50."
+    }
+  ],
+  "howItWorks": "COUNT scans each cell in the specified range and counts only those containing numeric values. It ignores empty cells, text, logical values (TRUE/FALSE), and error values.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the count result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =COUNT(range) where range is your data."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the number of numeric cells."
+    }
+  ],
+  "limitations": [
+    "COUNT only counts cells with numeric values — text, blanks, and logical values are ignored.",
+    "Use COUNTA to count all non-empty cells, or COUNTIF/COUNTIFS for conditional counting."
+  ],
+  "commonErrors": [
+    {
+      "error": "0",
+      "cause": "No numeric values found in the range",
+      "fix": "Check your data range or use COUNTA if you want to count all non-empty cells."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "COUNT works identically in Google Sheets with the same syntax.",
+    "formula": "=COUNT(A1:A10)"
+  },
+  "faq": [
+    {
+      "question": "What is the difference between COUNT and COUNTA?",
+      "answer": "COUNT only counts numeric values, while COUNTA counts all non-empty cells including text and logical values."
+    },
+    {
+      "question": "Does COUNT include blank cells?",
+      "answer": "No, COUNT ignores blank cells. Use COUNTA or COUNTBLANK to count blanks."
+    },
+    {
+      "question": "Can COUNT count across multiple sheets?",
+      "answer": "Yes, you can reference ranges from multiple sheets: =COUNT(Sheet1!A1:A10, Sheet2!A1:A10)"
+    }
+  ],
+  "relatedFunctions": []
+}

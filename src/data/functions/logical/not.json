@@ -1,0 +1,69 @@
+{
+  "name": "NOT",
+  "slug": "not",
+  "category": "logical",
+  "excelVersion": "All versions",
+  "description": "NOT reverses the logic of its argument.",
+  "tldr": "NOT flips TRUE to FALSE and FALSE to TRUE.",
+  "syntax": "(logical)",
+  "parameters": [
+    {
+      "name": "logical",
+      "description": "The condition to reverse.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Reverse a condition",
+    "formula": "=NOT(A1>100)",
+    "result": "FALSE",
+    "explanation": "Returns FALSE when A1 > 100 is TRUE, and vice versa."
+  },
+  "advancedExamples": [
+    {
+      "title": "NOT with AND",
+      "scenario": "Complex logic",
+      "description": "Check that NOT all conditions are true",
+      "formula": "=NOT(AND(A1>0, B1>0))",
+      "result": "TRUE",
+      "explanation": "Returns TRUE when at least one value is not positive."
+    }
+  ],
+  "howItWorks": "NOT simply reverses the boolean value of its argument.",
+  "howToSteps": [
+    {
+      "name": "Define condition",
+      "text": "Determine the condition to reverse."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =NOT(condition)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result is the opposite of the condition."
+    }
+  ],
+  "limitations": [
+    "NOT only takes one argument.",
+    "For negating multiple conditions, use NOT with AND/OR."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "Non-boolean argument",
+      "fix": "Ensure the argument evaluates to TRUE/FALSE."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "NOT works identically in Google Sheets.",
+    "formula": "=NOT(A1>100)"
+  },
+  "faq": [
+    {
+      "question": "Can NOT be used with arrays?",
+      "answer": "Yes, in Excel 365 and Google Sheets, NOT works with arrays."
+    }
+  ],
+  "relatedFunctions": []
+}

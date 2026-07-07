@@ -1,0 +1,73 @@
+{
+  "name": "COUNTBLANK",
+  "slug": "countblank",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "COUNTBLANK counts the number of empty cells within a specified range.",
+  "tldr": "COUNTBLANK returns the count of completely blank cells in a range.",
+  "syntax": "(range)",
+  "parameters": [
+    {
+      "name": "range",
+      "description": "The range of cells to check for blank cells.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Count blank cells in a data range",
+    "formula": "=COUNTBLANK(A1:A10)",
+    "result": "3",
+    "explanation": "Counts how many cells in A1:A10 are completely empty."
+  },
+  "advancedExamples": [
+    {
+      "title": "Calculate completion rate",
+      "scenario": "Progress tracking",
+      "description": "Determine what percentage of cells have been filled in",
+      "formula": "=1 - COUNTBLANK(A1:A100)/COUNTA(A1:A100)",
+      "result": "85%",
+      "explanation": "Subtracts the blank count from the total to get the completion percentage."
+    }
+  ],
+  "howItWorks": "COUNTBLANK scans each cell in the range and counts it only if it is completely empty. Cells containing formulas (even those returning empty strings) are not counted as blank.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the result should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =COUNTBLANK(range)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the number of blank cells."
+    }
+  ],
+  "limitations": [
+    "Cells with formulas that return \"\" are not counted as blank.",
+    "Cells with only spaces are not counted as blank."
+  ],
+  "commonErrors": [
+    {
+      "error": "0",
+      "cause": "No blank cells found",
+      "fix": "Verify your data range."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "COUNTBLANK works identically in Google Sheets.",
+    "formula": "=COUNTBLANK(A1:A10)"
+  },
+  "faq": [
+    {
+      "question": "Does COUNTBLANK count cells with formulas?",
+      "answer": "No, even if a formula returns an empty string, the cell is not considered blank."
+    },
+    {
+      "question": "How do I count cells with spaces?",
+      "answer": "Use COUNTIF with a space pattern: =COUNTIF(range, \" \")"
+    }
+  ],
+  "relatedFunctions": []
+}

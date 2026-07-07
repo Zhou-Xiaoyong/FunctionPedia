@@ -1,0 +1,40 @@
+{
+  "name": "LN",
+  "slug": "ln",
+  "category": "math",
+  "excelVersion": "All versions",
+  "description": "LN is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "LN is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(ln)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the LN function",
+    "formula": "=LN(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the LN function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The LN function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =LN(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "LN works identically in Google Sheets with the same syntax.",
+    "formula": "=LN(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

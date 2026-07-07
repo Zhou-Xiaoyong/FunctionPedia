@@ -1,0 +1,40 @@
+{
+  "name": "ATAN2",
+  "slug": "atan2",
+  "category": "math",
+  "excelVersion": "All versions",
+  "description": "ATAN2 is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "ATAN2 is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(atan2)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the ATAN2 function",
+    "formula": "=ATAN2(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the ATAN2 function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The ATAN2 function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =ATAN2(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "ATAN2 works identically in Google Sheets with the same syntax.",
+    "formula": "=ATAN2(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

@@ -1,0 +1,40 @@
+{
+  "name": "STDEVA",
+  "slug": "stdeva",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "STDEVA is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "STDEVA is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(stdeva)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the STDEVA function",
+    "formula": "=STDEVA(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the STDEVA function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The STDEVA function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =STDEVA(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "STDEVA works identically in Google Sheets with the same syntax.",
+    "formula": "=STDEVA(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

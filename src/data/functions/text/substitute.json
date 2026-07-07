@@ -1,0 +1,96 @@
+{
+  "name": "SUBSTITUTE",
+  "slug": "substitute",
+  "category": "text",
+  "excelVersion": "All versions",
+  "description": "SUBSTITUTE replaces one text string with another in a text string.",
+  "tldr": "SUBSTITUTE replaces specific text within a string with new text.",
+  "syntax": "(text, old_text, new_text, [instance_num])",
+  "parameters": [
+    {
+      "name": "text",
+      "description": "The text string in which to substitute characters.",
+      "required": true
+    },
+    {
+      "name": "old_text",
+      "description": "The text to find and replace.",
+      "required": true
+    },
+    {
+      "name": "new_text",
+      "description": "The text to replace old_text with.",
+      "required": true
+    },
+    {
+      "name": "instance_num",
+      "description": "Optional. Which occurrence of old_text to replace.",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Replace all occurrences",
+    "formula": "=SUBSTITUTE(\"apple, apple, banana\", \"apple\", \"orange\")",
+    "result": "orange, orange, banana",
+    "explanation": "Replaces all instances of \"apple\" with \"orange\"."
+  },
+  "advancedExamples": [
+    {
+      "title": "Replace only the first occurrence",
+      "scenario": "Selective replacement",
+      "description": "Replace just the first instance of text",
+      "formula": "=SUBSTITUTE(\"apple, apple, banana\", \"apple\", \"orange\", 1)",
+      "result": "orange, apple, banana",
+      "explanation": "Replaces only the first \"apple\" with \"orange\"."
+    },
+    {
+      "title": "Remove all spaces",
+      "scenario": "Text cleaning",
+      "description": "Delete all spaces from a text string",
+      "formula": "=SUBSTITUTE(A1, \" \", \"\")",
+      "result": "helloworld",
+      "explanation": "Replaces every space with nothing, effectively removing them."
+    }
+  ],
+  "howItWorks": "SUBSTITUTE searches for old_text in the text string and replaces it with new_text. If instance_num is specified, only that occurrence is replaced.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the result should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =SUBSTITUTE(text, find_text, replace_text)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the modified text."
+    }
+  ],
+  "limitations": [
+    "SUBSTITUTE is case-sensitive.",
+    "For case-insensitive replacement, use UPPER/LOWER with SUBSTITUTE, or use REPLACE for position-based replacement."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "Invalid arguments",
+      "fix": "Ensure all required arguments are provided."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "SUBSTITUTE works identically in Google Sheets.",
+    "formula": "=SUBSTITUTE(\"apple, apple, banana\", \"apple\", \"orange\")"
+  },
+  "faq": [
+    {
+      "question": "Is SUBSTITUTE case-sensitive?",
+      "answer": "Yes, \"Apple\" and \"apple\" are treated as different."
+    },
+    {
+      "question": "What is the difference between SUBSTITUTE and REPLACE?",
+      "answer": "SUBSTITUTE replaces text by content; REPLACE replaces text by position."
+    }
+  ],
+  "relatedFunctions": []
+}

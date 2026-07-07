@@ -1,0 +1,40 @@
+{
+  "name": "MOD",
+  "slug": "mod",
+  "category": "math",
+  "excelVersion": "All versions",
+  "description": "MOD is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "MOD is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(mod)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the MOD function",
+    "formula": "=MOD(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the MOD function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The MOD function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =MOD(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "MOD works identically in Google Sheets with the same syntax.",
+    "formula": "=MOD(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

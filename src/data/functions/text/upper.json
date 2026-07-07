@@ -1,0 +1,40 @@
+{
+  "name": "UPPER",
+  "slug": "upper",
+  "category": "text",
+  "excelVersion": "All versions",
+  "description": "UPPER is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "UPPER is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(upper)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the UPPER function",
+    "formula": "=UPPER(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the UPPER function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The UPPER function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =UPPER(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "UPPER works identically in Google Sheets with the same syntax.",
+    "formula": "=UPPER(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

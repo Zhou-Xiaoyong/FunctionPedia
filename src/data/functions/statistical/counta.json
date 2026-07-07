@@ -1,0 +1,78 @@
+{
+  "name": "COUNTA",
+  "slug": "counta",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "COUNTA counts the number of non-empty cells within a specified range, regardless of the cell content.",
+  "tldr": "COUNTA returns the count of all non-empty cells in a range, including text, numbers, and logical values.",
+  "syntax": "(value1, [value2], ...)",
+  "parameters": [
+    {
+      "name": "value1",
+      "description": "The first item, cell reference, or range to count.",
+      "required": true
+    },
+    {
+      "name": "value2",
+      "description": "Optional additional items, cell references, or ranges to count.",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Count all non-empty cells in a range",
+    "formula": "=COUNTA(A1:A10)",
+    "result": "8",
+    "explanation": "Counts all cells in A1:A10 that contain any value (text, numbers, or logical values), ignoring only completely blank cells."
+  },
+  "advancedExamples": [
+    {
+      "title": "Count responses in a survey",
+      "scenario": "Survey analysis",
+      "description": "Count how many respondents answered a question",
+      "formula": "=COUNTA(B2:B100)",
+      "result": "95",
+      "explanation": "Counts all non-empty cells in the response column to find the number of completed surveys."
+    }
+  ],
+  "howItWorks": "COUNTA examines each cell in the range and counts it if it contains any value — numbers, text, logical values (TRUE/FALSE), or error values. Only completely blank cells are excluded.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the result should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =COUNTA(range) where range contains your data."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the total count of non-empty cells."
+    }
+  ],
+  "limitations": [
+    "COUNTA counts cells with formulas that return empty strings (\"\") as non-empty.",
+    "For counting only numeric values, use COUNT instead."
+  ],
+  "commonErrors": [
+    {
+      "error": "0",
+      "cause": "All cells in the range are blank",
+      "fix": "Verify your data range is correct."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "COUNTA works identically in Google Sheets.",
+    "formula": "=COUNTA(A1:A10)"
+  },
+  "faq": [
+    {
+      "question": "What counts as non-empty for COUNTA?",
+      "answer": "Text, numbers, dates, logical values (TRUE/FALSE), and error values all count. Only completely blank cells are ignored."
+    },
+    {
+      "question": "Does COUNTA count cells with formulas?",
+      "answer": "Yes, including cells with formulas that return empty strings (\"\")."
+    }
+  ],
+  "relatedFunctions": []
+}

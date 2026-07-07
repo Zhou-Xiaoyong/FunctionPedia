@@ -1,0 +1,40 @@
+{
+  "name": "FLOOR.MATH",
+  "slug": "floor-math",
+  "category": "math",
+  "excelVersion": "All versions",
+  "description": "FLOOR.MATH is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "FLOOR.MATH is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(floor.math)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the FLOOR.MATH function",
+    "formula": "=FLOOR.MATH(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the FLOOR.MATH function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The FLOOR.MATH function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =FLOOR.MATH(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "FLOOR.MATH works identically in Google Sheets with the same syntax.",
+    "formula": "=FLOOR.MATH(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

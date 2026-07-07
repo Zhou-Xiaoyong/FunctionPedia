@@ -1,0 +1,81 @@
+{
+  "name": "ABS",
+  "slug": "abs",
+  "category": "math",
+  "excelVersion": "All versions",
+  "description": "ABS returns the absolute value of a number, removing the negative sign if present.",
+  "tldr": "ABS converts negative numbers to positive, leaving positive numbers unchanged.",
+  "syntax": "(number)",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The number for which you want the absolute value.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Get absolute value of a number",
+    "formula": "=ABS(-10)",
+    "result": "10",
+    "explanation": "Converts -10 to its absolute value of 10."
+  },
+  "advancedExamples": [
+    {
+      "title": "Calculate absolute differences",
+      "scenario": "Data analysis",
+      "description": "Find the absolute difference between two values",
+      "formula": "=ABS(A1 - B1)",
+      "result": "5",
+      "explanation": "Returns the positive difference regardless of which value is larger."
+    },
+    {
+      "title": "Sum absolute values",
+      "scenario": "Error calculation",
+      "description": "Sum all absolute values in a range",
+      "formula": "=SUM(ABS(A1:A10))",
+      "result": "100",
+      "explanation": "Converts all values to positive before summing."
+    }
+  ],
+  "howItWorks": "ABS removes the negative sign from negative numbers, returning their positive equivalent. Positive numbers and zero remain unchanged.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the result should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =ABS(number)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the absolute value."
+    }
+  ],
+  "limitations": [
+    "ABS only works with numeric values.",
+    "For array operations, use ABS with array formulas or dynamic arrays."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "Non-numeric argument",
+      "fix": "Ensure the argument is a number."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "ABS works identically in Google Sheets.",
+    "formula": "=ABS(-10)"
+  },
+  "faq": [
+    {
+      "question": "Does ABS work with arrays?",
+      "answer": "In Excel 365 and Google Sheets, ABS works with arrays natively. In older versions, use array formulas (Ctrl+Shift+Enter)."
+    },
+    {
+      "question": "What is ABS of zero?",
+      "answer": "ABS(0) = 0"
+    }
+  ],
+  "relatedFunctions": []
+}

@@ -1,0 +1,86 @@
+{
+  "name": "POWER",
+  "slug": "power",
+  "category": "math",
+  "excelVersion": "All versions",
+  "description": "POWER raises a number to the power of another number.",
+  "tldr": "POWER calculates number^power, raising a base number to an exponent.",
+  "syntax": "(number, power)",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The base number to raise to a power.",
+      "required": true
+    },
+    {
+      "name": "power",
+      "description": "The exponent to raise the base to.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Calculate 2 to the power of 3",
+    "formula": "=POWER(2, 3)",
+    "result": "8",
+    "explanation": "Returns 2 raised to the power of 3, which equals 8."
+  },
+  "advancedExamples": [
+    {
+      "title": "Calculate compound interest",
+      "scenario": "Finance",
+      "description": "Compute future value with compound interest",
+      "formula": "=POWER(1+A1, B1)*C1",
+      "result": "$1,628.89",
+      "explanation": "Calculates future value using the formula PV*(1+r)^n."
+    },
+    {
+      "title": "Calculate nth root",
+      "scenario": "Mathematics",
+      "description": "Find the cube root of a number",
+      "formula": "=POWER(27, 1/3)",
+      "result": "3",
+      "explanation": "Raises 27 to the 1/3 power to get the cube root."
+    }
+  ],
+  "howItWorks": "POWER computes number^power by multiplying the base number by itself power times.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the result should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =POWER(base, exponent)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the calculated power."
+    }
+  ],
+  "limitations": [
+    "Negative numbers raised to non-integer powers return #NUM!.",
+    "For roots, use fractional exponents like 1/2 for square root."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM!",
+      "cause": "Negative number raised to non-integer power",
+      "fix": "Use ABS for negative bases or use integer exponents."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "POWER works identically in Google Sheets.",
+    "formula": "=POWER(2, 3)"
+  },
+  "faq": [
+    {
+      "question": "Is POWER the same as the ^ operator?",
+      "answer": "Yes, =POWER(2, 3) is equivalent to =2^3."
+    },
+    {
+      "question": "Can I use decimal exponents?",
+      "answer": "Yes, POWER(10, 0.5) calculates the square root of 10."
+    }
+  ],
+  "relatedFunctions": []
+}

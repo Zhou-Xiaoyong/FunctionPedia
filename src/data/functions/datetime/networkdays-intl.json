@@ -1,0 +1,40 @@
+{
+  "name": "NETWORKDAYS.INTL",
+  "slug": "networkdays-intl",
+  "category": "datetime",
+  "excelVersion": "All versions",
+  "description": "NETWORKDAYS.INTL is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "NETWORKDAYS.INTL is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(networkdays.intl)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the NETWORKDAYS.INTL function",
+    "formula": "=NETWORKDAYS.INTL(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the NETWORKDAYS.INTL function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The NETWORKDAYS.INTL function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =NETWORKDAYS.INTL(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "NETWORKDAYS.INTL works identically in Google Sheets with the same syntax.",
+    "formula": "=NETWORKDAYS.INTL(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

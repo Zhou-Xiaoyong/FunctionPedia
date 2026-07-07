@@ -1,0 +1,69 @@
+{
+  "name": "TODAY",
+  "slug": "today",
+  "category": "datetime",
+  "excelVersion": "All versions",
+  "description": "TODAY returns the current date, updated each time the worksheet recalculates.",
+  "tldr": "TODAY displays today's date, updating automatically when the workbook opens or recalculates.",
+  "syntax": "()",
+  "parameters": [],
+  "basicExample": {
+    "description": "Get today's date",
+    "formula": "=TODAY()",
+    "result": "7/7/2026",
+    "explanation": "Returns the current date as a serial number formatted as a date."
+  },
+  "advancedExamples": [
+    {
+      "title": "Calculate days until deadline",
+      "scenario": "Project management",
+      "description": "Find how many days remain until a deadline",
+      "formula": "=A1 - TODAY()",
+      "result": "15",
+      "explanation": "Subtracts today's date from the deadline date in cell A1."
+    },
+    {
+      "title": "Calculate age from birthdate",
+      "scenario": "Personal information",
+      "description": "Compute someone's age from their birthdate",
+      "formula": "=DATEDIF(A1, TODAY(), \"Y\")",
+      "result": "30",
+      "explanation": "DATEDIF calculates the difference in years between birthdate and today."
+    }
+  ],
+  "howItWorks": "TODAY returns the current date as a serial number (Excel date format). It updates automatically whenever the workbook is opened or recalculated.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the date should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =TODAY()."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows today's date."
+    }
+  ],
+  "limitations": [
+    "TODAY returns only the date, not the time.",
+    "For date and time, use NOW() instead."
+  ],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "TODAY works identically in Google Sheets.",
+    "formula": "=TODAY()"
+  },
+  "faq": [
+    {
+      "question": "Does TODAY update automatically?",
+      "answer": "Yes, TODAY updates whenever the worksheet recalculates or when you open the workbook."
+    },
+    {
+      "question": "Can I use TODAY in conditional formatting?",
+      "answer": "Yes, TODAY() is commonly used in conditional formatting rules."
+    }
+  ],
+  "relatedFunctions": []
+}

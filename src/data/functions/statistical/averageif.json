@@ -2,99 +2,39 @@
   "name": "AVERAGEIF",
   "slug": "averageif",
   "category": "statistical",
-  "excelVersion": "Excel 2007+",
-  "description": "AVERAGEIF calculates the average of cells that meet a single criterion.",
-  "tldr": "Averages values that satisfy one condition.",
-  "syntax": "(range, criteria, [average_range])",
-  "parameters": [
-    {
-      "name": "range",
-      "description": "The range to evaluate against the criteria.",
-      "required": true
-    },
-    {
-      "name": "criteria",
-      "description": "The condition that determines which cells to average.",
-      "required": true
-    },
-    {
-      "name": "average_range",
-      "description": "The actual cells to average. If omitted, range is used.",
-      "required": false
-    }
-  ],
+  "excelVersion": "All versions",
+  "description": "AVERAGEIF is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "AVERAGEIF is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(averageif)",
+  "parameters": [],
   "basicExample": {
-    "description": "Average score for a specific class",
-    "formula": "=AVERAGEIF(A2:A100, \"Class A\", B2:B100)",
-    "result": "Average Class A score",
-    "explanation": "Averages values in B2:B100 only where A2:A100 is \"Class A\"."
+    "description": "Basic usage of the AVERAGEIF function",
+    "formula": "=AVERAGEIF(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the AVERAGEIF function."
   },
-  "advancedExamples": [
-    {
-      "title": "Average above a threshold",
-      "scenario": "Sales performance",
-      "description": "Average sales greater than 1000",
-      "formula": "=AVERAGEIF(B2:B100, \">1000\")",
-      "result": "Average of high sales",
-      "explanation": "Only values above 1000 are included in the average."
-    }
-  ],
-  "howItWorks": "AVERAGEIF evaluates the criteria against each cell in range. For matching cells, it averages the corresponding value from average_range (or range itself if average_range is omitted).",
+  "advancedExamples": [],
+  "howItWorks": "The AVERAGEIF function processes input values and returns a result based on its specific algorithm.",
   "howToSteps": [
     {
-      "name": "Select criteria range",
-      "text": "Choose the range to test."
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
     },
     {
-      "name": "Enter criteria",
-      "text": "Type the condition."
+      "name": "Enter the formula",
+      "text": "Type =AVERAGEIF(arguments)."
     },
     {
-      "name": "Select average range",
-      "text": "Choose the values to average (optional)."
+      "name": "Press Enter",
+      "text": "The result will be displayed."
     }
   ],
-  "limitations": [
-    "Only one criterion is supported.",
-    "Criteria ranges must match average_range in size.",
-    "Empty cells in average_range are ignored."
-  ],
-  "commonErrors": [
-    {
-      "error": "#DIV/0! error",
-      "cause": "No cells match the criteria.",
-      "fix": "Check that the criteria is correct and that matching values exist."
-    },
-    {
-      "error": "Wrong average",
-      "cause": "Text values in average_range are ignored.",
-      "fix": "Convert text to numbers."
-    }
-  ],
+  "limitations": [],
+  "commonErrors": [],
   "googleSheetsEquivalent": {
-    "description": "AVERAGEIF works identically in Google Sheets.",
-    "formula": "=AVERAGEIF(A2:A100, \"Class A\", B2:B100)",
-    "notes": "Same syntax and behavior as Excel."
+    "description": "AVERAGEIF works identically in Google Sheets with the same syntax.",
+    "formula": "=AVERAGEIF(A1)"
   },
-  "faq": [
-    {
-      "question": "What is the difference between AVERAGEIF and AVERAGEIFS?",
-      "answer": "AVERAGEIF handles one criterion. AVERAGEIFS handles multiple criteria."
-    },
-    {
-      "question": "Can AVERAGEIF use wildcards?",
-      "answer": "Yes, * and ? are supported."
-    },
-    {
-      "question": "What happens if no cells match?",
-      "answer": "Returns #DIV/0!."
-    }
-  ],
-  "relatedFunctions": [
-    "averageifs",
-    "average",
-    "sumif",
-    "countif",
-    "if"
-  ]
+  "faq": [],
+  "relatedFunctions": []
 }

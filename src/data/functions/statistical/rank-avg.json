@@ -1,0 +1,40 @@
+{
+  "name": "RANK.AVG",
+  "slug": "rank-avg",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "RANK.AVG is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "RANK.AVG is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(rank.avg)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the RANK.AVG function",
+    "formula": "=RANK.AVG(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the RANK.AVG function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The RANK.AVG function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =RANK.AVG(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "RANK.AVG works identically in Google Sheets with the same syntax.",
+    "formula": "=RANK.AVG(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

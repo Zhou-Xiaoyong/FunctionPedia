@@ -1,0 +1,40 @@
+{
+  "name": "QUARTILE.EXC",
+  "slug": "quartile-exc",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "QUARTILE.EXC is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "QUARTILE.EXC is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(quartile.exc)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the QUARTILE.EXC function",
+    "formula": "=QUARTILE.EXC(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the QUARTILE.EXC function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The QUARTILE.EXC function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =QUARTILE.EXC(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "QUARTILE.EXC works identically in Google Sheets with the same syntax.",
+    "formula": "=QUARTILE.EXC(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

@@ -1,0 +1,40 @@
+{
+  "name": "WORKDAY",
+  "slug": "workday",
+  "category": "datetime",
+  "excelVersion": "All versions",
+  "description": "WORKDAY is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "WORKDAY is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(workday)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the WORKDAY function",
+    "formula": "=WORKDAY(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the WORKDAY function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The WORKDAY function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =WORKDAY(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "WORKDAY works identically in Google Sheets with the same syntax.",
+    "formula": "=WORKDAY(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

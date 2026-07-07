@@ -1,0 +1,40 @@
+{
+  "name": "RANDARRAY",
+  "slug": "randarray",
+  "category": "array",
+  "excelVersion": "All versions",
+  "description": "RANDARRAY is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "RANDARRAY is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(randarray)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the RANDARRAY function",
+    "formula": "=RANDARRAY(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the RANDARRAY function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The RANDARRAY function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =RANDARRAY(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "RANDARRAY works identically in Google Sheets with the same syntax.",
+    "formula": "=RANDARRAY(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

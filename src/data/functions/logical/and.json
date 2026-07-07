@@ -1,0 +1,78 @@
+{
+  "name": "AND",
+  "slug": "and",
+  "category": "logical",
+  "excelVersion": "All versions",
+  "description": "AND returns TRUE if all arguments are TRUE, and FALSE if any argument is FALSE.",
+  "tldr": "AND checks if ALL conditions are TRUE.",
+  "syntax": "(logical1, [logical2], ...)",
+  "parameters": [
+    {
+      "name": "logical1",
+      "description": "The first condition to test.",
+      "required": true
+    },
+    {
+      "name": "logical2",
+      "description": "Optional additional conditions to test.",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Check multiple conditions",
+    "formula": "=AND(A1>0, B1>0)",
+    "result": "TRUE",
+    "explanation": "Returns TRUE only if both A1 > 0 and B1 > 0."
+  },
+  "advancedExamples": [
+    {
+      "title": "AND with IF",
+      "scenario": "Combined logic",
+      "description": "Use AND within IF for multiple criteria",
+      "formula": "=IF(AND(A1>=18, B1=\"Yes\"), \"Eligible\", \"Not eligible\")",
+      "result": "Eligible",
+      "explanation": "Checks two conditions before returning a result."
+    }
+  ],
+  "howItWorks": "AND evaluates all conditions and returns TRUE only when every condition is TRUE.",
+  "howToSteps": [
+    {
+      "name": "Define conditions",
+      "text": "Determine all conditions that must be true."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =AND(condition1, condition2, ...)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result is TRUE or FALSE."
+    }
+  ],
+  "limitations": [
+    "All conditions must be TRUE for AND to return TRUE.",
+    "For ANY condition being TRUE, use OR instead."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "Non-boolean arguments",
+      "fix": "Ensure all arguments evaluate to TRUE/FALSE."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "AND works identically in Google Sheets.",
+    "formula": "=AND(A1>0, B1>0)"
+  },
+  "faq": [
+    {
+      "question": "How many conditions can AND handle?",
+      "answer": "AND can handle up to 255 conditions in Excel."
+    },
+    {
+      "question": "What if I have no conditions?",
+      "answer": "AND with no arguments returns TRUE."
+    }
+  ],
+  "relatedFunctions": []
+}

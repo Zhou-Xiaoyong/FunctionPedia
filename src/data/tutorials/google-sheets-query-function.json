@@ -1,0 +1,100 @@
+{
+  "slug": "google-sheets-query-function",
+  "title": "Master the QUERY Function in Google Sheets",
+  "description": "Learn how to use Google Sheets' powerful QUERY function to filter, sort, and analyze data like a database.",
+  "category": "Google Sheets",
+  "functions": ["QUERY"],
+  "intro": "The QUERY function is Google Sheets' most powerful data analysis tool. It allows you to write SQL-like queries to manipulate your data, making it possible to filter, sort, aggregate, and transform data in ways that would require multiple functions in Excel.",
+  "tags": ["QUERY", "Google Sheets", "Data Analysis", "Advanced", "SQL"],
+  "estimatedTime": "20 min read",
+  "prerequisites": [
+    "Basic understanding of Google Sheets",
+    "Familiarity with spreadsheet ranges",
+    "Basic SQL knowledge is helpful but not required"
+  ],
+  "sections": [
+    {
+      "title": "QUERY Function Basics",
+      "content": "The QUERY function takes a data range and a query string, returning the filtered and transformed results.",
+      "steps": [
+        {
+          "name": "Basic syntax",
+          "text": "QUERY has a simple syntax but powerful capabilities.",
+          "formula": "=QUERY(data, query, [headers])"
+        },
+        {
+          "name": "Understanding the query string",
+          "text": "The query string uses a SQL-like syntax. Columns are referenced as Col1, Col2, Col3, etc."
+        }
+      ],
+      "tips": [
+        "Headers parameter (optional): Use 1 if your data has column headers.",
+        "Column references are case-insensitive in the query string."
+      ]
+    },
+    {
+      "title": "Filtering Data with WHERE",
+      "content": "Use the WHERE clause to filter rows based on conditions.",
+      "example": {
+        "formula": "=QUERY(A1:C100, \"SELECT * WHERE Col1 = 'Sales'\", 1)",
+        "result": "All rows where Column A equals 'Sales'",
+        "explanation": "Selects all columns where Column 1 (A) matches 'Sales' exactly."
+      },
+      "tips": [
+        "Use single quotes for text values, no quotes for numbers.",
+        "Multiple conditions can be combined with AND/OR."
+      ]
+    },
+    {
+      "title": "Sorting with ORDER BY",
+      "content": "Sort your results using ORDER BY with optional ASC (ascending) or DESC (descending).",
+      "example": {
+        "formula": "=QUERY(A1:C100, \"SELECT Col1, Col3 ORDER BY Col3 DESC\", 1)",
+        "result": "Columns A and C sorted by column C in descending order",
+        "explanation": "Selects columns 1 and 3, then sorts by column 3 from highest to lowest."
+      },
+      "tips": [
+        "ASC is the default if not specified.",
+        "You can sort by multiple columns."
+      ]
+    },
+    {
+      "title": "Aggregation with GROUP BY",
+      "content": "Use GROUP BY with aggregate functions like SUM, COUNT, AVG to summarize data.",
+      "example": {
+        "formula": "=QUERY(A1:C100, \"SELECT Col1, SUM(Col3) GROUP BY Col1\", 1)",
+        "result": "Total sales by category",
+        "explanation": "Groups by column 1 (category) and sums column 3 (sales) for each group."
+      },
+      "tips": [
+        "All non-aggregated columns must be in GROUP BY.",
+        "Common aggregations: SUM, COUNT, AVG, MAX, MIN."
+      ]
+    },
+    {
+      "title": "Combining Multiple Conditions",
+      "content": "Create complex queries by combining WHERE, ORDER BY, and GROUP BY.",
+      "example": {
+        "formula": "=QUERY(A1:C100, \"SELECT Col1, SUM(Col3) WHERE Col2 >= DATE '2024-01-01' GROUP BY Col1 ORDER BY SUM(Col3) DESC\", 1)",
+        "result": "2024 sales by category, sorted from highest to lowest",
+        "explanation": "Filters for dates in 2024, groups by category, sums sales, and sorts descending."
+      },
+      "tips": [
+        "Use DATE keyword with YYYY-MM-DD format for date comparisons.",
+        "Parentheses can group conditions for complex logic."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "QUERY", "slug": "query", "description": "Runs a SQL-like query on your data" },
+    { "name": "FILTER", "slug": "filter", "description": "Filters a range based on conditions" },
+    { "name": "SUMIF", "slug": "sumif", "description": "Sums values based on a single condition" }
+  ],
+  "summary": "The QUERY function is Google Sheets' most versatile tool for data analysis. By learning its SQL-like syntax, you can filter, sort, aggregate, and transform data in ways that would require multiple Excel functions. Mastering QUERY will significantly boost your data analysis capabilities.",
+  "nextSteps": [
+    "Practice basic WHERE and ORDER BY queries",
+    "Try grouping data with GROUP BY",
+    "Explore pivot table alternatives with QUERY",
+    "Learn how to join multiple sheets with QUERY"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "name": "DSTDEVP",
+  "slug": "dstdevp",
+  "category": "database",
+  "excelVersion": "All versions",
+  "description": "DSTDEVP is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "DSTDEVP is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(dstdevp)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the DSTDEVP function",
+    "formula": "=DSTDEVP(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the DSTDEVP function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The DSTDEVP function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =DSTDEVP(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "DSTDEVP works identically in Google Sheets with the same syntax.",
+    "formula": "=DSTDEVP(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

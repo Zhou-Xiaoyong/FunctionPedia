@@ -1,0 +1,73 @@
+{
+  "name": "SQRT",
+  "slug": "sqrt",
+  "category": "math",
+  "excelVersion": "All versions",
+  "description": "SQRT returns the square root of a positive number.",
+  "tldr": "SQRT calculates the square root of a number.",
+  "syntax": "(number)",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The positive number for which you want the square root.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Calculate square root",
+    "formula": "=SQRT(16)",
+    "result": "4",
+    "explanation": "Returns the square root of 16, which is 4."
+  },
+  "advancedExamples": [
+    {
+      "title": "Calculate standard deviation manually",
+      "scenario": "Statistics",
+      "description": "Compute sample standard deviation",
+      "formula": "=SQRT(SUM((A1:A10-AVERAGE(A1:A10))^2)/(COUNTA(A1:A10)-1))",
+      "result": "15.2",
+      "explanation": "Calculates standard deviation using the formula sqrt(variance)."
+    }
+  ],
+  "howItWorks": "SQRT computes the square root by finding a number that, when multiplied by itself, equals the input number.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the result should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =SQRT(number)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the square root."
+    }
+  ],
+  "limitations": [
+    "SQRT returns #NUM! for negative numbers.",
+    "For nth roots, use POWER(number, 1/n)."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM!",
+      "cause": "Negative number argument",
+      "fix": "Use ABS to make the number positive first, or check your data."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "SQRT works identically in Google Sheets.",
+    "formula": "=SQRT(16)"
+  },
+  "faq": [
+    {
+      "question": "How do I calculate cube root?",
+      "answer": "Use POWER(number, 1/3) to calculate cube roots."
+    },
+    {
+      "question": "Can I calculate square root of zero?",
+      "answer": "Yes, SQRT(0) = 0"
+    }
+  ],
+  "relatedFunctions": []
+}

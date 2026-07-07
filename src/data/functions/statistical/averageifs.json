@@ -2,104 +2,39 @@
   "name": "AVERAGEIFS",
   "slug": "averageifs",
   "category": "statistical",
-  "excelVersion": "Excel 2007+",
-  "description": "AVERAGEIFS calculates the average of cells that satisfy multiple criteria.",
-  "tldr": "Averages values that meet all of the specified conditions.",
-  "syntax": "(average_range, criteria_range1, criteria1, [criteria_range2, criteria2], ...)",
-  "parameters": [
-    {
-      "name": "average_range",
-      "description": "The range of cells to average.",
-      "required": true
-    },
-    {
-      "name": "criteria_range1",
-      "description": "The range to evaluate with the first criteria.",
-      "required": true
-    },
-    {
-      "name": "criteria1",
-      "description": "The first condition.",
-      "required": true
-    },
-    {
-      "name": "criteria_range2, criteria2",
-      "description": "Additional range/criteria pairs (optional).",
-      "required": false
-    }
-  ],
+  "excelVersion": "All versions",
+  "description": "AVERAGEIFS is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "AVERAGEIFS is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(averageifs)",
+  "parameters": [],
   "basicExample": {
-    "description": "Average sales in the East region",
-    "formula": "=AVERAGEIFS(B2:B100, A2:A100, \"East\")",
-    "result": "Average East sales",
-    "explanation": "Averages B2:B100 where A2:A100 equals \"East\"."
+    "description": "Basic usage of the AVERAGEIFS function",
+    "formula": "=AVERAGEIFS(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the AVERAGEIFS function."
   },
-  "advancedExamples": [
-    {
-      "title": "Multiple criteria",
-      "scenario": "Regional product performance",
-      "description": "Average Widget sales in the East region",
-      "formula": "=AVERAGEIFS(C2:C100, A2:A100, \"East\", B2:B100, \"Widget\")",
-      "result": "Average Widget sales in East",
-      "explanation": "Both conditions must be met."
-    }
-  ],
-  "howItWorks": "AVERAGEIFS evaluates each criteria pair with AND logic. Rows that satisfy all conditions have their corresponding value in average_range included in the average.",
+  "advancedExamples": [],
+  "howItWorks": "The AVERAGEIFS function processes input values and returns a result based on its specific algorithm.",
   "howToSteps": [
     {
-      "name": "Select average range",
-      "text": "Choose the cells to average."
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
     },
     {
-      "name": "Add criteria pairs",
-      "text": "Add each range/criteria pair."
+      "name": "Enter the formula",
+      "text": "Type =AVERAGEIFS(arguments)."
     },
     {
       "name": "Press Enter",
-      "text": "Result appears after all conditions are applied."
+      "text": "The result will be displayed."
     }
   ],
-  "limitations": [
-    "All criteria ranges must match average_range in size.",
-    "Only AND logic is supported.",
-    "If no cells match, returns #DIV/0!."
-  ],
-  "commonErrors": [
-    {
-      "error": "#DIV/0! error",
-      "cause": "No cells match all criteria.",
-      "fix": "Loosen criteria or check data."
-    },
-    {
-      "error": "#VALUE! error",
-      "cause": "Criteria ranges have different dimensions.",
-      "fix": "Make ranges the same size."
-    }
-  ],
+  "limitations": [],
+  "commonErrors": [],
   "googleSheetsEquivalent": {
-    "description": "AVERAGEIFS works identically in Google Sheets.",
-    "formula": "=AVERAGEIFS(B2:B100, A2:A100, \"East\")",
-    "notes": "Same syntax and behavior as Excel."
+    "description": "AVERAGEIFS works identically in Google Sheets with the same syntax.",
+    "formula": "=AVERAGEIFS(A1)"
   },
-  "faq": [
-    {
-      "question": "Can AVERAGEIFS use OR logic?",
-      "answer": "No, it uses AND logic. For OR, add multiple AVERAGEIFS results."
-    },
-    {
-      "question": "What is the maximum number of criteria pairs?",
-      "answer": "Excel supports up to 127 range/criteria pairs."
-    },
-    {
-      "question": "Can criteria be cell references?",
-      "answer": "Yes, use the cell reference directly without quotes."
-    }
-  ],
-  "relatedFunctions": [
-    "averageif",
-    "average",
-    "sumifs",
-    "countifs",
-    "if"
-  ]
+  "faq": [],
+  "relatedFunctions": []
 }

@@ -1,0 +1,81 @@
+{
+  "name": "TRIM",
+  "slug": "trim",
+  "category": "text",
+  "excelVersion": "All versions",
+  "description": "TRIM removes extra spaces from text, leaving only single spaces between words.",
+  "tldr": "TRIM cleans up text by removing leading, trailing, and extra spaces between words.",
+  "syntax": "(text)",
+  "parameters": [
+    {
+      "name": "text",
+      "description": "The text string to trim.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Remove extra spaces from text",
+    "formula": "=TRIM(\"   Hello   World   \")",
+    "result": "Hello World",
+    "explanation": "Removes leading and trailing spaces, leaving single spaces between words."
+  },
+  "advancedExamples": [
+    {
+      "title": "Clean imported data",
+      "scenario": "Data cleaning",
+      "description": "Trim whitespace from imported CSV data",
+      "formula": "=TRIM(A1)",
+      "result": "Clean text",
+      "explanation": "Removes unwanted spaces from data imported from external sources."
+    },
+    {
+      "title": "Trim and uppercase for consistent lookups",
+      "scenario": "Data matching",
+      "description": "Prepare text for VLOOKUP by trimming and uppercasing",
+      "formula": "=UPPER(TRIM(A1))",
+      "result": "HELLO WORLD",
+      "explanation": "Ensures consistent text formatting for reliable lookups."
+    }
+  ],
+  "howItWorks": "TRIM removes all spaces from the text except for single spaces between words. It removes leading, trailing, and consecutive internal spaces.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the result should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =TRIM(text)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the cleaned text."
+    }
+  ],
+  "limitations": [
+    "TRIM only removes regular spaces (ASCII 32).",
+    "For non-breaking spaces (CHAR(160)), use SUBSTITUTE to replace them first."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "Invalid argument",
+      "fix": "Ensure the argument is text or a cell reference."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "TRIM works identically in Google Sheets.",
+    "formula": "=TRIM(\"   Hello   World   \")"
+  },
+  "faq": [
+    {
+      "question": "Does TRIM remove non-breaking spaces?",
+      "answer": "No, use =TRIM(SUBSTITUTE(A1, CHAR(160), \" \")) to remove non-breaking spaces."
+    },
+    {
+      "question": "Can I trim numbers?",
+      "answer": "Yes, numbers are converted to text and trimmed."
+    }
+  ],
+  "relatedFunctions": []
+}

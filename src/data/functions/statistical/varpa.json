@@ -1,0 +1,40 @@
+{
+  "name": "VARPA",
+  "slug": "varpa",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "VARPA is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "VARPA is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(varpa)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the VARPA function",
+    "formula": "=VARPA(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the VARPA function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The VARPA function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =VARPA(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "VARPA works identically in Google Sheets with the same syntax.",
+    "formula": "=VARPA(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

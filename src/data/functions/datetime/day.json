@@ -1,0 +1,69 @@
+{
+  "name": "DAY",
+  "slug": "day",
+  "category": "datetime",
+  "excelVersion": "All versions",
+  "description": "DAY extracts the day of the month from a date.",
+  "tldr": "DAY returns the day number (1-31) from a date.",
+  "syntax": "(serial_number)",
+  "parameters": [
+    {
+      "name": "serial_number",
+      "description": "The date from which to extract the day.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Extract day from date",
+    "formula": "=DAY(\"7/4/2026\")",
+    "result": "4",
+    "explanation": "Returns 4 from the date \"7/4/2026\"."
+  },
+  "advancedExamples": [
+    {
+      "title": "Find day of week",
+      "scenario": "Date analysis",
+      "description": "Determine which day of the week a date falls on",
+      "formula": "=WEEKDAY(A1, 1)",
+      "result": "3",
+      "explanation": "WEEKDAY returns 1 for Sunday, 7 for Saturday."
+    }
+  ],
+  "howItWorks": "DAY extracts the day of the month (1-31) from a date serial number.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the day should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =DAY(date)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the day number (1-31)."
+    }
+  ],
+  "limitations": [
+    "DAY only returns the day of the month.",
+    "For day of week, use WEEKDAY."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "Non-date argument",
+      "fix": "Ensure the argument is a valid date."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "DAY works identically in Google Sheets.",
+    "formula": "=DAY(\"7/4/2026\")"
+  },
+  "faq": [
+    {
+      "question": "Does DAY return the day of the week?",
+      "answer": "No, DAY returns the day of the month. Use WEEKDAY for day of week."
+    }
+  ],
+  "relatedFunctions": []
+}

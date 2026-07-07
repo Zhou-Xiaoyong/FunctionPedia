@@ -1,0 +1,82 @@
+{
+  "name": "ROUNDDOWN",
+  "slug": "rounddown",
+  "category": "math",
+  "excelVersion": "All versions",
+  "description": "ROUNDDOWN rounds a number down to a specified number of decimal places, always toward zero.",
+  "tldr": "ROUNDDOWN always rounds numbers down, never up, to the specified decimal places.",
+  "syntax": "(number, num_digits)",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The number to round down.",
+      "required": true
+    },
+    {
+      "name": "num_digits",
+      "description": "The number of decimal places to round to.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Always round down to 2 decimal places",
+    "formula": "=ROUNDDOWN(3.14999, 2)",
+    "result": "3.14",
+    "explanation": "Rounds 3.14999 down to 2 decimal places, resulting in 3.14."
+  },
+  "advancedExamples": [
+    {
+      "title": "Truncate to whole number",
+      "scenario": "Integer conversion",
+      "description": "Remove decimal portion without rounding",
+      "formula": "=ROUNDDOWN(A1, 0)",
+      "result": "12",
+      "explanation": "12.9 becomes 12, always truncating decimals."
+    },
+    {
+      "title": "Round down to nearest 1000",
+      "scenario": "Budgeting",
+      "description": "Round down to the nearest thousand for budget estimation",
+      "formula": "=ROUNDDOWN(A1, -3)",
+      "result": "5000",
+      "explanation": "5999 becomes 5000 when rounded down to the nearest thousand."
+    }
+  ],
+  "howItWorks": "ROUNDDOWN always rounds numbers toward zero, effectively truncating decimal values. 1.999 rounded to 0 decimal places becomes 1.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the result should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =ROUNDDOWN(number, decimal_places)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the rounded-down number."
+    }
+  ],
+  "limitations": [
+    "ROUNDDOWN always decreases the number (or makes it more negative).",
+    "Use ROUNDUP for the opposite behavior."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "Non-numeric arguments",
+      "fix": "Ensure both arguments are numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "ROUNDDOWN works identically in Google Sheets.",
+    "formula": "=ROUNDDOWN(3.14999, 2)"
+  },
+  "faq": [
+    {
+      "question": "What is the difference between ROUNDDOWN and INT?",
+      "answer": "INT rounds negative numbers away from zero, while ROUNDDOWN always rounds toward zero. INT(-1.5) = -2, ROUNDDOWN(-1.5, 0) = -1."
+    }
+  ],
+  "relatedFunctions": []
+}

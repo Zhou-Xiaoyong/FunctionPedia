@@ -1,0 +1,148 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../utils/config';
+
+const templates = [
+  {
+    id: 'budget-tracker',
+    name: 'Personal Budget Tracker',
+    description: 'A comprehensive budget tracker with income/expense categories, monthly summaries, and visual charts.',
+    price: '$19',
+    originalPrice: '$29',
+    platform: 'Etsy',
+    rating: 4.9,
+    reviews: 156,
+    features: ['Monthly budget planning', 'Expense tracking', 'Income vs expense charts', 'Savings goals'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Excel%20budget%20tracker%20spreadsheet%20dashboard%20with%20colorful%20charts%20and%20financial%20data&image_size=square',
+    url: '#',
+  },
+  {
+    id: 'inventory-manager',
+    name: 'Inventory Management System',
+    description: 'Track stock levels, reorder points, and sales history with automated alerts.',
+    price: '$29',
+    originalPrice: '$49',
+    platform: 'Gumroad',
+    rating: 4.8,
+    reviews: 89,
+    features: ['Stock level tracking', 'Reorder alerts', 'Sales history', 'Low stock warnings'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Inventory%20management%20Excel%20spreadsheet%20with%20stock%20levels%20and%20product%20lists&image_size=square',
+    url: '#',
+  },
+  {
+    id: 'project-tracker',
+    name: 'Project Management Template',
+    description: 'Manage tasks, deadlines, and team progress with Gantt charts and status trackers.',
+    price: '$15',
+    originalPrice: '$25',
+    platform: 'Etsy',
+    rating: 4.7,
+    reviews: 234,
+    features: ['Task management', 'Gantt chart', 'Team assignments', 'Progress tracking'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Project%20management%20Excel%20template%20with%20Gantt%20chart%20and%20task%20list&image_size=square',
+    url: '#',
+  },
+  {
+    id: 'sales-dashboard',
+    name: 'Sales Dashboard',
+    description: 'Real-time sales analytics with revenue tracking, top products, and customer insights.',
+    price: '$39',
+    originalPrice: '$59',
+    platform: 'Gumroad',
+    rating: 4.9,
+    reviews: 67,
+    features: ['Revenue tracking', 'Top products', 'Customer analysis', 'Monthly trends'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Sales%20dashboard%20Excel%20spreadsheet%20with%20revenue%20charts%20and%20analytics&image_size=square',
+    url: '#',
+  },
+  {
+    id: 'expense-report',
+    name: 'Business Expense Report',
+    description: 'Simplify expense reporting with automatic calculations, tax tracking, and approval workflows.',
+    price: '$12',
+    originalPrice: '$18',
+    platform: 'Etsy',
+    rating: 4.6,
+    reviews: 312,
+    features: ['Expense logging', 'Tax calculations', 'Approval workflow', 'Reimbursement tracking'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Business%20expense%20report%20Excel%20template%20with%20receipt%20tracking&image_size=square',
+    url: '#',
+  },
+  {
+    id: 'employee-roster',
+    name: 'Employee Roster & Schedule',
+    description: 'Manage employee schedules, time tracking, and payroll calculations in one place.',
+    price: '$25',
+    originalPrice: '$39',
+    platform: 'Gumroad',
+    rating: 4.8,
+    reviews: 145,
+    features: ['Schedule management', 'Time tracking', 'Payroll calculations', 'Leave management'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Employee%20schedule%20and%20roster%20Excel%20spreadsheet%20with%20work%20hours&image_size=square',
+    url: '#',
+  },
+];
+
+const title = `Templates | ${SITE.title}`;
+const description = 'Professional Excel and Google Sheets templates for personal and business use. Budget trackers, inventory managers, project trackers, and more.';
+const canonical = `${SITE.url}/templates/`;
+---
+
+<BaseLayout title={title} description={description} canonical={canonical}>
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">Spreadsheet Templates</h1>
+      <p class="mt-2 text-lg text-gray-600">Professional templates to save you time and boost productivity</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {templates.map((template) => (
+        <a href={template.url} class="group block bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+          <div class="aspect-square bg-gray-100 overflow-hidden">
+            <img src={template.image} alt={template.name} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+          </div>
+          <div class="p-5">
+            <div class="flex items-center justify-between mb-2">
+              <span class="inline-flex items-center px-2 py-1 rounded-full bg-primary-50 text-xs font-medium text-primary-700">
+                {template.platform}
+              </span>
+              <div class="flex items-center gap-1">
+                <svg class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <span class="text-sm font-medium text-gray-700">{template.rating}</span>
+                <span class="text-xs text-gray-400">({template.reviews})</span>
+              </div>
+            </div>
+            <h2 class="text-lg font-bold text-gray-900 group-hover:text-primary-500 transition-colors mb-2">{template.name}</h2>
+            <p class="text-sm text-gray-500 mb-4 line-clamp-2">{template.description}</p>
+            <div class="flex flex-wrap gap-1 mb-4">
+              {template.features.slice(0, 3).map((feature) => (
+                <span class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-600">{feature}</span>
+              ))}
+            </div>
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-xl font-bold text-primary-600">{template.price}</span>
+                <span class="text-sm text-gray-400 line-through ml-2">{template.originalPrice}</span>
+              </div>
+              <button class="px-4 py-2 rounded-lg bg-primary-500 text-white text-sm font-medium hover:bg-primary-600 transition-colors">
+                Buy Now
+              </button>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <div class="mt-12 p-6 rounded-xl bg-gradient-to-r from-primary-50 to-accent-50 border border-primary-100">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Don't see what you need?</h3>
+          <p class="text-sm text-gray-600">Request custom templates or suggest new template ideas!</p>
+        </div>
+        <button class="px-6 py-3 rounded-xl bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors">
+          Request Template
+        </button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

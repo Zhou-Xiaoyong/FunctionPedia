@@ -1,0 +1,40 @@
+{
+  "name": "RANK.EQ",
+  "slug": "rank-eq",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "RANK.EQ is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "RANK.EQ is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(rank.eq)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the RANK.EQ function",
+    "formula": "=RANK.EQ(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the RANK.EQ function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The RANK.EQ function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =RANK.EQ(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "RANK.EQ works identically in Google Sheets with the same syntax.",
+    "formula": "=RANK.EQ(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

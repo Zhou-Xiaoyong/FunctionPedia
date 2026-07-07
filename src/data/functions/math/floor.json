@@ -1,0 +1,40 @@
+{
+  "name": "FLOOR",
+  "slug": "floor",
+  "category": "math",
+  "excelVersion": "All versions",
+  "description": "FLOOR is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "FLOOR is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(floor)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the FLOOR function",
+    "formula": "=FLOOR(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the FLOOR function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The FLOOR function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =FLOOR(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "FLOOR works identically in Google Sheets with the same syntax.",
+    "formula": "=FLOOR(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

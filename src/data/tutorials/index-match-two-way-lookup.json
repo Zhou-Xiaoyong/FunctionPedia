@@ -1,0 +1,93 @@
+{
+  "slug": "index-match-two-way-lookup",
+  "title": "Master INDEX/MATCH for Two-Way Lookups",
+  "description": "Learn how to use INDEX and MATCH together to create powerful two-way lookups that work in any direction, unlike VLOOKUP.",
+  "category": "Lookup & Reference",
+  "functions": ["INDEX", "MATCH", "VLOOKUP"],
+  "intro": "While VLOOKUP is the most well-known lookup function, it has significant limitations—it can only look to the right and breaks when columns are inserted. INDEX/MATCH is the superior alternative that solves these problems and enables two-way lookups where you can search both rows and columns.",
+  "tags": ["INDEX", "MATCH", "VLOOKUP", "Lookup", "Advanced"],
+  "estimatedTime": "15 min read",
+  "prerequisites": [
+    "Basic understanding of cell references",
+    "Familiarity with VLOOKUP (helpful but not required)",
+    "Excel 2007 or later, or Google Sheets"
+  ],
+  "sections": [
+    {
+      "title": "Understanding INDEX and MATCH Separately",
+      "content": "Before combining them, let's understand each function individually. INDEX returns a value from a specific position in a range, while MATCH finds the position of a value within a range.",
+      "steps": [
+        {
+          "name": "INDEX function",
+          "text": "INDEX takes a range and returns the value at a specified row and column intersection.",
+          "formula": "=INDEX(range, row_num, [column_num])"
+        },
+        {
+          "name": "MATCH function",
+          "text": "MATCH searches for a value in a range and returns its relative position (1-based).",
+          "formula": "=MATCH(lookup_value, lookup_array, [match_type])"
+        }
+      ],
+      "tips": [
+        "MATCH is 1-based, meaning the first item is position 1, not 0.",
+        "Use match_type 0 for exact matches (most common)."
+      ]
+    },
+    {
+      "title": "Basic INDEX/MATCH Combination",
+      "content": "The magic happens when you nest MATCH inside INDEX. MATCH finds the row number, and INDEX retrieves the value from that row.",
+      "example": {
+        "formula": "=INDEX(B2:B10, MATCH(A12, A2:A10, 0))",
+        "result": "John Smith",
+        "explanation": "MATCH finds the position of the lookup value in column A, then INDEX returns the corresponding value from column B."
+      },
+      "tips": [
+        "This works like VLOOKUP but without the column index limitation.",
+        "The range can be in any direction—left, right, up, or down."
+      ]
+    },
+    {
+      "title": "Two-Way Lookup with INDEX/MATCH/MATCH",
+      "content": "For a true two-way lookup, use two MATCH functions—one for the row and one for the column.",
+      "example": {
+        "formula": "=INDEX(B2:E10, MATCH(A12, A2:A10, 0), MATCH(B12, B1:E1, 0))",
+        "result": "$75,000",
+        "explanation": "The first MATCH finds the row for the employee name, the second MATCH finds the column for the department, and INDEX returns the salary at their intersection."
+      },
+      "tips": [
+        "Lock your range references with $ for copying formulas.",
+        "This is far more flexible than VLOOKUP for dynamic data."
+      ]
+    },
+    {
+      "title": "INDEX/MATCH vs VLOOKUP: Key Differences",
+      "content": "Let's compare INDEX/MATCH with VLOOKUP to understand why you should make the switch.",
+      "steps": [
+        {
+          "name": "Lookup Direction",
+          "text": "VLOOKUP can only search left-to-right. INDEX/MATCH can search in any direction."
+        },
+        {
+          "name": "Column Safety",
+          "text": "VLOOKUP uses column numbers that break when columns are inserted. INDEX/MATCH uses actual column references."
+        },
+        {
+          "name": "Flexibility",
+          "text": "INDEX/MATCH supports two-way lookups and more complex scenarios."
+        }
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "INDEX", "slug": "index", "description": "Returns the value at a specified position in a range" },
+    { "name": "MATCH", "slug": "match", "description": "Searches for a value in a range and returns its position" },
+    { "name": "VLOOKUP", "slug": "vlookup", "description": "Searches for a value in the first column and returns a value from another column" }
+  ],
+  "summary": "INDEX/MATCH is the modern alternative to VLOOKUP that provides greater flexibility and reliability. By combining these two functions, you can create powerful lookups that work in any direction and survive column insertions. The two-way lookup technique using INDEX/MATCH/MATCH is essential for advanced spreadsheet work.",
+  "nextSteps": [
+    "Practice creating basic INDEX/MATCH lookups",
+    "Try a two-way lookup with your own data",
+    "Learn about XLOOKUP as another alternative",
+    "Explore how to combine INDEX/MATCH with IFERROR for error handling"
+  ]
+}

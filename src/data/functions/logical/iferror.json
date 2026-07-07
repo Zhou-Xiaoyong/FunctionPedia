@@ -1,0 +1,78 @@
+{
+  "name": "IFERROR",
+  "slug": "iferror",
+  "category": "logical",
+  "excelVersion": "Excel 2007 and later",
+  "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise.",
+  "tldr": "IFERROR catches errors and returns a custom value instead.",
+  "syntax": "(value, value_if_error)",
+  "parameters": [
+    {
+      "name": "value",
+      "description": "The formula to check for errors.",
+      "required": true
+    },
+    {
+      "name": "value_if_error",
+      "description": "The value to return if the formula results in an error.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Handle division by zero",
+    "formula": "=IFERROR(A1/B1, \"Cannot divide by zero\")",
+    "result": "Cannot divide by zero",
+    "explanation": "Returns \"Cannot divide by zero\" when B1 is 0."
+  },
+  "advancedExamples": [
+    {
+      "title": "Handle VLOOKUP errors",
+      "scenario": "Lookup with fallback",
+      "description": "Show friendly message when VLOOKUP fails",
+      "formula": "=IFERROR(VLOOKUP(A1, B:C, 2, FALSE), \"Not found\")",
+      "result": "Not found",
+      "explanation": "Returns \"Not found\" when VLOOKUP returns #N/A."
+    }
+  ],
+  "howItWorks": "IFERROR evaluates the first argument. If it results in any error (#N/A, #VALUE!, #REF!, etc.), it returns the second argument.",
+  "howToSteps": [
+    {
+      "name": "Enter formula",
+      "text": "Type your formula normally."
+    },
+    {
+      "name": "Wrap with IFERROR",
+      "text": "Wrap it with IFERROR and provide a fallback value."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the formula output or fallback."
+    }
+  ],
+  "limitations": [
+    "IFERROR catches ALL errors.",
+    "For catching only #N/A errors, use IFNA instead."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "Missing arguments",
+      "fix": "Ensure both arguments are provided."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "IFERROR works identically in Google Sheets.",
+    "formula": "=IFERROR(A1/B1, \"Error\")"
+  },
+  "faq": [
+    {
+      "question": "What errors does IFERROR catch?",
+      "answer": "IFERROR catches #N/A, #VALUE!, #REF!, #DIV/0!, #NUM!, #NAME?, #NULL!."
+    },
+    {
+      "question": "What is the difference between IFERROR and IFNA?",
+      "answer": "IFERROR catches all errors; IFNA only catches #N/A errors."
+    }
+  ],
+  "relatedFunctions": []
+}

@@ -1,0 +1,40 @@
+{
+  "name": "MODE.MULT",
+  "slug": "mode-mult",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "MODE.MULT is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "MODE.MULT is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(mode.mult)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the MODE.MULT function",
+    "formula": "=MODE.MULT(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the MODE.MULT function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The MODE.MULT function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =MODE.MULT(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "MODE.MULT works identically in Google Sheets with the same syntax.",
+    "formula": "=MODE.MULT(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

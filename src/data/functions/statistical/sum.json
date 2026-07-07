@@ -1,0 +1,86 @@
+{
+  "name": "SUM",
+  "slug": "sum",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "SUM adds all the numbers in a range of cells and returns the total.",
+  "tldr": "SUM calculates the sum of numeric values in a range.",
+  "syntax": "(number1, [number2], ...)",
+  "parameters": [
+    {
+      "name": "number1",
+      "description": "The first number, cell reference, or range to add.",
+      "required": true
+    },
+    {
+      "name": "number2",
+      "description": "Optional additional numbers, cell references, or ranges to add.",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Sum values in a column",
+    "formula": "=SUM(A1:A10)",
+    "result": "500",
+    "explanation": "Adds all numeric values in cells A1 through A10."
+  },
+  "advancedExamples": [
+    {
+      "title": "Sum across multiple sheets",
+      "scenario": "Multi-sheet calculations",
+      "description": "Sum the same range across multiple worksheets",
+      "formula": "=SUM(Sheet1:Sheet3!A1:A10)",
+      "result": "1500",
+      "explanation": "Adds values from A1:A10 across Sheet1, Sheet2, and Sheet3."
+    },
+    {
+      "title": "Conditional sum with SUMIF",
+      "scenario": "Filtered totals",
+      "description": "Sum only values that meet a condition",
+      "formula": "=SUMIF(A1:A10, \">100\")",
+      "result": "350",
+      "explanation": "SUMIF adds only values greater than 100."
+    }
+  ],
+  "howItWorks": "SUM iterates through each cell in the specified range, adds up numeric values, and ignores text, blank cells, and error values.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the sum should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =SUM(range)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the total sum."
+    }
+  ],
+  "limitations": [
+    "SUM ignores text and blank cells.",
+    "For conditional summing, use SUMIF or SUMIFS."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "Text or error values in the range",
+      "fix": "Check for non-numeric values or use SUMIF to exclude errors."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "SUM works identically in Google Sheets.",
+    "formula": "=SUM(A1:A10)"
+  },
+  "faq": [
+    {
+      "question": "Can SUM handle negative numbers?",
+      "answer": "Yes, SUM correctly adds positive and negative numbers."
+    },
+    {
+      "question": "Does SUM ignore errors?",
+      "answer": "No, if any cell contains an error, SUM returns that error. Use AGGREGATE or SUMIF to ignore errors."
+    }
+  ],
+  "relatedFunctions": []
+}

@@ -1,0 +1,40 @@
+{
+  "name": "LINEST",
+  "slug": "linest",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "LINEST is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "LINEST is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(linest)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the LINEST function",
+    "formula": "=LINEST(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the LINEST function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The LINEST function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =LINEST(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "LINEST works identically in Google Sheets with the same syntax.",
+    "formula": "=LINEST(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

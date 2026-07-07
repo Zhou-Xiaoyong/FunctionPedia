@@ -1,0 +1,40 @@
+{
+  "name": "MINUTE",
+  "slug": "minute",
+  "category": "datetime",
+  "excelVersion": "All versions",
+  "description": "MINUTE is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "MINUTE is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(minute)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the MINUTE function",
+    "formula": "=MINUTE(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the MINUTE function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The MINUTE function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =MINUTE(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "MINUTE works identically in Google Sheets with the same syntax.",
+    "formula": "=MINUTE(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

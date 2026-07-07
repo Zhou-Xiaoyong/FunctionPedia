@@ -1,0 +1,40 @@
+{
+  "name": "TRANSPOSE",
+  "slug": "transpose",
+  "category": "lookup",
+  "excelVersion": "All versions",
+  "description": "TRANSPOSE is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "TRANSPOSE is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(transpose)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the TRANSPOSE function",
+    "formula": "=TRANSPOSE(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the TRANSPOSE function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The TRANSPOSE function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =TRANSPOSE(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "TRANSPOSE works identically in Google Sheets with the same syntax.",
+    "formula": "=TRANSPOSE(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

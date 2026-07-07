@@ -1,0 +1,73 @@
+{
+  "name": "YEAR",
+  "slug": "year",
+  "category": "datetime",
+  "excelVersion": "All versions",
+  "description": "YEAR extracts the year from a date.",
+  "tldr": "YEAR returns the year component of a date.",
+  "syntax": "(serial_number)",
+  "parameters": [
+    {
+      "name": "serial_number",
+      "description": "The date from which to extract the year.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Extract year from date",
+    "formula": "=YEAR(\"1/15/2026\")",
+    "result": "2026",
+    "explanation": "Returns the year from the date \"1/15/2026\"."
+  },
+  "advancedExamples": [
+    {
+      "title": "Group data by year",
+      "scenario": "Data analysis",
+      "description": "Extract years for grouping in pivot tables",
+      "formula": "=YEAR(A1)",
+      "result": "2026",
+      "explanation": "Converts dates to years for easier grouping."
+    }
+  ],
+  "howItWorks": "YEAR extracts the year from a date serial number. Dates in Excel are stored as serial numbers where January 1, 1900 is day 1.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the year should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =YEAR(date)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the year."
+    }
+  ],
+  "limitations": [
+    "YEAR only returns the year.",
+    "For month or day, use MONTH or DAY functions."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "Non-date argument",
+      "fix": "Ensure the argument is a valid date."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "YEAR works identically in Google Sheets.",
+    "formula": "=YEAR(\"1/15/2026\")"
+  },
+  "faq": [
+    {
+      "question": "What year does Excel start from?",
+      "answer": "Excel uses the 1900 date system, starting from January 1, 1900."
+    },
+    {
+      "question": "Can YEAR handle dates before 1900?",
+      "answer": "No, Excel cannot handle dates before January 1, 1900."
+    }
+  ],
+  "relatedFunctions": []
+}

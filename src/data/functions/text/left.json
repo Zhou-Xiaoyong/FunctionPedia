@@ -1,0 +1,86 @@
+{
+  "name": "LEFT",
+  "slug": "left",
+  "category": "text",
+  "excelVersion": "All versions",
+  "description": "LEFT returns the first character(s) from the beginning of a text string.",
+  "tldr": "LEFT extracts a specified number of characters from the left side of a text string.",
+  "syntax": "(text, [num_chars])",
+  "parameters": [
+    {
+      "name": "text",
+      "description": "The text string from which to extract characters.",
+      "required": true
+    },
+    {
+      "name": "num_chars",
+      "description": "Optional. The number of characters to extract (default is 1).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Extract first 3 characters",
+    "formula": "=LEFT(\"Hello World\", 3)",
+    "result": "Hel",
+    "explanation": "Extracts the first 3 characters from \"Hello World\"."
+  },
+  "advancedExamples": [
+    {
+      "title": "Extract area code from phone number",
+      "scenario": "Data cleaning",
+      "description": "Get the first 3 digits from a phone number",
+      "formula": "=LEFT(A1, 3)",
+      "result": "555",
+      "explanation": "Extracts the area code from a phone number like \"555-123-4567\"."
+    },
+    {
+      "title": "Extract first word",
+      "scenario": "Text parsing",
+      "description": "Get the first word from a sentence",
+      "formula": "=LEFT(A1, FIND(\" \", A1)-1)",
+      "result": "Hello",
+      "explanation": "Combines LEFT with FIND to extract text before the first space."
+    }
+  ],
+  "howItWorks": "LEFT counts from the beginning of the text string and returns the specified number of characters. If num_chars is omitted, it returns just the first character.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the result should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =LEFT(text, number_of_characters)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the extracted text."
+    }
+  ],
+  "limitations": [
+    "LEFT counts each character as 1, including spaces.",
+    "Use RIGHT to extract from the end, or MID to extract from the middle."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "num_chars is negative",
+      "fix": "Ensure num_chars is a positive number."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "LEFT works identically in Google Sheets.",
+    "formula": "=LEFT(\"Hello World\", 3)"
+  },
+  "faq": [
+    {
+      "question": "Does LEFT work with numbers?",
+      "answer": "Yes, numbers are treated as text. Use TEXT to format numbers first if needed."
+    },
+    {
+      "question": "What if num_chars exceeds the text length?",
+      "answer": "LEFT returns the entire text string."
+    }
+  ],
+  "relatedFunctions": []
+}

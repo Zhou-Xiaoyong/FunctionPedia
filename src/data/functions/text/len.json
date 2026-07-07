@@ -1,0 +1,81 @@
+{
+  "name": "LEN",
+  "slug": "len",
+  "category": "text",
+  "excelVersion": "All versions",
+  "description": "LEN returns the number of characters in a text string.",
+  "tldr": "LEN counts the number of characters in a text string.",
+  "syntax": "(text)",
+  "parameters": [
+    {
+      "name": "text",
+      "description": "The text string whose length you want to find.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Count characters in a string",
+    "formula": "=LEN(\"Hello\")",
+    "result": "5",
+    "explanation": "Returns the number of characters in \"Hello\"."
+  },
+  "advancedExamples": [
+    {
+      "title": "Check password length",
+      "scenario": "Validation",
+      "description": "Verify if a password meets minimum length requirements",
+      "formula": "=IF(LEN(A1)>=8, \"Strong\", \"Too short\")",
+      "result": "Strong",
+      "explanation": "Checks if the password has at least 8 characters."
+    },
+    {
+      "title": "Count characters excluding spaces",
+      "scenario": "Text analysis",
+      "description": "Count characters in a string without spaces",
+      "formula": "=LEN(SUBSTITUTE(A1, \" \", \"\"))",
+      "result": "10",
+      "explanation": "Removes all spaces before counting characters."
+    }
+  ],
+  "howItWorks": "LEN counts every character in the text string, including spaces, punctuation, and special characters.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the result should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =LEN(text)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the character count."
+    }
+  ],
+  "limitations": [
+    "LEN counts each character as 1, including spaces and special characters.",
+    "For double-byte languages (like Chinese), use LENB instead."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "Invalid argument",
+      "fix": "Ensure the argument is text or a cell reference."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "LEN works identically in Google Sheets.",
+    "formula": "=LEN(\"Hello\")"
+  },
+  "faq": [
+    {
+      "question": "Does LEN count spaces?",
+      "answer": "Yes, LEN counts every character including spaces."
+    },
+    {
+      "question": "What is the difference between LEN and LENB?",
+      "answer": "LEN counts characters, LENB counts bytes. For double-byte characters, LENB counts 2 bytes per character."
+    }
+  ],
+  "relatedFunctions": []
+}

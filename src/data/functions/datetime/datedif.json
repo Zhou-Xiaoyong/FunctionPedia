@@ -1,0 +1,40 @@
+{
+  "name": "DATEDIF",
+  "slug": "datedif",
+  "category": "datetime",
+  "excelVersion": "All versions",
+  "description": "DATEDIF is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "DATEDIF is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(datedif)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the DATEDIF function",
+    "formula": "=DATEDIF(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the DATEDIF function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The DATEDIF function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =DATEDIF(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "DATEDIF works identically in Google Sheets with the same syntax.",
+    "formula": "=DATEDIF(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

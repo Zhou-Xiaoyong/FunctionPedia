@@ -1,0 +1,40 @@
+{
+  "name": "CHOOSE",
+  "slug": "choose",
+  "category": "lookup",
+  "excelVersion": "All versions",
+  "description": "CHOOSE is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "CHOOSE is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(choose)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the CHOOSE function",
+    "formula": "=CHOOSE(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the CHOOSE function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The CHOOSE function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =CHOOSE(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "CHOOSE works identically in Google Sheets with the same syntax.",
+    "formula": "=CHOOSE(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

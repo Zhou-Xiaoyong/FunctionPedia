@@ -1,0 +1,40 @@
+{
+  "name": "XMATCH",
+  "slug": "xmatch",
+  "category": "array",
+  "excelVersion": "All versions",
+  "description": "XMATCH is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "XMATCH is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(xmatch)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the XMATCH function",
+    "formula": "=XMATCH(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the XMATCH function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The XMATCH function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =XMATCH(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "XMATCH works identically in Google Sheets with the same syntax.",
+    "formula": "=XMATCH(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

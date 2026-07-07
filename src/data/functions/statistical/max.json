@@ -1,0 +1,78 @@
+{
+  "name": "MAX",
+  "slug": "max",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "MAX returns the largest value in a range of cells.",
+  "tldr": "MAX finds the highest value in a range.",
+  "syntax": "(number1, [number2], ...)",
+  "parameters": [
+    {
+      "name": "number1",
+      "description": "The first number, cell reference, or range.",
+      "required": true
+    },
+    {
+      "name": "number2",
+      "description": "Optional additional numbers, cell references, or ranges.",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Find the highest value in a range",
+    "formula": "=MAX(A1:A10)",
+    "result": "95",
+    "explanation": "Returns the largest number from cells A1 through A10."
+  },
+  "advancedExamples": [
+    {
+      "title": "Max with criteria using MAXIFS",
+      "scenario": "Conditional maximum",
+      "description": "Find the maximum value that meets specific criteria",
+      "formula": "=MAXIFS(A1:A10, B1:B10, \"Region A\")",
+      "result": "88",
+      "explanation": "MAXIFS finds the highest value in column A where column B matches \"Region A\"."
+    }
+  ],
+  "howItWorks": "MAX scans all numeric values in the specified range and returns the largest one, ignoring text, blank cells, and logical values.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the result should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =MAX(range)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the maximum value."
+    }
+  ],
+  "limitations": [
+    "MAX ignores text and blank cells.",
+    "For conditional maximums, use MAXIFS."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "No numeric values found",
+      "fix": "Check your data range contains numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "MAX works identically in Google Sheets.",
+    "formula": "=MAX(A1:A10)"
+  },
+  "faq": [
+    {
+      "question": "Does MAX consider dates?",
+      "answer": "Yes, dates are stored as serial numbers, so MAX can find the latest date."
+    },
+    {
+      "question": "What if all cells are empty?",
+      "answer": "MAX returns 0 if all cells are empty."
+    }
+  ],
+  "relatedFunctions": []
+}

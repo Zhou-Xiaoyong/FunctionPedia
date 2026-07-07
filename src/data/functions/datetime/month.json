@@ -1,0 +1,69 @@
+{
+  "name": "MONTH",
+  "slug": "month",
+  "category": "datetime",
+  "excelVersion": "All versions",
+  "description": "MONTH extracts the month from a date.",
+  "tldr": "MONTH returns the month (1-12) from a date.",
+  "syntax": "(serial_number)",
+  "parameters": [
+    {
+      "name": "serial_number",
+      "description": "The date from which to extract the month.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Extract month from date",
+    "formula": "=MONTH(\"7/4/2026\")",
+    "result": "7",
+    "explanation": "Returns 7 for July from the date \"7/4/2026\"."
+  },
+  "advancedExamples": [
+    {
+      "title": "Get month name",
+      "scenario": "Formatting",
+      "description": "Convert month number to month name",
+      "formula": "=TEXT(A1, \"mmmm\")",
+      "result": "July",
+      "explanation": "Uses TEXT function to format the month as a name."
+    }
+  ],
+  "howItWorks": "MONTH extracts the month (1-12) from a date serial number.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the month should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =MONTH(date)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the month number (1-12)."
+    }
+  ],
+  "limitations": [
+    "MONTH returns 1-12, not the month name.",
+    "For month names, use TEXT(date, \"mmmm\")."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "Non-date argument",
+      "fix": "Ensure the argument is a valid date."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "MONTH works identically in Google Sheets.",
+    "formula": "=MONTH(\"7/4/2026\")"
+  },
+  "faq": [
+    {
+      "question": "Does MONTH return 0-based or 1-based?",
+      "answer": "MONTH is 1-based: January=1, December=12."
+    }
+  ],
+  "relatedFunctions": []
+}

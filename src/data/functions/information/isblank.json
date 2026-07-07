@@ -1,0 +1,40 @@
+{
+  "name": "ISBLANK",
+  "slug": "isblank",
+  "category": "information",
+  "excelVersion": "All versions",
+  "description": "ISBLANK is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "ISBLANK is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(isblank)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the ISBLANK function",
+    "formula": "=ISBLANK(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the ISBLANK function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The ISBLANK function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =ISBLANK(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "ISBLANK works identically in Google Sheets with the same syntax.",
+    "formula": "=ISBLANK(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

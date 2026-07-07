@@ -1,0 +1,40 @@
+{
+  "name": "TEXTJOIN",
+  "slug": "textjoin",
+  "category": "text",
+  "excelVersion": "All versions",
+  "description": "TEXTJOIN is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "TEXTJOIN is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(textjoin)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the TEXTJOIN function",
+    "formula": "=TEXTJOIN(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the TEXTJOIN function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The TEXTJOIN function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =TEXTJOIN(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "TEXTJOIN works identically in Google Sheets with the same syntax.",
+    "formula": "=TEXTJOIN(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

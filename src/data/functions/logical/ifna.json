@@ -1,0 +1,40 @@
+{
+  "name": "IFNA",
+  "slug": "ifna",
+  "category": "logical",
+  "excelVersion": "All versions",
+  "description": "IFNA is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "IFNA is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(ifna)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the IFNA function",
+    "formula": "=IFNA(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the IFNA function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The IFNA function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =IFNA(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "IFNA works identically in Google Sheets with the same syntax.",
+    "formula": "=IFNA(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

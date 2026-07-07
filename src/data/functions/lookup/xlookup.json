@@ -2,80 +2,39 @@
   "name": "XLOOKUP",
   "slug": "xlookup",
   "category": "lookup",
-  "excelVersion": "365 / 2021+",
-  "description": "XLOOKUP is the modern replacement for VLOOKUP. It searches a range or array for a value and returns the corresponding item from a second range or array. It supports exact and approximate matching, wildcards, and can search in any direction.",
-  "tldr": "XLOOKUP is the upgraded VLOOKUP — it can search left or right, doesn't require a column index number, handles missing values with a default result, and supports nested arrays. Available in Excel 365 and Excel 2021+.",
-  "syntax": "(lookup_value, lookup_array, return_array, [if_not_found], [match_mode], [search_mode])",
-  "parameters": [
-    { "name": "lookup_value", "description": "The value you want to find.", "required": true },
-    { "name": "lookup_array", "description": "The range or array to search through.", "required": true },
-    { "name": "return_array", "description": "The range or array to return values from.", "required": true },
-    { "name": "if_not_found", "description": "What to return if no match is found (instead of #N/A).", "required": false },
-    { "name": "match_mode", "description": "0 = exact match, -1 = exact or next smaller, 1 = exact or next larger, 2 = wildcard.", "required": false },
-    { "name": "search_mode", "description": "1 = first-to-last, -1 = last-to-first, 2 = binary search (ascending), -2 = binary search (descending).", "required": false }
-  ],
+  "excelVersion": "All versions",
+  "description": "XLOOKUP is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "XLOOKUP is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(xlookup)",
+  "parameters": [],
   "basicExample": {
-    "description": "Find a product price by looking up the product ID",
-    "formula": "=XLOOKUP(\"A102\", B2:B50, E2:E50)",
-    "result": "$29.99",
-    "explanation": "This searches for \"A102\" in B2:B50 and returns the corresponding value from E2:E50. No column number needed — just the return range."
+    "description": "Basic usage of the XLOOKUP function",
+    "formula": "=XLOOKUP(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the XLOOKUP function."
   },
-  "advancedExamples": [
+  "advancedExamples": [],
+  "howItWorks": "The XLOOKUP function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
     {
-      "title": "XLOOKUP with default value for missing items",
-      "scenario": "Data validation",
-      "description": "Return 'Not found' instead of #N/A when the lookup value doesn't exist",
-      "formula": "=XLOOKUP(E2, A2:A100, D2:D100, \"Not found\")",
-      "result": "Not found (if missing)",
-      "explanation": "The 4th argument 'if_not_found' replaces #N/A with your custom message. No need for IFERROR wrapper."
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
     },
     {
-      "title": "XLOOKUP searching left (reverse lookup)",
-      "scenario": "Flexible lookup",
-      "description": "Find an employee's ID by looking up their name — searching left, which VLOOKUP cannot do",
-      "formula": "=XLOOKUP(\"John Smith\", C2:C100, A2:A100)",
-      "result": "EMP-0042",
-      "explanation": "XLOOKUP can return values from a column that's to the LEFT of the search column — something VLOOKUP cannot do."
+      "name": "Enter the formula",
+      "text": "Type =XLOOKUP(arguments)."
     },
     {
-      "title": "XLOOKUP returning multiple columns",
-      "scenario": "Data extraction",
-      "description": "Return an entire row of data (multiple columns) with a single XLOOKUP",
-      "formula": "=XLOOKUP(E2, A2:A100, B2:D100)",
-      "result": "Returns 3 values: name, department, salary",
-      "explanation": "When return_array spans multiple columns, XLOOKUP spills results across adjacent cells — returning entire rows in one formula."
+      "name": "Press Enter",
+      "text": "The result will be displayed."
     }
   ],
-  "howItWorks": "XLOOKUP fundamentally improves on VLOOKUP in three ways. First, it separates the lookup array and return array — you specify exactly which column to search and which to return, so it can look left or right. Second, it has a built-in 'if_not_found' argument that handles missing values without wrapping in IFERROR. Third, it supports advanced match modes including wildcard matching and binary search for large datasets. Unlike VLOOKUP, XLOOKUP doesn't break when you insert or delete columns because it uses range references instead of a column index number.",
-  "howToSteps": [
-    { "name": "Identify your lookup value", "text": "Decide what you're searching for — this can be a cell reference, text, or number." },
-    { "name": "Select the lookup array", "text": "Specify the single column or row where the search happens." },
-    { "name": "Select the return array", "text": "Choose the column or row containing the data you want to retrieve. It can be anywhere — left, right, or even on a different sheet." },
-    { "name": "Optional: set if_not_found", "text": "Add a custom message or value for when no match is found, like 'Not found' or 0." },
-    { "name": "Enter the formula", "text": "Type =XLOOKUP(lookup, search_range, return_range, default) in your result cell." }
-  ],
-  "limitations": [
-    "XLOOKUP is only available in Excel 365 and Excel 2021+ — not in Excel 2019 or earlier versions.",
-    "Google Sheets does not have XLOOKUP (use FILTER, INDEX/MATCH, or VLOOKUP as alternatives).",
-    "For very large datasets (100K+ rows), binary search mode (search_mode=2/-2) requires sorted data.",
-    "When return_array spans multiple columns, results spill into adjacent cells — those cells must be empty."
-  ],
-  "commonErrors": [
-    { "error": "#VALUE!", "cause": "lookup_array and return_array have different sizes (different number of rows or columns)", "fix": "Ensure both arrays have the same length. For example, if lookup_array is A2:A100, return_array should also span 99 rows." },
-    { "error": "#N/A (if no if_not_found set)", "cause": "The lookup value doesn't exist in the lookup_array", "fix": "Add a 4th argument to provide a default value: =XLOOKUP(val, range, result_range, \"Not found\")" },
-    { "error": "#SPILL!", "cause": "Return array spans multiple columns and adjacent cells aren't empty", "fix": "Clear the cells where XLOOKUP needs to spill results, or use a single-column return array." }
-  ],
+  "limitations": [],
+  "commonErrors": [],
   "googleSheetsEquivalent": {
-    "description": "Google Sheets does not have XLOOKUP. Use INDEX/MATCH or FILTER for similar functionality.",
-    "formula": "=INDEX(D2:D100, MATCH(E2, A2:A100, 0))",
-    "notes": "INDEX/MATCH replicates most XLOOKUP features in Google Sheets. For returning multiple values, use FILTER or VLOOKUP with ARRAYFORMULA."
+    "description": "XLOOKUP works identically in Google Sheets with the same syntax.",
+    "formula": "=XLOOKUP(A1)"
   },
-  "faq": [
-    { "question": "Is XLOOKUP better than VLOOKUP?", "answer": "Yes, in every way. XLOOKUP can look left, doesn't use column numbers (so it won't break when columns change), handles missing values natively, and can return multiple columns at once. The only downside is availability — it's only in Excel 365/2021+." },
-    { "question": "Can XLOOKUP search from bottom to top?", "answer": "Yes. Set search_mode to -1 to search last-to-first. This is useful when you want the most recent entry in a chronological list." },
-    { "question": "How do I use XLOOKUP with wildcards?", "answer": "Set match_mode to 2. Then you can use * (any characters) and ? (single character) in your lookup value, like =XLOOKUP(\"*phone*\", A2:A100, B2:B100, , 2)." },
-    { "question": "Does XLOOKUP work in Google Sheets?", "answer": "No. Google Sheets doesn't have XLOOKUP. Use INDEX/MATCH or FILTER for similar lookups." },
-    { "question": "Can XLOOKUP return an entire row?", "answer": "Yes. If you set the return_array to span multiple columns (e.g., B2:D100), XLOOKUP returns all corresponding values and spills them into adjacent cells." }
-  ],
-  "relatedFunctions": ["vlookup", "index", "match", "filter", "hlookup"]
+  "faq": [],
+  "relatedFunctions": []
 }

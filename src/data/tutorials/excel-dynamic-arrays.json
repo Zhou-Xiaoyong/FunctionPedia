@@ -1,0 +1,112 @@
+{
+  "slug": "excel-dynamic-arrays",
+  "title": "Master Excel Dynamic Arrays (Excel 365)",
+  "description": "Learn how to use modern dynamic array functions like FILTER, SORT, UNIQUE, and SEQUENCE to transform your spreadsheets.",
+  "intro": "Dynamic arrays are one of the most significant updates to Excel in recent years. They automatically spill results into multiple cells, eliminating the need for Ctrl+Shift+Enter array formulas. Functions like FILTER, SORT, UNIQUE, and SEQUENCE make complex data manipulation simple and intuitive.",
+  "tags": ["FILTER", "SORT", "UNIQUE", "Dynamic Arrays", "Excel 365", "Advanced"],
+  "estimatedTime": "18 min read",
+  "prerequisites": [
+    "Excel 365 or Excel 2021 (dynamic arrays not available in older versions)",
+    "Basic understanding of Excel formulas",
+    "Familiarity with range references"
+  ],
+  "sections": [
+    {
+      "title": "Understanding Dynamic Arrays",
+      "content": "Dynamic arrays automatically spill results into adjacent cells. When you enter a formula that returns multiple values, Excel places each value in a separate cell.",
+      "steps": [
+        {
+          "name": "Spill behavior",
+          "text": "Dynamic array formulas return arrays that 'spill' to fill as many cells as needed."
+        },
+        {
+          "name": "#SPILL! error",
+          "text": "If there's already data in the spill range, you'll get a #SPILL! error."
+        }
+      ],
+      "tips": [
+        "Dynamic arrays work in Excel 365, Excel 2021, and Google Sheets.",
+        "You can reference a spill range with the # operator."
+      ]
+    },
+    {
+      "title": "FILTER Function",
+      "content": "FILTER extracts rows from a range that meet specified conditions.",
+      "example": {
+        "formula": "=FILTER(A2:C100, B2:B100=\"Sales\")",
+        "result": "All rows where Column B equals 'Sales'",
+        "explanation": "Filters the range A2:C100 to show only rows where Column B contains 'Sales'."
+      },
+      "tips": [
+        "Use logical operators: >, <, >=, <=, =, <>",
+        "Combine conditions with * (AND) or + (OR)."
+      ]
+    },
+    {
+      "title": "SORT Function",
+      "content": "SORT sorts a range by specified columns.",
+      "example": {
+        "formula": "=SORT(A2:C100, 3, -1)",
+        "result": "Data sorted by Column C in descending order",
+        "explanation": "Sorts the range A2:C100 by the 3rd column (C) in descending order (-1)."
+      },
+      "tips": [
+        "Use 1 for ascending, -1 for descending.",
+        "Sort by multiple columns by providing an array of column numbers."
+      ]
+    },
+    {
+      "title": "UNIQUE Function",
+      "content": "UNIQUE returns unique values from a range, removing duplicates.",
+      "example": {
+        "formula": "=UNIQUE(A2:A100)",
+        "result": "All unique values in Column A",
+        "explanation": "Returns each value from A2:A100 only once, even if it appears multiple times."
+      },
+      "tips": [
+        "Use UNIQUE with multiple columns to find unique combinations.",
+        "Add TRUE as the second argument to compare case-sensitively."
+      ]
+    },
+    {
+      "title": "SEQUENCE Function",
+      "content": "SEQUENCE generates a sequence of numbers.",
+      "example": {
+        "formula": "=SEQUENCE(10, 1, 1, 1)",
+        "result": "Numbers 1 through 10 in a column",
+        "explanation": "Generates a 10-row, 1-column sequence starting at 1, incrementing by 1."
+      },
+      "tips": [
+        "Parameters: rows, columns, start, step.",
+        "Great for creating numbered lists or date sequences."
+      ]
+    },
+    {
+      "title": "Combining Dynamic Array Functions",
+      "content": "The real power comes from combining these functions.",
+      "example": {
+        "formula": "=SORT(FILTER(A2:C100, B2:B100=\"Sales\"), 3, -1)",
+        "result": "Sales data sorted by amount descending",
+        "explanation": "Filters for sales records, then sorts by column 3 (amount) from highest to lowest."
+      },
+      "tips": [
+        "Nest functions from inside out.",
+        "Use UNIQUE(SORT(FILTER(...))) for unique sorted filtered results."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "FILTER", "slug": "filter", "description": "Filters a range based on conditions" },
+    { "name": "SORT", "slug": "sort", "description": "Sorts a range by specified columns" },
+    { "name": "UNIQUE", "slug": "unique", "description": "Returns unique values from a range" },
+    { "name": "SEQUENCE", "slug": "sequence", "description": "Generates a sequence of numbers" }
+  ],
+  "summary": "Dynamic array functions are a game-changer for Excel users. FILTER, SORT, UNIQUE, and SEQUENCE make complex data manipulation much simpler without the need for array formulas. By combining these functions, you can create powerful data analysis workflows that update automatically when your source data changes.",
+  "nextSteps": [
+    "Practice filtering data with FILTER",
+    "Try sorting with multiple columns",
+    "Create unique lists with UNIQUE",
+    "Generate date sequences with SEQUENCE",
+    "Combine multiple dynamic array functions"
+  ]
+}

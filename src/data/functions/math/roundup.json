@@ -1,0 +1,82 @@
+{
+  "name": "ROUNDUP",
+  "slug": "roundup",
+  "category": "math",
+  "excelVersion": "All versions",
+  "description": "ROUNDUP rounds a number up to a specified number of decimal places, always away from zero.",
+  "tldr": "ROUNDUP always rounds numbers up, never down, to the specified decimal places.",
+  "syntax": "(number, num_digits)",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The number to round up.",
+      "required": true
+    },
+    {
+      "name": "num_digits",
+      "description": "The number of decimal places to round to.",
+      "required": true
+    }
+  ],
+  "basicExample": {
+    "description": "Always round up to 2 decimal places",
+    "formula": "=ROUNDUP(3.14159, 2)",
+    "result": "3.15",
+    "explanation": "Rounds 3.14159 up to 2 decimal places, resulting in 3.15."
+  },
+  "advancedExamples": [
+    {
+      "title": "Round up to nearest whole number",
+      "scenario": "Order quantities",
+      "description": "Always round up to the next whole unit",
+      "formula": "=ROUNDUP(A1, 0)",
+      "result": "13",
+      "explanation": "Rounds 12.1, 12.5, and 12.9 all up to 13."
+    },
+    {
+      "title": "Calculate minimum hours for billing",
+      "scenario": "Time tracking",
+      "description": "Round up minutes to the nearest quarter hour for billing",
+      "formula": "=ROUNDUP(A1/15, 0)*15",
+      "result": "30",
+      "explanation": "Converts 22 minutes to 30 minutes (rounded up to nearest 15)."
+    }
+  ],
+  "howItWorks": "ROUNDUP always rounds numbers away from zero, regardless of the decimal value. 1.01 rounded to 0 decimal places becomes 2.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the result should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =ROUNDUP(number, decimal_places)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the rounded-up number."
+    }
+  ],
+  "limitations": [
+    "ROUNDUP always increases the number (or makes it less negative).",
+    "Use ROUNDDOWN for the opposite behavior."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "Non-numeric arguments",
+      "fix": "Ensure both arguments are numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "ROUNDUP works identically in Google Sheets.",
+    "formula": "=ROUNDUP(3.14159, 2)"
+  },
+  "faq": [
+    {
+      "question": "What is the difference between ROUND and ROUNDUP?",
+      "answer": "ROUND follows standard rounding rules (0.5 rounds up), while ROUNDUP always rounds up regardless of the decimal value."
+    }
+  ],
+  "relatedFunctions": []
+}

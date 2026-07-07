@@ -1,0 +1,74 @@
+{
+  "name": "MIN",
+  "slug": "min",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "MIN returns the smallest value in a range of cells.",
+  "tldr": "MIN finds the lowest value in a range.",
+  "syntax": "(number1, [number2], ...)",
+  "parameters": [
+    {
+      "name": "number1",
+      "description": "The first number, cell reference, or range.",
+      "required": true
+    },
+    {
+      "name": "number2",
+      "description": "Optional additional numbers, cell references, or ranges.",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Find the lowest value in a range",
+    "formula": "=MIN(A1:A10)",
+    "result": "25",
+    "explanation": "Returns the smallest number from cells A1 through A10."
+  },
+  "advancedExamples": [
+    {
+      "title": "Min with criteria using MINIFS",
+      "scenario": "Conditional minimum",
+      "description": "Find the minimum value that meets specific criteria",
+      "formula": "=MINIFS(A1:A10, B1:B10, \"Region A\")",
+      "result": "32",
+      "explanation": "MINIFS finds the lowest value in column A where column B matches \"Region A\"."
+    }
+  ],
+  "howItWorks": "MIN scans all numeric values in the specified range and returns the smallest one, ignoring text, blank cells, and logical values.",
+  "howToSteps": [
+    {
+      "name": "Select output cell",
+      "text": "Choose where the result should appear."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =MIN(range)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result shows the minimum value."
+    }
+  ],
+  "limitations": [
+    "MIN ignores text and blank cells.",
+    "For conditional minimums, use MINIFS."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "No numeric values found",
+      "fix": "Check your data range contains numbers."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "MIN works identically in Google Sheets.",
+    "formula": "=MIN(A1:A10)"
+  },
+  "faq": [
+    {
+      "question": "Does MIN consider dates?",
+      "answer": "Yes, dates are stored as serial numbers, so MIN can find the earliest date."
+    }
+  ],
+  "relatedFunctions": []
+}

@@ -1,0 +1,78 @@
+{
+  "name": "OR",
+  "slug": "or",
+  "category": "logical",
+  "excelVersion": "All versions",
+  "description": "OR returns TRUE if any argument is TRUE, and FALSE if all arguments are FALSE.",
+  "tldr": "OR checks if ANY condition is TRUE.",
+  "syntax": "(logical1, [logical2], ...)",
+  "parameters": [
+    {
+      "name": "logical1",
+      "description": "The first condition to test.",
+      "required": true
+    },
+    {
+      "name": "logical2",
+      "description": "Optional additional conditions to test.",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Check if any condition is true",
+    "formula": "=OR(A1>100, B1>100)",
+    "result": "TRUE",
+    "explanation": "Returns TRUE if either A1 > 100 or B1 > 100."
+  },
+  "advancedExamples": [
+    {
+      "title": "OR with IF",
+      "scenario": "Combined logic",
+      "description": "Use OR within IF for alternative criteria",
+      "formula": "=IF(OR(A1=\"Manager\", A1=\"Director\"), \"Executive\", \"Staff\")",
+      "result": "Executive",
+      "explanation": "Returns \"Executive\" if either condition is met."
+    }
+  ],
+  "howItWorks": "OR evaluates all conditions and returns TRUE if at least one condition is TRUE.",
+  "howToSteps": [
+    {
+      "name": "Define conditions",
+      "text": "Determine conditions where any being true is sufficient."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =OR(condition1, condition2, ...)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result is TRUE or FALSE."
+    }
+  ],
+  "limitations": [
+    "Only one condition needs to be TRUE for OR to return TRUE.",
+    "For ALL conditions to be TRUE, use AND instead."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "Non-boolean arguments",
+      "fix": "Ensure all arguments evaluate to TRUE/FALSE."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "OR works identically in Google Sheets.",
+    "formula": "=OR(A1>100, B1>100)"
+  },
+  "faq": [
+    {
+      "question": "How many conditions can OR handle?",
+      "answer": "OR can handle up to 255 conditions in Excel."
+    },
+    {
+      "question": "What if I have no conditions?",
+      "answer": "OR with no arguments returns FALSE."
+    }
+  ],
+  "relatedFunctions": []
+}

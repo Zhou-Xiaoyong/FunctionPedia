@@ -1,0 +1,40 @@
+{
+  "name": "UNIQUE",
+  "slug": "unique",
+  "category": "array",
+  "excelVersion": "All versions",
+  "description": "UNIQUE is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "UNIQUE is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(unique)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the UNIQUE function",
+    "formula": "=UNIQUE(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the UNIQUE function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The UNIQUE function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =UNIQUE(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "UNIQUE works identically in Google Sheets with the same syntax.",
+    "formula": "=UNIQUE(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}

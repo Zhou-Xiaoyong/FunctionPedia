@@ -1,0 +1,40 @@
+{
+  "name": "MAXIFS",
+  "slug": "maxifs",
+  "category": "statistical",
+  "excelVersion": "All versions",
+  "description": "MAXIFS is a built-in function in Excel and Google Sheets used for various purposes.",
+  "tldr": "MAXIFS is a function used for data processing and analysis in spreadsheets.",
+  "syntax": "(maxifs)",
+  "parameters": [],
+  "basicExample": {
+    "description": "Basic usage of the MAXIFS function",
+    "formula": "=MAXIFS(A1)",
+    "result": "Result",
+    "explanation": "This is a basic example demonstrating how to use the MAXIFS function."
+  },
+  "advancedExamples": [],
+  "howItWorks": "The MAXIFS function processes input values and returns a result based on its specific algorithm.",
+  "howToSteps": [
+    {
+      "name": "Select a cell",
+      "text": "Choose where you want the result to appear."
+    },
+    {
+      "name": "Enter the formula",
+      "text": "Type =MAXIFS(arguments)."
+    },
+    {
+      "name": "Press Enter",
+      "text": "The result will be displayed."
+    }
+  ],
+  "limitations": [],
+  "commonErrors": [],
+  "googleSheetsEquivalent": {
+    "description": "MAXIFS works identically in Google Sheets with the same syntax.",
+    "formula": "=MAXIFS(A1)"
+  },
+  "faq": [],
+  "relatedFunctions": []
+}
