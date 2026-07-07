@@ -2,6 +2,8 @@
   "slug": "excel-dynamic-arrays",
   "title": "Master Excel Dynamic Arrays (Excel 365)",
   "description": "Learn how to use modern dynamic array functions like FILTER, SORT, UNIQUE, and SEQUENCE to transform your spreadsheets.",
+  "category": "Excel 365",
+  "functions": ["FILTER", "SORT", "UNIQUE", "SEQUENCE"],
   "intro": "Dynamic arrays are one of the most significant updates to Excel in recent years. They automatically spill results into multiple cells, eliminating the need for Ctrl+Shift+Enter array formulas. Functions like FILTER, SORT, UNIQUE, and SEQUENCE make complex data manipulation simple and intuitive.",
   "tags": ["FILTER", "SORT", "UNIQUE", "Dynamic Arrays", "Excel 365", "Advanced"],
   "estimatedTime": "18 min read",

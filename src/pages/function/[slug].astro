@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import AdSense from '../../components/AdSense.astro';
+import AffiliateCourses from '../../components/AffiliateCourses.astro';
 import { SITE, CATEGORIES } from '../../utils/config';
 import { generateBreadcrumbSchema, generateArticleSchema, generateFAQSchema, generateHowToSchema } from '../../utils/seo';
 
@@ -374,5 +375,7 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
         <p class="mt-3 text-sm text-gray-500">{fn.downloadExample.description}</p>
       </section>
     )}
+
+    <AffiliateCourses category={fn.category} functionName={fn.name} />
   </article>
 </BaseLayout>
