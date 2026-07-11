@@ -171,9 +171,70 @@
       "fix": "Ensure col_index_num is at least 1 and range_lookup is either TRUE, FALSE, or omitted."
     }
   ],
-  "downloadExample": {
-    "url": "#",
-    "description": "Download a sample .xlsx file with employee data, product catalogs, and practice exercises for VLOOKUP. Includes exact match, approximate match, and wildcard examples."
+  "practiceData": {
+    "sheets": [
+      {
+        "name": "Employees",
+        "data": [
+          ["Employee ID", "Name", "Department", "Salary", "Hire Date"],
+          ["E001", "Alice Johnson", "Marketing", 75000, "2020-03-15"],
+          ["E002", "Bob Smith", "Engineering", 85000, "2019-06-20"],
+          ["E003", "Charlie Brown", "Sales", 68000, "2021-01-10"],
+          ["E004", "Diana Prince", "HR", 72000, "2018-11-05"],
+          ["E005", "Eve Adams", "Engineering", 92000, "2017-08-12"],
+          ["E006", "Frank Miller", "Marketing", 65000, "2022-02-28"],
+          ["E007", "Grace Lee", "Sales", 78000, "2020-09-01"],
+          ["E008", "Henry Wilson", "Engineering", 88000, "2019-04-18"]
+        ]
+      },
+      {
+        "name": "Products",
+        "data": [
+          ["SKU", "Product Name", "Category", "Price", "Stock"],
+          ["P001", "Wireless Mouse", "Electronics", 29.99, 150],
+          ["P002", "Mechanical Keyboard", "Electronics", 89.99, 75],
+          ["P003", "USB-C Hub", "Electronics", 45.99, 120],
+          ["P004", "Laptop Stand", "Accessories", 39.99, 90],
+          ["P005", "Monitor Arm", "Accessories", 129.99, 45],
+          ["P006", "Desk Mat", "Accessories", 24.99, 200],
+          ["P007", "Webcam HD", "Electronics", 59.99, 60],
+          ["P008", "Headphones", "Electronics", 149.99, 55]
+        ]
+      },
+      {
+        "name": "Grading Scale",
+        "data": [
+          ["Min Score", "Grade"],
+          [0, "F"],
+          [60, "D"],
+          [70, "C"],
+          [80, "B"],
+          [90, "A"]
+        ]
+      },
+      {
+        "name": "Practice Exercises",
+        "data": [
+          ["VLOOKUP Practice Exercises", "", "", ""],
+          ["", "", "", ""],
+          ["Exercise 1: Basic Exact Match", "", "", ""],
+          ["Look up the department for employee E003", "", "", ""],
+          ["Hint: Use FALSE for exact match", "", "", ""],
+          ["", "", "", ""],
+          ["Exercise 2: Approximate Match", "", "", ""],
+          ["Find the grade for a score of 85", "", "", ""],
+          ["Hint: Use TRUE with sorted data", "", "", ""],
+          ["", "", "", ""],
+          ["Exercise 3: Wildcard Search", "", "", ""],
+          ["Find the price of a product containing 'Mouse'", "", "", ""],
+          ["Hint: Use * wildcard characters", "", "", ""],
+          ["", "", "", ""],
+          ["Exercise 4: Error Handling", "", "", ""],
+          ["Look up employee E999 and show 'Not Found' if missing", "", "", ""],
+          ["Hint: Wrap with IFERROR", "", "", ""]
+        ]
+      }
+    ]
   },
   "faq": [
     {
