@@ -3,18 +3,137 @@
   "slug": "vlookup",
   "category": "lookup",
   "excelVersion": "All versions",
-  "description": "VLOOKUP is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "VLOOKUP is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(vlookup)",
-  "parameters": [],
+  "description": "VLOOKUP (Vertical Lookup) is a built-in function in Excel and Google Sheets that searches for a value in the first column of a table and returns a value in the same row from a specified column.",
+  "tldr": "VLOOKUP searches for a value in the first column of a table array and returns a matching value from another column in the same row.",
+  "syntax": "VLOOKUP(lookup_value, table_array, col_index_num, [range_lookup])",
+  "parameters": [
+    {
+      "name": "lookup_value",
+      "description": "The value to search for in the first column of the table.",
+      "required": true
+    },
+    {
+      "name": "table_array",
+      "description": "The range of cells that contains the data. The first column must contain the lookup_value.",
+      "required": true
+    },
+    {
+      "name": "col_index_num",
+      "description": "The column number in the table_array from which to return a value.",
+      "required": true
+    },
+    {
+      "name": "range_lookup",
+      "description": "Optional. TRUE (approximate match) or FALSE (exact match). Default is TRUE.",
+      "required": false
+    }
+  ],
+  "scenarios": [
+    {
+      "title": "Employee Salary Lookup",
+      "industry": "Human Resources",
+      "description": "HR managers often need to quickly find an employee's salary based on their employee ID. VLOOKUP is perfect for this task.",
+      "formula": "=VLOOKUP(A2, $D$2:$F$10, 3, FALSE)",
+      "outcome": "Returns the salary for the employee with ID in cell A2 from the employee database."
+    },
+    {
+      "title": "Product Price Lookup",
+      "industry": "E-commerce",
+      "description": "Online stores need to display product prices based on SKU codes. VLOOKUP can retrieve prices from a product catalog.",
+      "formula": "=VLOOKUP(B2, Products!$A$2:$C$100, 3, FALSE)",
+      "outcome": "Returns the price for the product with SKU in cell B2."
+    },
+    {
+      "title": "Grade Lookup from Scores",
+      "industry": "Education",
+      "description": "Teachers need to assign letter grades based on numeric scores. Using approximate match, VLOOKUP can find the appropriate grade.",
+      "formula": "=VLOOKUP(C2, $G$2:$H$6, 2, TRUE)",
+      "outcome": "Returns the letter grade for the score in cell C2 based on a grading scale."
+    }
+  ],
+  "tutorialSteps": [
+    {
+      "title": "Prepare your data",
+      "description": "Organize your data in a table format with the lookup values in the first column. Make sure the first column is sorted if using approximate match.",
+      "screenshot": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Excel%20spreadsheet%20with%20employee%20data%20table%20showing%20ID%20name%20and%20salary%20columns&image_size=landscape_16_9"
+    },
+    {
+      "title": "Enter the VLOOKUP formula",
+      "description": "Click on the cell where you want the result to appear and type =VLOOKUP(",
+      "formula": "=VLOOKUP("
+    },
+    {
+      "title": "Enter the lookup value",
+      "description": "Select the cell containing the value you want to search for. This is the employee ID in our example.",
+      "formula": "=VLOOKUP(A2",
+      "tip": "Make sure this value exists in the first column of your table array."
+    },
+    {
+      "title": "Select the table array",
+      "description": "Highlight the entire table range including all columns you want to search through. Use absolute references ($) to lock the range.",
+      "formula": "=VLOOKUP(A2, $D$2:$F$10",
+      "tip": "Press F4 after selecting the range to add dollar signs for absolute referencing."
+    },
+    {
+      "title": "Specify the column index",
+      "description": "Enter the number of the column from which to return a value. Column 1 is the first column of the table.",
+      "formula": "=VLOOKUP(A2, $D$2:$F$10, 3",
+      "tip": "In our example, salary is in the 3rd column of the table array."
+    },
+    {
+      "title": "Choose match type and press Enter",
+      "description": "Enter FALSE for exact match (most common) or TRUE for approximate match, then press Enter.",
+      "formula": "=VLOOKUP(A2, $D$2:$F$10, 3, FALSE)"
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the VLOOKUP function",
-    "formula": "=VLOOKUP(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the VLOOKUP function."
+    "description": "Look up an employee's department based on their ID",
+    "formula": "=VLOOKUP(A2, $D$2:$F$10, 2, FALSE)",
+    "result": "Marketing",
+    "explanation": "This formula searches for the value in cell A2 (employee ID) in the first column of the table $D$2:$F$10. When found, it returns the value from the 2nd column (Department)."
   },
-  "advancedExamples": [],
-  "howItWorks": "The VLOOKUP function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "VLOOKUP with Wildcard",
+      "scenario": "Partial Match",
+      "description": "Search for products using partial names with wildcard characters.",
+      "formula": "=VLOOKUP(\"*\" & A2 & \"*\", $D$2:$F$10, 3, FALSE)",
+      "result": "$29.99",
+      "explanation": "The asterisk (*) wildcard matches any sequence of characters. This formula finds products that contain the text in cell A2 anywhere in their name."
+    },
+    {
+      "title": "VLOOKUP with IFERROR",
+      "scenario": "Error Handling",
+      "description": "Handle cases where the lookup value is not found to avoid #N/A errors.",
+      "formula": "=IFERROR(VLOOKUP(A2, $D$2:$F$10, 3, FALSE), \"Not Found\")",
+      "result": "Not Found",
+      "explanation": "IFERROR wraps the VLOOKUP function and returns 'Not Found' instead of #N/A when the lookup value is not found in the table."
+    },
+    {
+      "title": "Approximate Match for Grades",
+      "scenario": "Education",
+      "description": "Use approximate match to find letter grades based on numeric scores.",
+      "formula": "=VLOOKUP(A2, $G$2:$H$6, 2, TRUE)",
+      "result": "B",
+      "explanation": "With TRUE as the last argument, VLOOKUP finds the largest value less than or equal to the lookup value. The first column must be sorted in ascending order."
+    }
+  ],
+  "googleSheetsDeepDive": {
+    "content": "<p>VLOOKUP works identically in Google Sheets with the same syntax. However, Google Sheets offers several advantages and alternatives that make it more powerful for modern spreadsheet workflows.</p><p>One key difference is that Google Sheets supports ARRAYFORMULA with VLOOKUP, allowing you to apply the function to an entire column with a single formula. Google Sheets also has INDEX/MATCH as a more flexible alternative that supports left lookups.</p>",
+    "examples": [
+      {
+        "title": "ARRAYFORMULA with VLOOKUP",
+        "formula": "=ARRAYFORMULA(IF(A2:A=\"\", \"\", VLOOKUP(A2:A, $D$2:$F$10, 3, FALSE)))",
+        "explanation": "This formula applies VLOOKUP to the entire column A at once, returning results for each row automatically."
+      },
+      {
+        "title": "VLOOKUP with IMPORTRANGE",
+        "formula": "=VLOOKUP(A2, IMPORTRANGE(\"https://docs.google.com/spreadsheets/d/.../edit\", \"Sheet1!A:F\"), 3, FALSE)",
+        "explanation": "Combine VLOOKUP with IMPORTRANGE to search across different Google Sheets files."
+      }
+    ]
+  },
+  "howItWorks": "VLOOKUP works by searching for the lookup_value in the first column of the table_array. When a match is found, it returns the value from the row where the match was found, from the column specified by col_index_num. With range_lookup set to FALSE (exact match), it finds an exact match or returns #N/A. With range_lookup set to TRUE (approximate match), it finds the largest value less than or equal to the lookup_value, but requires the first column to be sorted.",
   "howToSteps": [
     {
       "name": "Select a cell",
@@ -22,19 +141,53 @@
     },
     {
       "name": "Enter the formula",
-      "text": "Type =VLOOKUP(arguments)."
+      "text": "Type =VLOOKUP(lookup_value, table_array, col_index_num, [range_lookup])."
     },
     {
       "name": "Press Enter",
       "text": "The result will be displayed."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "VLOOKUP works identically in Google Sheets with the same syntax.",
-    "formula": "=VLOOKUP(A1)"
+  "limitations": [
+    "VLOOKUP can only search to the RIGHT of the lookup column. It cannot return values from columns to the left of the lookup column.",
+    "The column index number breaks when columns are inserted or deleted from the table_array.",
+    "Approximate match requires the first column to be sorted in ascending order.",
+    "VLOOKUP is not case-sensitive - it treats 'Apple' and 'apple' as the same value."
+  ],
+  "commonErrors": [
+    {
+      "error": "#N/A",
+      "cause": "The lookup value was not found in the first column",
+      "fix": "Check if the lookup value exists in the first column of your table. Make sure there are no extra spaces. Use IFERROR to handle missing values gracefully."
+    },
+    {
+      "error": "#REF!",
+      "cause": "col_index_num is greater than the number of columns in table_array",
+      "fix": "Make sure the column index number does not exceed the number of columns in your table array."
+    },
+    {
+      "error": "#VALUE!",
+      "cause": "col_index_num is less than 1 or range_lookup is not TRUE/FALSE",
+      "fix": "Ensure col_index_num is at least 1 and range_lookup is either TRUE, FALSE, or omitted."
+    }
+  ],
+  "downloadExample": {
+    "url": "#",
+    "description": "Download a sample .xlsx file with employee data, product catalogs, and practice exercises for VLOOKUP. Includes exact match, approximate match, and wildcard examples."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Can VLOOKUP search to the left?",
+      "answer": "No, VLOOKUP can only search to the right. For left lookups, use INDEX/MATCH or XLOOKUP instead."
+    },
+    {
+      "question": "What's the difference between TRUE and FALSE in VLOOKUP?",
+      "answer": "FALSE performs an exact match, while TRUE performs an approximate match (finds the closest value less than or equal to the lookup value)."
+    },
+    {
+      "question": "How do I make VLOOKUP case-sensitive?",
+      "answer": "VLOOKUP is not case-sensitive by default. To make it case-sensitive, use EXACT within INDEX/MATCH: =INDEX(B:B, MATCH(TRUE, EXACT(A:A, lookup_value), 0))"
+    }
+  ],
+  "relatedFunctions": ["xlookup", "hlookup", "index", "match"]
 }

@@ -1,0 +1,166 @@
+---
+interface Props {
+  treeData: {
+    question: string;
+    options: Array<{
+      label: string;
+      result?: string;
+      description?: string;
+      children?: Array<{
+        question?: string;
+        result?: string;
+        description?: string;
+        options?: Array<{
+          result: string;
+          description?: string;
+        }>;
+      }>;
+    }>;
+  };
+}
+
+const { treeData } = Astro.props;
+---
+
+<script>
+  function toggleNode(nodeId) {
+    const node = document.getElementById(nodeId);
+    if (node) {
+      node.classList.toggle('hidden');
+    }
+  }
+</script>
+
+<div class="decision-tree-container">
+  <div class="bg-white border border-gray-200 rounded-xl p-6">
+    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+      <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      Decision Tree: Which Function Should You Use?
+    </h3>
+    
+    <div class="pl-2">
+      <div class="relative">
+        <div class="flex items-start gap-3 cursor-pointer" onclick="toggleNode('dt-start')">
+          <div class="w-10 h-10 rounded-full bg-primary-500 text-white flex items-center justify-center flex-shrink-0 text-sm font-bold">Start</div>
+          <div class="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm">
+            {treeData.question}
+          </div>
+        </div>
+        <div class="ml-5 mt-2">
+          <div class="w-0.5 h-4 bg-gray-300"></div>
+        </div>
+      </div>
+      
+      <div id="dt-start" class="ml-5 mt-2 space-y-4">
+        {treeData.options.map((option, i) => (
+          <div key={i} class="relative">
+            <div class="flex items-start gap-3 cursor-pointer" onclick="toggleNode(`dt-option-${i}`)">
+              <div class="w-8 h-8 rounded-full bg-gray-500 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
+                {['A', 'B', 'C', 'D'][i]}
+              </div>
+              <div class="bg-gray-100 border border-gray-200 px-4 py-2 rounded-lg text-sm">
+                {option.label}
+              </div>
+            </div>
+            
+            {option.children && (
+              <>
+                <div class="ml-4 mt-2">
+                  <div class="w-0.5 h-4 bg-gray-300"></div>
+                </div>
+                <div id={`dt-option-${i}`} class="ml-4 mt-2 space-y-4">
+                  {option.children.map((child, j) => (
+                    <div key={j} class="relative">
+                      {child.result ? (
+                        <div class="flex items-start gap-3">
+                          <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
+                            ✓
+                          </div>
+                          <div class="bg-green-50 border border-green-200 px-4 py-2 rounded-lg text-sm">
+                            <span class="font-semibold text-green-700">{child.result}</span>
+                            {child.description && (
+                              <p class="mt-1 text-green-600">{child.description}</p>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <div class="flex items-start gap-3 cursor-pointer" onclick="toggleNode(`dt-child-${i}-${j}`)">
+                            <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
+                              {j + 1}
+                            </div>
+                            <div class="bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg text-sm">
+                              {child.question}
+                            </div>
+                          </div>
+                          
+                          {child.options && (
+                            <>
+                              <div class="ml-4 mt-2">
+                                <div class="w-0.5 h-4 bg-gray-300"></div>
+                              </div>
+                              <div id={`dt-child-${i}-${j}`} class="ml-4 mt-2 space-y-4">
+                                {child.options.map((subOption, k) => (
+                                  <div key={k} class="flex items-start gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
+                                      ✓
+                                    </div>
+                                    <div class="bg-green-50 border border-green-200 px-4 py-2 rounded-lg text-sm">
+                                      <span class="font-semibold text-green-700">{subOption.result}</span>
+                                      {subOption.description && (
+                                        <p class="mt-1 text-green-600">{subOption.description}</p>
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+            
+            {option.result && (
+              <>
+                <div class="ml-4 mt-2">
+                  <div class="w-0.5 h-4 bg-gray-300"></div>
+                </div>
+                <div class="ml-4 mt-2">
+                  <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
+                      ✓
+                    </div>
+                    <div class="bg-green-50 border border-green-200 px-4 py-2 rounded-lg text-sm">
+                      <span class="font-semibold text-green-700">{option.result}</span>
+                      {option.description && (
+                        <p class="mt-1 text-green-600">{option.description}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .decision-tree-container .hidden {
+    display: none;
+  }
+  
+  .decision-tree-container .cursor-pointer {
+    transition: opacity 0.2s;
+  }
+  
+  .decision-tree-container .cursor-pointer:hover {
+    opacity: 0.8;
+  }
+</style>

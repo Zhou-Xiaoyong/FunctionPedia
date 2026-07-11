@@ -5,6 +5,39 @@
   "functionB": "xlookup",
   "description": "Compare VLOOKUP and XLOOKUP to decide which lookup function fits your spreadsheet needs.",
   "intro": "VLOOKUP has been the standard lookup function for decades, but XLOOKUP is a modern replacement that fixes many of VLOOKUP's limitations. If you have Excel 365 or Excel 2021, XLOOKUP is usually the better choice.",
+  "decisionTree": {
+    "question": "What Excel version are you using?",
+    "options": [
+      {
+        "label": "Excel 365 / Excel 2021 / Google Sheets",
+        "children": [
+          {
+            "question": "Do you need to search to the LEFT of the lookup column?",
+            "options": [
+              {
+                "result": "XLOOKUP",
+                "description": "XLOOKUP supports left lookups natively, while VLOOKUP cannot search left."
+              },
+              {
+                "result": "XLOOKUP",
+                "description": "Even for right lookups, XLOOKUP is safer and more readable with its direct column reference."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "Excel 2019 or older",
+        "result": "VLOOKUP",
+        "description": "XLOOKUP is not available in older Excel versions. Use INDEX/MATCH for left lookups in these versions."
+      },
+      {
+        "label": "Sharing with users on older Excel versions",
+        "result": "VLOOKUP",
+        "description": "Use VLOOKUP for backward compatibility when you need to share files with users who don't have XLOOKUP."
+      }
+    ]
+  },
   "comparisonTable": [
     {
       "aspect": "Lookup direction",

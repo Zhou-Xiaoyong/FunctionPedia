@@ -3,7 +3,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { SITE, CATEGORIES } from '../../utils/config';
 import { generateBreadcrumbSchema, generateArticleSchema, generateFAQSchema, generateHowToSchema } from '../../utils/seo';
 
-// Export static paths for all functions
 export function getStaticPaths() {
   const allFunctions = [];
   const dataModules = import.meta.glob('../../data/functions/**/*.json', { eager: true });
@@ -19,14 +18,12 @@ export function getStaticPaths() {
   }));
 }
 
-// Get the function from props
 const { fn } = Astro.props;
 
 if (!fn) {
   return Astro.redirect('/function/');
 }
 
-// Load all functions for related lookup
 const allFunctions = [];
 const dataModules = import.meta.glob('../../data/functions/**/*.json', { eager: true });
 for (const path in dataModules) {
@@ -36,22 +33,18 @@ for (const path in dataModules) {
   }
 }
 
-// Find category info
 const catInfo = CATEGORIES.find((c) => c.slug === fn.category);
 
-// Find related functions (same category, different name)
 const related = allFunctions
   .filter((f) => f.category === fn.category && f.slug !== fn.slug)
   .slice(0, 6);
 
-// Breadcrumb
 const breadcrumbs = [
   { name: 'Home', url: SITE.url },
   { name: catInfo ? catInfo.name : fn.category, url: `${SITE.url}/category/${fn.category}/` },
   { name: fn.name.toUpperCase(), url: `${SITE.url}/function/${fn.slug}/` },
 ];
 
-// Schema.org
 const articleSchema = generateArticleSchema(fn.name, fn.description, `${SITE.url}/function/${fn.slug}/`, fn.category);
 const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
 const faqSchema = fn.faq ? generateFAQSchema(fn.faq) : null;
@@ -68,7 +61,6 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
 ---
 
 <BaseLayout title={title} description={description} canonical={canonical} keywords={keywords} schema={allSchema}>
-  <!-- Breadcrumb -->
   <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
     <ol class="flex items-center gap-2 text-sm text-gray-500">
       <li><a href="/" class="hover:text-primary-500 transition-colors">Home</a></li>
@@ -106,9 +98,50 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
           Excel {fn.excelVersion}
         </span>
       )}
+      {fn.isGoogleSheetsFirst && (
+        <span class="inline-flex items-center px-3 py-1 rounded-full bg-accent-50 border border-accent-200 text-xs font-medium text-accent-700">
+          🟢 Sheets-first
+        </span>
+      )}
     </div>
 
-    <!-- 2. Syntax -->
+    <!-- 2. Real-World Business Scenarios -->
+    <section id="scenarios" class="mb-10">
+      <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        Real-World Business Scenarios
+      </h2>
+      <div class="space-y-4">
+        {fn.scenarios && fn.scenarios.length > 0 ? (
+          fn.scenarios.map((scenario, i) => (
+            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              <div class="p-4 bg-gray-50 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Scenario {i + 1}</span>
+                  <span class="text-xs px-2 py-1 rounded-full bg-green-50 text-green-700 font-medium">{scenario.industry}</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mt-2">{scenario.title}</h3>
+              </div>
+              <div class="p-4">
+                <p class="text-gray-600 mb-3">{scenario.description}</p>
+                <div class="p-3 bg-gray-900 rounded-lg overflow-x-auto">
+                  <code class="text-accent-400 font-mono text-sm">{scenario.formula}</code>
+                </div>
+                <p class="mt-3 text-sm text-gray-500">
+                  <span class="font-semibold text-gray-700">Outcome:</span> {scenario.outcome}
+                </p>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div class="bg-white border border-gray-200 rounded-xl p-6">
+            <p class="text-gray-500">No specific scenarios available for this function.</p>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- 3. Syntax -->
     <section id="syntax" class="mb-10">
       <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
         <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 4l-4 4 4 4"/></svg>
@@ -119,7 +152,6 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
         <div class="text-gray-300 mt-2">{fn.syntax}</div>
       </div>
 
-      <!-- Parameters table -->
       {fn.parameters && fn.parameters.length > 0 && (
         <div class="mt-6">
           <h3 class="text-base font-semibold text-gray-900 mb-3">Parameters</h3>
@@ -153,22 +185,67 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
       )}
     </section>
 
-    <!-- 3. Basic Example -->
+    <!-- 4. Step-by-Step Tutorial with Screenshots -->
+    <section id="tutorial" class="mb-10">
+      <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <svg class="w-5 h-5 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Step-by-Step Tutorial
+      </h2>
+      <div class="space-y-6">
+        {fn.tutorialSteps && fn.tutorialSteps.length > 0 ? (
+          fn.tutorialSteps.map((step, i) => (
+            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              <div class="flex">
+                <div class="w-16 bg-gray-900 flex items-center justify-center flex-shrink-0">
+                  <span class="text-2xl font-bold text-white">{i + 1}</span>
+                </div>
+                <div class="flex-1">
+                  <div class="p-4 bg-gray-50 border-b border-gray-200">
+                    <h3 class="text-base font-semibold text-gray-900">{step.title}</h3>
+                  </div>
+                  <div class="p-4">
+                    <p class="text-gray-600 mb-3">{step.description}</p>
+                    {step.screenshot && (
+                      <div class="rounded-lg overflow-hidden border border-gray-200">
+                        <img src={step.screenshot} alt={`Step ${i + 1}: ${step.title}`} class="w-full" />
+                      </div>
+                    )}
+                    {step.formula && (
+                      <div class="mt-3 p-3 bg-gray-900 rounded-lg overflow-x-auto">
+                        <code class="text-accent-400 font-mono text-sm">{step.formula}</code>
+                      </div>
+                    )}
+                    {step.tip && (
+                      <div class="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <p class="text-sm text-yellow-700"><span class="font-semibold">💡 Tip:</span> {step.tip}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div class="bg-white border border-gray-200 rounded-xl p-6">
+            <p class="text-gray-500">No step-by-step tutorial available for this function.</p>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- 5. Basic Example -->
     <section id="basic-example" class="mb-10">
       <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
         <svg class="w-5 h-5 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         Basic Example
       </h2>
       <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
-        <!-- Example description -->
         <div class="p-4 bg-gray-50 border-b border-gray-200">
           <p class="text-sm text-gray-700">{fn.basicExample?.description || `Using ${fn.name.toUpperCase()} with the most common arguments`}</p>
         </div>
-        <!-- Formula -->
         <div class="p-4 bg-gray-900">
           <code class="text-accent-400 font-mono text-sm">{fn.basicExample?.formula || fn.syntax}</code>
         </div>
-        <!-- Result -->
         {fn.basicExample?.result && (
           <div class="p-4 bg-accent-50 border-b border-gray-200">
             <div class="flex items-center gap-2">
@@ -177,7 +254,6 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
             </div>
           </div>
         )}
-        <!-- Explanation -->
         {fn.basicExample?.explanation && (
           <div class="p-4">
             <p class="text-sm text-gray-600">{fn.basicExample.explanation}</p>
@@ -186,7 +262,7 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
       </div>
     </section>
 
-    <!-- 4. Advanced Examples -->
+    <!-- 6. Advanced Examples -->
     {fn.advancedExamples && fn.advancedExamples.length > 0 && (
       <section id="advanced-examples" class="mb-10">
         <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -223,7 +299,43 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
       </section>
     )}
 
-    <!-- 5. How It Works -->
+    <!-- 7. Google Sheets Deep Dive -->
+    {fn.googleSheetsDeepDive && (
+      <section id="google-sheets-deep-dive" class="mb-10">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Google Sheets Deep Dive
+        </h2>
+        <div class="bg-gradient-to-br from-accent-50 to-blue-50 rounded-xl border border-accent-200 overflow-hidden">
+          <div class="p-4 bg-accent-500 text-white">
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.001 2C6.48 2 2 6.48 2 12s4.48 10 10.001 10C17.52 22 22 17.52 22 12S17.52 2 12.001 2zm5.316 15.077c-.111.1-.25.15-.39.15-.145 0-.289-.05-.4-.15l-3.056-2.556a.598.598 0 00-.758.047l-1.46 1.198a1.994 1.994 0 01-2.607.057l-1.904-1.55a.602.602 0 00-.766.04l-2.46 1.998c-.42.34-.984-.111-.793-.561l1.372-4.295a.603.603 0 00-.246-.649l-3.059-2.555c-.4-.329-.151-.94.349-.94.125 0 .249.037.35.111l3.576 2.913a.597.597 0 00.738-.066l1.772-2.248a1.993 1.993 0 012.936.453l1.392 2.783a.602.602 0 00.598.363c.166 0 .329-.066.43-.189l3.405-2.867c.41-.329.969-.042.969.479 0 .13-.043.257-.12.358l-2.415 3.053a.601.601 0 00.142.695l2.798 2.352c.122.098.181.242.16.39-.026.18-.166.32-.349.383z"/></svg>
+              <span class="font-semibold">Google Sheets Exclusive Content</span>
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="prose prose-gray max-w-none">
+              {fn.googleSheetsDeepDive.content}
+            </div>
+            {fn.googleSheetsDeepDive.examples && fn.googleSheetsDeepDive.examples.length > 0 && (
+              <div class="mt-6 space-y-3">
+                {fn.googleSheetsDeepDive.examples.map((ex, i) => (
+                  <div class="bg-white rounded-lg border border-accent-200 p-4">
+                    <h4 class="text-sm font-semibold text-gray-900 mb-2">Example {i + 1}: {ex.title}</h4>
+                    <div class="p-3 bg-gray-900 rounded-lg overflow-x-auto">
+                      <code class="text-accent-400 font-mono text-sm">{ex.formula}</code>
+                    </div>
+                    <p class="mt-2 text-sm text-gray-600">{ex.explanation}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- 8. How It Works -->
     {fn.howItWorks && (
       <section id="how-it-works" class="mb-10">
         <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -249,7 +361,7 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
       </section>
     )}
 
-    <!-- 6. Important Notes / Limitations -->
+    <!-- 9. Important Notes / Limitations -->
     {fn.limitations && fn.limitations.length > 0 && (
       <section id="limitations" class="mb-10">
         <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -267,7 +379,7 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
       </section>
     )}
 
-    <!-- 7. Common Errors -->
+    <!-- 10. Common Errors -->
     {fn.commonErrors && fn.commonErrors.length > 0 && (
       <section id="common-errors" class="mb-10">
         <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -292,7 +404,41 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
       </section>
     )}
 
-    <!-- 8. Related Functions -->
+    <!-- 11. Download Practice File -->
+    <section id="download" class="mb-10">
+      <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        Download Practice File
+      </h2>
+      <div class="bg-gradient-to-r from-primary-50 to-accent-50 rounded-xl border border-primary-200 p-6">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Practice {fn.name.toUpperCase()} with Real Data</h3>
+            <p class="text-sm text-gray-600">{fn.downloadExample?.description || `Download a sample .xlsx file with pre-populated data and practice exercises for the ${fn.name.toUpperCase()} function. Works in both Excel and Google Sheets.`}</p>
+          </div>
+          <a href={fn.downloadExample?.url || '#'} class="inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors shadow-md">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Download .xlsx File
+          </a>
+        </div>
+        <div class="mt-4 flex items-center gap-4 text-xs text-gray-500">
+          <span class="flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            Works in Google Sheets
+          </span>
+          <span class="flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            Compatible with Excel
+          </span>
+          <span class="flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            Includes exercises
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. Related Functions -->
     {related.length > 0 && (
       <section id="related" class="mb-10">
         <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -310,29 +456,7 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
       </section>
     )}
 
-    <!-- 9. Google Sheets Equivalent -->
-    {fn.googleSheetsEquivalent && (
-      <section id="google-sheets" class="mb-10">
-        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <svg class="w-5 h-5 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-          Google Sheets Equivalent
-        </h2>
-        <div class="p-6 rounded-xl bg-accent-50 border border-accent-200">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="inline-flex items-center px-2 py-1 rounded-full bg-accent-500 text-white text-xs font-semibold">Google Sheets</span>
-          </div>
-          <p class="text-gray-700 mb-4">{fn.googleSheetsEquivalent.description}</p>
-          <div class="p-4 bg-gray-900 rounded-lg overflow-x-auto">
-            <code class="text-accent-400 font-mono text-sm">{fn.googleSheetsEquivalent.formula}</code>
-          </div>
-          {fn.googleSheetsEquivalent.notes && (
-            <p class="mt-3 text-sm text-gray-600">{fn.googleSheetsEquivalent.notes}</p>
-          )}
-        </div>
-      </section>
-    )}
-
-    <!-- 10. FAQ -->
+    <!-- 13. FAQ -->
     {fn.faq && fn.faq.length > 0 && (
       <section id="faq" class="mb-10">
         <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -352,21 +476,6 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
             </details>
           ))}
         </div>
-      </section>
-    )}
-
-    <!-- 11. Download -->
-    {fn.downloadExample && (
-      <section id="download" class="mb-10">
-        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-          Download Example File
-        </h2>
-        <a href={fn.downloadExample.url} class="inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors shadow-md">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-          Download .xlsx Example
-        </a>
-        <p class="mt-3 text-sm text-gray-500">{fn.downloadExample.description}</p>
       </section>
     )}
   </article>

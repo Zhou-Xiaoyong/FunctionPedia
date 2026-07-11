@@ -1,9 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import DecisionTree from '../../components/DecisionTree.astro';
 import { SITE } from '../../utils/config';
 import { generateBreadcrumbSchema, generateArticleSchema, generateFAQSchema } from '../../utils/seo';
 
-// Export static paths for all comparisons
 export function getStaticPaths() {
   const comparisons = [];
   const dataModules = import.meta.glob('../../data/compare/*.json', { eager: true });
@@ -25,7 +25,6 @@ if (!cmp) {
   return Astro.redirect('/compare');
 }
 
-// Load function details
 const allFunctions = [];
 const functionModules = import.meta.glob('../../data/functions/**/*.json', { eager: true });
 for (const path in functionModules) {
@@ -43,14 +42,12 @@ const functionNameA = fnA ? fnA.name.toUpperCase() : cmp.functionA.toUpperCase()
 const functionNameB = fnB ? fnB.name.toUpperCase() : cmp.functionB.toUpperCase();
 const functionNameC = fnC ? fnC.name.toUpperCase() : (cmp.functionC ? cmp.functionC.toUpperCase() : null);
 
-// Breadcrumb
 const breadcrumbs = [
   { name: 'Home', url: SITE.url },
   { name: 'Compare', url: `${SITE.url}/compare/` },
   { name: cmp.title, url: `${SITE.url}/compare/${cmp.slug}/` },
 ];
 
-// Schema.org
 const articleSchema = generateArticleSchema(cmp.title, cmp.description, `${SITE.url}/compare/${cmp.slug}/`, 'compare');
 const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
 const faqSchema = cmp.faq ? generateFAQSchema(cmp.faq) : null;
@@ -64,7 +61,6 @@ const canonical = `${SITE.url}/compare/${cmp.slug}/`;
 ---
 
 <BaseLayout title={title} description={description} canonical={canonical} schema={allSchema}>
-  <!-- Breadcrumb -->
   <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
     <ol class="flex items-center gap-2 text-sm text-gray-500">
       <li><a href="/" class="hover:text-primary-500 transition-colors">Home</a></li>
@@ -112,6 +108,17 @@ const canonical = `${SITE.url}/compare/${cmp.slug}/`;
         </div>
       )}
     </section>
+
+    <!-- Decision Tree -->
+    {cmp.decisionTree && (
+      <section id="decision-tree" class="mb-10">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          Decision Tree: Which Should You Use?
+        </h2>
+        <DecisionTree treeData={cmp.decisionTree} />
+      </section>
+    )}
 
     <!-- Comparison table -->
     <section id="comparison" class="mb-10">
@@ -215,6 +222,14 @@ const canonical = `${SITE.url}/compare/${cmp.slug}/`;
         <a href="/compare/index-match-vs-xlookup/" class="group block p-4 rounded-lg bg-white border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all">
           <h3 class="text-sm font-semibold text-gray-900 group-hover:text-primary-500 transition-colors">INDEX/MATCH vs XLOOKUP</h3>
           <p class="mt-1 text-xs text-gray-500">Which flexible lookup wins?</p>
+        </a>
+        <a href="/compare/sumif-vs-sumifs/" class="group block p-4 rounded-lg bg-white border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all">
+          <h3 class="text-sm font-semibold text-gray-900 group-hover:text-primary-500 transition-colors">SUMIF vs SUMIFS</h3>
+          <p class="mt-1 text-xs text-gray-500">Single vs multiple criteria</p>
+        </a>
+        <a href="/compare/countif-vs-countifs/" class="group block p-4 rounded-lg bg-white border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all">
+          <h3 class="text-sm font-semibold text-gray-900 group-hover:text-primary-500 transition-colors">COUNTIF vs COUNTIFS</h3>
+          <p class="mt-1 text-xs text-gray-500">Count with one or many conditions</p>
         </a>
       </div>
     </section>
