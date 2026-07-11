@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PracticeFileDownload from '../../components/PracticeFileDownload.astro';
+import SpreadsheetMockup from '../../components/SpreadsheetMockup.astro';
 import { SITE, CATEGORIES } from '../../utils/config';
 import { generateBreadcrumbSchema, generateArticleSchema, generateFAQSchema, generateHowToSchema } from '../../utils/seo';
 
@@ -206,9 +207,22 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
                   </div>
                   <div class="p-4">
                     <p class="text-gray-600 mb-3">{step.description}</p>
+                    {step.mockup && (
+                      <div class="mb-3">
+                        <SpreadsheetMockup
+                          title={step.mockup.title}
+                          data={step.mockup.data}
+                          formula={step.mockup.formula}
+                          activeCell={step.mockup.activeCell}
+                          selectedRange={step.mockup.selectedRange}
+                          highlightColumn={step.mockup.highlightColumn}
+                          platform={step.mockup.platform}
+                        />
+                      </div>
+                    )}
                     {step.screenshot && (
-                      <div class="rounded-lg overflow-hidden border border-gray-200">
-                        <img src={step.screenshot} alt={`Step ${i + 1}: ${step.title}`} class="w-full" />
+                      <div class="rounded-lg overflow-hidden border border-gray-200 mb-3">
+                        <img src={step.screenshot} alt={`Step ${i + 1}: ${step.title}`} class="w-full" loading="lazy" />
                       </div>
                     )}
                     {step.formula && (

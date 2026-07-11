@@ -1,0 +1,255 @@
+---
+interface Props {
+  title?: string;
+  data: (string | number)[][];
+  formula?: string;
+  activeCell?: string;
+  selectedRange?: string;
+  highlightColumn?: number;
+  platform?: 'excel' | 'google-sheets';
+}
+
+const { title, data, formula, activeCell, selectedRange, highlightColumn, platform = 'excel' } = Astro.props;
+
+function colLetter(index: number) {
+  let result = '';
+  let temp = index;
+  while (temp >= 0) {
+    result = String.fromCharCode(65 + (temp % 26)) + result;
+    temp = Math.floor(temp / 26) - 1;
+  }
+  return result;
+}
+
+function colToNum(col: string) {
+  let num = 0;
+  for (let i = 0; i < col.length; i++) {
+    num = num * 26 + (col.charCodeAt(i) - 64);
+  }
+  return num;
+}
+
+function isCellInRange(cellRef: string, range: string) {
+  if (!range || !range.includes(':')) return false;
+  const [start, end] = range.toUpperCase().split(':');
+  const cell = cellRef.toUpperCase();
+  
+  const cellColMatch = cell.match(/[A-Z]+/);
+  const cellRowMatch = cell.match(/\d+/);
+  if (!cellColMatch || !cellRowMatch) return false;
+  
+  const startColMatch = start.match(/[A-Z]+/);
+  const startRowMatch = start.match(/\d+/);
+  if (!startColMatch || !startRowMatch) return false;
+  
+  const endColMatch = end.match(/[A-Z]+/);
+  const endRowMatch = end.match(/\d+/);
+  if (!endColMatch || !endRowMatch) return false;
+  
+  const cellColNum = colToNum(cellColMatch[0]);
+  const cellRowNum = parseInt(cellRowMatch[0]);
+  
+  const startColNum = colToNum(startColMatch[0]);
+  const startRowNum = parseInt(startRowMatch[0]);
+  
+  const endColNum = colToNum(endColMatch[0]);
+  const endRowNum = parseInt(endRowMatch[0]);
+  
+  return cellColNum >= startColNum && cellColNum <= endColNum &&
+         cellRowNum >= startRowNum && cellRowNum <= endRowNum;
+}
+---
+
+<div class="spreadsheet-mockup">
+  <div class={`spreadsheet-header ${platform}`}>
+    <div class="spreadsheet-title-bar">
+      <div class="spreadsheet-title-text">{title || 'Spreadsheet'}</div>
+    </div>
+    
+    {formula && (
+      <div class="formula-bar">
+        <div class="formula-bar-cell">
+          <span class="formula-bar-label">fx</span>
+          <code class="formula-bar-content">{formula}</code>
+        </div>
+      </div>
+    )}
+    
+    <div class="spreadsheet-grid">
+      <table>
+        <thead>
+          <tr>
+          <th class="row-header"></th>
+          {data[0] && data[0].map((_, i) => (
+            <th class={`col-header ${highlightColumn === i ? 'highlight-col' : ''}`}>{colLetter(i)}</th>
+          ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((row, rowIndex) => (
+            <tr>
+              <td class="row-header">{rowIndex + 1}</td>
+              {row.map((cell, colIndex) => {
+                const cellRef = `${colLetter(colIndex)}${rowIndex + 1}`;
+                const isActive = activeCell && cellRef.toUpperCase() === activeCell.toUpperCase();
+                const isInRange = selectedRange && isCellInRange(cellRef, selectedRange);
+                const isHighlightCol = highlightColumn === colIndex;
+                return (
+                  <td 
+                    class={`cell 
+                      ${isActive ? 'active' : ''} 
+                      ${isInRange ? 'in-range' : ''}
+                      ${isHighlightCol ? 'highlight-col-cell' : ''}
+                      ${rowIndex === 0 ? 'header-row' : ''}
+                    `}
+                  >
+                    {cell}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<style>
+  .spreadsheet-mockup {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  }
+  
+  .spreadsheet-header {
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+  
+  .spreadsheet-header.excel {
+    border-color: #217346;
+  }
+  
+  .spreadsheet-header.google-sheets {
+    border-color: #34a853;
+  }
+  
+  .spreadsheet-title-bar {
+    background: #f3f4f6;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #d1d5db;
+  }
+  
+  .excel .spreadsheet-title-bar {
+    background: #217346;
+  }
+  
+  .google-sheets .spreadsheet-title-bar {
+    background: #34a853;
+  }
+  
+  .spreadsheet-title-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #ffffff;
+  }
+  
+  .formula-bar {
+    background: #ffffff;
+    border-bottom: 1px solid #d1d5db;
+    padding: 0.25rem 0.75rem;
+  }
+  
+  .formula-bar-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.25rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .formula-bar-label {
+    color: #6b7280;
+    font-style: italic;
+    font-size: 0.875rem;
+  }
+  
+  .formula-bar-content {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.875rem;
+    color: #111827;
+  }
+  
+  .spreadsheet-grid {
+    overflow-x: auto;
+  }
+  
+  .spreadsheet-grid table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+  
+  .col-header,
+  .row-header {
+    background: #f3f4f6;
+    color: #6b7280;
+    font-weight: 500;
+    font-size: 0.75rem;
+    text-align: center;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #d1d5db;
+    min-width: 60px;
+    user-select: none;
+  }
+  
+  .row-header {
+    width: 40px;
+    min-width: 40px;
+  }
+  
+  .col-header.highlight-col {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+  
+  .cell {
+    border: 1px solid #e5e7eb;
+    padding: 0.375rem 0.625rem;
+    min-width: 100px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.8125rem;
+    color: #111827;
+  }
+  
+  .cell.header-row {
+    font-weight: 600;
+    background: #f9fafb;
+  }
+  
+  .cell.active {
+    border: 2px solid #2563eb;
+    background: #eff6ff;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .cell.in-range {
+    background: #dbeafe;
+    border-color: #93c5fd;
+  }
+  
+  .cell.highlight-col-cell {
+    background: #fef3c7;
+  }
+  
+  .cell.highlight-col-cell.header-row {
+    background: #fde68a;
+  }
+</style>

@@ -55,35 +55,120 @@
     {
       "title": "Prepare your data",
       "description": "Organize your data in a table format with the lookup values in the first column. Make sure the first column is sorted if using approximate match.",
-      "screenshot": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Excel%20spreadsheet%20with%20employee%20data%20table%20showing%20ID%20name%20and%20salary%20columns&image_size=landscape_16_9"
+      "mockup": {
+        "title": "Employees.xlsx",
+        "platform": "excel",
+        "data": [
+          ["Employee ID", "Name", "Department", "Salary"],
+          ["E001", "Alice Johnson", "Marketing", 75000],
+          ["E002", "Bob Smith", "Engineering", 85000],
+          ["E003", "Charlie Brown", "Sales", 68000],
+          ["E004", "Diana Prince", "HR", 72000],
+          ["E005", "Eve Adams", "Engineering", 92000]
+        ]
+      }
     },
     {
       "title": "Enter the VLOOKUP formula",
       "description": "Click on the cell where you want the result to appear and type =VLOOKUP(",
-      "formula": "=VLOOKUP("
+      "formula": "=VLOOKUP(",
+      "tip": "Always start formulas with an equals sign (=)",
+      "mockup": {
+        "title": "Employees.xlsx",
+        "platform": "excel",
+        "formula": "=VLOOKUP(",
+        "activeCell": "G2",
+        "data": [
+          ["Employee ID", "Name", "Department", "Salary", "", "Lookup ID", "Result"],
+          ["E001", "Alice Johnson", "Marketing", 75000, "", "E003", "=VLOOKUP("],
+          ["E002", "Bob Smith", "Engineering", 85000, "", "", ""],
+          ["E003", "Charlie Brown", "Sales", 68000, "", "", ""],
+          ["E004", "Diana Prince", "HR", 72000, "", "", ""],
+          ["E005", "Eve Adams", "Engineering", 92000, "", "", ""]
+        ]
+      }
     },
     {
       "title": "Enter the lookup value",
       "description": "Select the cell containing the value you want to search for. This is the employee ID in our example.",
-      "formula": "=VLOOKUP(A2",
-      "tip": "Make sure this value exists in the first column of your table array."
+      "formula": "=VLOOKUP(F2",
+      "tip": "Make sure this value exists in the first column of your table array.",
+      "mockup": {
+        "title": "Employees.xlsx",
+        "platform": "excel",
+        "formula": "=VLOOKUP(F2",
+        "activeCell": "G2",
+        "data": [
+          ["Employee ID", "Name", "Department", "Salary", "", "Lookup ID", "Result"],
+          ["E001", "Alice Johnson", "Marketing", 75000, "", "E003", "=VLOOKUP(F2"],
+          ["E002", "Bob Smith", "Engineering", 85000, "", "", ""],
+          ["E003", "Charlie Brown", "Sales", 68000, "", "", ""],
+          ["E004", "Diana Prince", "HR", 72000, "", "", ""],
+          ["E005", "Eve Adams", "Engineering", 92000, "", "", ""]
+        ]
+      }
     },
     {
       "title": "Select the table array",
       "description": "Highlight the entire table range including all columns you want to search through. Use absolute references ($) to lock the range.",
-      "formula": "=VLOOKUP(A2, $D$2:$F$10",
-      "tip": "Press F4 after selecting the range to add dollar signs for absolute referencing."
+      "formula": "=VLOOKUP(F2, $A$2:$D$6",
+      "tip": "Press F4 after selecting the range to add dollar signs for absolute referencing.",
+      "mockup": {
+        "title": "Employees.xlsx",
+        "platform": "excel",
+        "formula": "=VLOOKUP(F2, $A$2:$D$6",
+        "activeCell": "G2",
+        "selectedRange": "A2:D6",
+        "data": [
+          ["Employee ID", "Name", "Department", "Salary", "", "Lookup ID", "Result"],
+          ["E001", "Alice Johnson", "Marketing", 75000, "", "E003", "=VLOOKUP(F2, $A$2:$D$6"],
+          ["E002", "Bob Smith", "Engineering", 85000, "", "", ""],
+          ["E003", "Charlie Brown", "Sales", 68000, "", "", ""],
+          ["E004", "Diana Prince", "HR", 72000, "", "", ""],
+          ["E005", "Eve Adams", "Engineering", 92000, "", "", ""]
+        ]
+      }
     },
     {
       "title": "Specify the column index",
       "description": "Enter the number of the column from which to return a value. Column 1 is the first column of the table.",
-      "formula": "=VLOOKUP(A2, $D$2:$F$10, 3",
-      "tip": "In our example, salary is in the 3rd column of the table array."
+      "formula": "=VLOOKUP(F2, $A$2:$D$6, 3",
+      "tip": "In our example, Department is in the 3rd column of the table array.",
+      "mockup": {
+        "title": "Employees.xlsx",
+        "platform": "excel",
+        "formula": "=VLOOKUP(F2, $A$2:$D$6, 3",
+        "activeCell": "G2",
+        "highlightColumn": 2,
+        "data": [
+          ["Employee ID", "Name", "Department", "Salary", "", "Lookup ID", "Result"],
+          ["E001", "Alice Johnson", "Marketing", 75000, "", "E003", "=VLOOKUP(F2, $A$2:$D$6, 3"],
+          ["E002", "Bob Smith", "Engineering", 85000, "", "", ""],
+          ["E003", "Charlie Brown", "Sales", 68000, "", "", ""],
+          ["E004", "Diana Prince", "HR", 72000, "", "", ""],
+          ["E005", "Eve Adams", "Engineering", 92000, "", "", ""]
+        ]
+      }
     },
     {
       "title": "Choose match type and press Enter",
       "description": "Enter FALSE for exact match (most common) or TRUE for approximate match, then press Enter.",
-      "formula": "=VLOOKUP(A2, $D$2:$F$10, 3, FALSE)"
+      "formula": "=VLOOKUP(F2, $A$2:$D$6, 3, FALSE)",
+      "result": "Sales",
+      "mockup": {
+        "title": "Employees.xlsx",
+        "platform": "excel",
+        "formula": "=VLOOKUP(F2, $A$2:$D$6, 3, FALSE)",
+        "activeCell": "G2",
+        "data": [
+          ["Employee ID", "Name", "Department", "Salary", "", "Lookup ID", "Result"],
+          ["E001", "Alice Johnson", "Marketing", 75000, "", "E003", "Sales"],
+          ["E002", "Bob Smith", "Engineering", 85000, "", "", ""],
+          ["E003", "Charlie Brown", "Sales", 68000, "", "", ""],
+          ["E004", "Diana Prince", "HR", 72000, "", "", ""],
+          ["E005", "Eve Adams", "Engineering", 92000, "", "", ""]
+        ]
+      }
     }
   ],
   "basicExample": {
