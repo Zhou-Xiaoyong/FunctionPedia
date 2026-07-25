@@ -3,38 +3,106 @@
   "slug": "dcounta",
   "category": "database",
   "excelVersion": "All versions",
-  "description": "DCOUNTA is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "DCOUNTA is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(dcounta)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the DCOUNTA function",
-    "formula": "=DCOUNTA(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the DCOUNTA function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The DCOUNTA function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "DCOUNTA counts the non-blank cells in a specified field of the database records that match the given criteria. Unlike DCOUNT, it counts text as well as numbers.",
+  "tldr": "Counts non-blank values in a database column for rows that meet the criteria.",
+  "syntax": "(database, field, criteria)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "database",
+      "description": "The range containing the database, including the header row as the first row.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =DCOUNTA(arguments)."
+      "name": "field",
+      "description": "The column to count, given as the column label in quotes (e.g. \"Tree\") or its 1-based column index.",
+      "required": true
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "criteria",
+      "description": "The range with a header row matching database column names and one or more condition rows; only matching records are counted.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "DCOUNTA works identically in Google Sheets with the same syntax.",
-    "formula": "=DCOUNTA(A1)"
+  "basicExample": {
+    "description": "Count non-blank Tree values for apple trees taller than 10",
+    "formula": "=DCOUNTA(A1:E7, \"Tree\", A9:B10)",
+    "result": "2",
+    "explanation": "The criteria A9:B10 matches two rows; the Tree field is non-blank (text) in both, so DCOUNTA counts 2."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "DCOUNTA vs DCOUNT on a text field",
+      "scenario": "Counting the Tree column",
+      "description": "DCOUNT returns 0 on a text field, but DCOUNTA counts the non-blank text entries.",
+      "formula": "=DCOUNTA(A1:E7, \"Tree\", A9:B10)",
+      "result": "2",
+      "explanation": "Both matching rows have a Tree label, so DCOUNTA returns 2 while DCOUNT would return 0."
+    },
+    {
+      "title": "Count all apple-tree records",
+      "scenario": "Single condition Tree=Apple",
+      "description": "Use criteria A9:A10 to count every non-blank field cell among apple rows.",
+      "formula": "=DCOUNTA(A1:E7, \"Yield\", A9:A10)",
+      "result": "3",
+      "explanation": "Three apple rows exist, each with a non-blank numeric Yield, so the count is 3."
+    }
+  ],
+  "howItWorks": "DCOUNTA filters the database to rows matching the criteria, then counts how many of those rows have a non-blank value in the specified field column. Both text and numbers are counted; only empty cells are excluded.",
+  "howToSteps": [
+    {
+      "name": "Set up the database",
+      "text": "Enter your table with a header row, e.g. A1:E7 with Tree, Height, Age, Yield, Profit."
+    },
+    {
+      "name": "Set up criteria",
+      "text": "Place criteria headers and values in a separate range, e.g. A9:B10."
+    },
+    {
+      "name": "Enter DCOUNTA",
+      "text": "Type =DCOUNTA(A1:E7, \"Tree\", A9:B10) and press Enter."
+    }
+  ],
+  "limitations": [
+    "Counts any non-blank cell, including text, so it is not limited to numbers like DCOUNT.",
+    "Truly empty cells in the field are not counted.",
+    "Criteria header labels must exactly match database headers."
+  ],
+  "commonErrors": [
+    {
+      "error": "0 result",
+      "cause": "No rows matched the criteria, or the field was entirely blank in matching rows.",
+      "fix": "Verify the criteria headers and conditions match the database."
+    },
+    {
+      "error": "#VALUE!",
+      "cause": "The field was an unquoted column name.",
+      "fix": "Wrap the field name in quotes, e.g. \"Tree\", or use the column index."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "DCOUNTA works identically in Google Sheets with the same arguments and behavior.",
+    "formula": "=DCOUNTA(A1:E7, \"Tree\", A9:B10)",
+    "notes": "No differences from Excel."
+  },
+  "faq": [
+    {
+      "question": "How is DCOUNTA different from DCOUNT?",
+      "answer": "DCOUNT counts only numeric cells; DCOUNTA counts any non-blank cell, including text."
+    },
+    {
+      "question": "Does DCOUNTA count empty cells?",
+      "answer": "No. Only non-blank cells in the field of matching rows are counted."
+    },
+    {
+      "question": "When should I use DCOUNTA?",
+      "answer": "Use it when you need to tally matching records regardless of whether the field holds numbers or text."
+    }
+  ],
+  "relatedFunctions": [
+    "dcount",
+    "dsum",
+    "daverage",
+    "database",
+    "counta"
+  ]
 }

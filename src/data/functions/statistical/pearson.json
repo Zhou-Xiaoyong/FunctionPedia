@@ -3,38 +3,101 @@
   "slug": "pearson",
   "category": "statistical",
   "excelVersion": "All versions",
-  "description": "PEARSON is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "PEARSON is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(pearson)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the PEARSON function",
-    "formula": "=PEARSON(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the PEARSON function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The PEARSON function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "PEARSON returns the Pearson product-moment correlation coefficient for two data sets, identical in result to CORREL.",
+  "tldr": "Pearson correlation coefficient between two arrays (same as CORREL).",
+  "syntax": "(array1, array2)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "array1",
+      "description": "The first set of independent (or paired) numeric values.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =PEARSON(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "array2",
+      "description": "The second set of numeric values, the same length as array1.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "PEARSON works identically in Google Sheets with the same syntax.",
-    "formula": "=PEARSON(A1)"
+  "basicExample": {
+    "description": "Correlation between two paired series",
+    "formula": "=PEARSON({2,3,5,7,9},{1,2,3,4,5})",
+    "result": "0.993883",
+    "explanation": "Identical to CORREL on the same data; the coefficient is near 1, a strong positive linear relationship."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Correlation from ranges",
+      "scenario": "Comparing temperature to ice-cream sales",
+      "description": "Both ranges must have the same number of points",
+      "formula": "=PEARSON(B2:B13,C2:C13)",
+      "result": "Correlation coefficient between -1 and 1",
+      "explanation": "Pairs each row; mismatched sizes cause #N/A. The result equals CORREL on the same inputs."
+    },
+    {
+      "title": "Verifying equivalence with CORREL",
+      "scenario": "Two function names, one answer",
+      "description": "Show the two functions return the same value",
+      "formula": "=PEARSON(A2:A20,B2:B20) and =CORREL(A2:A20,B2:B20)",
+      "result": "Identical coefficient",
+      "explanation": "PEARSON and CORREL use the same Pearson formula, so they always agree."
+    }
+  ],
+  "howItWorks": "PEARSON computes r = Σ((x - x̄)(y - ȳ)) / sqrt(Σ(x - x̄)² · Σ(y - ȳ)²). The result is bounded by -1 and 1. It is mathematically and functionally identical to CORREL; text, logicals, and empty cells are ignored in each array.",
+  "howToSteps": [
+    {
+      "name": "Arrange paired data",
+      "text": "Put the two related series in equal-length ranges."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =PEARSON(array1, array2)."
+    },
+    {
+      "name": "Read the coefficient",
+      "text": "Values near 1 or -1 indicate strong linear association."
+    }
+  ],
+  "limitations": [
+    "Measures only linear association, like CORREL; non-linear links may show ~0.",
+    "Both arrays must contain the same number of data points, or #N/A is returned.",
+    "If either array has zero variance, the function returns #DIV/0!."
+  ],
+  "commonErrors": [
+    {
+      "error": "#N/A",
+      "cause": "The two arrays have different numbers of data points.",
+      "fix": "Make sure array1 and array2 are the same length."
+    },
+    {
+      "error": "#DIV/0!",
+      "cause": "One of the arrays has no variance (all values equal).",
+      "fix": "Use data with variation, or check for constant columns."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "PEARSON works identically in Google Sheets and equals CORREL.",
+    "formula": "=PEARSON({2,3,5,7,9},{1,2,3,4,5})",
+    "notes": "Same result as Excel; CORREL is also available and equivalent."
+  },
+  "faq": [
+    {
+      "question": "Is PEARSON the same as CORREL?",
+      "answer": "Yes. Both Excel and Google Sheets return the identical Pearson coefficient for the same inputs."
+    },
+    {
+      "question": "Why does PEARSON exist if it equals CORREL?",
+      "answer": "It is provided for compatibility and familiarity with statistical notation; the result is the same."
+    },
+    {
+      "question": "What does a correlation of 0 mean?",
+      "answer": "No linear relationship; a non-linear relationship may still be present."
+    }
+  ],
+  "relatedFunctions": [
+    "correl",
+    "forecast",
+    "forecast-linear",
+    "linest",
+    "trend"
+  ]
 }

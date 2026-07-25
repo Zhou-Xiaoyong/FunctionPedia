@@ -3,38 +3,97 @@
   "slug": "isnumber",
   "category": "information",
   "excelVersion": "All versions",
-  "description": "ISNUMBER is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "ISNUMBER is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(isnumber)",
-  "parameters": [],
+  "description": "ISNUMBER returns TRUE if the supplied value is a number (including numeric results of formulas and dates stored as serial numbers), and FALSE otherwise.",
+  "tldr": "Tests whether a value is numeric.",
+  "syntax": "(value)",
+  "parameters": [
+    {
+      "name": "value",
+      "description": "The value, cell reference, or formula result to test.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the ISNUMBER function",
+    "description": "Check a cell that holds a number",
     "formula": "=ISNUMBER(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the ISNUMBER function."
+    "result": "TRUE",
+    "explanation": "A1 contains 100, which is numeric, so the function returns TRUE."
   },
-  "advancedExamples": [],
-  "howItWorks": "The ISNUMBER function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Text that looks like a number",
+      "scenario": "A cell shows 007 but it is stored as text.",
+      "description": "Detect a text-formatted number",
+      "formula": "=ISNUMBER(\"123\")",
+      "result": "FALSE",
+      "explanation": "\"123\" in quotes is text, not a numeric value, so the result is FALSE."
+    },
+    {
+      "title": "Validate a column of entries",
+      "scenario": "Flag rows whose ID is not numeric.",
+      "description": "Combine with IF to label bad data",
+      "formula": "=IF(ISNUMBER(B2), \"ok\", \"fix\")",
+      "result": "fix",
+      "explanation": "If B2 holds non-numeric text, ISNUMBER returns FALSE and IF returns \"fix\"."
+    }
+  ],
+  "howItWorks": "ISNUMBER inspects the data type of the supplied value. Numeric types (numbers, formula results that are numbers, and dates stored as serial numbers) return TRUE; everything else—text, logicals, errors, blank cells—returns FALSE. A text string that merely resembles a number is not numeric.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Pick the value",
+      "text": "Choose the cell or value you want to test."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =ISNUMBER(arguments)."
+      "text": "Type =ISNUMBER(value)."
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "Read the result",
+      "text": "TRUE means numeric, FALSE means not."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Returns FALSE for text that looks like a number, such as \"123\".",
+    "A blank cell returns FALSE because blank is not a number.",
+    "Dates are numbers, so ISNUMBER returns TRUE for date values."
+  ],
+  "commonErrors": [
+    {
+      "error": "Unexpected FALSE",
+      "cause": "The value is a number stored as text.",
+      "fix": "Convert it to a real number with VALUE() or Text to Columns."
+    },
+    {
+      "error": "FALSE for an empty cell",
+      "cause": "Blank cells are not numbers.",
+      "fix": "Use ISBLANK if you specifically need to test for emptiness."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "ISNUMBER works identically in Google Sheets with the same syntax.",
-    "formula": "=ISNUMBER(A1)"
+    "description": "ISNUMBER works identically in Google Sheets with the same syntax and behavior.",
+    "formula": "=ISNUMBER(A1)",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Does ISNUMBER recognize dates?",
+      "answer": "Yes, because dates are stored as serial numbers, so they return TRUE."
+    },
+    {
+      "question": "Why does ISNUMBER(\"123\") return FALSE?",
+      "answer": "Because \"123\" in quotes is text, not a numeric value."
+    },
+    {
+      "question": "Can I test a whole range at once?",
+      "answer": "ISNUMBER tests a single value; wrap it in an array-aware function, e.g. =SUMPRODUCT(--ISNUMBER(A1:A10)) to count numeric cells."
+    }
+  ],
+  "relatedFunctions": [
+    "istext",
+    "isblank",
+    "iserror",
+    "isna",
+    "value",
+    "iferror"
+  ]
 }

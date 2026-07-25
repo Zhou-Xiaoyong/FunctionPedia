@@ -2,39 +2,102 @@
   "name": "MODE.MULT",
   "slug": "mode-mult",
   "category": "statistical",
-  "excelVersion": "All versions",
-  "description": "MODE.MULT is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "MODE.MULT is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(mode.mult)",
-  "parameters": [],
+  "excelVersion": "Excel 2010+",
+  "description": "MODE.MULT returns a vertical array of all values that occur with the greatest frequency in a dataset, so it can report multiple modes at once.",
+  "tldr": "Returns every value tied for the highest frequency as an array.",
+  "syntax": "(number1, [number2], ...)",
+  "parameters": [
+    {
+      "name": "number1",
+      "description": "The first number, cell, or range to evaluate.",
+      "required": true
+    },
+    {
+      "name": "number2",
+      "description": "Additional numbers, cells, or ranges (optional).",
+      "required": false
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the MODE.MULT function",
-    "formula": "=MODE.MULT(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the MODE.MULT function."
+    "description": "Two values share the top frequency",
+    "formula": "=MODE.MULT(1,2,2,3,3,4)",
+    "result": "2 and 3 (vertical array {2;3})",
+    "explanation": "Both 2 and 3 occur twice, more than 1 and 4, so both are returned."
   },
-  "advancedExamples": [],
-  "howItWorks": "The MODE.MULT function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Three tied modes",
+      "scenario": "Multi-modal distribution",
+      "description": "When more than two values tie, all are returned.",
+      "formula": "=MODE.MULT(7,7,8,8,9,9)",
+      "result": "7, 8, and 9 (vertical array {7;8;9})",
+      "explanation": "Each of 7, 8, and 9 occurs twice, so all three are returned."
+    },
+    {
+      "title": "Single mode still returns an array",
+      "scenario": "Only one most-frequent value",
+      "description": "Even with one mode the result is a one-element array.",
+      "formula": "=MODE.MULT(5,5,5,8,9)",
+      "result": "5 (array {5})",
+      "explanation": "5 occurs three times; it is returned as a single-element array."
+    }
+  ],
+  "howItWorks": "MODE.MULT finds the highest frequency among the numeric values, then returns every value that reaches that frequency. It returns a vertical (column) array, so in modern Excel it spills into multiple cells; in older versions it must be entered as a multi-cell array formula with Ctrl+Shift+Enter. If no value repeats, it returns #N/A. Text, logical values, and empty cells are ignored.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select a vertical range of cells",
+      "text": "Highlight enough empty cells below the formula cell to hold all modes."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =MODE.MULT(arguments)."
+      "text": "Type =MODE.MULT(range) in the top cell of the selection."
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "Confirm as array (older Excel)",
+      "text": "In Excel 2019 and earlier press Ctrl+Shift+Enter; in Microsoft 365 just press Enter to spill."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Returns a vertical array, so it needs multiple cells to display all modes (or dynamic-array spill in Microsoft 365).",
+    "Returns #N/A when every value is unique.",
+    "Ignores text labels, so repeated category names are not counted."
+  ],
+  "commonErrors": [
+    {
+      "error": "#N/A error",
+      "cause": "No value is repeated in the data.",
+      "fix": "Use MODE.SNGL or verify the dataset contains duplicates."
+    },
+    {
+      "error": "Only one value shown",
+      "cause": "Formula entered in a single cell without array handling in pre-365 Excel.",
+      "fix": "Select a vertical range of cells and confirm with Ctrl+Shift+Enter."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "MODE.MULT works identically in Google Sheets with the same syntax.",
-    "formula": "=MODE.MULT(A1)"
+    "description": "Google Sheets does not have MODE.MULT; the closest is MODE which returns only one mode.",
+    "formula": "=MODE(1,2,2,3,3,4)",
+    "notes": "Sheets returns a single value (2). To get all modes use ARRAYFORMULA with a frequency helper or a custom approach."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Why do I only see one result?",
+      "answer": "In older Excel the formula must be entered as an array across several cells. In Microsoft 365 it spills automatically."
+    },
+    {
+      "question": "How is MODE.MULT different from MODE.SNGL?",
+      "answer": "MODE.SNGL returns one mode (lowest on ties); MODE.MULT returns all tied modes as an array."
+    },
+    {
+      "question": "What if there is no repeated value?",
+      "answer": "MODE.MULT returns #N/A because no mode exists."
+    }
+  ],
+  "relatedFunctions": [
+    "mode",
+    "mode-sngl",
+    "median",
+    "average",
+    "count"
+  ]
 }

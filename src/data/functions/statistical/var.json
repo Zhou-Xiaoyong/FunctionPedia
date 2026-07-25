@@ -3,38 +3,101 @@
   "slug": "var",
   "category": "statistical",
   "excelVersion": "All versions",
-  "description": "VAR is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "VAR is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(var)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the VAR function",
-    "formula": "=VAR(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the VAR function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The VAR function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "VAR estimates the variance based on a sample of a population, using the n-1 denominator (Bessel's correction). It is the legacy compatibility version of VAR.S.",
+  "tldr": "Sample variance (n-1) of a set of numbers.",
+  "syntax": "(number1, [number2], ...)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "number1",
+      "description": "The first number, range, or reference in the sample.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =VAR(arguments)."
+      "name": "number2",
+      "description": "Additional numbers, ranges, or references (optional, up to 255 total arguments).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Sample variance of five values",
+    "formula": "=VAR(10,20,30,40,50)",
+    "result": "250",
+    "explanation": "The mean is 30; the sum of squared deviations is 1000, divided by 5-1 gives a sample variance of 250."
+  },
+  "advancedExamples": [
+    {
+      "title": "Sample from a range",
+      "scenario": "Variability of test scores",
+      "description": "Compute the variance of scores in A2:A11",
+      "formula": "=VAR(A2:A11)",
+      "result": "Sample variance of the 10 values",
+      "explanation": "Uses the 10 sampled values with n-1 (9) in the denominator."
+    },
+    {
+      "title": "Sample vs population",
+      "scenario": "Comparing denominators",
+      "description": "Same data, two different denominators",
+      "formula": "=VAR(10,20,30,40,50) and =VARP(10,20,30,40,50)",
+      "result": "250 and 200",
+      "explanation": "VAR divides by 4 (n-1) while VARP divides by 5 (n), so the population version is smaller. VAR is the square of STDEV for the same data."
+    }
+  ],
+  "howItWorks": "VAR computes the sample variance as the sum of squared deviations from the mean divided by (n-1). The n-1 divisor (Bessel's correction) yields an unbiased estimate of the population variance from a sample. Text and logical values in references are ignored, and VAR equals STDEV squared.",
+  "howToSteps": [
+    {
+      "name": "Select sample",
+      "text": "Gather the numeric sample values in cells or as arguments."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =VAR(range or values)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The sample variance is displayed."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Assumes the data is a sample, not the entire population; use VARP for a whole population.",
+    "Ignores text and logical values inside ranged references, reducing the effective count.",
+    "Requires at least two numeric values, otherwise returns #DIV/0!."
+  ],
+  "commonErrors": [
+    {
+      "error": "#DIV/0!",
+      "cause": "Fewer than two numeric values were supplied.",
+      "fix": "Provide at least two data points."
+    },
+    {
+      "error": "Result smaller than expected",
+      "cause": "The data is the full population but n-1 was used.",
+      "fix": "Use VARP (or VAR.P) for an entire population."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "VAR works identically in Google Sheets with the same syntax.",
-    "formula": "=VAR(A1)"
+    "description": "VAR behaves the same in Google Sheets as a sample variance.",
+    "formula": "=VAR(10,20,30,40,50)",
+    "notes": "Identical behavior to Excel VAR."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "What is the difference between VAR and VARP?",
+      "answer": "VAR divides by n-1 (sample), VARP divides by n (population)."
+    },
+    {
+      "question": "Is VAR the same as VAR.S?",
+      "answer": "Functionally yes; VAR.S is the modern replacement for the legacy VAR function."
+    },
+    {
+      "question": "How is VAR related to STDEV?",
+      "answer": "VAR is the square of STDEV for the same data set."
+    }
+  ],
+  "relatedFunctions": [
+    "vara",
+    "varp",
+    "varpa",
+    "stdev",
+    "average"
+  ]
 }

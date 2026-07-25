@@ -3,38 +3,106 @@
   "slug": "workday",
   "category": "datetime",
   "excelVersion": "All versions",
-  "description": "WORKDAY is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "WORKDAY is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(workday)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the WORKDAY function",
-    "formula": "=WORKDAY(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the WORKDAY function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The WORKDAY function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "WORKDAY returns the date that is a given number of working days before or after a start date, skipping Saturdays and Sundays and optionally a list of holidays.",
+  "tldr": "Returns a date n workdays from a start date.",
+  "syntax": "(start_date, days, [holidays])",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "start_date",
+      "description": "The starting date serial.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =WORKDAY(arguments)."
+      "name": "days",
+      "description": "The number of workdays to move. Positive moves forward, negative moves backward. The start date itself is not counted.",
+      "required": true
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "holidays",
+      "description": "Optional range or array of dates to exclude as non-working days.",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "WORKDAY works identically in Google Sheets with the same syntax.",
-    "formula": "=WORKDAY(A1)"
+  "basicExample": {
+    "description": "Ten workdays after Jan 1, 2024",
+    "formula": "=WORKDAY(DATE(2024, 1, 1), 10)",
+    "result": "45305",
+    "explanation": "Starting Monday Jan 1, 10 workdays (skipping Sat/Sun) land on Monday Jan 15 2024 (serial 45305)."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Excluding a holiday",
+      "scenario": "A project deadline with a mid-period holiday",
+      "description": "The holiday pushes the result one day later",
+      "formula": "=WORKDAY(DATE(2024, 1, 1), 10, {\"2024-01-15\"})",
+      "result": "45306",
+      "explanation": "Without the holiday the 10th workday is Jan 15, but excluding Jan 15 (a Monday) shifts the result to Jan 16 (serial 45306)."
+    },
+    {
+      "title": "Moving backward",
+      "scenario": "Ten workdays before Jan 15",
+      "description": "A negative days value goes to the past",
+      "formula": "=WORKDAY(DATE(2024, 1, 15), -10)",
+      "result": "45291",
+      "explanation": "Ten workdays earlier is Monday Jan 1 2024 (serial 45291)."
+    }
+  ],
+  "howItWorks": "WORKDAY walks forward (or backward) from start_date, counting only weekdays (Monday-Friday by default) and skipping any date listed in holidays, until it has counted the requested number of workdays. The start date is not included in the count.",
+  "howToSteps": [
+    {
+      "name": "Enter the start date",
+      "text": "Provide a date serial or DATE(...) expression."
+    },
+    {
+      "name": "Enter the number of workdays",
+      "text": "Use a positive or negative integer."
+    },
+    {
+      "name": "Optionally list holidays",
+      "text": "Pass a range or array of holiday dates to exclude."
+    }
+  ],
+  "limitations": [
+    "Only Saturday and Sunday weekends are supported; use WORKDAY.INTL for custom weekend days.",
+    "The start date itself is not counted toward the days total.",
+    "Holidays must be valid date serials, not text."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "A non-date start_date or a holiday that Excel cannot read as a date.",
+      "fix": "Ensure all date arguments are real date serials."
+    },
+    {
+      "error": "Result looks like a number",
+      "cause": "The cell is not date-formatted.",
+      "fix": "Apply a date number format to the result."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "WORKDAY works identically in Google Sheets, including the optional holidays argument.",
+    "formula": "=WORKDAY(DATE(2024, 1, 1), 10)",
+    "notes": "Same behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "Does WORKDAY count the start date?",
+      "answer": "No, the start date is excluded; it counts only the workdays after it."
+    },
+    {
+      "question": "How do I use a custom weekend?",
+      "answer": "Use WORKDAY.INTL, which accepts a weekend code or 7-character weekend string."
+    },
+    {
+      "question": "Can days be negative?",
+      "answer": "Yes, a negative value returns a date before the start date."
+    }
+  ],
+  "relatedFunctions": [
+    "workday-intl",
+    "networkdays",
+    "eomonth",
+    "edate",
+    "date"
+  ]
 }

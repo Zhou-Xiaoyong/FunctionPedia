@@ -3,38 +3,91 @@
   "slug": "transpose",
   "category": "lookup",
   "excelVersion": "All versions",
-  "description": "TRANSPOSE is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "TRANSPOSE is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(transpose)",
-  "parameters": [],
+  "description": "TRANSPOSE converts a vertical range into a horizontal one, or a horizontal range into a vertical one, effectively flipping rows and columns.",
+  "tldr": "Flips rows and columns of an array.",
+  "syntax": "(array)",
+  "parameters": [
+    {
+      "name": "array",
+      "description": "The range or array of values to transpose.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the TRANSPOSE function",
-    "formula": "=TRANSPOSE(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the TRANSPOSE function."
+    "description": "Turn a column into a row",
+    "formula": "=TRANSPOSE(A1:A3)",
+    "result": "A horizontal row of the three values",
+    "explanation": "The three-row, one-column range becomes a one-row, three-column result."
   },
-  "advancedExamples": [],
-  "howItWorks": "The TRANSPOSE function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Rotate a table",
+      "scenario": "A 2x3 block A1:C2",
+      "description": "Swap rows and columns",
+      "formula": "=TRANSPOSE(A1:C2)",
+      "result": "A 3x2 block",
+      "explanation": "Rows become columns and columns become rows in the output."
+    },
+    {
+      "title": "Feed a transposed range to another function",
+      "scenario": "Need rows as columns for a lookup",
+      "description": "Use inline as an array",
+      "formula": "=TRANSPOSE(A1:A5)",
+      "result": "Horizontal array usable by the next function",
+      "explanation": "The transposed array can be passed directly into functions that expect the other orientation."
+    }
+  ],
+  "howItWorks": "TRANSPOSE swaps the row and column indices of the input array, so element (r, c) in the source appears at (c, r) in the result. In Microsoft 365 it spills the full result automatically; in older Excel it must be entered as an array formula across the target range.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the target shape",
+      "text": "Pick a target range with swapped dimensions (rows become columns)."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =TRANSPOSE(arguments)."
+      "text": "In modern Excel just type =TRANSPOSE(range); in legacy Excel select the output range, type the formula, and press Ctrl+Shift+Enter."
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "Confirm the result",
+      "text": "The flipped array appears in the target range."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "In older Excel, TRANSPOSE must be entered as an array formula (Ctrl+Shift+Enter); a single cell shows only one element.",
+    "The output range must have the transposed dimensions or results are truncated.",
+    "Transposing only flips orientation; it does not reshape to arbitrary dimensions."
+  ],
+  "commonErrors": [
+    {
+      "error": "Only one value appears",
+      "cause": "Legacy Excel without array entry, or the formula placed in a single cell.",
+      "fix": "Select the full target range and use Ctrl+Shift+Enter (or use Microsoft 365's dynamic arrays)."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "TRANSPOSE works identically in Google Sheets with the same syntax.",
-    "formula": "=TRANSPOSE(A1)"
+    "description": "TRANSPOSE works the same in Google Sheets and spills automatically into the needed range.",
+    "formula": "=TRANSPOSE(A1:A3)",
+    "notes": "Same behavior as Excel; Sheets handles array output natively."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Do I need Ctrl+Shift+Enter?",
+      "answer": "Only in older Excel; Microsoft 365 and Google Sheets spill the result automatically."
+    },
+    {
+      "question": "What does TRANSPOSE do to a 2x3 range?",
+      "answer": "It returns a 3x2 range with rows and columns swapped."
+    },
+    {
+      "question": "Can it reshape data arbitrarily?",
+      "answer": "No, it only flips rows and columns; the total element count is unchanged."
+    }
+  ],
+  "relatedFunctions": [
+    "index",
+    "match",
+    "hlookup",
+    "vlookup",
+    "choose"
+  ]
 }

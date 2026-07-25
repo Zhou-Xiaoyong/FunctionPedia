@@ -3,38 +3,92 @@
   "slug": "minute",
   "category": "datetime",
   "excelVersion": "All versions",
-  "description": "MINUTE is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "MINUTE is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(minute)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the MINUTE function",
-    "formula": "=MINUTE(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the MINUTE function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The MINUTE function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "MINUTE extracts the minute (0-59) from a time or date-time serial number, reading only the fractional time portion of the value.",
+  "tldr": "Returns the minute portion (0-59) of a time value.",
+  "syntax": "(serial_number)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
-    },
-    {
-      "name": "Enter the formula",
-      "text": "Type =MINUTE(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "serial_number",
+      "description": "A date-time serial (or a time fraction). The integer part is a date and the fractional part is the time; the minute is taken from the fractional part.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "MINUTE works identically in Google Sheets with the same syntax.",
-    "formula": "=MINUTE(A1)"
+  "basicExample": {
+    "description": "Get the minute from a time",
+    "formula": "=MINUTE(TIME(12, 30, 0))",
+    "result": "30",
+    "explanation": "TIME(12,30,0) is 12:30 PM, so MINUTE returns 30."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Extract minute from a date-time serial",
+      "scenario": "A timestamp like 2024-01-15 12:30",
+      "description": "MINUTE reads the fractional time part",
+      "formula": "=MINUTE(45305.520833)",
+      "result": "30",
+      "explanation": "The .520833 fraction equals 12:30:00, so MINUTE returns 30."
+    },
+    {
+      "title": "Exact hour returns 0",
+      "scenario": "A time with no minutes",
+      "description": "On the hour, the minute component is 0",
+      "formula": "=MINUTE(TIME(15, 0, 0))",
+      "result": "0",
+      "explanation": "15:00:00 has zero minutes, so MINUTE returns 0."
+    }
+  ],
+  "howItWorks": "MINUTE takes the fractional part of the serial (the time-of-day component), multiplies it by 24 to get hours, keeps the fractional part, multiplies by 60, and returns the integer minute from 0 to 59. The date portion is ignored.",
+  "howToSteps": [
+    {
+      "name": "Reference a time value",
+      "text": "Point MINUTE at a cell or expression that holds a time or date-time."
+    },
+    {
+      "name": "Read the minute",
+      "text": "The function returns an integer 0-59."
+    }
+  ],
+  "limitations": [
+    "MINUTE ignores the date portion entirely.",
+    "A value with no time fraction (a whole number) returns 0.",
+    "It accepts only valid serials; text times must be converted first."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "The argument is text that Excel cannot parse as a time.",
+      "fix": "Convert the text to a real time serial first (e.g. with TIMEVALUE)."
+    },
+    {
+      "error": "Returns 0 unexpectedly",
+      "cause": "The serial is a whole number with no time part, or the time is exactly on the hour.",
+      "fix": "Make sure the value actually contains a non-zero minute."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "MINUTE works identically in Google Sheets.",
+    "formula": "=MINUTE(TIME(12, 30, 0))",
+    "notes": "Same 0-59 range."
+  },
+  "faq": [
+    {
+      "question": "Does MINUTE work on a full date-time?",
+      "answer": "Yes, it reads only the time fraction, e.g. 2024-01-15 12:30 returns 30."
+    },
+    {
+      "question": "What is the maximum minute returned?",
+      "answer": "The maximum is 59, because times are stored as fractions under 1."
+    },
+    {
+      "question": "Why do I get 0 for an on-the-hour time?",
+      "answer": "On-the-hour times have a zero minute component."
+    }
+  ],
+  "relatedFunctions": [
+    "hour",
+    "second",
+    "time",
+    "now",
+    "date"
+  ]
 }

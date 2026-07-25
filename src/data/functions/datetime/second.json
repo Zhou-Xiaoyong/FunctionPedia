@@ -3,38 +3,92 @@
   "slug": "second",
   "category": "datetime",
   "excelVersion": "All versions",
-  "description": "SECOND is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "SECOND is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(second)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the SECOND function",
-    "formula": "=SECOND(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the SECOND function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The SECOND function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "SECOND extracts the second (0-59) from a time or date-time serial number, reading only the fractional time portion of the value.",
+  "tldr": "Returns the second portion (0-59) of a time value.",
+  "syntax": "(serial_number)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
-    },
-    {
-      "name": "Enter the formula",
-      "text": "Type =SECOND(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "serial_number",
+      "description": "A date-time serial (or a time fraction). The integer part is a date and the fractional part is the time; the second is taken from the fractional part.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "SECOND works identically in Google Sheets with the same syntax.",
-    "formula": "=SECOND(A1)"
+  "basicExample": {
+    "description": "Get the second from a time",
+    "formula": "=SECOND(TIME(12, 30, 45))",
+    "result": "45",
+    "explanation": "TIME(12,30,45) is 12:30:45 PM, so SECOND returns 45."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Extract second from a date-time serial",
+      "scenario": "A timestamp like 2024-01-15 12:30:00",
+      "description": "SECOND reads the fractional time part",
+      "formula": "=SECOND(45305.520833)",
+      "result": "0",
+      "explanation": "The .520833 fraction equals 12:30:00 exactly, so SECOND returns 0."
+    },
+    {
+      "title": "Seconds from a precise time",
+      "scenario": "Capturing sub-minute precision",
+      "description": "SECOND returns the seconds component",
+      "formula": "=SECOND(TIME(9, 15, 30))",
+      "result": "30",
+      "explanation": "9:15:30 AM has 30 seconds, so SECOND returns 30."
+    }
+  ],
+  "howItWorks": "SECOND takes the fractional part of the serial (the time-of-day component), multiplies it by 86400 (seconds in a day), and returns the remainder after removing whole minutes, giving an integer from 0 to 59. The date portion is ignored.",
+  "howToSteps": [
+    {
+      "name": "Reference a time value",
+      "text": "Point SECOND at a cell or expression that holds a time or date-time."
+    },
+    {
+      "name": "Read the second",
+      "text": "The function returns an integer 0-59."
+    }
+  ],
+  "limitations": [
+    "SECOND ignores the date portion entirely.",
+    "A value with no time fraction (a whole number) returns 0.",
+    "It accepts only valid serials; text times must be converted first."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "The argument is text that Excel cannot parse as a time.",
+      "fix": "Convert the text to a real time serial first (e.g. with TIMEVALUE)."
+    },
+    {
+      "error": "Returns 0 unexpectedly",
+      "cause": "The serial is a whole number with no time part, or the time has zero seconds.",
+      "fix": "Make sure the value actually contains a non-zero second."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "SECOND works identically in Google Sheets.",
+    "formula": "=SECOND(TIME(12, 30, 45))",
+    "notes": "Same 0-59 range."
+  },
+  "faq": [
+    {
+      "question": "Does SECOND work on a full date-time?",
+      "answer": "Yes, it reads only the time fraction, e.g. 2024-01-15 12:30:45 returns 45."
+    },
+    {
+      "question": "What is the maximum second returned?",
+      "answer": "The maximum is 59, because times are stored as fractions under 1."
+    },
+    {
+      "question": "Why do I get 0 for a whole-minute time?",
+      "answer": "Whole-minute times have a zero seconds component."
+    }
+  ],
+  "relatedFunctions": [
+    "hour",
+    "minute",
+    "time",
+    "now",
+    "date"
+  ]
 }

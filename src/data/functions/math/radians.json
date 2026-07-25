@@ -3,38 +3,90 @@
   "slug": "radians",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "RADIANS is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "RADIANS is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(radians)",
-  "parameters": [],
+  "description": "RADIANS converts an angle measured in degrees to radians.",
+  "tldr": "Converts degrees to radians.",
+  "syntax": "(angle)",
+  "parameters": [
+    {
+      "name": "angle",
+      "description": "The angle in degrees that you want to convert to radians.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the RADIANS function",
-    "formula": "=RADIANS(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the RADIANS function."
+    "description": "Convert 180 degrees to radians",
+    "formula": "=RADIANS(180)",
+    "result": "3.141592654",
+    "explanation": "180° equals π radians, about 3.14159."
   },
-  "advancedExamples": [],
-  "howItWorks": "The RADIANS function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Convert 90 degrees",
+      "scenario": "A quarter turn.",
+      "description": "Pass 90.",
+      "formula": "=RADIANS(90)",
+      "result": "1.570796327",
+      "explanation": "90° is π/2 radians, about 1.5708."
+    },
+    {
+      "title": "Convert 45 degrees",
+      "scenario": "Common angle for trig.",
+      "description": "Pass 45.",
+      "formula": "=RADIANS(45)",
+      "result": "0.785398163",
+      "explanation": "45° is π/4 radians, about 0.7854."
+    }
+  ],
+  "howItWorks": "RADIANS multiplies the degree value by π/180 to produce the equivalent radian measure. It is the inverse of DEGREES.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the cell",
+      "text": "Click the cell for the radian result."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =RADIANS(arguments)."
+      "text": "Type =RADIANS(angle_in_degrees)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The radian value appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "It only converts degrees to radians, not the reverse (use DEGREES for that).",
+    "Results are floating-point approximations."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "Non-numeric argument.",
+      "fix": "Supply a numeric angle in degrees."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "RADIANS works identically in Google Sheets with the same syntax.",
-    "formula": "=RADIANS(A1)"
+    "description": "RADIANS works identically in Google Sheets.",
+    "formula": "=RADIANS(180)",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "What formula does RADIANS use?",
+      "answer": "radians = degrees × π / 180."
+    },
+    {
+      "question": "Why convert to radians at all?",
+      "answer": "Excel's trigonometric functions (SIN, COS, TAN) expect angles in radians."
+    },
+    {
+      "question": "How do I go back to degrees?",
+      "answer": "Use DEGREES(radians), which multiplies by 180/π."
+    }
+  ],
+  "relatedFunctions": [
+    "degrees",
+    "pi",
+    "sin",
+    "cos",
+    "tan"
+  ]
 }

@@ -3,6 +3,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { SITE } from '../../utils/config';
 import { generateBreadcrumbSchema, generateArticleSchema } from '../../utils/seo';
 
+// Module-level tutorial index (for Related Guides cross-links, new -> new).
+const ALL_TUTORIALS = [];
+const _tmods = import.meta.glob('../../data/tutorials/**/*.json', { eager: true });
+for (const p in _tmods) { const t = _tmods[p]; if (t && t.slug) ALL_TUTORIALS.push(t); }
+const tutorialBySlug = {};
+ALL_TUTORIALS.forEach((t) => { tutorialBySlug[t.slug] = t; });
+
 export function getStaticPaths() {
   const tutorials = [];
   const dataModules = import.meta.glob('../../data/tutorials/**/*.json', { eager: true });
@@ -157,6 +164,29 @@ const canonical = `${SITE.url}/tutorial/${tutorial.slug}/`;
       </div>
     )}
 
+    {tutorial.calculator && (
+      <section class="mb-10 p-6 rounded-xl bg-white border border-gray-200">
+        <h2 class="text-xl font-bold text-gray-900 mb-2 flex items-center gap-2">
+          <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m-6 4h6m-6 4h4M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/></svg>
+          Interactive Calculator
+        </h2>
+        <p class="text-sm text-gray-600 mb-6">{tutorial.calculator.description}</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6" id={`calc-${tutorial.slug}`} data-calc={JSON.stringify(tutorial.calculator)}>
+          {tutorial.calculator.inputs.map((inp) => (
+            <label class="block">
+              <span class="text-sm font-medium text-gray-700">{inp.label}</span>
+              <input type="number" data-key={inp.key} value={inp.default} step={inp.step ?? 1} min={inp.min ?? 0}
+                class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </label>
+          ))}
+        </div>
+        <div class="p-4 rounded-lg bg-primary-50 border border-primary-200">
+          <span class="text-sm font-semibold text-primary-700">{tutorial.calculator.resultLabel}: </span>
+          <span id={`calc-result-${tutorial.slug}`} class="font-mono font-bold text-primary-700 text-lg"></span>
+        </div>
+      </section>
+    )}
+
     {tutorial.functionsUsed && tutorial.functionsUsed.length > 0 && (
       <section class="mb-10">
         <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -168,6 +198,23 @@ const canonical = `${SITE.url}/tutorial/${tutorial.slug}/`;
             <a href={`/function/${fn.slug}/`} class="group block p-4 rounded-lg bg-white border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all">
               <h3 class="text-sm font-semibold font-mono text-gray-900 group-hover:text-primary-500 transition-colors">{fn.name.toUpperCase()}</h3>
               <p class="mt-1 text-xs text-gray-500 line-clamp-2">{fn.description}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {tutorial.relatedTutorials && tutorial.relatedTutorials.length > 0 && (
+      <section class="mb-10">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Related Guides
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {tutorial.relatedTutorials.map((slug) => tutorialBySlug[slug] && (
+            <a href={`/tutorial/${slug}/`} class="group block p-4 rounded-lg bg-white border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all">
+              <h3 class="text-sm font-semibold text-gray-900 group-hover:text-primary-500 transition-colors">{tutorialBySlug[slug].title}</h3>
+              <p class="mt-1 text-xs text-gray-500 line-clamp-2">{tutorialBySlug[slug].description}</p>
             </a>
           ))}
         </div>
@@ -198,4 +245,26 @@ const canonical = `${SITE.url}/tutorial/${tutorial.slug}/`;
       </section>
     )}
   </article>
+
+  {tutorial.calculator && (
+    <script is:inline>
+      document.querySelectorAll('[data-calc]').forEach((el) => {
+        const cfg = JSON.parse(el.getAttribute('data-calc'));
+        const resultEl = document.getElementById('calc-result-' + el.id.replace('calc-', ''));
+        const fmt = (v) => {
+          if (cfg.resultFormat === 'currency') return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v);
+          if (cfg.resultFormat === 'percent') return (v * 100).toFixed(2) + '%';
+          return Number(v).toFixed(2);
+        };
+        const compute = new Function(...cfg.inputs.map((i) => i.key), 'var result; ' + cfg.compute + '\nreturn result;');
+        const recalc = () => {
+          const args = cfg.inputs.map((i) => parseFloat(el.querySelector('[data-key="' + i.key + '"]').value) || 0);
+          try { resultEl.textContent = fmt(compute(...args)); }
+          catch (e) { resultEl.textContent = '—'; }
+        };
+        el.querySelectorAll('input').forEach((inp) => inp.addEventListener('input', recalc));
+        recalc();
+      });
+    </script>
+  )}
 </BaseLayout>

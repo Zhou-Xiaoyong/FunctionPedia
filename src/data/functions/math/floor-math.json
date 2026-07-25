@@ -2,39 +2,107 @@
   "name": "FLOOR.MATH",
   "slug": "floor-math",
   "category": "math",
-  "excelVersion": "All versions",
-  "description": "FLOOR.MATH is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "FLOOR.MATH is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(floor.math)",
-  "parameters": [],
+  "excelVersion": "Excel 2013+",
+  "description": "FLOOR.MATH rounds a number down to the nearest multiple of significance, accepting any sign combination and adding a mode argument to control how negative numbers are rounded.",
+  "tldr": "Rounds down to a multiple of significance, with a mode for negative numbers.",
+  "syntax": "(number, [significance], [mode])",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The value you want to round.",
+      "required": true
+    },
+    {
+      "name": "significance",
+      "description": "The multiple to round to. Defaults to 1 if omitted.",
+      "required": false
+    },
+    {
+      "name": "mode",
+      "description": "Controls rounding of negative numbers. 0 (default) rounds toward zero; any other value rounds away from zero (more negative).",
+      "required": false
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the FLOOR.MATH function",
-    "formula": "=FLOOR.MATH(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the FLOOR.MATH function."
+    "description": "Round down to the nearest integer",
+    "formula": "=FLOOR.MATH(24.3)",
+    "result": "24",
+    "explanation": "With default significance 1 and mode 0, 24.3 rounds down to 24."
   },
-  "advancedExamples": [],
-  "howItWorks": "The FLOOR.MATH function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Negative numbers: toward zero vs away from zero",
+      "scenario": "Controlling how -5.5 is rounded.",
+      "description": "Mode 0 rounds toward zero; a non-zero mode rounds away from zero.",
+      "formula": "=FLOOR.MATH(-5.5, 1, 0)",
+      "result": "-5",
+      "explanation": "Mode 0 rounds -5.5 toward zero, giving -5. With mode 1 it would give -6."
+    },
+    {
+      "title": "Round to a chosen decimal multiple",
+      "scenario": "Round 6.05 down to the nearest 0.1.",
+      "description": "Pass significance 0.1.",
+      "formula": "=FLOOR.MATH(6.05, 0.1)",
+      "result": "6",
+      "explanation": "6.0 is the multiple of 0.1 at or below 6.05."
+    }
+  ],
+  "howItWorks": "FLOOR.MATH rounds number down to the nearest multiple of significance (default 1). Unlike classic FLOOR, it permits any sign combination. The mode argument only affects negative numbers: mode 0 rounds toward zero, and any other value rounds away from zero.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the cell",
+      "text": "Click the cell for the result."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =FLOOR.MATH(arguments)."
+      "text": "Type =FLOOR.MATH(number, [significance], [mode])."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The rounded-down value appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Only available in Excel 2013 and later (and Microsoft 365); older versions return #NAME?.",
+    "For positive numbers, mode has no effect; it always rounds down.",
+    "Workbooks saved for pre-2013 compatibility will not support this function."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NAME?",
+      "cause": "Used in an Excel version earlier than 2013.",
+      "fix": "Use FLOOR, or open the file in Excel 2013+ / Microsoft 365."
+    },
+    {
+      "error": "#VALUE!",
+      "cause": "A non-numeric argument was supplied.",
+      "fix": "Use numeric values or numeric references."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "FLOOR.MATH works identically in Google Sheets with the same syntax.",
-    "formula": "=FLOOR.MATH(A1)"
+    "description": "Google Sheets supports FLOOR.MATH with the same arguments and behavior in current versions.",
+    "formula": "=FLOOR.MATH(24.3)",
+    "notes": "Results match Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "What does the mode argument do?",
+      "answer": "Mode only matters for negatives: 0 (default) rounds toward zero, any other value rounds away from zero."
+    },
+    {
+      "question": "Is FLOOR.MATH available in older Excel?",
+      "answer": "No, it was introduced in Excel 2013. Use FLOOR in older versions."
+    },
+    {
+      "question": "How is it different from FLOOR?",
+      "answer": "FLOOR.MATH lifts the sign restriction and adds mode control; classic FLOOR errors on mismatched signs."
+    }
+  ],
+  "relatedFunctions": [
+    "floor",
+    "ceiling-math",
+    "int",
+    "trunc",
+    "rounddown"
+  ]
 }

@@ -3,38 +3,91 @@
   "slug": "atan",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "ATAN is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "ATAN is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(atan)",
-  "parameters": [],
+  "description": "ATAN returns the arctangent, or inverse tangent, of a number. The result is the angle in radians whose tangent is the given number, ranging from -π/2 to π/2.",
+  "tldr": "Returns the angle (in radians) whose tangent is the supplied number.",
+  "syntax": "(number)",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The tangent of the angle you want; any real number is accepted.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the ATAN function",
-    "formula": "=ATAN(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the ATAN function."
+    "description": "Find the angle whose tangent is 1",
+    "formula": "=ATAN(1)",
+    "result": "0.785398163",
+    "explanation": "The arctangent of 1 is π/4 radians (45°)."
   },
-  "advancedExamples": [],
-  "howItWorks": "The ATAN function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Convert the result to degrees",
+      "scenario": "Need the angle in degrees.",
+      "description": "Wrap ATAN in DEGREES.",
+      "formula": "=DEGREES(ATAN(1))",
+      "result": "45",
+      "explanation": "ATAN(1) is π/4 radians, which DEGREES converts to 45°."
+    },
+    {
+      "title": "Use when you only know the slope",
+      "scenario": "A line has slope 0.5; find its angle.",
+      "description": "Pass the slope directly.",
+      "formula": "=DEGREES(ATAN(0.5))",
+      "result": "26.56505118",
+      "explanation": "ATAN(0.5) gives the angle whose tangent is 0.5, about 26.57°."
+    }
+  ],
+  "howItWorks": "ATAN is the inverse of TAN. For any real x it returns the unique angle θ in (-π/2, π/2) (radians) such that tan(θ) = x. It cannot distinguish opposite quadrants, so use ATAN2 when both coordinates are known.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Pick the cell",
+      "text": "Select the cell for the result."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =ATAN(arguments)."
+      "text": "Type =ATAN(number)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The angle in radians appears; wrap with DEGREES if needed."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "The result is in radians, not degrees.",
+    "ATAN uses only one argument, so it cannot tell which of two opposite quadrants the angle is in; ATAN2 resolves this with two coordinates.",
+    "Result range is limited to -π/2 to π/2."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "The argument is non-numeric text.",
+      "fix": "Supply a numeric value or a numeric cell reference."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "ATAN works identically in Google Sheets with the same syntax.",
-    "formula": "=ATAN(A1)"
+    "description": "ATAN works identically in Google Sheets.",
+    "formula": "=ATAN(1)",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "ATAN or ATAN2 — which should I use?",
+      "answer": "Use ATAN when you only have a single ratio (y/x). Use ATAN2 when you have separate x and y coordinates, because it places the angle in the correct quadrant."
+    },
+    {
+      "question": "Why does ATAN(-1) give a negative angle?",
+      "answer": "ATAN's range is -π/2 to π/2, so negative inputs yield negative angles."
+    },
+    {
+      "question": "Does ATAN return degrees?",
+      "answer": "No, it returns radians; use DEGREES or multiply by 180/PI()."
+    }
+  ],
+  "relatedFunctions": [
+    "atan2",
+    "tan",
+    "sin",
+    "cos",
+    "degrees"
+  ]
 }

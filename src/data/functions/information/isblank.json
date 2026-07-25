@@ -3,38 +3,97 @@
   "slug": "isblank",
   "category": "information",
   "excelVersion": "All versions",
-  "description": "ISBLANK is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "ISBLANK is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(isblank)",
-  "parameters": [],
+  "description": "ISBLANK returns TRUE only when a cell contains absolutely nothing—no value, no formula, and no space.",
+  "tldr": "Tests whether a cell is truly empty.",
+  "syntax": "(value)",
+  "parameters": [
+    {
+      "name": "value",
+      "description": "The cell reference to test (typically a single cell).",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the ISBLANK function",
+    "description": "Check an empty cell",
     "formula": "=ISBLANK(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the ISBLANK function."
+    "result": "TRUE",
+    "explanation": "A1 contains nothing, so the function returns TRUE."
   },
-  "advancedExamples": [],
-  "howItWorks": "The ISBLANK function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "A formula returning \"\" is NOT blank",
+      "scenario": "A1 holds =IF(B1>0,B1,\"\").",
+      "description": "Show the difference between empty and empty-string",
+      "formula": "=ISBLANK(A1)",
+      "result": "FALSE",
+      "explanation": "Even though A1 displays blank, the formula returned \"\" which is text, so ISBLANK returns FALSE."
+    },
+    {
+      "title": "A space is not blank",
+      "scenario": "B2 contains a single space character.",
+      "description": "Detect text that looks empty",
+      "formula": "=ISBLANK(B2)",
+      "result": "FALSE",
+      "explanation": "A space is text, so the cell is not blank."
+    }
+  ],
+  "howItWorks": "ISBLANK returns TRUE only when the referenced cell contains no value and no formula—not even a formula that returns an empty string. A formula that returns \"\" is still considered non-blank, as is a single space or any other character.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Pick the cell",
+      "text": "Select the cell you want to test."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =ISBLANK(arguments)."
+      "text": "Type =ISBLANK(cell)."
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "Read the result",
+      "text": "TRUE means truly empty, FALSE means it holds something."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "A formula returning \"\" is not considered blank.",
+    "A single space is text, not blank.",
+    "Tests one cell; for ranges wrap it in an array function like SUMPRODUCT."
+  ],
+  "commonErrors": [
+    {
+      "error": "Thinks an empty string is blank",
+      "cause": "A formula returned \"\".",
+      "fix": "Test with =A1=\"\" or LEN(A1)=0 instead."
+    },
+    {
+      "error": "#VALUE! with a multi-cell range",
+      "cause": "ISBLANK expects a single reference.",
+      "fix": "Wrap it in SUMPRODUCT, e.g. =SUMPRODUCT(--ISBLANK(A1:A10))."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "ISBLANK works identically in Google Sheets with the same syntax.",
-    "formula": "=ISBLANK(A1)"
+    "description": "ISBLANK works identically in Google Sheets with the same syntax and behavior.",
+    "formula": "=ISBLANK(A1)",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Does ISBLANK detect a formula that returns \"\"?",
+      "answer": "No, only truly empty cells return TRUE; use =A1=\"\" for an empty string."
+    },
+    {
+      "question": "Does a space count as blank?",
+      "answer": "No, a space is text, so ISBLANK returns FALSE."
+    },
+    {
+      "question": "How do I count blank cells including empty strings?",
+      "answer": "Use COUNTBLANK, which counts both truly empty cells and cells containing empty text."
+    }
+  ],
+  "relatedFunctions": [
+    "isnumber",
+    "istext",
+    "iserror",
+    "countblank",
+    "iferror",
+    "len"
+  ]
 }

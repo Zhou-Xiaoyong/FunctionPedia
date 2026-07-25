@@ -3,38 +3,101 @@
   "slug": "stdeva",
   "category": "statistical",
   "excelVersion": "All versions",
-  "description": "STDEVA is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "STDEVA is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(stdeva)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the STDEVA function",
-    "formula": "=STDEVA(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the STDEVA function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The STDEVA function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "STDEVA estimates the sample standard deviation (n-1) while treating text as 0 and logical values TRUE as 1 and FALSE as 0.",
+  "tldr": "Sample standard deviation that also counts text and logicals as numbers.",
+  "syntax": "(value1, [value2], ...)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "value1",
+      "description": "The first value, range, or reference in the sample.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =STDEVA(arguments)."
+      "name": "value2",
+      "description": "Additional values, ranges, or references (optional).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Sample standard deviation of numeric values only",
+    "formula": "=STDEVA(10,20,30,40,50)",
+    "result": "15.8113883",
+    "explanation": "With only numbers present, STDEVA returns the same result as STDEV."
+  },
+  "advancedExamples": [
+    {
+      "title": "Text and TRUE are counted",
+      "scenario": "A range that mixes numbers, text, and a logical",
+      "description": "Text becomes 0 and TRUE becomes 1 before the calculation",
+      "formula": "=STDEVA(10,20,30,TRUE,\"apple\")",
+      "result": "12.8156046",
+      "explanation": "The values used are 10,20,30,1,0; the mean is 12.2, the sample variance is 164.2, and the square root is 12.8156046."
+    },
+    {
+      "title": "Contrast with STDEV on a reference",
+      "scenario": "Ignoring non-numeric cells",
+      "description": "STDEV ignores text and logicals inside a range",
+      "formula": "=STDEV(A1:A5) where A1:A5 = 10,20,30,TRUE,\"apple\"",
+      "result": "10",
+      "explanation": "STDEV sees only 10,20,30 (n=3) and returns 10, whereas STDEVA counts all five values."
+    }
+  ],
+  "howItWorks": "STDEVA first coerces every argument to a number: numbers stay as-is, text (including empty text \"\") becomes 0, TRUE becomes 1 and FALSE becomes 0. It then computes the sample standard deviation with the n-1 denominator, so non-numeric entries increase both the sum and the count.",
+  "howToSteps": [
+    {
+      "name": "Identify values",
+      "text": "Collect the values, including any text or logicals you want counted."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =STDEVA(range or values)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The sample standard deviation including non-numerics is shown."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Counting text as 0 can distort the result if text cells are merely labels, not true zero measurements.",
+    "Still requires at least two effective values, otherwise returns #DIV/0!.",
+    "The n-1 denominator still assumes a sample, not a full population (use STDEVPA for population)."
+  ],
+  "commonErrors": [
+    {
+      "error": "#DIV/0!",
+      "cause": "Fewer than two effective numeric values after coercion.",
+      "fix": "Provide at least two values that evaluate to numbers."
+    },
+    {
+      "error": "Larger spread than expected",
+      "cause": "Text labels were coerced to 0, pulling the mean down.",
+      "fix": "Use STDEV when text cells should be ignored."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "STDEVA works identically in Google Sheets with the same syntax.",
-    "formula": "=STDEVA(A1)"
+    "description": "STDEVA is available in Google Sheets with the same coercion rules.",
+    "formula": "=STDEVA(10,20,30,TRUE,\"apple\")",
+    "notes": "Behavior matches Excel STDEVA."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Does STDEVA treat empty cells as 0?",
+      "answer": "No. Empty cells are ignored; only text and logicals are coerced (text to 0, TRUE to 1, FALSE to 0)."
+    },
+    {
+      "question": "When should I use STDEVA instead of STDEV?",
+      "answer": "When your data includes logicals or text that genuinely represent 1/0 or zero, and you want them in the sample."
+    },
+    {
+      "question": "What is the population equivalent?",
+      "answer": "STDEVPA, which uses the n denominator instead of n-1."
+    }
+  ],
+  "relatedFunctions": [
+    "stdev",
+    "stdevp",
+    "stdevpa",
+    "vara",
+    "average"
+  ]
 }

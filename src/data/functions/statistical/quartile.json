@@ -3,38 +3,101 @@
   "slug": "quartile",
   "category": "statistical",
   "excelVersion": "All versions",
-  "description": "QUARTILE is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "QUARTILE is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(quartile)",
-  "parameters": [],
+  "description": "QUARTILE returns the quartile (0th through 4th) of a dataset using the inclusive method. It is the legacy function, retained for compatibility.",
+  "tldr": "Returns the specified quartile (0=min, 1, 2=median, 3, 4=max) of a dataset.",
+  "syntax": "(array, quart)",
+  "parameters": [
+    {
+      "name": "array",
+      "description": "The range or array of numeric values.",
+      "required": true
+    },
+    {
+      "name": "quart",
+      "description": "Which quartile to return: 0=minimum, 1=first, 2=median, 3=third, 4=maximum. An integer from 0 to 4.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the QUARTILE function",
-    "formula": "=QUARTILE(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the QUARTILE function."
+    "description": "Second quartile equals the median",
+    "formula": "=QUARTILE({1,2,3,4,5,6,7,8}, 2)",
+    "result": "4.5",
+    "explanation": "The median of 1..8 is the average of the 4th and 5th values: (4+5)/2 = 4.5."
   },
-  "advancedExamples": [],
-  "howItWorks": "The QUARTILE function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "First quartile with interpolation",
+      "scenario": "25th percentile of eight values",
+      "description": "Uses the inclusive method equivalent to PERCENTILE.INC with k = 0.25.",
+      "formula": "=QUARTILE({1,2,3,4,5,6,7,8}, 1)",
+      "result": "2.75",
+      "explanation": "Inclusive rank = 1 + 0.25*(8-1) = 2.75; interpolate 75% from 2 to 3: 2 + 0.75*(3-2) = 2.75."
+    },
+    {
+      "title": "Fourth quartile returns the maximum",
+      "scenario": "Upper edge of the data",
+      "description": "quart = 4 gives the largest value.",
+      "formula": "=QUARTILE({1,2,3,4,5,6,7,8}, 4)",
+      "result": "8",
+      "explanation": "quart = 4 corresponds to the maximum, which is 8."
+    }
+  ],
+  "howItWorks": "QUARTILE computes quartiles using the inclusive method, internally equivalent to PERCENTILE.INC(array, quart/4). It returns the minimum (quart 0), first quartile (quart 1), median (quart 2), third quartile (quart 3), or maximum (quart 4). Values are interpolated when the quartile position is fractional. quart must be an integer from 0 to 4, else #NUM!. Text and logical values are ignored.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the result cell",
+      "text": "Click where you want the quartile."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =QUARTILE(arguments)."
+      "text": "Type =QUARTILE(range, quart) with quart from 0 to 4."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The quartile value is returned."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "quart must be an integer from 0 to 4; other values cause #NUM!.",
+    "May interpolate, so the result need not be an actual data value.",
+    "Ignores text and logical values in the array."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "quart is less than 0, greater than 4, or non-integer; or the array is empty.",
+      "fix": "Use an integer quart in 0..4 and ensure the range has numbers."
+    },
+    {
+      "error": "Result differs from QUARTILE.EXC",
+      "cause": "Different (inclusive vs exclusive) interpolation methods.",
+      "fix": "Use QUARTILE.EXC only if the exclusive definition is required."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "QUARTILE works identically in Google Sheets with the same syntax.",
-    "formula": "=QUARTILE(A1)"
+    "description": "Google Sheets supports QUARTILE with the same inclusive behavior as legacy Excel.",
+    "formula": "=QUARTILE({1,2,3,4,5,6,7,8}, 2)",
+    "notes": "Returns 4.5, identical to Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Is QUARTILE the same as QUARTILE.INC?",
+      "answer": "Yes. QUARTILE is the legacy name for the inclusive method; QUARTILE.INC is the Excel 2010+ equivalent."
+    },
+    {
+      "question": "What does quart = 2 return?",
+      "answer": "It returns the second quartile, which is the median of the dataset."
+    },
+    {
+      "question": "Why do QUARTILE and QUARTILE.EXC give different answers?",
+      "answer": "QUARTILE (inclusive) uses rank 1 + k*(n-1) and allows the min/max; QUARTILE.EXC uses rank k*(n+1) and excludes the endpoints."
+    }
+  ],
+  "relatedFunctions": [
+    "quartile-inc",
+    "quartile-exc",
+    "percentile",
+    "median",
+    "rank"
+  ]
 }

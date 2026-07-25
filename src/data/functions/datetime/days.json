@@ -2,39 +2,102 @@
   "name": "DAYS",
   "slug": "days",
   "category": "datetime",
-  "excelVersion": "All versions",
-  "description": "DAYS is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "DAYS is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(days)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the DAYS function",
-    "formula": "=DAYS(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the DAYS function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The DAYS function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "excelVersion": "Excel 2013+",
+  "description": "DAYS returns the number of days between two dates by subtracting the start date from the end date; note that the argument order is (end_date, start_date).",
+  "tldr": "Counts the days from start_date to end_date.",
+  "syntax": "(end_date, start_date)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "end_date",
+      "description": "The later date. This is the FIRST argument, the opposite of the intuitive order.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =DAYS(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "start_date",
+      "description": "The earlier date. This is the SECOND argument.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "DAYS works identically in Google Sheets with the same syntax.",
-    "formula": "=DAYS(A1)"
+  "basicExample": {
+    "description": "Days between the 1st and 15th of January",
+    "formula": "=DAYS(DATE(2024, 1, 15), DATE(2024, 1, 1))",
+    "result": "14",
+    "explanation": "end_date (Jan 15) minus start_date (Jan 1) is 14 days. Note that end_date comes first."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Spanning two months including a leap day",
+      "scenario": "From Jan 1 to Mar 1 in a leap year",
+      "description": "Counts each day across the boundary",
+      "formula": "=DAYS(DATE(2024, 3, 1), DATE(2024, 1, 1))",
+      "result": "60",
+      "explanation": "January (31 days) plus February 2024 (29 days, leap year) equals 60 days."
+    },
+    {
+      "title": "Reversed dates give a negative result",
+      "scenario": "Accidentally swapping the arguments",
+      "description": "Order matters: end first, start second",
+      "formula": "=DAYS(DATE(2024, 1, 1), DATE(2024, 1, 15))",
+      "result": "-14",
+      "explanation": "Because the earlier date is first, the result is negative (Jan 1 minus Jan 15 = -14)."
+    }
+  ],
+  "howItWorks": "DAYS simply subtracts start_date from end_date using their underlying serial numbers. Because dates are stored as integers, the difference is the exact number of days between them, including leap days.",
+  "howToSteps": [
+    {
+      "name": "Enter end_date first",
+      "text": "Provide the later date as the first argument."
+    },
+    {
+      "name": "Enter start_date second",
+      "text": "Provide the earlier date as the second argument."
+    },
+    {
+      "name": "Read the day count",
+      "text": "The result is end_date minus start_date."
+    }
+  ],
+  "limitations": [
+    "Available only in Excel 2013 and later; in older versions use end_date - start_date directly.",
+    "The argument order is (end_date, start_date), the reverse of what many expect.",
+    "Text date strings must be parsed by Excel, otherwise you get #VALUE!."
+  ],
+  "commonErrors": [
+    {
+      "error": "Negative result unexpectedly",
+      "cause": "The arguments were supplied in the wrong order (start before end).",
+      "fix": "Put the later date first: DAYS(end_date, start_date)."
+    },
+    {
+      "error": "#VALUE!",
+      "cause": "One or both arguments are text Excel cannot interpret as a date.",
+      "fix": "Use real date serials or DATE(...) so the values are numeric."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "DAYS exists in Google Sheets with identical syntax and the same (end_date, start_date) argument order.",
+    "formula": "=DAYS(DATE(2024, 1, 15), DATE(2024, 1, 1))",
+    "notes": "Behaves the same as Excel."
+  },
+  "faq": [
+    {
+      "question": "Why is end_date the first argument?",
+      "answer": "DAYS(end_date, start_date) mirrors the subtraction end minus start; the order is easy to confuse with DATEDIF."
+    },
+    {
+      "question": "What is the difference from DATEDIF?",
+      "answer": "DAYS returns total days; DATEDIF can return years, months, or day remainders."
+    },
+    {
+      "question": "Does DAYS account for leap years?",
+      "answer": "Yes, because it works on serial numbers; Feb 29 simply exists as a day."
+    }
+  ],
+  "relatedFunctions": [
+    "datedif",
+    "networkdays",
+    "workday",
+    "edate",
+    "date"
+  ]
 }

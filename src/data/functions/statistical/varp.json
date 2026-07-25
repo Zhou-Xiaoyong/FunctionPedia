@@ -3,38 +3,101 @@
   "slug": "varp",
   "category": "statistical",
   "excelVersion": "All versions",
-  "description": "VARP is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "VARP is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(varp)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the VARP function",
-    "formula": "=VARP(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the VARP function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The VARP function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "VARP calculates the variance based on an entire population, using the n denominator. It is the legacy compatibility version of VAR.P.",
+  "tldr": "Population variance (n) of a set of numbers.",
+  "syntax": "(number1, [number2], ...)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "number1",
+      "description": "The first number, range, or reference in the population.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =VARP(arguments)."
+      "name": "number2",
+      "description": "Additional numbers, ranges, or references (optional, up to 255 total arguments).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Population variance of five values",
+    "formula": "=VARP(10,20,30,40,50)",
+    "result": "200",
+    "explanation": "The mean is 30; the sum of squared deviations is 1000, divided by 5 gives a population variance of 200."
+  },
+  "advancedExamples": [
+    {
+      "title": "Population from a range",
+      "scenario": "Full census of a small group",
+      "description": "Compute the variance of every value in B2:B6",
+      "formula": "=VARP(B2:B6)",
+      "result": "Population variance of the 5 values",
+      "explanation": "Divides by n (5) rather than n-1."
+    },
+    {
+      "title": "Population vs sample",
+      "scenario": "Comparing denominators",
+      "description": "Same data, two different denominators",
+      "formula": "=VARP(10,20,30,40,50) and =VAR(10,20,30,40,50)",
+      "result": "200 and 250",
+      "explanation": "VARP divides by 5 (n) while VAR divides by 4 (n-1), so the sample version is larger. VARP is the square of STDEVP."
+    }
+  ],
+  "howItWorks": "VARP computes the population variance as the sum of squared deviations from the mean divided by n. Using n (not n-1) is correct only when the supplied data is the complete population; for a sample, VAR's n-1 correction is appropriate. Text and logical values in references are ignored.",
+  "howToSteps": [
+    {
+      "name": "Confirm population",
+      "text": "Ensure the data represents the entire population, not a sample."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =VARP(range or values)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The population variance is displayed."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Only valid when the data is the entire population; using it on a sample underestimates the true variance.",
+    "Ignores text and logical values inside ranged references.",
+    "Requires at least one numeric value, otherwise returns #DIV/0!."
+  ],
+  "commonErrors": [
+    {
+      "error": "#DIV/0!",
+      "cause": "No numeric values were supplied.",
+      "fix": "Provide at least one data point."
+    },
+    {
+      "error": "Result too small",
+      "cause": "Data was actually a sample but n was used.",
+      "fix": "Use VAR (or VAR.S) for a sample."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "VARP works identically in Google Sheets with the same syntax.",
-    "formula": "=VARP(A1)"
+    "description": "VARP behaves the same in Google Sheets as a population variance.",
+    "formula": "=VARP(10,20,30,40,50)",
+    "notes": "Identical behavior to Excel VARP."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "What is the difference between VARP and VAR?",
+      "answer": "VARP divides by n (population), VAR divides by n-1 (sample)."
+    },
+    {
+      "question": "Is VARP the same as VAR.P?",
+      "answer": "Functionally yes; VAR.P is the modern replacement for the legacy VARP."
+    },
+    {
+      "question": "How is VARP related to STDEVP?",
+      "answer": "VARP is the square of STDEVP for the same data set."
+    }
+  ],
+  "relatedFunctions": [
+    "var",
+    "vara",
+    "varpa",
+    "stdevp",
+    "average"
+  ]
 }

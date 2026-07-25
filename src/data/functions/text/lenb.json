@@ -3,38 +3,87 @@
   "slug": "lenb",
   "category": "text",
   "excelVersion": "All versions",
-  "description": "LENB is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "LENB is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(lenb)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the LENB function",
-    "formula": "=LENB(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the LENB function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The LENB function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "LENB returns the number of bytes used to represent a text string. For single-byte (ASCII) text it equals LEN; for double-byte character set (DBCS) languages such as Chinese, Japanese, and Korean it counts two bytes per character.",
+  "tldr": "Returns the byte length of text.",
+  "syntax": "(text)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
-    },
-    {
-      "name": "Enter the formula",
-      "text": "Type =LENB(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "text",
+      "description": "The text or cell reference whose byte count is returned.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "LENB works identically in Google Sheets with the same syntax.",
-    "formula": "=LENB(A1)"
+  "basicExample": {
+    "description": "Byte length of ASCII text",
+    "formula": "=LENB(\"Hello\")",
+    "result": "5",
+    "explanation": "Each ASCII character is one byte, so the byte count equals the character count of 5."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "DBCS text in Excel",
+      "scenario": "Cell A1 contains the two Chinese characters \"你好\" and Excel runs in a DBCS locale",
+      "description": "Each character counts as two bytes",
+      "formula": "=LENB(A1)",
+      "result": "4",
+      "explanation": "Under a DBCS-enabled Excel, each Chinese character is two bytes, so two characters equal 4 bytes."
+    },
+    {
+      "title": "Detect double-byte content",
+      "scenario": "Compare LEN and LENB on mixed text",
+      "description": "When LENB > LEN, the string has multi-byte characters",
+      "formula": "=LENB(A1)-LEN(A1)",
+      "result": "Positive number for DBCS text",
+      "explanation": "The difference reveals how many extra bytes come from multi-byte characters."
+    }
+  ],
+  "howItWorks": "LENB counts the storage bytes of the string. In Excel's DBCS language editions, East Asian characters occupy two bytes while ASCII occupies one; in single-byte editions every character is one byte, making LENB identical to LEN.",
+  "howToSteps": [
+    {
+      "name": "Select the text",
+      "text": "Click the cell with the text to measure."
+    },
+    {
+      "name": "Apply LENB",
+      "text": "Type =LENB(cell) and press Enter."
+    }
+  ],
+  "limitations": [
+    "In Excel on single-byte systems LENB always equals LEN, so it is only useful in DBCS locales.",
+    "Google Sheets counts bytes using UTF-8, where many non-ASCII characters are 2-3 bytes, differing from Excel's DBCS behavior.",
+    "Does not count formatting or formula length, only the resulting text value."
+  ],
+  "commonErrors": [
+    {
+      "error": "LENB equals LEN unexpectedly",
+      "cause": "Running Excel in a single-byte locale where every character is one byte.",
+      "fix": "Use the difference LENB-LEN only on DBCS-enabled Excel, or rely on Google Sheets' UTF-8 counts for web data."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "In Google Sheets, LENB counts bytes using UTF-8 encoding, so non-ASCII characters such as Chinese typically count as 3 bytes each.",
+    "formula": "=LENB(\"你好\")",
+    "notes": "Sheets returns 6 for \"你好\" (UTF-8, 3 bytes per character), unlike DBCS Excel which returns 4."
+  },
+  "faq": [
+    {
+      "question": "When does LENB differ from LEN?",
+      "answer": "Only for multi-byte (DBCS) characters in a DBCS edition of Excel; otherwise they are equal."
+    },
+    {
+      "question": "How does Google Sheets handle LENB?",
+      "answer": "Sheets uses UTF-8 byte counts, so East Asian characters usually count as 3 bytes each."
+    },
+    {
+      "question": "Why would I use LENB?",
+      "answer": "To detect or handle multi-byte character data when processing DBCS text."
+    }
+  ],
+  "relatedFunctions": [
+    "len",
+    "left",
+    "mid",
+    "right",
+    "clean"
+  ]
 }

@@ -3,38 +3,97 @@
   "slug": "error-type",
   "category": "information",
   "excelVersion": "All versions",
-  "description": "ERROR.TYPE is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "ERROR.TYPE is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(error.type)",
-  "parameters": [],
+  "description": "ERROR.TYPE returns a number identifying which error value is in the supplied cell: 1 for #NULL!, 2 for #DIV/0!, 3 for #VALUE!, 4 for #REF!, 5 for #NAME?, 6 for #NUM!, and 7 for #N/A.",
+  "tldr": "Returns a number code for an error type.",
+  "syntax": "(error_val)",
+  "parameters": [
+    {
+      "name": "error_val",
+      "description": "A reference to a cell (or a value) that contains an Excel error.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the ERROR.TYPE function",
+    "description": "Identify a divide-by-zero error",
     "formula": "=ERROR.TYPE(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the ERROR.TYPE function."
+    "result": "2",
+    "explanation": "A1 contains #DIV/0!, which maps to code 2."
   },
-  "advancedExamples": [],
-  "howItWorks": "The ERROR.TYPE function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Identify #REF!",
+      "scenario": "A deleted reference produced #REF!.",
+      "description": "Map the #REF! error",
+      "formula": "=ERROR.TYPE(#REF!)",
+      "result": "4",
+      "explanation": "#REF! corresponds to error code 4."
+    },
+    {
+      "title": "Safe lookup with a guard",
+      "scenario": "Return the code only when an error exists.",
+      "description": "Avoid ERROR.TYPE's own #N/A on good values",
+      "formula": "=IF(ISERROR(A1), ERROR.TYPE(A1), \"no error\")",
+      "result": "no error",
+      "explanation": "When A1 is fine, ISERROR is FALSE so the formula returns \"no error\" instead of triggering #N/A."
+    }
+  ],
+  "howItWorks": "ERROR.TYPE returns a numeric code for the error in error_val: 1=#NULL!, 2=#DIV/0!, 3=#VALUE!, 4=#REF!, 5=#NAME?, 6=#NUM!, 7=#N/A. If error_val is not an error, ERROR.TYPE itself returns #N/A. Pair it with ISERROR or IFERROR before calling.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Confirm an error exists",
+      "text": "Use ISERROR on the cell first."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =ERROR.TYPE(arguments)."
+      "text": "Type =ERROR.TYPE(cell)."
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "Map the code",
+      "text": "Use CHOOSE or a lookup to turn the number into an error name."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Returns #N/A when given a non-error value.",
+    "Works only on an actual error value, not on a text label like \"#DIV/0!\".",
+    "Only returns a code; you must map it to a name yourself."
+  ],
+  "commonErrors": [
+    {
+      "error": "#N/A from ERROR.TYPE itself",
+      "cause": "The argument is not an error value.",
+      "fix": "Guard with ISERROR or IFERROR before calling it."
+    },
+    {
+      "error": "Wrong code recalled",
+      "cause": "The code numbers are easy to mix up.",
+      "fix": "Remember #DIV/0! is 2 and #N/A is 7."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "ERROR.TYPE works identically in Google Sheets with the same syntax.",
-    "formula": "=ERROR.TYPE(A1)"
+    "description": "ERROR.TYPE works identically in Google Sheets with the same syntax and codes.",
+    "formula": "=ERROR.TYPE(A1)",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "What code is #N/A?",
+      "answer": "7."
+    },
+    {
+      "question": "What if there is no error?",
+      "answer": "ERROR.TYPE returns #N/A, so always guard it."
+    },
+    {
+      "question": "How do I show the error name?",
+      "answer": "Use CHOOSE, e.g. =CHOOSE(ERROR.TYPE(A1), \"Null\", \"Div0\", \"Value\", \"Ref\", \"Name\", \"Num\", \"NA\")."
+    }
+  ],
+  "relatedFunctions": [
+    "iserror",
+    "isna",
+    "iferror",
+    "na",
+    "iserr",
+    "choose"
+  ]
 }

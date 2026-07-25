@@ -3,38 +3,96 @@
   "slug": "log10",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "LOG10 is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "LOG10 is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(log10)",
-  "parameters": [],
+  "description": "LOG10 returns the base-10 logarithm of a number.",
+  "tldr": "Returns the base-10 logarithm of a number.",
+  "syntax": "(number)",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The positive real number for which you want the base-10 logarithm.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the LOG10 function",
-    "formula": "=LOG10(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the LOG10 function."
+    "description": "Base-10 log of 1000",
+    "formula": "=LOG10(1000)",
+    "result": "3",
+    "explanation": "10³ = 1000, so the base-10 logarithm is 3."
   },
-  "advancedExamples": [],
-  "howItWorks": "The LOG10 function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Log of 1",
+      "scenario": "Baseline check.",
+      "description": "Any base log of 1 is 0.",
+      "formula": "=LOG10(1)",
+      "result": "0",
+      "explanation": "10⁰ = 1, so the result is 0."
+    },
+    {
+      "title": "Log of 2",
+      "scenario": "Order-of-magnitude estimate.",
+      "description": "Irrational result.",
+      "formula": "=LOG10(2)",
+      "result": "0.301029996",
+      "explanation": "10^0.30103 ≈ 2."
+    }
+  ],
+  "howItWorks": "LOG10 computes log₁₀(number), the power to which 10 must be raised to equal the input. It is equivalent to LOG(number, 10) and to LN(number)/LN(10).",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the cell",
+      "text": "Click the cell for the result."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =LOG10(arguments)."
+      "text": "Type =LOG10(number)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The base-10 logarithm appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "The argument must be strictly positive; zero or negative returns #NUM!.",
+    "Results are floating-point approximations.",
+    "For other bases use LOG(number, base)."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM!",
+      "cause": "Argument is 0 or negative.",
+      "fix": "Pass a positive number."
+    },
+    {
+      "error": "#VALUE!",
+      "cause": "Non-numeric argument.",
+      "fix": "Supply a numeric value."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "LOG10 works identically in Google Sheets with the same syntax.",
-    "formula": "=LOG10(A1)"
+    "description": "LOG10 works identically in Google Sheets.",
+    "formula": "=LOG10(1000)",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Is LOG10 the same as LOG(...,10)?",
+      "answer": "Yes. LOG10(number) equals LOG(number, 10); LOG10 is just a convenience function."
+    },
+    {
+      "question": "Why does LOG10(1) = 0?",
+      "answer": "Any base logarithm of 1 is 0 because the base raised to 0 is 1."
+    },
+    {
+      "question": "How do I get a natural log instead?",
+      "answer": "Use LN for base e, or LOG(number, base) for an arbitrary base."
+    }
+  ],
+  "relatedFunctions": [
+    "log",
+    "ln",
+    "power",
+    "exp",
+    "product"
+  ]
 }

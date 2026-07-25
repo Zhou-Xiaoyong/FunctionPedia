@@ -3,38 +3,96 @@
   "slug": "ln",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "LN is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "LN is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(ln)",
-  "parameters": [],
+  "description": "LN returns the natural logarithm of a number, using base e (approximately 2.71828182845904).",
+  "tldr": "Returns the natural (base-e) logarithm of a number.",
+  "syntax": "(number)",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The positive real number for which you want the natural logarithm.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the LN function",
-    "formula": "=LN(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the LN function."
+    "description": "Natural log of 1",
+    "formula": "=LN(1)",
+    "result": "0",
+    "explanation": "e⁰ = 1, so the natural logarithm of 1 is 0."
   },
-  "advancedExamples": [],
-  "howItWorks": "The LN function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Cancel with EXP",
+      "scenario": "Verify the inverse relationship.",
+      "description": "LN(EXP(x)) returns x.",
+      "formula": "=LN(EXP(3))",
+      "result": "3",
+      "explanation": "Taking the natural log of e³ returns 3."
+    },
+    {
+      "title": "Natural log of e",
+      "scenario": "Baseline check.",
+      "description": "Use EXP(1) as the argument.",
+      "formula": "=LN(EXP(1))",
+      "result": "1",
+      "explanation": "The natural log of e is 1."
+    }
+  ],
+  "howItWorks": "LN computes logₑ(number), the power to which e must be raised to equal the input. It is the inverse of EXP: LN(EXP(x)) = x for all real x, and EXP(LN(x)) = x for x > 0.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the cell",
+      "text": "Click the cell for the result."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =LN(arguments)."
+      "text": "Type =LN(positive_number)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The natural logarithm appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "The argument must be strictly positive; zero or negative values return #NUM!.",
+    "Results are floating-point approximations.",
+    "For other bases use LOG(number, base) or divide by LN(base)."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM!",
+      "cause": "Argument is 0 or negative.",
+      "fix": "Pass a positive number; the natural log of non-positive values is undefined."
+    },
+    {
+      "error": "#VALUE!",
+      "cause": "Non-numeric argument.",
+      "fix": "Supply a numeric value."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "LN works identically in Google Sheets with the same syntax.",
-    "formula": "=LN(A1)"
+    "description": "LN works identically in Google Sheets.",
+    "formula": "=LN(1)",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "What base does LN use?",
+      "answer": "The natural base e (≈2.71828). LN(x) = logₑ(x)."
+    },
+    {
+      "question": "How do I compute a log in another base?",
+      "answer": "Use LOG(number, base), or LN(number)/LN(base)."
+    },
+    {
+      "question": "Why does LN(0) give an error?",
+      "answer": "The natural log of 0 is negative infinity, which is undefined, so Excel returns #NUM!."
+    }
+  ],
+  "relatedFunctions": [
+    "log",
+    "log10",
+    "exp",
+    "power",
+    "product"
+  ]
 }

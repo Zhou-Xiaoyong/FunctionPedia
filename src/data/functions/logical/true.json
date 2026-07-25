@@ -3,38 +3,81 @@
   "slug": "true",
   "category": "logical",
   "excelVersion": "All versions",
-  "description": "TRUE is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "TRUE is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(true)",
+  "description": "TRUE returns the logical value TRUE. It takes no arguments and is equivalent to typing the literal TRUE into a cell.",
+  "tldr": "Returns the logical value TRUE.",
+  "syntax": "()",
   "parameters": [],
   "basicExample": {
-    "description": "Basic usage of the TRUE function",
-    "formula": "=TRUE(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the TRUE function."
+    "description": "Return a TRUE value",
+    "formula": "=TRUE()",
+    "result": "TRUE",
+    "explanation": "The function evaluates to the logical constant TRUE with no input needed."
   },
-  "advancedExamples": [],
-  "howItWorks": "The TRUE function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "advancedExamples": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "title": "Use inside a condition",
+      "scenario": "Force a branch of an IF",
+      "description": "Return TRUE from a formula",
+      "formula": "=IF(TRUE(),\"Yes\",\"No\")",
+      "result": "Yes",
+      "explanation": "Because TRUE() is logical TRUE, the IF returns its value_if_true."
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =TRUE(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "title": "Explicit boolean in a check",
+      "scenario": "Compare a cell to a target",
+      "description": "Return TRUE on a match",
+      "formula": "=IF(A1=10,TRUE(),FALSE())",
+      "result": "TRUE when A1 equals 10",
+      "explanation": "Returns the explicit TRUE/FALSE constants instead of relying on implicit coercion."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "howItWorks": "TRUE is a function wrapper around the TRUE logical constant. It performs no computation and accepts no arguments; it is provided for compatibility and explicit boolean building.",
+  "howToSteps": [
+    {
+      "name": "Type the function",
+      "text": "Enter =TRUE() with empty parentheses."
+    },
+    {
+      "name": "Use the result",
+      "text": "Reference it in logical tests like IF or AND."
+    }
+  ],
+  "limitations": [
+    "Takes no arguments; supplying any returns #VALUE!.",
+    "Mostly redundant because the literal TRUE works the same in formulas.",
+    "Stored as a logical value, not the text \"TRUE\"."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! error",
+      "cause": "Passing an argument such as =TRUE(1).",
+      "fix": "Leave the parentheses empty: =TRUE()."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "TRUE works identically in Google Sheets with the same syntax.",
-    "formula": "=TRUE(A1)"
+    "description": "TRUE works identically in Google Sheets with no arguments.",
+    "formula": "=TRUE()",
+    "notes": "Same behavior as Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Is TRUE() different from typing TRUE?",
+      "answer": "No, =TRUE() and the constant TRUE behave the same in calculations."
+    },
+    {
+      "question": "Can TRUE take arguments?",
+      "answer": "No; it returns #VALUE! if you supply any."
+    },
+    {
+      "question": "What type is the result?",
+      "answer": "A logical (boolean) value, not text."
+    }
+  ],
+  "relatedFunctions": [
+    "false",
+    "if",
+    "ifna",
+    "and",
+    "or"
+  ]
 }

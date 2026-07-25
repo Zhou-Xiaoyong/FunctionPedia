@@ -2,39 +2,118 @@
   "name": "SORTBY",
   "slug": "sortby",
   "category": "array",
-  "excelVersion": "All versions",
-  "description": "SORTBY is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "SORTBY is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(sortby)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the SORTBY function",
-    "formula": "=SORTBY(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the SORTBY function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The SORTBY function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "excelVersion": "Microsoft 365",
+  "description": "SORTBY returns a dynamic array sorted by the values in one or more separate 'by' arrays, rather than by the array's own columns.",
+  "tldr": "Sorts an array using other arrays as keys.",
+  "syntax": "(array, by_array1, [sort_order1], [by_array2], [sort_order2], ...)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "array",
+      "description": "The range or array to be sorted (returned in the result).",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =SORTBY(arguments)."
+      "name": "by_array1",
+      "description": "The first array of values to sort by; must have dimensions compatible with array.",
+      "required": true
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "sort_order1",
+      "description": "1 for ascending (default) or -1 for descending for the first key.",
+      "required": false
+    },
+    {
+      "name": "by_array2",
+      "description": "An optional additional array to sort by when the first key ties.",
+      "required": false
+    },
+    {
+      "name": "sort_order2",
+      "description": "Sort order for the second key (1 or -1).",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "SORTBY works identically in Google Sheets with the same syntax.",
-    "formula": "=SORTBY(A1)"
+  "basicExample": {
+    "description": "Sort one column using another as the key",
+    "formula": "=SORTBY(B2:B10, A2:A10, 1)",
+    "result": "Values of B2:B10 reordered to match ascending order of A2:A10",
+    "explanation": "SORTBY orders column B by the values in column A ascending."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Sort by multiple keys",
+      "scenario": "Sort names by Department ascending, then by Score descending.",
+      "description": "Supply two by-arrays and orders",
+      "formula": "=SORTBY(C2:C20, A2:A20, 1, B2:B20, -1)",
+      "result": "Names ordered by department, then by score highest-first within each department",
+      "explanation": "The first by_array sets the primary order and the second breaks ties."
+    },
+    {
+      "title": "Descending by a helper column",
+      "scenario": "Sort a list newest-first using a date column.",
+      "description": "Use -1 for descending",
+      "formula": "=SORTBY(A2:A10, B2:B10, -1)",
+      "result": "Items in A2:A10 ordered by dates in B2:B10, newest first",
+      "explanation": "sort_order -1 sorts the helper column descending."
+    }
+  ],
+  "howItWorks": "SORTBY sorts array according to the values in one or more separate by_arrays. Each by_array has an optional sort_order of 1 (ascending) or -1 (descending); additional by_array/order pairs act as tie-breakers. The by_arrays must share the same height/width as array. The result is a dynamic array that spills into neighboring cells.",
+  "howToSteps": [
+    {
+      "name": "Pick the result array",
+      "text": "Choose the range you want returned."
+    },
+    {
+      "name": "Add the key arrays",
+      "text": "Supply one or more by_arrays and their orders."
+    },
+    {
+      "name": "Ensure spill space",
+      "text": "Leave empty cells for the spilled result."
+    }
+  ],
+  "limitations": [
+    "Microsoft 365 only.",
+    "Each by_array must have the same height/width as array.",
+    "Cannot sort by a computed expression unless it resolves to an array."
+  ],
+  "commonErrors": [
+    {
+      "error": "#SPILL!",
+      "cause": "The spill range is blocked by other content.",
+      "fix": "Clear the cells in the spill area."
+    },
+    {
+      "error": "#VALUE! (array size mismatch)",
+      "cause": "A by_array has different dimensions than array.",
+      "fix": "Make all by_arrays the same size as the array argument."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "Google Sheets does not have a native SORTBY; it uses SORT with an index/order, or SORTN. You can mimic SORTBY by feeding sort columns into SORT.",
+    "formula": "=SORT(A2:C20, 1, TRUE, 2, FALSE)",
+    "notes": "In Sheets, multiple sort keys are passed directly to SORT rather than via separate by-arrays."
+  },
+  "faq": [
+    {
+      "question": "SORTBY vs SORT?",
+      "answer": "SORTBY sorts by other arrays; SORT sorts the array by its own columns/rows."
+    },
+    {
+      "question": "Is SORTBY in Google Sheets?",
+      "answer": "No native SORTBY; Sheets uses SORT with index/order arguments."
+    },
+    {
+      "question": "Can I use multiple sort keys?",
+      "answer": "Yes, supply additional by_array and sort_order pairs."
+    }
+  ],
+  "relatedFunctions": [
+    "sort",
+    "unique",
+    "filter",
+    "sequence",
+    "xmatch",
+    "index"
+  ]
 }

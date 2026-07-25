@@ -3,38 +3,101 @@
   "slug": "choose",
   "category": "lookup",
   "excelVersion": "All versions",
-  "description": "CHOOSE is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "CHOOSE is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(choose)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the CHOOSE function",
-    "formula": "=CHOOSE(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the CHOOSE function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The CHOOSE function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "CHOOSE returns a value from a list based on a given index number, acting like a simple selector or inline lookup.",
+  "tldr": "Returns the nth value from a list.",
+  "syntax": "(index_num, value1, [value2], ...)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "index_num",
+      "description": "A number (1 to 254) selecting which value to return.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =CHOOSE(arguments)."
+      "name": "value1",
+      "description": "The first value, cell, or formula in the list.",
+      "required": true
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "value2",
+      "description": "Additional values, cells, or formulas (optional, up to 254 total).",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "CHOOSE works identically in Google Sheets with the same syntax.",
-    "formula": "=CHOOSE(A1)"
+  "basicExample": {
+    "description": "Pick a color by index",
+    "formula": "=CHOOSE(2,\"Red\",\"Green\",\"Blue\")",
+    "result": "Green",
+    "explanation": "index_num 2 selects the second value in the list, \"Green\"."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Map a number to a name",
+      "scenario": "Cell A1 holds a rating 1-3",
+      "description": "Convert a score to a label",
+      "formula": "=CHOOSE(A1,\"Low\",\"Medium\",\"High\")",
+      "result": "Label matching the rating",
+      "explanation": "The numeric rating directly indexes the matching descriptive text."
+    },
+    {
+      "title": "Drive a calculation",
+      "scenario": "Choose which formula to run",
+      "description": "Return a computed result",
+      "formula": "=CHOOSE(B1,SUM(A1:A5),AVERAGE(A1:A5),MAX(A1:A5))",
+      "result": "Result of the selected function",
+      "explanation": "CHOOSE evaluates and returns only the selected branch, so different stats can be switched by B1."
+    }
+  ],
+  "howItWorks": "CHOOSE uses index_num as a 1-based position into the supplied value list and returns that single item. Only the selected item is evaluated, which can avoid errors in unused branches.",
+  "howToSteps": [
+    {
+      "name": "Order your values",
+      "text": "List items in the order index numbers will reference."
+    },
+    {
+      "name": "Set the index",
+      "text": "Provide a number or cell that picks the position."
+    },
+    {
+      "name": "Enter CHOOSE",
+      "text": "Type =CHOOSE(index, list...) and press Enter."
+    }
+  ],
+  "limitations": [
+    "index_num must be between 1 and the number of values; otherwise it returns #VALUE!.",
+    "Cannot accept a range as the list directly; values must be listed individually (unlike INDEX).",
+    "Lists are static; adding options requires editing the formula."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! error",
+      "cause": "index_num is less than 1, greater than the list length, or non-numeric.",
+      "fix": "Ensure index_num is an integer within the list range."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "CHOOSE works identically in Google Sheets.",
+    "formula": "=CHOOSE(2,\"Red\",\"Green\",\"Blue\")",
+    "notes": "Same behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "CHOOSE vs INDEX?",
+      "answer": "CHOOSE takes an explicit list of values; INDEX can select from a range by position."
+    },
+    {
+      "question": "What if index_num is out of range?",
+      "answer": "It returns #VALUE!."
+    },
+    {
+      "question": "Can CHOOSE run different formulas?",
+      "answer": "Yes, it evaluates only the selected branch, so you can switch calculations."
+    }
+  ],
+  "relatedFunctions": [
+    "index",
+    "match",
+    "if",
+    "hlookup",
+    "vlookup"
+  ]
 }

@@ -5,7 +5,7 @@
   "excelVersion": "All versions",
   "description": "VLOOKUP (Vertical Lookup) is a built-in function in Excel and Google Sheets that searches for a value in the first column of a table and returns a value in the same row from a specified column.",
   "tldr": "VLOOKUP searches for a value in the first column of a table array and returns a matching value from another column in the same row.",
-  "syntax": "VLOOKUP(lookup_value, table_array, col_index_num, [range_lookup])",
+  "syntax": "(lookup_value, table_array, col_index_num, [range_lookup])",
   "parameters": [
     {
       "name": "lookup_value",
@@ -59,12 +59,42 @@
         "title": "Employees.xlsx",
         "platform": "excel",
         "data": [
-          ["Employee ID", "Name", "Department", "Salary"],
-          ["E001", "Alice Johnson", "Marketing", 75000],
-          ["E002", "Bob Smith", "Engineering", 85000],
-          ["E003", "Charlie Brown", "Sales", 68000],
-          ["E004", "Diana Prince", "HR", 72000],
-          ["E005", "Eve Adams", "Engineering", 92000]
+          [
+            "Employee ID",
+            "Name",
+            "Department",
+            "Salary"
+          ],
+          [
+            "E001",
+            "Alice Johnson",
+            "Marketing",
+            75000
+          ],
+          [
+            "E002",
+            "Bob Smith",
+            "Engineering",
+            85000
+          ],
+          [
+            "E003",
+            "Charlie Brown",
+            "Sales",
+            68000
+          ],
+          [
+            "E004",
+            "Diana Prince",
+            "HR",
+            72000
+          ],
+          [
+            "E005",
+            "Eve Adams",
+            "Engineering",
+            92000
+          ]
         ]
       }
     },
@@ -79,12 +109,60 @@
         "formula": "=VLOOKUP(",
         "activeCell": "G2",
         "data": [
-          ["Employee ID", "Name", "Department", "Salary", "", "Lookup ID", "Result"],
-          ["E001", "Alice Johnson", "Marketing", 75000, "", "E003", "=VLOOKUP("],
-          ["E002", "Bob Smith", "Engineering", 85000, "", "", ""],
-          ["E003", "Charlie Brown", "Sales", 68000, "", "", ""],
-          ["E004", "Diana Prince", "HR", 72000, "", "", ""],
-          ["E005", "Eve Adams", "Engineering", 92000, "", "", ""]
+          [
+            "Employee ID",
+            "Name",
+            "Department",
+            "Salary",
+            "",
+            "Lookup ID",
+            "Result"
+          ],
+          [
+            "E001",
+            "Alice Johnson",
+            "Marketing",
+            75000,
+            "",
+            "E003",
+            "=VLOOKUP("
+          ],
+          [
+            "E002",
+            "Bob Smith",
+            "Engineering",
+            85000,
+            "",
+            "",
+            ""
+          ],
+          [
+            "E003",
+            "Charlie Brown",
+            "Sales",
+            68000,
+            "",
+            "",
+            ""
+          ],
+          [
+            "E004",
+            "Diana Prince",
+            "HR",
+            72000,
+            "",
+            "",
+            ""
+          ],
+          [
+            "E005",
+            "Eve Adams",
+            "Engineering",
+            92000,
+            "",
+            "",
+            ""
+          ]
         ]
       }
     },
@@ -99,12 +177,60 @@
         "formula": "=VLOOKUP(F2",
         "activeCell": "G2",
         "data": [
-          ["Employee ID", "Name", "Department", "Salary", "", "Lookup ID", "Result"],
-          ["E001", "Alice Johnson", "Marketing", 75000, "", "E003", "=VLOOKUP(F2"],
-          ["E002", "Bob Smith", "Engineering", 85000, "", "", ""],
-          ["E003", "Charlie Brown", "Sales", 68000, "", "", ""],
-          ["E004", "Diana Prince", "HR", 72000, "", "", ""],
-          ["E005", "Eve Adams", "Engineering", 92000, "", "", ""]
+          [
+            "Employee ID",
+            "Name",
+            "Department",
+            "Salary",
+            "",
+            "Lookup ID",
+            "Result"
+          ],
+          [
+            "E001",
+            "Alice Johnson",
+            "Marketing",
+            75000,
+            "",
+            "E003",
+            "=VLOOKUP(F2"
+          ],
+          [
+            "E002",
+            "Bob Smith",
+            "Engineering",
+            85000,
+            "",
+            "",
+            ""
+          ],
+          [
+            "E003",
+            "Charlie Brown",
+            "Sales",
+            68000,
+            "",
+            "",
+            ""
+          ],
+          [
+            "E004",
+            "Diana Prince",
+            "HR",
+            72000,
+            "",
+            "",
+            ""
+          ],
+          [
+            "E005",
+            "Eve Adams",
+            "Engineering",
+            92000,
+            "",
+            "",
+            ""
+          ]
         ]
       }
     },
@@ -120,12 +246,60 @@
         "activeCell": "G2",
         "selectedRange": "A2:D6",
         "data": [
-          ["Employee ID", "Name", "Department", "Salary", "", "Lookup ID", "Result"],
-          ["E001", "Alice Johnson", "Marketing", 75000, "", "E003", "=VLOOKUP(F2, $A$2:$D$6"],
-          ["E002", "Bob Smith", "Engineering", 85000, "", "", ""],
-          ["E003", "Charlie Brown", "Sales", 68000, "", "", ""],
-          ["E004", "Diana Prince", "HR", 72000, "", "", ""],
-          ["E005", "Eve Adams", "Engineering", 92000, "", "", ""]
+          [
+            "Employee ID",
+            "Name",
+            "Department",
+            "Salary",
+            "",
+            "Lookup ID",
+            "Result"
+          ],
+          [
+            "E001",
+            "Alice Johnson",
+            "Marketing",
+            75000,
+            "",
+            "E003",
+            "=VLOOKUP(F2, $A$2:$D$6"
+          ],
+          [
+            "E002",
+            "Bob Smith",
+            "Engineering",
+            85000,
+            "",
+            "",
+            ""
+          ],
+          [
+            "E003",
+            "Charlie Brown",
+            "Sales",
+            68000,
+            "",
+            "",
+            ""
+          ],
+          [
+            "E004",
+            "Diana Prince",
+            "HR",
+            72000,
+            "",
+            "",
+            ""
+          ],
+          [
+            "E005",
+            "Eve Adams",
+            "Engineering",
+            92000,
+            "",
+            "",
+            ""
+          ]
         ]
       }
     },
@@ -141,12 +315,60 @@
         "activeCell": "G2",
         "highlightColumn": 2,
         "data": [
-          ["Employee ID", "Name", "Department", "Salary", "", "Lookup ID", "Result"],
-          ["E001", "Alice Johnson", "Marketing", 75000, "", "E003", "=VLOOKUP(F2, $A$2:$D$6, 3"],
-          ["E002", "Bob Smith", "Engineering", 85000, "", "", ""],
-          ["E003", "Charlie Brown", "Sales", 68000, "", "", ""],
-          ["E004", "Diana Prince", "HR", 72000, "", "", ""],
-          ["E005", "Eve Adams", "Engineering", 92000, "", "", ""]
+          [
+            "Employee ID",
+            "Name",
+            "Department",
+            "Salary",
+            "",
+            "Lookup ID",
+            "Result"
+          ],
+          [
+            "E001",
+            "Alice Johnson",
+            "Marketing",
+            75000,
+            "",
+            "E003",
+            "=VLOOKUP(F2, $A$2:$D$6, 3"
+          ],
+          [
+            "E002",
+            "Bob Smith",
+            "Engineering",
+            85000,
+            "",
+            "",
+            ""
+          ],
+          [
+            "E003",
+            "Charlie Brown",
+            "Sales",
+            68000,
+            "",
+            "",
+            ""
+          ],
+          [
+            "E004",
+            "Diana Prince",
+            "HR",
+            72000,
+            "",
+            "",
+            ""
+          ],
+          [
+            "E005",
+            "Eve Adams",
+            "Engineering",
+            92000,
+            "",
+            "",
+            ""
+          ]
         ]
       }
     },
@@ -161,12 +383,60 @@
         "formula": "=VLOOKUP(F2, $A$2:$D$6, 3, FALSE)",
         "activeCell": "G2",
         "data": [
-          ["Employee ID", "Name", "Department", "Salary", "", "Lookup ID", "Result"],
-          ["E001", "Alice Johnson", "Marketing", 75000, "", "E003", "Sales"],
-          ["E002", "Bob Smith", "Engineering", 85000, "", "", ""],
-          ["E003", "Charlie Brown", "Sales", 68000, "", "", ""],
-          ["E004", "Diana Prince", "HR", 72000, "", "", ""],
-          ["E005", "Eve Adams", "Engineering", 92000, "", "", ""]
+          [
+            "Employee ID",
+            "Name",
+            "Department",
+            "Salary",
+            "",
+            "Lookup ID",
+            "Result"
+          ],
+          [
+            "E001",
+            "Alice Johnson",
+            "Marketing",
+            75000,
+            "",
+            "E003",
+            "Sales"
+          ],
+          [
+            "E002",
+            "Bob Smith",
+            "Engineering",
+            85000,
+            "",
+            "",
+            ""
+          ],
+          [
+            "E003",
+            "Charlie Brown",
+            "Sales",
+            68000,
+            "",
+            "",
+            ""
+          ],
+          [
+            "E004",
+            "Diana Prince",
+            "HR",
+            72000,
+            "",
+            "",
+            ""
+          ],
+          [
+            "E005",
+            "Eve Adams",
+            "Engineering",
+            92000,
+            "",
+            "",
+            ""
+          ]
         ]
       }
     }
@@ -261,62 +531,273 @@
       {
         "name": "Employees",
         "data": [
-          ["Employee ID", "Name", "Department", "Salary", "Hire Date"],
-          ["E001", "Alice Johnson", "Marketing", 75000, "2020-03-15"],
-          ["E002", "Bob Smith", "Engineering", 85000, "2019-06-20"],
-          ["E003", "Charlie Brown", "Sales", 68000, "2021-01-10"],
-          ["E004", "Diana Prince", "HR", 72000, "2018-11-05"],
-          ["E005", "Eve Adams", "Engineering", 92000, "2017-08-12"],
-          ["E006", "Frank Miller", "Marketing", 65000, "2022-02-28"],
-          ["E007", "Grace Lee", "Sales", 78000, "2020-09-01"],
-          ["E008", "Henry Wilson", "Engineering", 88000, "2019-04-18"]
+          [
+            "Employee ID",
+            "Name",
+            "Department",
+            "Salary",
+            "Hire Date"
+          ],
+          [
+            "E001",
+            "Alice Johnson",
+            "Marketing",
+            75000,
+            "2020-03-15"
+          ],
+          [
+            "E002",
+            "Bob Smith",
+            "Engineering",
+            85000,
+            "2019-06-20"
+          ],
+          [
+            "E003",
+            "Charlie Brown",
+            "Sales",
+            68000,
+            "2021-01-10"
+          ],
+          [
+            "E004",
+            "Diana Prince",
+            "HR",
+            72000,
+            "2018-11-05"
+          ],
+          [
+            "E005",
+            "Eve Adams",
+            "Engineering",
+            92000,
+            "2017-08-12"
+          ],
+          [
+            "E006",
+            "Frank Miller",
+            "Marketing",
+            65000,
+            "2022-02-28"
+          ],
+          [
+            "E007",
+            "Grace Lee",
+            "Sales",
+            78000,
+            "2020-09-01"
+          ],
+          [
+            "E008",
+            "Henry Wilson",
+            "Engineering",
+            88000,
+            "2019-04-18"
+          ]
         ]
       },
       {
         "name": "Products",
         "data": [
-          ["SKU", "Product Name", "Category", "Price", "Stock"],
-          ["P001", "Wireless Mouse", "Electronics", 29.99, 150],
-          ["P002", "Mechanical Keyboard", "Electronics", 89.99, 75],
-          ["P003", "USB-C Hub", "Electronics", 45.99, 120],
-          ["P004", "Laptop Stand", "Accessories", 39.99, 90],
-          ["P005", "Monitor Arm", "Accessories", 129.99, 45],
-          ["P006", "Desk Mat", "Accessories", 24.99, 200],
-          ["P007", "Webcam HD", "Electronics", 59.99, 60],
-          ["P008", "Headphones", "Electronics", 149.99, 55]
+          [
+            "SKU",
+            "Product Name",
+            "Category",
+            "Price",
+            "Stock"
+          ],
+          [
+            "P001",
+            "Wireless Mouse",
+            "Electronics",
+            29.99,
+            150
+          ],
+          [
+            "P002",
+            "Mechanical Keyboard",
+            "Electronics",
+            89.99,
+            75
+          ],
+          [
+            "P003",
+            "USB-C Hub",
+            "Electronics",
+            45.99,
+            120
+          ],
+          [
+            "P004",
+            "Laptop Stand",
+            "Accessories",
+            39.99,
+            90
+          ],
+          [
+            "P005",
+            "Monitor Arm",
+            "Accessories",
+            129.99,
+            45
+          ],
+          [
+            "P006",
+            "Desk Mat",
+            "Accessories",
+            24.99,
+            200
+          ],
+          [
+            "P007",
+            "Webcam HD",
+            "Electronics",
+            59.99,
+            60
+          ],
+          [
+            "P008",
+            "Headphones",
+            "Electronics",
+            149.99,
+            55
+          ]
         ]
       },
       {
         "name": "Grading Scale",
         "data": [
-          ["Min Score", "Grade"],
-          [0, "F"],
-          [60, "D"],
-          [70, "C"],
-          [80, "B"],
-          [90, "A"]
+          [
+            "Min Score",
+            "Grade"
+          ],
+          [
+            0,
+            "F"
+          ],
+          [
+            60,
+            "D"
+          ],
+          [
+            70,
+            "C"
+          ],
+          [
+            80,
+            "B"
+          ],
+          [
+            90,
+            "A"
+          ]
         ]
       },
       {
         "name": "Practice Exercises",
         "data": [
-          ["VLOOKUP Practice Exercises", "", "", ""],
-          ["", "", "", ""],
-          ["Exercise 1: Basic Exact Match", "", "", ""],
-          ["Look up the department for employee E003", "", "", ""],
-          ["Hint: Use FALSE for exact match", "", "", ""],
-          ["", "", "", ""],
-          ["Exercise 2: Approximate Match", "", "", ""],
-          ["Find the grade for a score of 85", "", "", ""],
-          ["Hint: Use TRUE with sorted data", "", "", ""],
-          ["", "", "", ""],
-          ["Exercise 3: Wildcard Search", "", "", ""],
-          ["Find the price of a product containing 'Mouse'", "", "", ""],
-          ["Hint: Use * wildcard characters", "", "", ""],
-          ["", "", "", ""],
-          ["Exercise 4: Error Handling", "", "", ""],
-          ["Look up employee E999 and show 'Not Found' if missing", "", "", ""],
-          ["Hint: Wrap with IFERROR", "", "", ""]
+          [
+            "VLOOKUP Practice Exercises",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "Exercise 1: Basic Exact Match",
+            "",
+            "",
+            ""
+          ],
+          [
+            "Look up the department for employee E003",
+            "",
+            "",
+            ""
+          ],
+          [
+            "Hint: Use FALSE for exact match",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "Exercise 2: Approximate Match",
+            "",
+            "",
+            ""
+          ],
+          [
+            "Find the grade for a score of 85",
+            "",
+            "",
+            ""
+          ],
+          [
+            "Hint: Use TRUE with sorted data",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "Exercise 3: Wildcard Search",
+            "",
+            "",
+            ""
+          ],
+          [
+            "Find the price of a product containing 'Mouse'",
+            "",
+            "",
+            ""
+          ],
+          [
+            "Hint: Use * wildcard characters",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "Exercise 4: Error Handling",
+            "",
+            "",
+            ""
+          ],
+          [
+            "Look up employee E999 and show 'Not Found' if missing",
+            "",
+            "",
+            ""
+          ],
+          [
+            "Hint: Wrap with IFERROR",
+            "",
+            "",
+            ""
+          ]
         ]
       }
     ]
@@ -335,5 +816,10 @@
       "answer": "VLOOKUP is not case-sensitive by default. To make it case-sensitive, use EXACT within INDEX/MATCH: =INDEX(B:B, MATCH(TRUE, EXACT(A:A, lookup_value), 0))"
     }
   ],
-  "relatedFunctions": ["xlookup", "hlookup", "index", "match"]
+  "relatedFunctions": [
+    "xlookup",
+    "hlookup",
+    "index",
+    "match"
+  ]
 }

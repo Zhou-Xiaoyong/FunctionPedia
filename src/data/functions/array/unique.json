@@ -2,39 +2,108 @@
   "name": "UNIQUE",
   "slug": "unique",
   "category": "array",
-  "excelVersion": "All versions",
-  "description": "UNIQUE is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "UNIQUE is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(unique)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the UNIQUE function",
-    "formula": "=UNIQUE(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the UNIQUE function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The UNIQUE function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "excelVersion": "Microsoft 365",
+  "description": "UNIQUE returns the distinct values from a range or array, optionally returning only values that appear exactly once, as a dynamic array.",
+  "tldr": "Returns unique values (spills the result).",
+  "syntax": "(array, [by_col], [exactly_once])",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "array",
+      "description": "The range or array from which to extract unique values.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =UNIQUE(arguments)."
+      "name": "by_col",
+      "description": "FALSE to compare across rows (default) or TRUE to compare across columns.",
+      "required": false
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "exactly_once",
+      "description": "FALSE to return all distinct values (default) or TRUE to return only values that occur exactly once.",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "UNIQUE works identically in Google Sheets with the same syntax.",
-    "formula": "=UNIQUE(A1)"
+  "basicExample": {
+    "description": "Extract distinct values from a list",
+    "formula": "=UNIQUE(A2:A10)",
+    "result": "Each distinct value from A2:A10, listed once",
+    "explanation": "UNIQUE removes duplicates and spills the distinct list."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Values that appear only once",
+      "scenario": "Find items with no duplicates in a column.",
+      "description": "Set exactly_once to TRUE",
+      "formula": "=UNIQUE(A2:A10, , TRUE)",
+      "result": "Only the values that occur exactly once in A2:A10",
+      "explanation": "With exactly_once TRUE, repeated values are excluded entirely."
+    },
+    {
+      "title": "Unique across columns",
+      "scenario": "Distinct values in a single row.",
+      "description": "Set by_col to TRUE",
+      "formula": "=UNIQUE(A1:D1, TRUE)",
+      "result": "Each distinct value from the row A1:D1",
+      "explanation": "by_col TRUE compares values across columns instead of down rows."
+    }
+  ],
+  "howItWorks": "UNIQUE returns the distinct values from array. By default it compares values down rows (by_col FALSE) and returns all distinct values. Setting by_col TRUE compares across columns; setting exactly_once TRUE returns only values that occur once. Results spill as a dynamic array.",
+  "howToSteps": [
+    {
+      "name": "Select the range",
+      "text": "Pick the array with possible duplicates."
+    },
+    {
+      "name": "Add options",
+      "text": "Optionally set by_col and exactly_once."
+    },
+    {
+      "name": "Ensure spill space",
+      "text": "Leave empty cells below/right for the result."
+    }
+  ],
+  "limitations": [
+    "Microsoft 365 / Excel 2021+ only.",
+    "Comparison is case-insensitive by default; 'Apple' and 'apple' are treated as equal.",
+    "Returns a spilled array, so it needs empty room below/right."
+  ],
+  "commonErrors": [
+    {
+      "error": "#SPILL!",
+      "cause": "No room for the spilled results.",
+      "fix": "Clear the cells in the spill range."
+    },
+    {
+      "error": "Case variants treated as duplicates",
+      "cause": "UNIQUE is case-insensitive.",
+      "fix": "Use a helper column with EXACT for case-sensitive uniqueness."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "UNIQUE is a native function in Google Sheets with the same behavior and a similar signature.",
+    "formula": "=UNIQUE(A2:A10)",
+    "notes": "Sheets also supports UNIQUE(range, by_col, exactly_once) and is case-insensitive like Excel."
+  },
+  "faq": [
+    {
+      "question": "Is UNIQUE in Google Sheets?",
+      "answer": "Yes, UNIQUE is native in Google Sheets."
+    },
+    {
+      "question": "How do I get only values that appear once?",
+      "answer": "Set the exactly_once argument to TRUE."
+    },
+    {
+      "question": "Is the comparison case-sensitive?",
+      "answer": "No; UNIQUE treats 'Apple' and 'apple' as the same value."
+    }
+  ],
+  "relatedFunctions": [
+    "sort",
+    "filter",
+    "sequence",
+    "countif",
+    "xmatch",
+    "sum"
+  ]
 }

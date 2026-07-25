@@ -3,38 +3,101 @@
   "slug": "trunc",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "TRUNC is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "TRUNC is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(trunc)",
-  "parameters": [],
+  "description": "TRUNC truncates a number to an integer, or to a specified number of decimal places, by removing digits without rounding.",
+  "tldr": "Truncates a number to an integer or set number of digits (no rounding).",
+  "syntax": "(number, [num_digits])",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The value you want to truncate.",
+      "required": true
+    },
+    {
+      "name": "num_digits",
+      "description": "The number of decimal places to keep. 0 (default) truncates to an integer.",
+      "required": false
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the TRUNC function",
-    "formula": "=TRUNC(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the TRUNC function."
+    "description": "Truncate 4.9 to an integer",
+    "formula": "=TRUNC(4.9)",
+    "result": "4",
+    "explanation": "TRUNC removes the fractional part without rounding, so 4.9 becomes 4."
   },
-  "advancedExamples": [],
-  "howItWorks": "The TRUNC function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Negative numbers truncate toward zero",
+      "scenario": "Truncating -4.9.",
+      "description": "Unlike INT, TRUNC does not round down.",
+      "formula": "=TRUNC(-4.9)",
+      "result": "-4",
+      "explanation": "TRUNC simply drops the fractional part, giving -4 (whereas INT(-4.9) = -5)."
+    },
+    {
+      "title": "Keep two decimal places",
+      "scenario": "Trim pi to 2 decimals.",
+      "description": "Pass num_digits 2.",
+      "formula": "=TRUNC(3.14159, 2)",
+      "result": "3.14",
+      "explanation": "TRUNC keeps 3.14 and discards the remaining digits without rounding up."
+    }
+  ],
+  "howItWorks": "TRUNC chops off digits beyond the specified number of decimal places; it does not round. With num_digits = 0 it returns the integer part toward zero. For positive numbers TRUNC and INT give the same result, but for negatives TRUNC moves toward zero while INT moves toward negative infinity.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the cell",
+      "text": "Click the cell for the result."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =TRUNC(arguments)."
+      "text": "Type =TRUNC(number, [num_digits])."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The truncated value appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "TRUNC only removes digits; it never rounds, which differs from ROUND.",
+    "For negative numbers it truncates toward zero, unlike INT which rounds down.",
+    "num_digits can be negative, truncating to the left of the decimal point (e.g. TRUNC(1234, -2) = 1200)."
+  ],
+  "commonErrors": [
+    {
+      "error": "Result not rounded as expected",
+      "cause": "TRUNC intentionally does not round.",
+      "fix": "Use ROUND if you need rounding instead of truncation."
+    },
+    {
+      "error": "#VALUE!",
+      "cause": "Non-numeric argument.",
+      "fix": "Supply a numeric value."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "TRUNC works identically in Google Sheets with the same syntax.",
-    "formula": "=TRUNC(A1)"
+    "description": "TRUNC works identically in Google Sheets.",
+    "formula": "=TRUNC(4.9)",
+    "notes": "Returns 4, same as Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "What is the difference between TRUNC and INT?",
+      "answer": "TRUNC removes the fractional part toward zero (TRUNC(-4.9)=-4), while INT rounds down (INT(-4.9)=-5)."
+    },
+    {
+      "question": "Does TRUNC round?",
+      "answer": "No. It simply cuts off digits. Use ROUND if you need rounding."
+    },
+    {
+      "question": "Can num_digits be negative?",
+      "answer": "Yes. A negative num_digits truncates to the left of the decimal, e.g. TRUNC(1234, -2) = 1200."
+    }
+  ],
+  "relatedFunctions": [
+    "int",
+    "round",
+    "rounddown",
+    "roundup",
+    "mod"
+  ]
 }

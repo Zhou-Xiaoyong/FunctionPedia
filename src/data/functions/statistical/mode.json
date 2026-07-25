@@ -3,38 +3,101 @@
   "slug": "mode",
   "category": "statistical",
   "excelVersion": "All versions",
-  "description": "MODE is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "MODE is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(mode)",
-  "parameters": [],
+  "description": "MODE returns the most frequently occurring (most common) numeric value in a dataset. It is the legacy version, retained for backward compatibility.",
+  "tldr": "Returns the single most frequently occurring value in a set of numbers.",
+  "syntax": "(number1, [number2], ...)",
+  "parameters": [
+    {
+      "name": "number1",
+      "description": "The first number, cell, or range to evaluate.",
+      "required": true
+    },
+    {
+      "name": "number2",
+      "description": "Additional numbers, cells, or ranges (optional).",
+      "required": false
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the MODE function",
-    "formula": "=MODE(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the MODE function."
+    "description": "Most frequent value among mixed numbers",
+    "formula": "=MODE(2,3,2,5,3,3)",
+    "result": "3",
+    "explanation": "3 occurs three times, more often than 2 (twice) and 5 (once)."
   },
-  "advancedExamples": [],
-  "howItWorks": "The MODE function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Single clear mode",
+      "scenario": "Tally of responses",
+      "description": "When one value repeats most, MODE returns it.",
+      "formula": "=MODE(1,2,2,3,4)",
+      "result": "2",
+      "explanation": "2 appears twice while every other value appears once."
+    },
+    {
+      "title": "Tied modes return the smallest",
+      "scenario": "Two values share the highest frequency",
+      "description": "Legacy MODE returns only one value and prefers the lowest when frequencies tie.",
+      "formula": "=MODE(1,2,2,3,3,4)",
+      "result": "2",
+      "explanation": "Both 2 and 3 occur twice; MODE returns the smaller, 2."
+    }
+  ],
+  "howItWorks": "MODE counts how often each numeric value appears and returns the value with the highest frequency. If multiple values tie for the highest frequency, it returns the smallest one. If no value repeats, it returns #N/A. Text, logical values, and empty cells are ignored.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the result cell",
+      "text": "Click where you want the mode."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =MODE(arguments)."
+      "text": "Type =MODE(range) with the cells to analyze."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The most frequent value is returned."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Returns only a single value; when several values tie it returns the lowest, hiding the others.",
+    "Returns #N/A when every value occurs exactly once (no mode).",
+    "Works with numbers only; text labels are ignored even if they repeat."
+  ],
+  "commonErrors": [
+    {
+      "error": "#N/A error",
+      "cause": "No value is repeated in the dataset (all values are unique).",
+      "fix": "Use MODE.MULT to see all tied values, or verify the data actually has a mode."
+    },
+    {
+      "error": "Wrong or missing mode",
+      "cause": "Numbers stored as text are ignored.",
+      "fix": "Convert text to numbers so repeated values are counted."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "MODE works identically in Google Sheets with the same syntax.",
-    "formula": "=MODE(A1)"
+    "description": "MODE is supported in Google Sheets and behaves the same as the Excel legacy function.",
+    "formula": "=MODE(2,3,2,5,3,3)",
+    "notes": "Returns 3, identical to Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "What is the difference between MODE and MODE.SNGL?",
+      "answer": "They are functionally equivalent; MODE.SNGL is the newer name introduced in Excel 2010, while MODE is kept for compatibility."
+    },
+    {
+      "question": "Why do I get #N/A?",
+      "answer": "Because no value repeats. Use MODE.MULT or check that your data contains duplicates."
+    },
+    {
+      "question": "Can MODE return multiple values?",
+      "answer": "No. Use MODE.MULT to return all values that share the highest frequency."
+    }
+  ],
+  "relatedFunctions": [
+    "mode-sngl",
+    "mode-mult",
+    "median",
+    "average",
+    "count"
+  ]
 }

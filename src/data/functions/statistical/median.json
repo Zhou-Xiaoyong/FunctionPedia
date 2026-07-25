@@ -3,38 +3,102 @@
   "slug": "median",
   "category": "statistical",
   "excelVersion": "All versions",
-  "description": "MEDIAN is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "MEDIAN is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(median)",
-  "parameters": [],
+  "description": "MEDIAN returns the middle value of a set of numbers: the value with an equal number of values above and below it after sorting.",
+  "tldr": "Finds the central (50th percentile) value of a dataset.",
+  "syntax": "(number1, [number2], ...)",
+  "parameters": [
+    {
+      "name": "number1",
+      "description": "The first number, cell, or range to evaluate.",
+      "required": true
+    },
+    {
+      "name": "number2",
+      "description": "Additional numbers, cells, or ranges (optional). Up to 255 arguments.",
+      "required": false
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the MEDIAN function",
-    "formula": "=MEDIAN(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the MEDIAN function."
+    "description": "Median of five ordered scores",
+    "formula": "=MEDIAN(1,2,3,4,5)",
+    "result": "3",
+    "explanation": "With 5 values the sorted middle (3rd) value is 3."
   },
-  "advancedExamples": [],
-  "howItWorks": "The MEDIAN function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Even number of values averages the two middle numbers",
+      "scenario": "Four monthly figures",
+      "description": "When the count is even, MEDIAN averages the two central values.",
+      "formula": "=MEDIAN(1,2,3,4)",
+      "result": "2.5",
+      "explanation": "The two middle values are 2 and 3; (2+3)/2 = 2.5."
+    },
+    {
+      "title": "Median ignores blanks and text automatically",
+      "scenario": "Mixed column with a repeated figure",
+      "description": "MEDIAN on a range with a duplicated central value.",
+      "formula": "=MEDIAN(10,20,20,30,40)",
+      "result": "20",
+      "explanation": "Sorted, the 3rd (middle) value is 20, so the median is 20."
+    }
+  ],
+  "howItWorks": "MEDIAN sorts the numeric values it receives and returns the value at the center position. With an odd count it returns the single middle value; with an even count it returns the arithmetic mean of the two middle values. Text, logical values, and empty cells are ignored.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the result cell",
+      "text": "Click the cell where you want the median."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =MEDIAN(arguments)."
+      "text": "Type =MEDIAN(range) using the cells to evaluate."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The middle value is returned."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Ignores text, logical values, and empty cells, which can change the perceived count.",
+    "For an even number of values it returns an average, not one of the actual data points.",
+    "Cells with text-formatted numbers are treated as text and ignored."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "No numeric values were supplied to the function.",
+      "fix": "Make sure the range or arguments contain at least one number."
+    },
+    {
+      "error": "Unexpected result",
+      "cause": "Numbers stored as text are ignored, shrinking the dataset.",
+      "fix": "Convert text to numbers or use VALUE() before MEDIAN."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "MEDIAN works identically in Google Sheets with the same syntax.",
-    "formula": "=MEDIAN(A1)"
+    "description": "MEDIAN works identically in Google Sheets with the same syntax and behavior.",
+    "formula": "=MEDIAN(1,2,3,4,5)",
+    "notes": "Same inclusive-text-ignoring behavior as Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "How does MEDIAN differ from AVERAGE?",
+      "answer": "MEDIAN is the middle value and is resistant to outliers; AVERAGE is the sum divided by count and is pulled by extreme values."
+    },
+    {
+      "question": "Does MEDIAN include zero?",
+      "answer": "Yes, zero is a real numeric value and is counted in the ordering."
+    },
+    {
+      "question": "What does MEDIAN return for an empty range?",
+      "answer": "It returns #NUM! because there is no numeric value to evaluate."
+    }
+  ],
+  "relatedFunctions": [
+    "average",
+    "mode",
+    "percentile",
+    "quartile",
+    "large",
+    "small"
+  ]
 }

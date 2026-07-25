@@ -2,39 +2,113 @@
   "name": "SORT",
   "slug": "sort",
   "category": "array",
-  "excelVersion": "All versions",
-  "description": "SORT is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "SORT is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(sort)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the SORT function",
-    "formula": "=SORT(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the SORT function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The SORT function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "excelVersion": "Microsoft 365",
+  "description": "SORT returns a dynamic array of a range or array sorted by one of its columns or rows, in ascending or descending order.",
+  "tldr": "Sorts a range or array (spills the result).",
+  "syntax": "(array, [sort_index], [sort_order], [by_col])",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "array",
+      "description": "The range or array to sort.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =SORT(arguments)."
+      "name": "sort_index",
+      "description": "The column (or row, when by_col is TRUE) number to sort by. Defaults to 1.",
+      "required": false
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "sort_order",
+      "description": "1 for ascending (default) or -1 for descending.",
+      "required": false
+    },
+    {
+      "name": "by_col",
+      "description": "FALSE to sort down rows (default) or TRUE to sort across columns.",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "SORT works identically in Google Sheets with the same syntax.",
-    "formula": "=SORT(A1)"
+  "basicExample": {
+    "description": "Sort a list of numbers ascending",
+    "formula": "=SORT(A2:A10)",
+    "result": "Sorted list of the values in A2:A10, smallest to largest",
+    "explanation": "With no extra arguments, SORT orders the first column ascending and spills the result."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Sort a table by a specific column",
+      "scenario": "Sort a table by the Score column (column 3) from highest to lowest.",
+      "description": "Use sort_index and descending order",
+      "formula": "=SORT(A2:C20, 3, -1)",
+      "result": "The rows of A2:C20 reordered by Score, highest first",
+      "explanation": "sort_index 3 picks the third column and -1 sorts it descending."
+    },
+    {
+      "title": "Sort horizontally",
+      "scenario": "Sort values across a single row left to right.",
+      "description": "Set by_col to TRUE",
+      "formula": "=SORT(A2:F2, , , TRUE)",
+      "result": "The cells A2:F2 reordered into ascending order",
+      "explanation": "by_col TRUE makes SORT sort across columns instead of down rows."
+    }
+  ],
+  "howItWorks": "SORT produces a dynamic array containing the sorted values of the input. By default it sorts the first column (or row) ascending. sort_index selects which column/row to sort by, sort_order is 1 (ascending) or -1 (descending), and by_col switches between sorting down rows and across columns. The result spills into neighboring empty cells.",
+  "howToSteps": [
+    {
+      "name": "Select the source",
+      "text": "Pick the range or array to sort."
+    },
+    {
+      "name": "Add sort options",
+      "text": "Optionally supply sort_index and sort_order."
+    },
+    {
+      "name": "Ensure spill space",
+      "text": "Leave empty cells below/right for the results."
+    }
+  ],
+  "limitations": [
+    "Available only in Microsoft 365 (and Excel 2021+); not in Excel 2019 and earlier.",
+    "Requires empty spill space below/right or it returns #SPILL!.",
+    "Sorts by a single key column at a time; use SORTBY for multiple sort keys."
+  ],
+  "commonErrors": [
+    {
+      "error": "#SPILL! error",
+      "cause": "There is no room for the spilled results.",
+      "fix": "Clear the cells in the spill range."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "sort_index points beyond the number of columns/rows.",
+      "fix": "Make sure sort_index is within the array dimensions."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "SORT is available natively in Google Sheets with a similar signature: SORT(range, sort_column, is_ascending, ...).",
+    "formula": "=SORT(A2:A10, 1, TRUE)",
+    "notes": "Sheets uses separate sort_column and is_ascending pairs and supports multiple keys directly in SORT; by_col is not a parameter."
+  },
+  "faq": [
+    {
+      "question": "Is SORT available in Google Sheets?",
+      "answer": "Yes, SORT is a native function in Google Sheets."
+    },
+    {
+      "question": "How do I sort descending?",
+      "answer": "Add -1 as the sort_order argument, e.g. =SORT(A2:A10, 1, -1)."
+    },
+    {
+      "question": "Can I sort by multiple columns?",
+      "answer": "Use SORTBY for multi-key sorting, or supply multiple columns in Sheets' SORT."
+    }
+  ],
+  "relatedFunctions": [
+    "sortby",
+    "unique",
+    "filter",
+    "sequence",
+    "index",
+    "match"
+  ]
 }

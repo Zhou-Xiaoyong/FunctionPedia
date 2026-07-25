@@ -2,39 +2,112 @@
   "name": "MINIFS",
   "slug": "minifs",
   "category": "statistical",
-  "excelVersion": "All versions",
-  "description": "MINIFS is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "MINIFS is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(minifs)",
-  "parameters": [],
+  "excelVersion": "Excel 2019+",
+  "description": "MINIFS returns the minimum value in a range that meets one or more criteria across corresponding criteria ranges.",
+  "tldr": "Finds the smallest value where multiple conditions are all true.",
+  "syntax": "(min_range, criteria_range1, criteria1, [criteria_range2, criteria2], ...)",
+  "parameters": [
+    {
+      "name": "min_range",
+      "description": "The range of cells from which the minimum is returned.",
+      "required": true
+    },
+    {
+      "name": "criteria_range1",
+      "description": "The first range tested against criteria1; must be the same size as min_range.",
+      "required": true
+    },
+    {
+      "name": "criteria1",
+      "description": "The condition for criteria_range1 (e.g. \"Apple\", \">100\", \"West\").",
+      "required": true
+    },
+    {
+      "name": "criteria_range2, criteria2, ...",
+      "description": "Optional additional range/criteria pairs; all must be met (AND logic).",
+      "required": false
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the MINIFS function",
-    "formula": "=MINIFS(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the MINIFS function."
+    "description": "Smallest sale for a specific product",
+    "formula": "=MINIFS(C2:C10, A2:A10, \"Apple\")",
+    "result": "500",
+    "explanation": "Among rows where column A is Apple, the smallest value in column C (e.g. 500) is returned."
   },
-  "advancedExamples": [],
-  "howItWorks": "The MINIFS function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Minimum with two criteria",
+      "scenario": "Lowest sale in a region meeting a threshold",
+      "description": "Both conditions must be satisfied (AND logic).",
+      "formula": "=MINIFS(C2:C100, A2:A100, \"West\", B2:B100, \">=100\")",
+      "result": "120",
+      "explanation": "Only rows where region is West AND column B is at least 100 are considered; the smallest such column C value is 120."
+    },
+    {
+      "title": "Criterion with a cell reference",
+      "scenario": "Reusable threshold in a cell",
+      "description": "Concatenate a comparison operator with a cell value.",
+      "formula": "=MINIFS(C2:C50, A2:A50, \"Banana\", B2:B50, \">\"&E1)",
+      "result": "80",
+      "explanation": "If E1 holds 50, this finds the smallest column C for Banana where column B exceeds 50, here 80."
+    }
+  ],
+  "howItWorks": "MINIFS evaluates each criteria_range against its criteria, keeping only the rows where all conditions are true. It then returns the minimum value from min_range at those rows. All ranges must have the same dimensions. If no row satisfies every criterion, MINIFS returns 0. Criteria support operators (>, <, >=, <=, <>) and wildcards (*, ?) for text. It is the conditional counterpart of MIN, analogous to SUMIFS for SUM.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the result cell",
+      "text": "Click where you want the minimum."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =MINIFS(arguments)."
+      "text": "Type =MINIFS(min_range, criteria_range1, criteria1, ...)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The conditional minimum appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "All ranges must be the same size; mismatched sizes cause #VALUE!.",
+    "Applies AND logic only; OR logic requires separate formulas combined with MIN.",
+    "Returns 0 when no row meets all criteria, which can be confused with a real zero."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! error",
+      "cause": "The criteria ranges and min_range have different sizes or shapes.",
+      "fix": "Ensure every range covers the same rows and columns."
+    },
+    {
+      "error": "Wrong minimum returned",
+      "cause": "Criteria text does not exactly match, including case differences or stray spaces.",
+      "fix": "Use exact text, trim spaces, or use wildcards for partial matches."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "MINIFS works identically in Google Sheets with the same syntax.",
-    "formula": "=MINIFS(A1)"
+    "description": "Google Sheets supports MINIFS with the same syntax, criteria rules, and AND logic as Excel 2019+.",
+    "formula": "=MINIFS(C2:C10, A2:A10, \"Apple\")",
+    "notes": "Returns the smallest Apple value, identical to Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Can MINIFS use OR logic?",
+      "answer": "No, it only applies AND across criteria pairs. For OR, compute separate MINIFS and wrap them in MIN, or use MIN with FILTER."
+    },
+    {
+      "question": "Why do I get 0?",
+      "answer": "No row satisfied all criteria, and MINIFS returns 0 in that case. Check your criteria and ranges."
+    },
+    {
+      "question": "Which Excel versions have MINIFS?",
+      "answer": "MINIFS was introduced in Excel 2019 and is also in Microsoft 365; it is not available in Excel 2016 and earlier."
+    }
+  ],
+  "relatedFunctions": [
+    "maxifs",
+    "min",
+    "max",
+    "sumifs",
+    "averageifs"
+  ]
 }

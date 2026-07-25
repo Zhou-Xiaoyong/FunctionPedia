@@ -2,39 +2,113 @@
   "name": "XMATCH",
   "slug": "xmatch",
   "category": "array",
-  "excelVersion": "All versions",
-  "description": "XMATCH is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "XMATCH is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(xmatch)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the XMATCH function",
-    "formula": "=XMATCH(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the XMATCH function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The XMATCH function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "excelVersion": "Microsoft 365",
+  "description": "XMATCH returns the relative position of a lookup value within a lookup array, with modern options for match mode (exact, wildcard, next smaller/larger) and search mode (first, last, binary).",
+  "tldr": "Modern lookup that returns a position (MATCH replacement).",
+  "syntax": "(lookup_value, lookup_array, [match_mode], [search_mode])",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "lookup_value",
+      "description": "The value to find within lookup_array.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =XMATCH(arguments)."
+      "name": "lookup_array",
+      "description": "The range or array to search (a single row or column).",
+      "required": true
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "match_mode",
+      "description": "0 exact match (default), -1 exact or next smaller, 1 exact or next larger, 2 wildcard match.",
+      "required": false
+    },
+    {
+      "name": "search_mode",
+      "description": "1 search from first (default), -1 search from last, 2 binary search ascending, -2 binary search descending.",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "XMATCH works identically in Google Sheets with the same syntax.",
-    "formula": "=XMATCH(A1)"
+  "basicExample": {
+    "description": "Find the position of \"Apple\" in a list",
+    "formula": "=XMATCH(\"Apple\", A2:A10)",
+    "result": "3",
+    "explanation": "\"Apple\" is the third item in A2:A10, so XMATCH returns 3. The default is exact match."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Wildcard match",
+      "scenario": "Find the first item beginning with \"App\".",
+      "description": "Use match_mode 2",
+      "formula": "=XMATCH(\"App*\", A2:A10, 2)",
+      "result": "1",
+      "explanation": "With match_mode 2, \"App*\" matches the first item starting with \"App\"."
+    },
+    {
+      "title": "Approximate match (next smaller)",
+      "scenario": "Find where 85 fits in an ascending sorted list.",
+      "description": "Use match_mode 1 for exact-or-next-larger, or -1 for next smaller",
+      "formula": "=XMATCH(85, B2:B10, 1)",
+      "result": "4",
+      "explanation": "match_mode 1 returns the position of the largest value that is less than or equal to 85 (requires sorted data)."
+    }
+  ],
+  "howItWorks": "XMATCH returns the relative position of lookup_value within lookup_array. match_mode controls matching: 0 (exact, default), -1 (exact or next smaller), 1 (exact or next larger), 2 (wildcard). search_mode controls direction: 1 (first, default), -1 (last), 2/-2 (binary search for sorted data). It is the modern replacement for MATCH and accepts arrays directly.",
+  "howToSteps": [
+    {
+      "name": "Define the lookup",
+      "text": "Choose the value to find and the array to search."
+    },
+    {
+      "name": "Pick match and search modes",
+      "text": "Add match_mode and search_mode as needed."
+    },
+    {
+      "name": "Use the result",
+      "text": "Feed the position into INDEX or other functions."
+    }
+  ],
+  "limitations": [
+    "Microsoft 365 / Excel 2021+ only (also in newer Google Sheets).",
+    "Approximate modes (-1/1) require the array to be sorted correctly.",
+    "Wildcard mode requires match_mode 2."
+  ],
+  "commonErrors": [
+    {
+      "error": "#N/A",
+      "cause": "Exact match (mode 0) found nothing, or spelling mismatch.",
+      "fix": "Use mode -1/1 for approximate matches, or verify the lookup value."
+    },
+    {
+      "error": "#VALUE! (bad search_mode)",
+      "cause": "An invalid search_mode number was used.",
+      "fix": "Use 1, -1, 2, or -2."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "XMATCH is available in newer versions of Google Sheets with the same arguments and behavior as Excel.",
+    "formula": "=XMATCH(\"Apple\", A2:A10)",
+    "notes": "Older Sheets lack XMATCH and would use MATCH instead."
+  },
+  "faq": [
+    {
+      "question": "XMATCH vs MATCH?",
+      "answer": "XMATCH defaults to exact match, can search from the last, and supports wildcards and binary search; MATCH defaults to approximate."
+    },
+    {
+      "question": "What is the default match mode?",
+      "answer": "Exact match (0), unlike MATCH's default approximate mode."
+    },
+    {
+      "question": "Is XMATCH in Google Sheets?",
+      "answer": "Yes, in newer Google Sheets versions; older Sheets only have MATCH."
+    }
+  ],
+  "relatedFunctions": [
+    "match",
+    "xlookup",
+    "vlookup",
+    "index",
+    "sortby",
+    "filter"
+  ]
 }

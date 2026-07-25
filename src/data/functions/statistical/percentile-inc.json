@@ -2,39 +2,102 @@
   "name": "PERCENTILE.INC",
   "slug": "percentile-inc",
   "category": "statistical",
-  "excelVersion": "All versions",
-  "description": "PERCENTILE.INC is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "PERCENTILE.INC is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(percentile.inc)",
-  "parameters": [],
+  "excelVersion": "Excel 2010+",
+  "description": "PERCENTILE.INC returns the k-th percentile of values using the inclusive method, where k is any number from 0 to 1 inclusive.",
+  "tldr": "Returns the value at percentile k (0 <= k <= 1) using the inclusive method.",
+  "syntax": "(array, k)",
+  "parameters": [
+    {
+      "name": "array",
+      "description": "The range or array of numeric values.",
+      "required": true
+    },
+    {
+      "name": "k",
+      "description": "The percentile, a number between 0 and 1 inclusive.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the PERCENTILE.INC function",
-    "formula": "=PERCENTILE.INC(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the PERCENTILE.INC function."
+    "description": "Median via the inclusive method",
+    "formula": "=PERCENTILE.INC({1,2,3,4}, 0.5)",
+    "result": "2.5",
+    "explanation": "Rank = 1 + 0.5*(4-1) = 2.5; interpolating between 2 and 3 gives 2.5."
   },
-  "advancedExamples": [],
-  "howItWorks": "The PERCENTILE.INC function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "90th percentile with interpolation",
+      "scenario": "Five evenly spaced values",
+      "description": "A high k produces a rank near the top of the list.",
+      "formula": "=PERCENTILE.INC({2,4,6,8,10}, 0.9)",
+      "result": "9.2",
+      "explanation": "Rank = 1 + 0.9*(5-1) = 4.6; interpolate 60% from 8 to 10: 8 + 0.6*(10-8) = 9.2."
+    },
+    {
+      "title": "k = 0 returns the minimum",
+      "scenario": "Lower edge of the distribution",
+      "description": "The inclusive method allows k = 0 and k = 1 at the extremes.",
+      "formula": "=PERCENTILE.INC({1,2,3,4,5}, 0)",
+      "result": "1",
+      "explanation": "With k = 0 the function returns the smallest value, 1."
+    }
+  ],
+  "howItWorks": "PERCENTILE.INC uses the inclusive (INC) method. It computes a rank as 1 + k*(n-1), where n is the number of values, then linearly interpolates between the two surrounding sorted values. Because the method is inclusive, k can be 0 (minimum) or 1 (maximum). It is functionally identical to the legacy PERCENTILE. Text and logical values are ignored.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the result cell",
+      "text": "Click where you want the percentile."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =PERCENTILE.INC(arguments)."
+      "text": "Type =PERCENTILE.INC(range, k)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The interpolated percentile value is returned."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "k must be between 0 and 1 inclusive, else #NUM!.",
+    "Interpolates between values, so the result may not be a real data point.",
+    "Ignores text and logical values."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "k is outside 0..1 or the array is empty.",
+      "fix": "Keep k between 0 and 1 and supply a non-empty numeric range."
+    },
+    {
+      "error": "Result differs from PERCENTILE.EXC",
+      "cause": "The two functions use different interpolation formulas.",
+      "fix": "Use PERCENTILE.EXC only when you need the exclusive method (k strictly between 0 and 1)."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "PERCENTILE.INC works identically in Google Sheets with the same syntax.",
-    "formula": "=PERCENTILE.INC(A1)"
+    "description": "Google Sheets supports PERCENTILE.INC with the same inclusive behavior as Excel 2010+.",
+    "formula": "=PERCENTILE.INC({1,2,3,4}, 0.5)",
+    "notes": "Returns 2.5, identical to Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "What is the difference between .INC and .EXC?",
+      "answer": ".INC (inclusive) allows k from 0 to 1 and uses rank 1 + k*(n-1); .EXC (exclusive) requires k strictly between 0 and 1 and uses rank k*(n+1), so it never returns the actual min or max."
+    },
+    {
+      "question": "Is PERCENTILE.INC the same as PERCENTILE?",
+      "answer": "Yes. PERCENTILE is the legacy name for the inclusive method; PERCENTILE.INC is the Excel 2010+ equivalent."
+    },
+    {
+      "question": "Why is my percentile a decimal?",
+      "answer": "The inclusive method interpolates between the two nearest values when the rank is fractional."
+    }
+  ],
+  "relatedFunctions": [
+    "percentile",
+    "percentile-exc",
+    "quartile-inc",
+    "median",
+    "rank"
+  ]
 }

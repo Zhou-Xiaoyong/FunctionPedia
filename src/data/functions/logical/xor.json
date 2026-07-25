@@ -2,39 +2,93 @@
   "name": "XOR",
   "slug": "xor",
   "category": "logical",
-  "excelVersion": "All versions",
-  "description": "XOR is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "XOR is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(xor)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the XOR function",
-    "formula": "=XOR(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the XOR function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The XOR function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "excelVersion": "Excel 2013+",
+  "description": "XOR returns TRUE when an odd number of its logical arguments are TRUE, and FALSE otherwise. It is the logical exclusive OR.",
+  "tldr": "Returns TRUE when an odd number of arguments are TRUE.",
+  "syntax": "(logical1, [logical2], ...)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "logical1",
+      "description": "The first condition or logical value to test.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =XOR(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "logical2",
+      "description": "Additional conditions or logical values to test (optional).",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "XOR works identically in Google Sheets with the same syntax.",
-    "formula": "=XOR(A1)"
+  "basicExample": {
+    "description": "Exactly one true",
+    "formula": "=XOR(TRUE,FALSE)",
+    "result": "TRUE",
+    "explanation": "One of the two arguments is TRUE (an odd count), so XOR returns TRUE."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Two true is false",
+      "scenario": "Check two conditions",
+      "description": "Both true cancels out",
+      "formula": "=XOR(TRUE,TRUE)",
+      "result": "FALSE",
+      "explanation": "Two TRUE values are an even count, so XOR returns FALSE."
+    },
+    {
+      "title": "Three inputs",
+      "scenario": "Cells A1:A3 are TRUE, FALSE, TRUE",
+      "description": "Odd count of TRUE wins",
+      "formula": "=XOR(A1:A3)",
+      "result": "FALSE",
+      "explanation": "Two of the three are TRUE (even), so the result is FALSE."
+    }
+  ],
+  "howItWorks": "XOR evaluates each argument as TRUE or FALSE (non-zero numbers count as TRUE), counts how many are TRUE, and returns TRUE when that count is odd and FALSE when even.",
+  "howToSteps": [
+    {
+      "name": "List conditions",
+      "text": "Provide the logical tests or values."
+    },
+    {
+      "name": "Enter XOR",
+      "text": "Type =XOR(...) and press Enter."
+    }
+  ],
+  "limitations": [
+    "Available only in Excel 2013 and later.",
+    "With exactly two arguments it behaves as classic XOR; with more it is true for any odd number of TRUEs, not 'exactly one'.",
+    "Non-numeric, non-logical text arguments cause #VALUE!."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! error",
+      "cause": "An argument is text that is not a valid logical value.",
+      "fix": "Pass real conditions or TRUE/FALSE constants."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "XOR is supported in Google Sheets with the same syntax and odd-count behavior.",
+    "formula": "=XOR(TRUE,FALSE)",
+    "notes": "Same behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "Does XOR mean 'exactly one'?",
+      "answer": "Only with two arguments; with more it returns TRUE for any odd number of TRUEs."
+    },
+    {
+      "question": "Which Excel versions support XOR?",
+      "answer": "Excel 2013 and later, plus Microsoft 365."
+    },
+    {
+      "question": "How is XOR different from OR?",
+      "answer": "OR is TRUE if any argument is true; XOR is TRUE only for an odd number of true arguments."
+    }
+  ],
+  "relatedFunctions": [
+    "or",
+    "and",
+    "not",
+    "if",
+    "ifna"
+  ]
 }

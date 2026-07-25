@@ -3,38 +3,101 @@
   "slug": "stdevp",
   "category": "statistical",
   "excelVersion": "All versions",
-  "description": "STDEVP is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "STDEVP is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(stdevp)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the STDEVP function",
-    "formula": "=STDEVP(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the STDEVP function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The STDEVP function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "STDEVP calculates the standard deviation based on an entire population, using the n denominator. It is the legacy compatibility version of STDEV.P.",
+  "tldr": "Population standard deviation (n) of a set of numbers.",
+  "syntax": "(number1, [number2], ...)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "number1",
+      "description": "The first number, range, or reference in the population.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =STDEVP(arguments)."
+      "name": "number2",
+      "description": "Additional numbers, ranges, or references (optional, up to 255 total arguments).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Population standard deviation of five values",
+    "formula": "=STDEVP(10,20,30,40,50)",
+    "result": "14.14213562",
+    "explanation": "The mean is 30; the population variance is 200 (sum of squared deviations 1000 divided by 5) and its square root is 14.14213562."
+  },
+  "advancedExamples": [
+    {
+      "title": "Population from a range",
+      "scenario": "Full census of a small group",
+      "description": "Compute the spread of every value in B2:B6",
+      "formula": "=STDEVP(B2:B6)",
+      "result": "Population standard deviation of the 5 values",
+      "explanation": "Divides by n (5) rather than n-1."
+    },
+    {
+      "title": "Population vs sample",
+      "scenario": "Comparing denominators",
+      "description": "Same data, two different denominators",
+      "formula": "=STDEVP(10,20,30,40,50) and =STDEV(10,20,30,40,50)",
+      "result": "14.14213562 and 15.8113883",
+      "explanation": "STDEVP divides by 5 (n) while STDEV divides by 4 (n-1), so the sample version is larger."
+    }
+  ],
+  "howItWorks": "STDEVP computes the population variance as the sum of squared deviations from the mean divided by n, then takes the square root. Using n (not n-1) is correct only when the supplied data is the complete population; for a sample, STDEV's n-1 correction is appropriate. Text and logical values in references are ignored.",
+  "howToSteps": [
+    {
+      "name": "Confirm population",
+      "text": "Ensure the data represents the entire population, not a sample."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =STDEVP(range or values)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The population standard deviation is displayed."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Only valid when the data is the entire population; using it on a sample underestimates the true spread.",
+    "Ignores text and logical values inside ranged references.",
+    "Requires at least one numeric value, otherwise returns #DIV/0!."
+  ],
+  "commonErrors": [
+    {
+      "error": "#DIV/0!",
+      "cause": "No numeric values were supplied.",
+      "fix": "Provide at least one data point."
+    },
+    {
+      "error": "Result too small",
+      "cause": "Data was actually a sample but n was used.",
+      "fix": "Use STDEV (or STDEV.S) for a sample."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "STDEVP works identically in Google Sheets with the same syntax.",
-    "formula": "=STDEVP(A1)"
+    "description": "STDEVP behaves the same in Google Sheets as a population standard deviation.",
+    "formula": "=STDEVP(10,20,30,40,50)",
+    "notes": "Identical behavior to Excel STDEVP."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "What is the difference between STDEVP and STDEV?",
+      "answer": "STDEVP divides by n (population), STDEV divides by n-1 (sample)."
+    },
+    {
+      "question": "Is STDEVP the same as STDEV.P?",
+      "answer": "Functionally yes; STDEV.P is the modern replacement for the legacy STDEVP."
+    },
+    {
+      "question": "Does STDEVP include text in cells?",
+      "answer": "No. Use STDEVPA if you want text counted as 0 and TRUE counted as 1."
+    }
+  ],
+  "relatedFunctions": [
+    "stdev",
+    "stdeva",
+    "stdevpa",
+    "varp",
+    "average"
+  ]
 }

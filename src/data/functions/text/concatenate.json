@@ -3,38 +3,96 @@
   "slug": "concatenate",
   "category": "text",
   "excelVersion": "All versions",
-  "description": "CONCATENATE is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "CONCATENATE is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(concatenate)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the CONCATENATE function",
-    "formula": "=CONCATENATE(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the CONCATENATE function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The CONCATENATE function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "CONCATENATE joins two or more text items into one text string. It is the legacy join function; CONCAT and TEXTJOIN are newer and more flexible.",
+  "tldr": "Joins text values together (legacy function).",
+  "syntax": "(text1, [text2], ...)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "text1",
+      "description": "The first text item or cell reference to join.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =CONCATENATE(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "text2",
+      "description": "Additional text items or cell references to join (optional, up to 255 arguments).",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "CONCATENATE works identically in Google Sheets with the same syntax.",
-    "formula": "=CONCATENATE(A1)"
+  "basicExample": {
+    "description": "Join first and last name",
+    "formula": "=CONCATENATE(\"Hello\",\" \",\"World\")",
+    "result": "Hello World",
+    "explanation": "The three text items are concatenated in order into a single string."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Build a full name from cells",
+      "scenario": "A1 = \"Jane\", B1 = \"Doe\"",
+      "description": "Combine with a space",
+      "formula": "=CONCATENATE(A1,\" \",B1)",
+      "result": "Jane Doe",
+      "explanation": "Cell references and literal text are joined seamlessly."
+    },
+    {
+      "title": "Prefer TEXTJOIN for ranges",
+      "scenario": "Join A1:A3 without listing each cell",
+      "description": "Show the newer alternative",
+      "formula": "=TEXTJOIN(\", \",TRUE,A1:A3)",
+      "result": "Items joined by a comma and space",
+      "explanation": "TEXTJOIN accepts a range and delimiter directly, which CONCATENATE cannot do in one argument."
+    }
+  ],
+  "howItWorks": "CONCATENATE accepts up to 255 text arguments and appends them in the order given, returning one combined text string. It does not add any separator on its own.",
+  "howToSteps": [
+    {
+      "name": "List the items",
+      "text": "Decide which texts or cells to join."
+    },
+    {
+      "name": "Add separators",
+      "text": "Include literal separators like \" \" as their own arguments."
+    },
+    {
+      "name": "Enter CONCATENATE",
+      "text": "Type =CONCATENATE(...) and press Enter."
+    }
+  ],
+  "limitations": [
+    "Cannot accept a range as a single argument; each cell must be listed separately.",
+    "Adds no delimiter automatically, so separators must be supplied manually.",
+    "Superseded by CONCAT (ranges) and TEXTJOIN (delimiters, ignore empties) in newer Excel."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! error",
+      "cause": "Referencing a range directly, e.g. =CONCATENATE(A1:A3), in versions that disallow it.",
+      "fix": "List cells individually or use CONCAT/TEXTJOIN for ranges."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "CONCATENATE works the same in Google Sheets, but the CONCAT and TEXTJOIN successors are also available and recommended for ranges.",
+    "formula": "=CONCATENATE(\"Hello\",\" \",\"World\")",
+    "notes": "Identical legacy behavior; prefer TEXTJOIN for ranges."
+  },
+  "faq": [
+    {
+      "question": "Should I use CONCATENATE or TEXTJOIN?",
+      "answer": "Use TEXTJOIN when joining a range or adding a delimiter; CONCATENATE is legacy."
+    },
+    {
+      "question": "Can CONCATENATE join a range?",
+      "answer": "Not as a single argument; you must list each cell, or use CONCAT/TEXTJOIN."
+    },
+    {
+      "question": "What is the 255 limit?",
+      "answer": "CONCATENATE accepts up to 255 individual text arguments."
+    }
+  ],
+  "relatedFunctions": [
+    "textjoin",
+    "concat",
+    "upper",
+    "lower",
+    "rept"
+  ]
 }

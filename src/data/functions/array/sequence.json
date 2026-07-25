@@ -2,39 +2,113 @@
   "name": "SEQUENCE",
   "slug": "sequence",
   "category": "array",
-  "excelVersion": "All versions",
-  "description": "SEQUENCE is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "SEQUENCE is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(sequence)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the SEQUENCE function",
-    "formula": "=SEQUENCE(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the SEQUENCE function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The SEQUENCE function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "excelVersion": "Microsoft 365",
+  "description": "SEQUENCE returns a dynamic array of sequential numbers, shaped by the number of rows and columns, starting at a given value and stepping by a given increment.",
+  "tldr": "Generates a sequence of numbers in an array.",
+  "syntax": "(rows, [columns], [start], [step])",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "rows",
+      "description": "The number of rows in the result (must be a positive integer).",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =SEQUENCE(arguments)."
+      "name": "columns",
+      "description": "The number of columns in the result (defaults to 1).",
+      "required": false
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "start",
+      "description": "The first value in the sequence (defaults to 1).",
+      "required": false
+    },
+    {
+      "name": "step",
+      "description": "The increment between values (defaults to 1; may be negative).",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "SEQUENCE works identically in Google Sheets with the same syntax.",
-    "formula": "=SEQUENCE(A1)"
+  "basicExample": {
+    "description": "Make a column of 1 through 5",
+    "formula": "=SEQUENCE(5)",
+    "result": "1, 2, 3, 4, 5 (in a single column)",
+    "explanation": "With only rows supplied, SEQUENCE returns a 5-row, 1-column array starting at 1, stepping by 1."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "A grid with a step",
+      "scenario": "Build a 3-row by 4-column table starting at 10, counting by 5.",
+      "description": "Supply rows, columns, start, and step",
+      "formula": "=SEQUENCE(3, 4, 10, 5)",
+      "result": "10, 15, 20, 25 / 30, 35, 40, 45 / 50, 55, 60, 65 (3 rows, 4 columns)",
+      "explanation": "The sequence starts at 10 and increments by 5 across the 12 cells."
+    },
+    {
+      "title": "Counting down",
+      "scenario": "A row from 100 down to 60.",
+      "description": "Use a negative step",
+      "formula": "=SEQUENCE(1, 5, 100, -10)",
+      "result": "100, 90, 80, 70, 60",
+      "explanation": "A negative step produces a decreasing sequence."
+    }
+  ],
+  "howItWorks": "SEQUENCE generates a two-dimensional array of sequential numbers. rows and columns set the shape (columns defaults to 1), start is the first value (default 1), and step is the increment (default 1, and may be negative). The array spills into the sheet.",
+  "howToSteps": [
+    {
+      "name": "Set the shape",
+      "text": "Decide rows and columns."
+    },
+    {
+      "name": "Set start and step",
+      "text": "Optionally choose start value and increment."
+    },
+    {
+      "name": "Ensure spill space",
+      "text": "Leave empty cells for the array."
+    }
+  ],
+  "limitations": [
+    "Microsoft 365 / Excel 2021+ only.",
+    "rows and columns must be positive integers; only step may be negative.",
+    "Spills, so it needs empty space below/right."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! (negative size)",
+      "cause": "rows or columns is negative or non-integer.",
+      "fix": "Use positive integers; only step may be negative."
+    },
+    {
+      "error": "#SPILL!",
+      "cause": "No room for the spilled array.",
+      "fix": "Clear the cells in the spill range."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "SEQUENCE is a native function in Google Sheets with the same arguments and behavior.",
+    "formula": "=SEQUENCE(5)",
+    "notes": "Identical to Excel."
+  },
+  "faq": [
+    {
+      "question": "Is SEQUENCE in Google Sheets?",
+      "answer": "Yes, SEQUENCE is natively supported in Google Sheets."
+    },
+    {
+      "question": "Can step be negative?",
+      "answer": "Yes, e.g. start 10 with step -1 counts downward."
+    },
+    {
+      "question": "How do I make a row vector?",
+      "answer": "Set columns greater than 1 and rows equal to 1."
+    }
+  ],
+  "relatedFunctions": [
+    "randarray",
+    "unique",
+    "sort",
+    "index",
+    "row",
+    "sequence"
+  ]
 }

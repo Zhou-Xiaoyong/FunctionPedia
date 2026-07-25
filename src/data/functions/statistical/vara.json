@@ -3,38 +3,101 @@
   "slug": "vara",
   "category": "statistical",
   "excelVersion": "All versions",
-  "description": "VARA is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "VARA is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(vara)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the VARA function",
-    "formula": "=VARA(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the VARA function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The VARA function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "VARA estimates the sample variance (n-1) while treating text as 0 and logical values TRUE as 1 and FALSE as 0.",
+  "tldr": "Sample variance that also counts text and logicals as numbers.",
+  "syntax": "(value1, [value2], ...)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "value1",
+      "description": "The first value, range, or reference in the sample.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =VARA(arguments)."
+      "name": "value2",
+      "description": "Additional values, ranges, or references (optional).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Sample variance of numeric values only",
+    "formula": "=VARA(10,20,30,40,50)",
+    "result": "250",
+    "explanation": "With only numbers present, VARA returns the same result as VAR."
+  },
+  "advancedExamples": [
+    {
+      "title": "Text and TRUE are counted",
+      "scenario": "A range that mixes numbers, text, and a logical",
+      "description": "Text becomes 0 and TRUE becomes 1 before the calculation",
+      "formula": "=VARA(10,20,30,TRUE,\"apple\")",
+      "result": "164.2",
+      "explanation": "The values used are 10,20,30,1,0; the mean is 12.2 and the sample variance (sum of squared deviations 656.8 divided by 4) is 164.2."
+    },
+    {
+      "title": "Contrast with VAR on a reference",
+      "scenario": "Ignoring non-numeric cells",
+      "description": "VAR ignores text and logicals inside a range",
+      "formula": "=VAR(A1:A5) where A1:A5 = 10,20,30,TRUE,\"apple\"",
+      "result": "100",
+      "explanation": "VAR sees only 10,20,30 (n=3), variance 100, whereas VARA counts all five values for 164.2."
+    }
+  ],
+  "howItWorks": "VARA first coerces every argument to a number (text to 0, TRUE to 1, FALSE to 0), then computes the sample variance with the n-1 denominator. Because non-numeric entries count toward both the sum and the mean, they change the variance materially.",
+  "howToSteps": [
+    {
+      "name": "Identify values",
+      "text": "Collect the values, including any text or logicals you want counted."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =VARA(range or values)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The sample variance including non-numerics is shown."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Counting text as 0 can distort the result when text cells are labels, not true zeros.",
+    "Still requires at least two effective values, otherwise returns #DIV/0!.",
+    "The n-1 denominator still assumes a sample, not a full population (use VARPA for population)."
+  ],
+  "commonErrors": [
+    {
+      "error": "#DIV/0!",
+      "cause": "Fewer than two effective numeric values after coercion.",
+      "fix": "Provide at least two values that evaluate to numbers."
+    },
+    {
+      "error": "Larger variance than expected",
+      "cause": "Text labels were coerced to 0, pulling the mean down.",
+      "fix": "Use VAR when text cells should be ignored."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "VARA works identically in Google Sheets with the same syntax.",
-    "formula": "=VARA(A1)"
+    "description": "VARA is available in Google Sheets with the same coercion rules.",
+    "formula": "=VARA(10,20,30,TRUE,\"apple\")",
+    "notes": "Behavior matches Excel VARA."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Does VARA treat empty cells as 0?",
+      "answer": "No. Empty cells are ignored; only text and logicals are coerced (text to 0, TRUE to 1, FALSE to 0)."
+    },
+    {
+      "question": "When should I use VARA instead of VAR?",
+      "answer": "When your data includes logicals or text that genuinely represent 1/0 or zero, and you want them in the sample."
+    },
+    {
+      "question": "What is the population equivalent?",
+      "answer": "VARPA, which uses the n denominator instead of n-1."
+    }
+  ],
+  "relatedFunctions": [
+    "var",
+    "varp",
+    "varpa",
+    "stdeva",
+    "average"
+  ]
 }

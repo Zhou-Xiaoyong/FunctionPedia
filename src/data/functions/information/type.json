@@ -3,38 +3,97 @@
   "slug": "type",
   "category": "information",
   "excelVersion": "All versions",
-  "description": "TYPE is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "TYPE is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(type)",
-  "parameters": [],
+  "description": "TYPE returns a numeric code indicating the data type of a value: 1 for number, 2 for text, 4 for logical, 16 for error, and 64 for array.",
+  "tldr": "Returns a number code for a value's type.",
+  "syntax": "(value)",
+  "parameters": [
+    {
+      "name": "value",
+      "description": "The value, cell reference, or formula result whose type is tested.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the TYPE function",
-    "formula": "=TYPE(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the TYPE function."
+    "description": "Test a text string",
+    "formula": "=TYPE(\"x\")",
+    "result": "2",
+    "explanation": "\"x\" is text, so the type code is 2."
   },
-  "advancedExamples": [],
-  "howItWorks": "The TYPE function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Detect an array",
+      "scenario": "A multi-cell range reference is an array.",
+      "description": "Reference a range to get code 64",
+      "formula": "=TYPE(A1:A3)",
+      "result": "64",
+      "explanation": "A range covering multiple cells is treated as an array, returning 64."
+    },
+    {
+      "title": "Classify a logical value",
+      "scenario": "Test TRUE/FALSE.",
+      "description": "Logical values return 4",
+      "formula": "=TYPE(TRUE)",
+      "result": "4",
+      "explanation": "TRUE is a logical value, so the type code is 4."
+    }
+  ],
+  "howItWorks": "TYPE examines the supplied value and returns an integer: 1 (number), 2 (text), 4 (logical TRUE/FALSE), 16 (error value), or 64 (array). It is useful inside branching logic when a formula must handle different input types differently.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Pick the value",
+      "text": "Select the cell or value to classify."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =TYPE(arguments)."
+      "text": "Type =TYPE(value)."
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "Interpret the code",
+      "text": "Compare the result to 1, 2, 4, 16, or 64."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Returns 64 for any array, even a single-cell array.",
+    "Cannot distinguish sub-types; dates and numbers both return 1.",
+    "Returns a code, not TRUE/FALSE, so compare it (e.g. =TYPE(x)=2)."
+  ],
+  "commonErrors": [
+    {
+      "error": "Getting 64 unexpectedly",
+      "cause": "A multi-cell range reference is an array.",
+      "fix": "Reference a single cell if you want codes 1, 2, or 4."
+    },
+    {
+      "error": "Confusing TYPE with IS checks",
+      "cause": "TYPE returns a code, not TRUE/FALSE.",
+      "fix": "Combine with a comparison, e.g. =TYPE(x)=2 for text."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "TYPE works identically in Google Sheets with the same syntax.",
-    "formula": "=TYPE(A1)"
+    "description": "TYPE works identically in Google Sheets with the same syntax and code values.",
+    "formula": "=TYPE(\"x\")",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "What does 64 mean?",
+      "answer": "It means the value is an array."
+    },
+    {
+      "question": "Does TYPE catch errors?",
+      "answer": "Yes, an error value returns 16."
+    },
+    {
+      "question": "Can TYPE test a range?",
+      "answer": "Yes; a multi-cell range returns 64."
+    }
+  ],
+  "relatedFunctions": [
+    "isnumber",
+    "istext",
+    "iserror",
+    "isref",
+    "if",
+    "na"
+  ]
 }

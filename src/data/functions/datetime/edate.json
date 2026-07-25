@@ -3,38 +3,101 @@
   "slug": "edate",
   "category": "datetime",
   "excelVersion": "All versions",
-  "description": "EDATE is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "EDATE is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(edate)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the EDATE function",
-    "formula": "=EDATE(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the EDATE function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The EDATE function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "EDATE returns the date that is a given number of months before or after a start date, preserving the day of the month and rolling to the last day when that day does not exist in the target month.",
+  "tldr": "Shifts a date by a number of months.",
+  "syntax": "(start_date, months)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "start_date",
+      "description": "The starting date serial.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =EDATE(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "months",
+      "description": "The number of months to move. Positive moves forward, negative moves backward. The value is truncated to an integer.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "EDATE works identically in Google Sheets with the same syntax.",
-    "formula": "=EDATE(A1)"
+  "basicExample": {
+    "description": "Three months after a mid-January date",
+    "formula": "=EDATE(DATE(2024, 1, 15), 3)",
+    "result": "45396",
+    "explanation": "Jan 15 plus 3 months is Apr 15 2024 (serial 45396)."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "End-of-month rollover in a leap year",
+      "scenario": "Jan 31 plus one month",
+      "description": "February has no 31st, so it rolls to the last day",
+      "formula": "=EDATE(DATE(2024, 1, 31), 1)",
+      "result": "45350",
+      "explanation": "2024 is a leap year, so February's last day is the 29th (serial 45350)."
+    },
+    {
+      "title": "Moving backward",
+      "scenario": "Three months before January 15",
+      "description": "A negative months value goes to the past",
+      "formula": "=EDATE(DATE(2024, 1, 15), -3)",
+      "result": "45213",
+      "explanation": "Three months earlier is October 15 2023 (serial 45213)."
+    }
+  ],
+  "howItWorks": "EDATE adds the specified number of months to start_date. It keeps the same day number; if that day is invalid in the resulting month (for example the 31st of February), Excel returns the last day of that month. The result is a date serial.",
+  "howToSteps": [
+    {
+      "name": "Enter the start date",
+      "text": "Provide a date serial or DATE(...) expression."
+    },
+    {
+      "name": "Enter the month offset",
+      "text": "Use a positive or negative integer for months."
+    },
+    {
+      "name": "Format as a date",
+      "text": "The result is a serial; apply a date format to view it."
+    }
+  ],
+  "limitations": [
+    "The day of month is preserved but rolls to the last day if the target month is shorter.",
+    "The months argument is truncated to an integer (1.9 becomes 1).",
+    "The result is a serial number and needs a date format to be readable."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "The start_date is not a valid date serial.",
+      "fix": "Pass a real date value or DATE(...) expression."
+    },
+    {
+      "error": "Unexpected end-of-month date",
+      "cause": "The original day does not exist in the target month.",
+      "fix": "This is expected; EDATE returns the last valid day of that month."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "EDATE works identically in Google Sheets with the same arguments and rollover behavior.",
+    "formula": "=EDATE(DATE(2024, 1, 15), 3)",
+    "notes": "Same result as Excel."
+  },
+  "faq": [
+    {
+      "question": "What happens on Jan 31 plus one month?",
+      "answer": "It returns Feb 28 (or Feb 29 in a leap year) because February has no 31st."
+    },
+    {
+      "question": "Can months be negative?",
+      "answer": "Yes, a negative value moves the date backward in time."
+    },
+    {
+      "question": "Does EDATE change the day?",
+      "answer": "It keeps the same day unless that day is invalid in the new month, then it uses the last day."
+    }
+  ],
+  "relatedFunctions": [
+    "eomonth",
+    "datedif",
+    "days",
+    "workday",
+    "date"
+  ]
 }

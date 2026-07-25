@@ -2,39 +2,102 @@
   "name": "QUARTILE.EXC",
   "slug": "quartile-exc",
   "category": "statistical",
-  "excelVersion": "All versions",
-  "description": "QUARTILE.EXC is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "QUARTILE.EXC is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(quartile.exc)",
-  "parameters": [],
+  "excelVersion": "Excel 2010+",
+  "description": "QUARTILE.EXC returns the specified quartile (1st, 2nd, or 3rd) of a dataset using the exclusive method, which never returns the minimum or maximum values.",
+  "tldr": "Returns quartile 1, 2, or 3 using the exclusive method (endpoints excluded).",
+  "syntax": "(array, quart)",
+  "parameters": [
+    {
+      "name": "array",
+      "description": "The range or array of numeric values.",
+      "required": true
+    },
+    {
+      "name": "quart",
+      "description": "Quartile to return: 1 (first), 2 (median), or 3 (third) only. Values 0 or 4 cause #NUM!.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the QUARTILE.EXC function",
-    "formula": "=QUARTILE.EXC(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the QUARTILE.EXC function."
+    "description": "Median via the exclusive method",
+    "formula": "=QUARTILE.EXC({1,2,3,4,5,6,7,8}, 2)",
+    "result": "4.5",
+    "explanation": "Exclusive rank = 0.5*(8+1) = 4.5; interpolate between the 4th (4) and 5th (5) values: 4.5."
   },
-  "advancedExamples": [],
-  "howItWorks": "The QUARTILE.EXC function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "First quartile excludes endpoints",
+      "scenario": "25th percentile of eight values",
+      "description": "Equivalent to PERCENTILE.EXC with k = 0.25, using rank k*(n+1).",
+      "formula": "=QUARTILE.EXC({1,2,3,4,5,6,7,8}, 1)",
+      "result": "2.25",
+      "explanation": "Exclusive rank = 0.25*(8+1) = 2.25; interpolate 25% from 2 to 3: 2 + 0.25*(3-2) = 2.25."
+    },
+    {
+      "title": "quart = 0 or 4 is invalid",
+      "scenario": "Why the endpoints are rejected",
+      "description": "The exclusive method only supports quart 1, 2, and 3.",
+      "formula": "=QUARTILE.EXC({1,2,3,4,5,6,7,8}, 0)",
+      "result": "#NUM!",
+      "explanation": "quart = 0 requests the minimum, which the exclusive method cannot return."
+    }
+  ],
+  "howItWorks": "QUARTILE.EXC uses the exclusive (EXC) method, internally equivalent to PERCENTILE.EXC(array, quart/4). It accepts only quart 1, 2, or 3 and computes a rank as k*(n+1) where k = quart/4. Because the method is exclusive, the result always lies strictly between the minimum and maximum, and quart 0 or 4 returns #NUM!. Values are interpolated when the rank is fractional. Text and logical values are ignored.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the result cell",
+      "text": "Click where you want the quartile."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =QUARTILE.EXC(arguments)."
+      "text": "Type =QUARTILE.EXC(range, quart) with quart 1, 2, or 3."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The quartile value is returned."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Only quart 1, 2, and 3 are valid; quart 0 or 4 cause #NUM!.",
+    "Interpolates, so results generally are not actual data values.",
+    "Ignores text and logical values."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "quart is 0 or 4 (or outside 1..3), or the array is too small.",
+      "fix": "Use quart 1, 2, or 3; for the min/max use QUARTILE.INC instead."
+    },
+    {
+      "error": "Result differs from QUARTILE.INC",
+      "cause": "Different interpolation formulas.",
+      "fix": "Choose .INC when endpoints are needed; .EXC otherwise."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "QUARTILE.EXC works identically in Google Sheets with the same syntax.",
-    "formula": "=QUARTILE.EXC(A1)"
+    "description": "Google Sheets supports QUARTILE.EXC with the same exclusive behavior as Excel 2010+.",
+    "formula": "=QUARTILE.EXC({1,2,3,4,5,6,7,8}, 2)",
+    "notes": "Returns 4.5, identical to Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "What is the difference between .INC and .EXC?",
+      "answer": ".INC allows quart 0..4 (including the actual min and max) and uses rank 1 + k*(n-1). .EXC accepts only quart 1..3, uses rank k*(n+1), and never returns the endpoints."
+    },
+    {
+      "question": "Why does QUARTILE.EXC(...,0) give #NUM!?",
+      "answer": "The exclusive method excludes the minimum, so quart 0 is invalid; use QUARTILE.INC for the minimum."
+    },
+    {
+      "question": "When should I use QUARTILE.EXC?",
+      "answer": "When your definition requires the exclusive method (endpoints excluded), such as certain statistical textbook formulas."
+    }
+  ],
+  "relatedFunctions": [
+    "quartile",
+    "quartile-inc",
+    "percentile-exc",
+    "median",
+    "rank"
+  ]
 }

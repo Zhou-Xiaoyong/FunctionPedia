@@ -41,6 +41,18 @@ const related = allFunctions
   .filter((f) => f.category === fn.category && f.slug !== fn.slug)
   .slice(0, 6);
 
+// Auto link-back: any tutorial whose `functions` array lists this function's
+// name gets surfaced here (old -> new internal link).
+const allTutorials = [];
+const tutorialModules = import.meta.glob('../../data/tutorials/**/*.json', { eager: true });
+for (const path in tutorialModules) {
+  const t = tutorialModules[path];
+  if (t && t.slug && Array.isArray(t.functions)) {
+    allTutorials.push(t);
+  }
+}
+const relatedTutorials = allTutorials.filter((t) => t.functions.includes(fn.name));
+
 const breadcrumbs = [
   { name: 'Home', url: SITE.url },
   { name: catInfo ? catInfo.name : fn.category, url: `${SITE.url}/category/${fn.category}/` },
@@ -108,14 +120,14 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
     </div>
 
     <!-- 2. Real-World Business Scenarios -->
-    <section id="scenarios" class="mb-10">
-      <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-        Real-World Business Scenarios
-      </h2>
-      <div class="space-y-4">
-        {fn.scenarios && fn.scenarios.length > 0 ? (
-          fn.scenarios.map((scenario, i) => (
+    {fn.scenarios && fn.scenarios.length > 0 && (
+      <section id="scenarios" class="mb-10">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Real-World Business Scenarios
+        </h2>
+        <div class="space-y-4">
+          {fn.scenarios.map((scenario, i) => (
             <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
               <div class="p-4 bg-gray-50 border-b border-gray-200">
                 <div class="flex items-center justify-between">
@@ -134,14 +146,10 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
                 </p>
               </div>
             </div>
-          ))
-        ) : (
-          <div class="bg-white border border-gray-200 rounded-xl p-6">
-            <p class="text-gray-500">No specific scenarios available for this function.</p>
-          </div>
-        )}
-      </div>
-    </section>
+          ))}
+        </div>
+      </section>
+    )}
 
     <!-- 3. Syntax -->
     <section id="syntax" class="mb-10">
@@ -188,14 +196,14 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
     </section>
 
     <!-- 4. Step-by-Step Tutorial with Screenshots -->
-    <section id="tutorial" class="mb-10">
-      <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-        <svg class="w-5 h-5 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        Step-by-Step Tutorial
-      </h2>
-      <div class="space-y-6">
-        {fn.tutorialSteps && fn.tutorialSteps.length > 0 ? (
-          fn.tutorialSteps.map((step, i) => (
+    {fn.tutorialSteps && fn.tutorialSteps.length > 0 && (
+      <section id="tutorial" class="mb-10">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Step-by-Step Tutorial
+        </h2>
+        <div class="space-y-6">
+          {fn.tutorialSteps.map((step, i) => (
             <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
               <div class="flex">
                 <div class="w-16 bg-gray-900 flex items-center justify-center flex-shrink-0">
@@ -239,14 +247,10 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
                 </div>
               </div>
             </div>
-          ))
-        ) : (
-          <div class="bg-white border border-gray-200 rounded-xl p-6">
-            <p class="text-gray-500">No step-by-step tutorial available for this function.</p>
-          </div>
-        )}
-      </div>
-    </section>
+          ))}
+        </div>
+      </section>
+    )}
 
     <!-- 5. Basic Example -->
     <section id="basic-example" class="mb-10">
@@ -445,6 +449,24 @@ const keywords = `${fn.name}, ${fn.name} function, ${fn.name} excel, ${fn.name} 
             <a href={`/function/${r.slug}/`} class="group block p-4 rounded-lg bg-white border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all">
               <h3 class="text-sm font-semibold font-mono text-gray-900 group-hover:text-primary-500 transition-colors">{r.name.toUpperCase()}</h3>
               <p class="mt-1 text-xs text-gray-500 line-clamp-2">{r.tldr || r.description}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- 12b. Related Tutorials (auto link-back from function pages) -->
+    {relatedTutorials.length > 0 && (
+      <section id="tutorials" class="mb-10">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          Related Tutorials
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {relatedTutorials.map((t) => (
+            <a href={`/tutorial/${t.slug}/`} class="group block p-4 rounded-lg bg-white border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all">
+              <h3 class="text-sm font-semibold text-gray-900 group-hover:text-primary-500 transition-colors">{t.title}</h3>
+              <p class="mt-1 text-xs text-gray-500 line-clamp-2">{t.description}</p>
             </a>
           ))}
         </div>

@@ -3,38 +3,92 @@
   "slug": "hour",
   "category": "datetime",
   "excelVersion": "All versions",
-  "description": "HOUR is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "HOUR is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(hour)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the HOUR function",
-    "formula": "=HOUR(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the HOUR function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The HOUR function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "HOUR extracts the hour (0-23) from a time or date-time serial number, reading only the fractional time portion of the value.",
+  "tldr": "Returns the hour portion (0-23) of a time value.",
+  "syntax": "(serial_number)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
-    },
-    {
-      "name": "Enter the formula",
-      "text": "Type =HOUR(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "serial_number",
+      "description": "A date-time serial (or a time fraction). The integer part is a date and the fractional part is the time; the hour is taken from the fractional part.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "HOUR works identically in Google Sheets with the same syntax.",
-    "formula": "=HOUR(A1)"
+  "basicExample": {
+    "description": "Get the hour from a time",
+    "formula": "=HOUR(TIME(12, 30, 0))",
+    "result": "12",
+    "explanation": "TIME(12,30,0) is 12:30 PM, so HOUR returns 12."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Extract hour from a date-time serial",
+      "scenario": "A timestamp like 2024-01-15 18:00",
+      "description": "HOUR reads the fractional time part",
+      "formula": "=HOUR(45305.75)",
+      "result": "18",
+      "explanation": "The .75 fraction equals 18:00 (6 PM), so HOUR returns 18."
+    },
+    {
+      "title": "Midnight returns 0",
+      "scenario": "A date with no time component",
+      "description": "A whole-number serial has no time fraction",
+      "formula": "=HOUR(45305)",
+      "result": "0",
+      "explanation": "45305 is exactly midnight 2024-01-15; with no time fraction HOUR returns 0."
+    }
+  ],
+  "howItWorks": "HOUR takes the fractional part of the serial (the time-of-day component) and multiplies it by 24, then returns the integer hour from 0 (midnight) to 23 (11 PM). The date portion is ignored.",
+  "howToSteps": [
+    {
+      "name": "Reference a time value",
+      "text": "Point HOUR at a cell or expression that holds a time or date-time."
+    },
+    {
+      "name": "Read the hour",
+      "text": "The function returns an integer 0-23."
+    }
+  ],
+  "limitations": [
+    "HOUR ignores the date portion entirely.",
+    "A value with no time fraction (a whole number) returns 0, which can look wrong if you expected a time.",
+    "It accepts only valid serials; text times must be converted first."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "The argument is text that Excel cannot parse as a time.",
+      "fix": "Convert the text to a real time serial first (e.g. with TIMEVALUE)."
+    },
+    {
+      "error": "Returns 0 unexpectedly",
+      "cause": "The serial is a whole number with no time part.",
+      "fix": "Make sure the value actually contains a time fraction."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "HOUR works identically in Google Sheets.",
+    "formula": "=HOUR(TIME(12, 30, 0))",
+    "notes": "Same 0-23 range."
+  },
+  "faq": [
+    {
+      "question": "Does HOUR work on a full date-time?",
+      "answer": "Yes, it reads only the time fraction, e.g. 2024-01-15 18:00 returns 18."
+    },
+    {
+      "question": "What about times after 23:59?",
+      "answer": "Times are stored as fractions under 1, so the maximum hour returned is 23."
+    },
+    {
+      "question": "Why do I get 0 for a date?",
+      "answer": "Dates without a time component have a zero fraction, so the hour is 0."
+    }
+  ],
+  "relatedFunctions": [
+    "minute",
+    "second",
+    "time",
+    "now",
+    "date"
+  ]
 }

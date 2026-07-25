@@ -2,39 +2,112 @@
   "name": "TEXTJOIN",
   "slug": "textjoin",
   "category": "text",
-  "excelVersion": "All versions",
-  "description": "TEXTJOIN is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "TEXTJOIN is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(textjoin)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the TEXTJOIN function",
-    "formula": "=TEXTJOIN(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the TEXTJOIN function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The TEXTJOIN function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "excelVersion": "Excel 2016+",
+  "description": "TEXTJOIN joins text from multiple ranges or strings using a delimiter you specify, with an option to ignore empty cells.",
+  "tldr": "Joins text with a delimiter, optionally skipping blanks.",
+  "syntax": "(delimiter, ignore_empty, text1, [text2], ...)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "delimiter",
+      "description": "A text string inserted between each item, e.g. \", \" or \"-\". Can be empty.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =TEXTJOIN(arguments)."
+      "name": "ignore_empty",
+      "description": "TRUE to skip empty cells/strings; FALSE to include them as gaps.",
+      "required": true
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "text1",
+      "description": "The first text item, range, or array to join.",
+      "required": true
+    },
+    {
+      "name": "text2",
+      "description": "Additional text items, ranges, or arrays to join (optional).",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "TEXTJOIN works identically in Google Sheets with the same syntax.",
-    "formula": "=TEXTJOIN(A1)"
+  "basicExample": {
+    "description": "Join a short list with a comma",
+    "formula": "=TEXTJOIN(\", \",TRUE,\"Apple\",\"Banana\",\"\")",
+    "result": "Apple, Banana",
+    "explanation": "The trailing empty string is ignored because ignore_empty is TRUE, so no extra comma appears."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Join a whole range",
+      "scenario": "Cells A1:A5 contain names with some blanks",
+      "description": "Combine them with a separator",
+      "formula": "=TEXTJOIN(\" | \",TRUE,A1:A5)",
+      "result": "Names joined by a pipe, blanks skipped",
+      "explanation": "A range is accepted directly and empty cells are omitted."
+    },
+    {
+      "title": "Build a multi-line address",
+      "scenario": "Join street, city, and zip from separate cells",
+      "description": "Use a line break as delimiter",
+      "formula": "=TEXTJOIN(CHAR(10),TRUE,B1,C1,D1)",
+      "result": "Street City Zip on separate lines",
+      "explanation": "CHAR(10) is a line break; with wrap-text enabled this renders as multiple lines."
+    }
+  ],
+  "howItWorks": "TEXTJOIN iterates through each supplied text value or cell in the ranges, places the delimiter between consecutive non-skipped items, and (when ignore_empty is TRUE) drops empty strings so no stray delimiters appear.",
+  "howToSteps": [
+    {
+      "name": "Pick a delimiter",
+      "text": "Choose the separator, e.g. \", \" or CHAR(10)."
+    },
+    {
+      "name": "Decide on empties",
+      "text": "Set ignore_empty to TRUE to skip blanks."
+    },
+    {
+      "name": "Supply the texts",
+      "text": "List ranges or strings, then press Enter."
+    }
+  ],
+  "limitations": [
+    "Not available in Excel 2013 and earlier; use CONCATENATE or a helper column there.",
+    "Total result is capped at 32,767 characters; exceeding it returns #VALUE!.",
+    "Delimiter is added between items only, never before the first or after the last."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NAME? error",
+      "cause": "Using TEXTJOIN in an Excel version older than 2016.",
+      "fix": "Upgrade, use the free Microsoft add-in, or fall back to CONCATENATE with a helper column."
+    },
+    {
+      "error": "#VALUE! error",
+      "cause": "Result longer than 32,767 characters.",
+      "fix": "Reduce the number or length of joined items."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "TEXTJOIN is fully supported in Google Sheets with the same arguments.",
+    "formula": "=TEXTJOIN(\", \",TRUE,\"Apple\",\"Banana\",\"\")",
+    "notes": "Same behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "Which Excel versions have TEXTJOIN?",
+      "answer": "Excel 2016 and later, plus Microsoft 365; it is unavailable in Excel 2013 and earlier."
+    },
+    {
+      "question": "How do I skip blank cells?",
+      "answer": "Set the second argument, ignore_empty, to TRUE."
+    },
+    {
+      "question": "Can the delimiter be empty?",
+      "answer": "Yes, use \"\" as the delimiter to concatenate without separators."
+    }
+  ],
+  "relatedFunctions": [
+    "concatenate",
+    "concat",
+    "rept",
+    "upper",
+    "lower"
+  ]
 }

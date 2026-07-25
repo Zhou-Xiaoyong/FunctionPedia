@@ -3,38 +3,106 @@
   "slug": "date",
   "category": "datetime",
   "excelVersion": "All versions",
-  "description": "DATE is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "DATE is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(date)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the DATE function",
-    "formula": "=DATE(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the DATE function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The DATE function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "DATE builds a date serial number from separate year, month, and day components, and automatically rolls over out-of-range values such as month 13 into the next year or day 32 into the following month.",
+  "tldr": "Assembles a date from year, month, and day values.",
+  "syntax": "(year, month, day)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "year",
+      "description": "The year component. In Excel, values 0-1899 are added to 1900 (0 becomes 1900, 119 becomes 2019); values 1900-9999 are used as-is.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =DATE(arguments)."
+      "name": "month",
+      "description": "The month component, 1-12. Values outside that range roll over into adjacent years (13 = January of the next year, 0 = December of the previous year).",
+      "required": true
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "day",
+      "description": "The day component, 1-31. Values beyond the length of the month roll into the next month (day 32 of January becomes February 1).",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "DATE works identically in Google Sheets with the same syntax.",
-    "formula": "=DATE(A1)"
+  "basicExample": {
+    "description": "Combine separate cells into a real date",
+    "formula": "=DATE(2024, 1, 15)",
+    "result": "45305",
+    "explanation": "Serial 45305 corresponds to 2024-01-15. Apply a date number format to display it as a calendar date."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Month overflow rolls into next year",
+      "scenario": "A user mistakenly enters month 13",
+      "description": "DATE carries the overflow into the following year",
+      "formula": "=DATE(2024, 13, 1)",
+      "result": "45657",
+      "explanation": "Month 13 is treated as January of the next year, so the result is 2025-01-01 (serial 45657)."
+    },
+    {
+      "title": "Day overflow rolls into next month",
+      "scenario": "Building end-of-period dates dynamically",
+      "description": "Day 32 of a 31-day month spills into the next month",
+      "formula": "=DATE(2024, 1, 32)",
+      "result": "45322",
+      "explanation": "January has 31 days, so day 32 becomes 2024-02-01 (serial 45322)."
+    }
+  ],
+  "howItWorks": "DATE validates the three integer inputs and converts them into an Excel date serial, the count of days since 1900-01-01 (serial 1). When any component exceeds its normal range, Excel carries the overflow into the next higher unit, so month and day values roll forward automatically.",
+  "howToSteps": [
+    {
+      "name": "Enter the year",
+      "text": "Provide the four-digit year (or a value Excel will offset into the 1900-9999 range)."
+    },
+    {
+      "name": "Enter the month and day",
+      "text": "Provide month and day integers; out-of-range values roll over."
+    },
+    {
+      "name": "Format as date",
+      "text": "Apply a date number format so the serial displays as a calendar date."
+    }
+  ],
+  "limitations": [
+    "Excel only supports dates from 1900-01-01 onward; earlier dates return #VALUE!.",
+    "Two-digit or small year values are offset by 1900, which can be confusing (always use 4-digit years).",
+    "The result is a serial number and must be date-formatted to be readable."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "A non-numeric or out-of-supported-range argument (e.g. a year before 1900).",
+      "fix": "Use a numeric year between 1900 and 9999."
+    },
+    {
+      "error": "Unexpected year",
+      "cause": "Supplying 2-digit years like 24, which Excel reads as 1924.",
+      "fix": "Always use four-digit years such as 2024."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "DATE works the same way in Google Sheets, but years 0-99 are mapped to 1900-1999 (e.g. 24 becomes 2024), unlike Excel which offsets by 1900.",
+    "formula": "=DATE(2024, 1, 15)",
+    "notes": "Prefer four-digit years to avoid the year-mapping difference."
+  },
+  "faq": [
+    {
+      "question": "Why does my DATE result show a number like 45305?",
+      "answer": "Excel stores dates as serial numbers; format the cell as a date to see 2024-01-15."
+    },
+    {
+      "question": "What happens if I use month 13?",
+      "answer": "It overflows into the next year: DATE(2024,13,1) returns 2025-01-01."
+    },
+    {
+      "question": "Does DATE work with cell references?",
+      "answer": "Yes, e.g. =DATE(A1,B1,C1) builds a date from three cells."
+    }
+  ],
+  "relatedFunctions": [
+    "today",
+    "now",
+    "edate",
+    "eomonth",
+    "weekday"
+  ]
 }

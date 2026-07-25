@@ -3,38 +3,101 @@
   "slug": "log",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "LOG is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "LOG is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(log)",
-  "parameters": [],
+  "description": "LOG returns the logarithm of a number to a specified base. If the base is omitted, it defaults to 10.",
+  "tldr": "Returns the logarithm of a number to a given base (default 10).",
+  "syntax": "(number, [base])",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The positive real number for which you want the logarithm.",
+      "required": true
+    },
+    {
+      "name": "base",
+      "description": "The base of the logarithm. Optional; defaults to 10 if omitted.",
+      "required": false
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the LOG function",
-    "formula": "=LOG(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the LOG function."
+    "description": "Base-10 log of 1000",
+    "formula": "=LOG(1000)",
+    "result": "3",
+    "explanation": "With the base omitted, LOG uses 10; 10³ = 1000, so the result is 3."
   },
-  "advancedExamples": [],
-  "howItWorks": "The LOG function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Logarithm in base 2",
+      "scenario": "Measuring bits or orders of magnitude.",
+      "description": "Specify base 2 explicitly.",
+      "formula": "=LOG(8, 2)",
+      "result": "3",
+      "explanation": "2³ = 8, so the base-2 logarithm of 8 is 3."
+    },
+    {
+      "title": "Base-10 explicitly",
+      "scenario": "Clarity in a formula.",
+      "description": "Pass 10 as the base.",
+      "formula": "=LOG(100, 10)",
+      "result": "2",
+      "explanation": "10² = 100, giving 2."
+    }
+  ],
+  "howItWorks": "LOG computes log_base(number), the exponent to which the base must be raised to equal the number. When base is omitted it defaults to 10. Mathematically LOG(n, b) = LN(n) / LN(b).",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the cell",
+      "text": "Click the cell for the result."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =LOG(arguments)."
+      "text": "Type =LOG(number, [base]); omit base for base 10."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The logarithm appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "The number must be positive; otherwise #NUM!.",
+    "The base must be positive and not equal to 1; base 1 returns an error.",
+    "Omitting the base yields base 10, which some users confuse with natural log."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM!",
+      "cause": "Number is 0/negative, or base is invalid (e.g. 1 or negative).",
+      "fix": "Use a positive number and a positive base other than 1."
+    },
+    {
+      "error": "#VALUE!",
+      "cause": "Non-numeric argument.",
+      "fix": "Supply numeric values."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "LOG works identically in Google Sheets with the same syntax.",
-    "formula": "=LOG(A1)"
+    "description": "LOG works identically in Google Sheets, defaulting to base 10 when omitted.",
+    "formula": "=LOG(1000)",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "What base does LOG use when I omit the base?",
+      "answer": "Base 10. Use LOG10 for an explicit base-10 log, or LN for base e."
+    },
+    {
+      "question": "How do I compute a natural logarithm?",
+      "answer": "Use LN, or LOG(number, EXP(1))."
+    },
+    {
+      "question": "Why does LOG return #NUM!?",
+      "answer": "Usually because the number is not positive, or the base is 1 or negative."
+    }
+  ],
+  "relatedFunctions": [
+    "log10",
+    "ln",
+    "power",
+    "exp",
+    "product"
+  ]
 }

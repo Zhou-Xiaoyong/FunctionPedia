@@ -3,38 +3,106 @@
   "slug": "sumproduct",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "SUMPRODUCT is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "SUMPRODUCT is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(sumproduct)",
-  "parameters": [],
+  "description": "SUMPRODUCT multiplies corresponding components of one or more arrays and returns the sum of those products. It is also widely used for conditional sums and counts without array-entry.",
+  "tldr": "Sums the products of corresponding array elements; great for conditional calculations.",
+  "syntax": "(array1, [array2], [array3], ...)",
+  "parameters": [
+    {
+      "name": "array1",
+      "description": "The first array or range whose elements will be multiplied and summed.",
+      "required": true
+    },
+    {
+      "name": "array2",
+      "description": "Additional arrays/ranges. All arrays must have the same dimensions.",
+      "required": false
+    },
+    {
+      "name": "array3",
+      "description": "Further arrays/ranges (optional). Up to 255 in modern Excel.",
+      "required": false
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the SUMPRODUCT function",
-    "formula": "=SUMPRODUCT(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the SUMPRODUCT function."
+    "description": "Weighted sum of two columns",
+    "formula": "=SUMPRODUCT(A1:A3, B1:B3)",
+    "result": "32",
+    "explanation": "With A=(1,2,3) and B=(4,5,6): 1×4 + 2×5 + 3×6 = 4 + 10 + 18 = 32."
   },
-  "advancedExamples": [],
-  "howItWorks": "The SUMPRODUCT function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Conditional sum with criteria",
+      "scenario": "Sum amounts in B where category in A equals \"Apple\".",
+      "description": "Use a boolean expression that SUMPRODUCT coerces to 1/0.",
+      "formula": "=SUMPRODUCT((A1:A10=\"Apple\")*(B1:B10))",
+      "result": "Sum of matching amounts",
+      "explanation": "(A1:A10=\"Apple\") yields TRUE/FALSE; multiplying by B coerces TRUE to 1 and FALSE to 0, so only Apple rows contribute."
+    },
+    {
+      "title": "Count rows meeting a condition",
+      "scenario": "Count how many values in A exceed 5.",
+      "description": "Coerce the boolean to a number and sum.",
+      "formula": "=SUMPRODUCT((A1:A10>5)*1)",
+      "result": "Count of values > 5",
+      "explanation": "(A1:A10>5) gives TRUE/FALSE; multiplying by 1 converts to 1/0, and SUMPRODUCT adds them up."
+    }
+  ],
+  "howItWorks": "SUMPRODUCT takes the corresponding elements of each array, multiplies them together per position, and sums the results. With a single array it simply sums that array. Boolean criteria must be coerced to numbers (using * or --) because SUMPRODUCT does not auto-convert TRUE/FALSE.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Prepare equal-sized ranges",
+      "text": "Ensure all arrays have the same dimensions."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =SUMPRODUCT(arguments)."
+      "text": "Type =SUMPRODUCT(array1, [array2], ...)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The sum of products appears. (No array-entry needed in modern Excel.)"
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "All array arguments must have the same dimensions, or SUMPRODUCT returns #VALUE!.",
+    "Boolean expressions must be coerced with * or --; raw TRUE/FALSE cannot be multiplied directly.",
+    "Text and empty cells within the ranges are treated as 0, which can hide data-type issues."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "Arrays have mismatched sizes, or a boolean array wasn't coerced to numbers.",
+      "fix": "Make all ranges the same size and multiply criteria by 1 or another numeric array."
+    },
+    {
+      "error": "Wrong total",
+      "cause": "Text/blank cells were silently treated as 0.",
+      "fix": "Verify the ranges contain the expected numeric values."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "SUMPRODUCT works identically in Google Sheets with the same syntax.",
-    "formula": "=SUMPRODUCT(A1)"
+    "description": "SUMPRODUCT works identically in Google Sheets, including the coercion-by-multiplication technique.",
+    "formula": "=SUMPRODUCT(A1:A3, B1:B3)",
+    "notes": "Same behavior as Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Do I need to press Ctrl+Shift+Enter?",
+      "answer": "No. In modern Excel and Google Sheets, SUMPRODUCT handles arrays natively without special array-entry."
+    },
+    {
+      "question": "Why multiply a condition by another range?",
+      "answer": "A condition like (A1:A10=\"Apple\") returns TRUE/FALSE; multiplying by a numeric range coerces TRUE→1 and FALSE→0, effectively filtering the sum."
+    },
+    {
+      "question": "What's the difference between SUMPRODUCT and SUMIFS?",
+      "answer": "SUMIFS is simpler for straightforward conditional sums, but SUMPRODUCT is more flexible (it can combine multiple AND/OR logic, weighted sums, and counts) in a single formula."
+    }
+  ],
+  "relatedFunctions": [
+    "sum",
+    "product",
+    "sumif",
+    "sumifs",
+    "countif"
+  ]
 }

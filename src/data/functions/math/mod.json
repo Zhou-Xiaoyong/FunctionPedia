@@ -3,38 +3,101 @@
   "slug": "mod",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "MOD is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "MOD is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(mod)",
-  "parameters": [],
+  "description": "MOD returns the remainder after dividing a number by a divisor. The sign of the result always matches the sign of the divisor.",
+  "tldr": "Returns the remainder after division, with the sign of the divisor.",
+  "syntax": "(number, divisor)",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The dividend, the number to be divided.",
+      "required": true
+    },
+    {
+      "name": "divisor",
+      "description": "The number by which to divide. Cannot be 0.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the MOD function",
-    "formula": "=MOD(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the MOD function."
+    "description": "Remainder of 3 divided by 2",
+    "formula": "=MOD(3, 2)",
+    "result": "1",
+    "explanation": "3 = 1×2 + 1, so the remainder is 1."
   },
-  "advancedExamples": [],
-  "howItWorks": "The MOD function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Negative dividend, positive divisor",
+      "scenario": "Signs differ.",
+      "description": "The result takes the divisor's (positive) sign.",
+      "formula": "=MOD(-3, 2)",
+      "result": "1",
+      "explanation": "MOD(-3,2) = -3 - 2×INT(-3/2) = -3 - 2×(-2) = 1, a positive remainder."
+    },
+    {
+      "title": "Positive dividend, negative divisor",
+      "scenario": "The divisor is negative.",
+      "description": "The result takes the divisor's (negative) sign.",
+      "formula": "=MOD(7, -3)",
+      "result": "-2",
+      "explanation": "MOD(7,-3) = 7 - (-3)×INT(7/-3) = 7 - (-3)×(-3) = 7 - 9 = -2."
+    }
+  ],
+  "howItWorks": "MOD computes number - divisor × INT(number / divisor). Because it uses INT, the result always has the same sign as the divisor, unlike a simple remainder that is always non-negative.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the cell",
+      "text": "Click the cell for the result."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =MOD(arguments)."
+      "text": "Type =MOD(number, divisor)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The remainder appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "The divisor cannot be 0; MOD(n, 0) returns #DIV/0!.",
+    "The result's sign follows the divisor, which can be counter-intuitive (MOD(-3,2)=1).",
+    "Results are floating-point; tiny rounding may appear with non-integer inputs."
+  ],
+  "commonErrors": [
+    {
+      "error": "#DIV/0!",
+      "cause": "The divisor is 0.",
+      "fix": "Use a non-zero divisor."
+    },
+    {
+      "error": "Unexpected sign",
+      "cause": "Forgetting the result follows the divisor's sign.",
+      "fix": "Apply ABS if you need a non-negative remainder, or adjust signs intentionally."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "MOD works identically in Google Sheets with the same syntax.",
-    "formula": "=MOD(A1)"
+    "description": "MOD works identically in Google Sheets, including the sign-follows-divisor rule.",
+    "formula": "=MOD(-3, 2)",
+    "notes": "Returns 1, same as Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Why is MOD(-3, 2) equal to 1?",
+      "answer": "MOD returns a result with the same sign as the divisor. Since the divisor 2 is positive, the remainder is positive 1."
+    },
+    {
+      "question": "Is MOD the same as a programming remainder?",
+      "answer": "Not always. In many languages '%' gives a sign matching the dividend; Excel's MOD matches the divisor."
+    },
+    {
+      "question": "How do I get a non-negative remainder?",
+      "answer": "Wrap with ABS: =ABS(MOD(number, divisor)), or use MOD(MOD(number, d)+d, d) to keep it in [0, d)."
+    }
+  ],
+  "relatedFunctions": [
+    "int",
+    "trunc",
+    "floor",
+    "round",
+    "mround"
+  ]
 }

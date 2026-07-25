@@ -3,38 +3,112 @@
   "slug": "growth",
   "category": "statistical",
   "excelVersion": "All versions",
-  "description": "GROWTH is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "GROWTH is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(growth)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the GROWTH function",
-    "formula": "=GROWTH(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the GROWTH function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The GROWTH function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "GROWTH returns values along an exponential growth curve fitted by least squares to known data, predicting one or many y-values for the supplied x-values. It is an array function.",
+  "tldr": "Fits an exponential curve and returns predicted y-values (array).",
+  "syntax": "(known_ys, [known_xs], [new_xs], [const])",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "known_ys",
+      "description": "The dependent (y) values of the known data used to fit the curve.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =GROWTH(arguments)."
+      "name": "known_xs",
+      "description": "The independent (x) values of the known data; defaults to 1,2,3,... if omitted.",
+      "required": false
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "new_xs",
+      "description": "The x-values at which to predict y. If omitted, the known x-values are reused.",
+      "required": false
+    },
+    {
+      "name": "const",
+      "description": "TRUE (or omitted) fits y = b*m^x; FALSE forces b = 1 (y = m^x).",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "GROWTH works identically in Google Sheets with the same syntax.",
-    "formula": "=GROWTH(A1)"
+  "basicExample": {
+    "description": "Predict a single future point on an exponential series",
+    "formula": "=GROWTH({2,4,8,16,32},{1,2,3,4,5},6)",
+    "result": "64",
+    "explanation": "The data follows y = 1*2^x, so at x=6 the prediction is 2^6 = 64."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Predict several points at once",
+      "scenario": "Project multiple future periods",
+      "description": "Supply an array of new x-values to get an array of predictions",
+      "formula": "=GROWTH({2,4,8,16,32},{1,2,3,4,5},{6,7})",
+      "result": "{64, 128}",
+      "explanation": "Spills two values: 64 at x=6 and 128 at x=7. In older Excel confirm with Ctrl+Shift+Enter; in Microsoft 365 it spills automatically."
+    },
+    {
+      "title": "Force base only (b = 1)",
+      "scenario": "Known unit-free multiplier",
+      "description": "Set const to FALSE",
+      "formula": "=GROWTH(B2:B12,A2:A12,C2:C5,FALSE)",
+      "result": "Predicted y-values with b fixed to 1",
+      "explanation": "Fit becomes y = m^x, dropping the leading coefficient b."
+    }
+  ],
+  "howItWorks": "GROWTH fits the model y = b*m^x by taking the natural logarithm of the known y-values and running a linear regression on ln(y), then exponentiating the result back. Because it accepts an array for new_xs, it can return many predictions at once. It is the exponential counterpart to the linear TREND.",
+  "howToSteps": [
+    {
+      "name": "Provide known data",
+      "text": "List known y-values and, optionally, known x-values."
+    },
+    {
+      "name": "Provide new x-values",
+      "text": "List the x-points you want to predict (a single cell or a range)."
+    },
+    {
+      "name": "Enter as array",
+      "text": "Type =GROWTH(known_ys, known_xs, new_xs) and press Enter (or Ctrl+Shift+Enter in legacy Excel)."
+    }
+  ],
+  "limitations": [
+    "Models only an exponential relationship; use TREND for linear patterns.",
+    "known_xs and known_ys must have the same number of points, or #REF! is returned.",
+    "Known y-values must be positive, since the fit takes their logarithm; zeros or negatives cause #NUM!.",
+    "Returns an array, so in pre-dynamic Excel it must be entered as an array formula."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM!",
+      "cause": "A known y-value is zero, negative, or blank, so its logarithm is undefined.",
+      "fix": "Use only positive known y-values, or shift the data."
+    },
+    {
+      "error": "#REF!",
+      "cause": "known_xs and known_ys differ in size, or output cannot spill.",
+      "fix": "Match the known array sizes and keep output cells empty."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "GROWTH works as an array function in Google Sheets, returning a row/column of predictions.",
+    "formula": "=GROWTH({2,4,8,16,32},{1,2,3,4,5},{6,7})",
+    "notes": "Identical behavior; results spill across cells in Sheets too."
+  },
+  "faq": [
+    {
+      "question": "How is GROWTH different from TREND?",
+      "answer": "TREND fits a straight line; GROWTH fits an exponential curve y = b*m^x."
+    },
+    {
+      "question": "Why does GROWTH need positive y-values?",
+      "answer": "It fits on the logarithm of y, and log(0) and log(negative) are undefined."
+    },
+    {
+      "question": "Does GROWTH need array entry?",
+      "answer": "In Microsoft 365 it spills automatically; in older Excel use Ctrl+Shift+Enter."
+    }
+  ],
+  "relatedFunctions": [
+    "forecast",
+    "forecast-linear",
+    "trend",
+    "linest",
+    "correl"
+  ]
 }

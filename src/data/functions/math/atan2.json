@@ -3,38 +3,101 @@
   "slug": "atan2",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "ATAN2 is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "ATAN2 is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(atan2)",
-  "parameters": [],
+  "description": "ATAN2 returns the arctangent of the specified x- and y-coordinates. It gives the angle (in radians) from the positive x-axis to the point (x_num, y_num), ranging from -π to π.",
+  "tldr": "Returns the angle in radians to a point given by its x and y coordinates.",
+  "syntax": "(x_num, y_num)",
+  "parameters": [
+    {
+      "name": "x_num",
+      "description": "The x-coordinate of the point. NOTE: Excel lists x first, the opposite of the common math atan2(y, x) convention.",
+      "required": true
+    },
+    {
+      "name": "y_num",
+      "description": "The y-coordinate of the point.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the ATAN2 function",
-    "formula": "=ATAN2(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the ATAN2 function."
+    "description": "Angle to the point (1, 1)",
+    "formula": "=ATAN2(1, 1)",
+    "result": "0.785398163",
+    "explanation": "The point (1,1) sits at 45°, which is π/4 radians. Note x_num=1 is given before y_num=1."
   },
-  "advancedExamples": [],
-  "howItWorks": "The ATAN2 function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Convert to degrees for a quadrant check",
+      "scenario": "Find the compass-style angle of a vector.",
+      "description": "Wrap in DEGREES.",
+      "formula": "=DEGREES(ATAN2(1, 1))",
+      "result": "45",
+      "explanation": "ATAN2(1,1) returns π/4 radians, converted to 45°."
+    },
+    {
+      "title": "Negative coordinates land in the third quadrant",
+      "scenario": "Point (-1, -1).",
+      "description": "Both coordinates negative produce a negative angle.",
+      "formula": "=ATAN2(-1, -1)",
+      "result": "-2.35619449",
+      "explanation": "The angle to (-1,-1) is -135° (or -3π/4 radians), inside ATAN2's -π to π range."
+    }
+  ],
+  "howItWorks": "ATAN2(x_num, y_num) returns the angle θ (in radians, from -π to π) between the positive x-axis and the line from the origin to (x_num, y_num). It uses the signs of both coordinates to place the result in the correct quadrant, avoiding the division-by-zero problem of ATAN(y/x). In Excel the first argument is x_num and the second is y_num.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Identify coordinates",
+      "text": "Determine the x and y values of your point."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =ATAN2(arguments)."
+      "text": "Type =ATAN2(x_num, y_num), x first."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The angle in radians appears; use DEGREES for degrees."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Both coordinates cannot be zero; ATAN2(0, 0) returns #DIV/0!.",
+    "The result is in radians from -π to π.",
+    "Excel's argument order is (x_num, y_num) — the reverse of the common mathematical atan2(y, x) — which is a frequent source of sign errors."
+  ],
+  "commonErrors": [
+    {
+      "error": "#DIV/0!",
+      "cause": "Both x_num and y_num are 0.",
+      "fix": "Ensure at least one coordinate is non-zero."
+    },
+    {
+      "error": "Wrong quadrant angle",
+      "cause": "Arguments swapped (y before x) by mistake.",
+      "fix": "Remember Excel expects x_num first, then y_num."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "ATAN2 works identically in Google Sheets with the same syntax.",
-    "formula": "=ATAN2(A1)"
+    "description": "ATAN2 works identically in Google Sheets with the same (x_num, y_num) argument order.",
+    "formula": "=ATAN2(1, 1)",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Why does Excel put x before y?",
+      "answer": "Excel's signature is ATAN2(x_num, y_num), which is the reverse of the typical math notation atan2(y, x). Keep this in mind to avoid sign errors."
+    },
+    {
+      "question": "What range of angles does ATAN2 return?",
+      "answer": "From -π to π radians (-180° to 180°), covering all four quadrants."
+    },
+    {
+      "question": "When should I prefer ATAN2 over ATAN?",
+      "answer": "Whenever you have separate x and y coordinates, because ATAN2 determines the correct quadrant, while ATAN(y/x) loses that information."
+    }
+  ],
+  "relatedFunctions": [
+    "atan",
+    "sin",
+    "cos",
+    "degrees",
+    "radians"
+  ]
 }

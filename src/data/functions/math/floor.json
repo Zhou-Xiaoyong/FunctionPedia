@@ -3,38 +3,101 @@
   "slug": "floor",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "FLOOR is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "FLOOR is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(floor)",
-  "parameters": [],
+  "description": "FLOOR rounds a number down, toward negative infinity, to the nearest multiple of a specified significance.",
+  "tldr": "Rounds a number down to the nearest multiple of significance.",
+  "syntax": "(number, significance)",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The value you want to round.",
+      "required": true
+    },
+    {
+      "name": "significance",
+      "description": "The multiple to which you want to round. In classic FLOOR, number and significance should share the same sign.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the FLOOR function",
-    "formula": "=FLOOR(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the FLOOR function."
+    "description": "Round 3.7 down to the nearest integer",
+    "formula": "=FLOOR(3.7, 1)",
+    "result": "3",
+    "explanation": "3 is the largest multiple of 1 that is less than or equal to 3.7."
   },
-  "advancedExamples": [],
-  "howItWorks": "The FLOOR function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Negative numbers round away from zero",
+      "scenario": "Rounding -3.7.",
+      "description": "FLOOR rounds toward negative infinity, so negatives move away from zero.",
+      "formula": "=FLOOR(-3.7, 1)",
+      "result": "-4",
+      "explanation": "The largest multiple of 1 that is ≤ -3.7 is -4."
+    },
+    {
+      "title": "Round to two decimal places",
+      "scenario": "Trim a value to the nearest 0.01.",
+      "description": "Pass significance 0.01.",
+      "formula": "=FLOOR(123.456, 0.01)",
+      "result": "123.45",
+      "explanation": "123.45 is the multiple of 0.01 just below 123.456."
+    }
+  ],
+  "howItWorks": "FLOOR finds the greatest multiple of significance that is less than or equal to number (rounding toward negative infinity). In the classic version, if number is positive and significance is negative, Excel returns #NUM!; FLOOR.MATH lifts that restriction.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the cell",
+      "text": "Click the cell for the result."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =FLOOR(arguments)."
+      "text": "Type =FLOOR(number, significance)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The rounded-down value appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "If number is positive and significance is negative, classic FLOOR returns #NUM! (FLOOR.MATH does not).",
+    "FLOOR rounds toward negative infinity, so negative numbers move away from zero.",
+    "A significance of 0 returns 0."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM!",
+      "cause": "Number is positive while significance is negative (classic FLOOR).",
+      "fix": "Match the signs, or switch to FLOOR.MATH."
+    },
+    {
+      "error": "#VALUE!",
+      "cause": "Non-numeric argument.",
+      "fix": "Use numeric values or numeric references."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "FLOOR works identically in Google Sheets with the same syntax.",
-    "formula": "=FLOOR(A1)"
+    "description": "Google Sheets supports FLOOR with the same syntax and behavior.",
+    "formula": "=FLOOR(3.7, 1)",
+    "notes": "Identical to Excel's classic FLOOR."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "How is FLOOR different from FLOOR.MATH?",
+      "answer": "FLOOR.MATH (Excel 2013+) allows any sign combination and adds a mode argument for negative rounding; classic FLOOR is stricter about signs."
+    },
+    {
+      "question": "Why does FLOOR(-3.7, 1) equal -4?",
+      "answer": "FLOOR rounds toward negative infinity, so negatives go to the next lower integer (-4)."
+    },
+    {
+      "question": "How do I round down to whole dollars?",
+      "answer": "Use =FLOOR(value, 1) or =FLOOR(value, 0.01) for cents."
+    }
+  ],
+  "relatedFunctions": [
+    "floor-math",
+    "ceiling",
+    "int",
+    "trunc",
+    "rounddown"
+  ]
 }

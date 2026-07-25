@@ -3,38 +3,87 @@
   "slug": "proper",
   "category": "text",
   "excelVersion": "All versions",
-  "description": "PROPER is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "PROPER is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(proper)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the PROPER function",
-    "formula": "=PROPER(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the PROPER function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The PROPER function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "PROPER capitalizes the first letter of each word in a text string and converts all other letters to lowercase.",
+  "tldr": "Title-cases each word in a string.",
+  "syntax": "(text)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
-    },
-    {
-      "name": "Enter the formula",
-      "text": "Type =PROPER(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "text",
+      "description": "The text or cell reference to convert to title case.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "PROPER works identically in Google Sheets with the same syntax.",
-    "formula": "=PROPER(A1)"
+  "basicExample": {
+    "description": "Title-case a phrase",
+    "formula": "=PROPER(\"hello world\")",
+    "result": "Hello World",
+    "explanation": "The first letter of each word is uppercased and the rest lowercased."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Clean up imported names",
+      "scenario": "Cell A1 contains \"jane doe\"",
+      "description": "Standardize a person's name",
+      "formula": "=PROPER(A1)",
+      "result": "Jane Doe",
+      "explanation": "Each word's first letter is capitalized for a clean display."
+    },
+    {
+      "title": "Mixed case product codes",
+      "scenario": "Cell A1 contains \"WIDGET-a1\"",
+      "description": "Normalize a label",
+      "formula": "=PROPER(A1)",
+      "result": "Widget-A1",
+      "explanation": "PROPER capitalizes after each non-letter boundary, here after the hyphen."
+    }
+  ],
+  "howItWorks": "PROPER treats any non-letter character (space, hyphen, punctuation) as a word boundary and uppercases the letter that follows it, while lowercasing all other letters.",
+  "howToSteps": [
+    {
+      "name": "Select the text",
+      "text": "Click the cell with the text to fix."
+    },
+    {
+      "name": "Apply PROPER",
+      "text": "Type =PROPER(cell) and press Enter."
+    }
+  ],
+  "limitations": [
+    "Capitalizes after apostrophes, so \"don't\" becomes \"Don'T\" and \"o'brien\" becomes \"O'Brien\".",
+    "Does not respect proper nouns, acronyms, or brand casing (e.g. \"iPhone\" becomes \"Iphone\").",
+    "Operates only on a single text value."
+  ],
+  "commonErrors": [
+    {
+      "error": "Awkward casing with apostrophes",
+      "cause": "PROPER treats the apostrophe as a word boundary.",
+      "fix": "Use a custom formula or post-edit for names like O'Brien and don't."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "PROPER works identically in Google Sheets.",
+    "formula": "=PROPER(\"hello world\")",
+    "notes": "Same behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "Why does PROPER break contractions?",
+      "answer": "It capitalizes the letter after every non-letter, including apostrophes, so \"don't\" becomes \"Don'T\"."
+    },
+    {
+      "question": "Does PROPER handle non-English text?",
+      "answer": "It follows Unicode letter boundaries but may not match language-specific title-case rules."
+    },
+    {
+      "question": "How is PROPER different from UPPER?",
+      "answer": "UPPER uppercases everything; PROPER only uppercases the first letter of each word."
+    }
+  ],
+  "relatedFunctions": [
+    "upper",
+    "lower",
+    "text",
+    "concatenate",
+    "rept"
+  ]
 }

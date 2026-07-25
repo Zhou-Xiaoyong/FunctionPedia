@@ -3,38 +3,101 @@
   "slug": "weekday",
   "category": "datetime",
   "excelVersion": "All versions",
-  "description": "WEEKDAY is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "WEEKDAY is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(weekday)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the WEEKDAY function",
-    "formula": "=WEEKDAY(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the WEEKDAY function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The WEEKDAY function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "WEEKDAY returns the day of the week as a number from a date, with the return_type argument controlling how days are numbered (for example Sun-Sat 1-7 or Mon-Sun 1-7).",
+  "tldr": "Returns the day-of-week number for a date.",
+  "syntax": "(serial_number, [return_type])",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "serial_number",
+      "description": "The date serial to evaluate.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =WEEKDAY(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "return_type",
+      "description": "Optional. Controls numbering: 1 (default) = Sunday=1 to Saturday=7; 2 = Monday=1 to Sunday=7; 3 = Monday=0 to Sunday=6; 11-17 select a specific start day (11=Mon start ... 17=Sun start).",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "WEEKDAY works identically in Google Sheets with the same syntax.",
-    "formula": "=WEEKDAY(A1)"
+  "basicExample": {
+    "description": "Day of week for New Year 2024",
+    "formula": "=WEEKDAY(DATE(2024, 1, 1))",
+    "result": "2",
+    "explanation": "2024-01-01 is a Monday. With the default return_type 1 (Sunday=1), Monday is 2."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Monday-based numbering",
+      "scenario": "Wanting 1 = Monday",
+      "description": "return_type 2 renumbers the week",
+      "formula": "=WEEKDAY(DATE(2024, 1, 1), 2)",
+      "result": "1",
+      "explanation": "With return_type 2 (Monday=1 to Sunday=7), Monday returns 1."
+    },
+    {
+      "title": "Zero-based Monday numbering",
+      "scenario": "Programming-style 0-6 week",
+      "description": "return_type 3 gives Monday=0",
+      "formula": "=WEEKDAY(DATE(2024, 1, 1), 3)",
+      "result": "0",
+      "explanation": "With return_type 3 (Monday=0 to Sunday=6), Monday returns 0."
+    }
+  ],
+  "howItWorks": "WEEKDAY computes the day of the week from the date serial using modulo-7 arithmetic, then maps the result to a number according to return_type. The default (1) treats Sunday as the first day (1) and Saturday as the last (7).",
+  "howToSteps": [
+    {
+      "name": "Enter the date",
+      "text": "Provide a date serial or a DATE(...) expression."
+    },
+    {
+      "name": "Choose return_type",
+      "text": "Pick 1, 2, 3, or 11-17 to control the numbering."
+    },
+    {
+      "name": "Read the weekday number",
+      "text": "The function returns a number you can use in logic or formatting."
+    }
+  ],
+  "limitations": [
+    "return_type must be one of 1, 2, 3, or 11-17; other values return #NUM!.",
+    "The time portion of a date-time serial does not affect the weekday.",
+    "It works only for dates Excel supports (1900-01-01 onward)."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM!",
+      "cause": "An invalid return_type value was supplied.",
+      "fix": "Use 1, 2, 3, or 11-17."
+    },
+    {
+      "error": "#VALUE!",
+      "cause": "The date argument is text Excel cannot parse.",
+      "fix": "Convert the text to a real date serial first."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "WEEKDAY works identically in Google Sheets and supports the same return_type values 1, 2, 3, and 11-17.",
+    "formula": "=WEEKDAY(DATE(2024, 1, 1), 2)",
+    "notes": "Behavior matches Excel exactly."
+  },
+  "faq": [
+    {
+      "question": "How do I make Monday equal 1?",
+      "answer": "Use return_type 2: =WEEKDAY(date, 2)."
+    },
+    {
+      "question": "What does return_type 3 do?",
+      "answer": "It numbers Monday as 0 and Sunday as 6."
+    },
+    {
+      "question": "Can I start the week on a different day?",
+      "answer": "Yes, return_type 11-17 let you pick the start day, e.g. 16 starts Friday."
+    }
+  ],
+  "relatedFunctions": [
+    "weeknum",
+    "networkdays",
+    "workday",
+    "date",
+    "today"
+  ]
 }

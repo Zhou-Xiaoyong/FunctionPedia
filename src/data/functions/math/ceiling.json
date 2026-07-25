@@ -3,38 +3,101 @@
   "slug": "ceiling",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "CEILING is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "CEILING is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(ceiling)",
-  "parameters": [],
+  "description": "CEILING rounds a number up, away from zero, to the nearest multiple of a specified significance.",
+  "tldr": "Rounds a number up to the nearest multiple of significance.",
+  "syntax": "(number, significance)",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The value you want to round.",
+      "required": true
+    },
+    {
+      "name": "significance",
+      "description": "The multiple to which you want to round. In classic CEILING, number and significance should share the same sign.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the CEILING function",
-    "formula": "=CEILING(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the CEILING function."
+    "description": "Round a price up to the nearest 5 cents",
+    "formula": "=CEILING(4.42, 0.05)",
+    "result": "4.45",
+    "explanation": "4.45 is the first multiple of 0.05 that is greater than or equal to 4.42."
   },
-  "advancedExamples": [],
-  "howItWorks": "The CEILING function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Round up to the next ten",
+      "scenario": "Pack quantities into boxes of 10.",
+      "description": "Round 123 up to a multiple of 10.",
+      "formula": "=CEILING(123, 10)",
+      "result": "130",
+      "explanation": "130 is the next multiple of 10 at or above 123."
+    },
+    {
+      "title": "Negative numbers round toward zero",
+      "scenario": "Rounding -4.3.",
+      "description": "CEILING rounds toward positive infinity, so negatives move toward zero.",
+      "formula": "=CEILING(-4.3, 1)",
+      "result": "-4",
+      "explanation": "The smallest multiple of 1 that is ≥ -4.3 is -4."
+    }
+  ],
+  "howItWorks": "CEILING finds the smallest multiple of significance that is greater than or equal to number (rounding toward positive infinity). In the classic version, if number is positive and significance is negative, Excel returns #NUM!; use CEILING.MATH to lift that restriction.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the cell",
+      "text": "Click the cell for the result."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =CEILING(arguments)."
+      "text": "Type =CEILING(number, significance)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The rounded-up value appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "If number is positive and significance is negative, classic CEILING returns #NUM! (CEILING.MATH does not).",
+    "CEILING rounds toward positive infinity, so negative numbers move toward zero, which can surprise users expecting 'more negative' rounding.",
+    "A significance of 0 returns 0 rather than an error."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM!",
+      "cause": "Number is positive while significance is negative (classic CEILING).",
+      "fix": "Make the signs match, or switch to CEILING.MATH."
+    },
+    {
+      "error": "#VALUE!",
+      "cause": "A non-numeric argument was supplied.",
+      "fix": "Use numeric values or numeric cell references."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "CEILING works identically in Google Sheets with the same syntax.",
-    "formula": "=CEILING(A1)"
+    "description": "Google Sheets supports CEILING with the same syntax and behavior.",
+    "formula": "=CEILING(4.42, 0.05)",
+    "notes": "Identical to Excel's classic CEILING."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "What is the difference between CEILING and CEILING.MATH?",
+      "answer": "CEILING.MATH (Excel 2013+) allows any sign combination and adds a mode argument for controlling negative rounding; classic CEILING is stricter about signs."
+    },
+    {
+      "question": "Does CEILING round away from zero?",
+      "answer": "It rounds toward positive infinity, so positives go up and negatives go toward zero (e.g. CEILING(-4.3,1) = -4)."
+    },
+    {
+      "question": "How do I round up to whole dollars?",
+      "answer": "Use =CEILING(value, 1) or =CEILING(value, 0.01) for cents."
+    }
+  ],
+  "relatedFunctions": [
+    "ceiling-math",
+    "floor",
+    "floor-math",
+    "mround",
+    "roundup"
+  ]
 }

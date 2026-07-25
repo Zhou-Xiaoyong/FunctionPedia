@@ -3,38 +3,85 @@
   "slug": "pi",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "PI is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "PI is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(pi)",
+  "description": "PI returns the value of the mathematical constant π (pi), approximately 3.14159265358979.",
+  "tldr": "Returns the constant π (about 3.14159).",
+  "syntax": "()",
   "parameters": [],
   "basicExample": {
-    "description": "Basic usage of the PI function",
-    "formula": "=PI(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the PI function."
+    "description": "Return π",
+    "formula": "=PI()",
+    "result": "3.141592654",
+    "explanation": "PI() returns the constant π to about 15 digits of precision."
   },
-  "advancedExamples": [],
-  "howItWorks": "The PI function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Circumference of a circle",
+      "scenario": "Radius 4.",
+      "description": "C = 2πr.",
+      "formula": "=2*PI()*4",
+      "result": "25.13274123",
+      "explanation": "2 × π × 4 ≈ 25.1327, the circumference."
+    },
+    {
+      "title": "Convert π to degrees",
+      "scenario": "Verify radians-to-degrees.",
+      "description": "Wrap PI() in DEGREES.",
+      "formula": "=DEGREES(PI())",
+      "result": "180",
+      "explanation": "π radians equals 180°."
+    }
+  ],
+  "howItWorks": "PI() is a constant function that returns the value of π (the ratio of a circle's circumference to its diameter), accurate to the worksheet's 15-digit floating-point precision. It takes no arguments.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the cell",
+      "text": "Click the cell for the result."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =PI(arguments)."
+      "text": "Type =PI() with empty parentheses."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The value of π appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "PI takes no arguments; supplying one (e.g. PI(1)) returns #VALUE!.",
+    "Precision is limited to the worksheet's ~15 significant digits.",
+    "It returns a static constant, not a function of any input."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "Arguments were passed to PI, such as PI(1).",
+      "fix": "Call it with empty parentheses: =PI()."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "PI works identically in Google Sheets with the same syntax.",
-    "formula": "=PI(A1)"
+    "description": "PI works identically in Google Sheets.",
+    "formula": "=PI()",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Do I need to pass anything to PI?",
+      "answer": "No. PI takes no arguments; call it as =PI() with empty parentheses."
+    },
+    {
+      "question": "How precise is PI()?",
+      "answer": "It returns about 15 significant digits: 3.14159265358979."
+    },
+    {
+      "question": "How do I convert PI radians to degrees?",
+      "answer": "Use =DEGREES(PI()), which returns 180."
+    }
+  ],
+  "relatedFunctions": [
+    "radians",
+    "degrees",
+    "sin",
+    "cos",
+    "exp"
+  ]
 }

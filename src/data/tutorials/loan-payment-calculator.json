@@ -1,0 +1,71 @@
+{
+  "slug": "loan-payment-calculator",
+  "title": "Loan Payment Calculator (PMT)",
+  "description": "Calculate your monthly loan payment instantly and understand the Excel PMT function behind it. Works for mortgages, car loans, and personal loans.",
+  "category": "Calculators",
+  "functions": ["PMT"],
+  "intro": "Whether you're comparing mortgage offers or just want to know what a loan really costs each month, the PMT function does the math for you. This calculator uses the exact PMT formula so the number you see matches what you'd get in Excel or Google Sheets.",
+  "tags": ["PMT", "Loan", "Calculator", "Mortgage", "Financial"],
+  "estimatedTime": "5 min",
+  "prerequisites": [
+    "The loan amount (principal)",
+    "The annual interest rate",
+    "The total number of payments (loan term in months)"
+  ],
+  "sections": [
+    {
+      "title": "How the PMT Formula Works",
+      "content": "PMT calculates the constant periodic payment for a loan with a fixed interest rate. It splits each payment between interest and principal so the balance reaches zero at the end of the term.",
+      "steps": [
+        {
+          "name": "Convert the rate",
+          "text": "Excel expects a per-period rate, so the annual rate is divided by 12 (months).",
+          "formula": "=PMT(rate/12, nper, pv)"
+        },
+        {
+          "name": "Sign convention",
+          "text": "Loan amounts are entered as negative numbers (money you receive) and payments come back positive, or vice versa depending on your setup."
+        }
+      ],
+      "tips": [
+        "Use a negative pv if you want the payment returned as a positive number.",
+        "For yearly payments, divide the rate by 1 and use the term in years."
+      ]
+    },
+    {
+      "title": "Worked Example",
+      "content": "A $100,000 loan at 5% over 30 years (360 months).",
+      "example": {
+        "formula": "=PMT(5%/12, 360, -100000)",
+        "result": "$536.82",
+        "explanation": "The monthly payment is about $536.82. Over 360 payments you repay roughly $193,255 in total, the difference being interest."
+      },
+      "tips": [
+        "Try the interactive calculator above and confirm it returns the same figure."
+      ]
+    }
+  ],
+  "calculator": {
+    "description": "Enter your loan details to see the monthly payment.",
+    "inputs": [
+      { "key": "pv", "label": "Loan amount (PV)", "default": 100000, "step": 1000, "min": 0 },
+      { "key": "rate", "label": "Annual interest rate (%)", "default": 5, "step": 0.1, "min": 0 },
+      { "key": "nper", "label": "Number of payments (months)", "default": 360, "step": 1, "min": 1 }
+    ],
+    "resultLabel": "Monthly payment",
+    "resultFormat": "currency",
+    "compute": "const r = rate/100/12; result = (r===0) ? pv/nper : pv*r*Math.pow(1+r,nper)/(Math.pow(1+r,nper)-1);"
+  },
+  "functionsUsed": [
+    { "name": "PMT", "slug": "pmt", "description": "Calculates the payment for a loan with constant payments and a constant interest rate" },
+    { "name": "IPMT", "slug": "ipmt", "description": "Returns the interest portion of a loan payment for a given period" },
+    { "name": "PPMT", "slug": "ppmt", "description": "Returns the principal portion of a loan payment for a given period" },
+    { "name": "RATE", "slug": "rate", "description": "Returns the interest rate per period of an annuity" }
+  ],
+  "summary": "The PMT function turns three numbers — loan amount, interest rate, and term — into a monthly payment you can trust. Use the calculator above to model any loan, then explore IPMT and PPMT to see how each payment is split between interest and principal.",
+  "nextSteps": [
+    "See how much of each payment is interest with the IPMT function",
+    "Break out the principal portion with PPMT",
+    "Build a full amortization schedule with PMT, IPMT, and PPMT"
+  ]
+}

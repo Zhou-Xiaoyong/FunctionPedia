@@ -3,38 +3,111 @@
   "slug": "hlookup",
   "category": "lookup",
   "excelVersion": "All versions",
-  "description": "HLOOKUP is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "HLOOKUP is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(hlookup)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the HLOOKUP function",
-    "formula": "=HLOOKUP(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the HLOOKUP function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The HLOOKUP function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "HLOOKUP searches for a value in the first row of a table and returns a value from a specified row in the same column. It is the horizontal counterpart to VLOOKUP.",
+  "tldr": "Looks up a value across rows (horizontal search).",
+  "syntax": "(lookup_value, table_array, row_index_num, [range_lookup])",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "lookup_value",
+      "description": "The value to find in the first row of the table.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =HLOOKUP(arguments)."
+      "name": "table_array",
+      "description": "The range containing the data; the first row is searched.",
+      "required": true
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "row_index_num",
+      "description": "The row number within the table (1-based) from which to return a value.",
+      "required": true
+    },
+    {
+      "name": "range_lookup",
+      "description": "TRUE for an approximate match (first row sorted ascending), FALSE for an exact match. Defaults to TRUE.",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "HLOOKUP works identically in Google Sheets with the same syntax.",
-    "formula": "=HLOOKUP(A1)"
+  "basicExample": {
+    "description": "Find quarterly sales",
+    "formula": "=HLOOKUP(\"Q2\",A1:E5,3,FALSE)",
+    "result": "Value from row 3 of the matched column",
+    "explanation": "HLOOKUP finds \"Q2\" in row 1, then returns the value in row 3 of that column."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Exact match lookup",
+      "scenario": "Product codes across the top row, data beneath",
+      "description": "Return the price row",
+      "formula": "=HLOOKUP(\"X100\",A1:G4,4,FALSE)",
+      "result": "Price for X100",
+      "explanation": "With FALSE, only an exact code match returns the row 4 value."
+    },
+    {
+      "title": "Approximate match (sorted)",
+      "scenario": "First row holds sorted thresholds",
+      "description": "Find the bracket containing a score",
+      "formula": "=HLOOKUP(85,A1:E2,2,TRUE)",
+      "result": "Bracket label for 85",
+      "explanation": "With TRUE it finds the largest threshold not exceeding 85 in the sorted first row."
+    }
+  ],
+  "howItWorks": "HLOOKUP scans the first row of table_array for lookup_value. With range_lookup FALSE it requires an exact match; with TRUE it finds the closest value less than or equal to the lookup in an ascending first row, then returns the corresponding value from row_index_num.",
+  "howToSteps": [
+    {
+      "name": "Prepare the table",
+      "text": "Put search keys in the first row and data below."
+    },
+    {
+      "name": "Set the row index",
+      "text": "Count which row (from the top) to return."
+    },
+    {
+      "name": "Choose match type",
+      "text": "Use FALSE for exact, TRUE for approximate on sorted data."
+    }
+  ],
+  "limitations": [
+    "Looks only downward within the matched column; it cannot return values from rows above the match row.",
+    "Approximate matching (TRUE) requires the first row sorted ascending or results are wrong.",
+    "Hard-codes the row position, so inserting rows breaks row_index_num. XLOOKUP avoids this fragility."
+  ],
+  "commonErrors": [
+    {
+      "error": "#N/A error",
+      "cause": "lookup_value is not found (exact match) or data is unsorted for approximate match.",
+      "fix": "Verify the key exists, or sort the first row ascending for TRUE."
+    },
+    {
+      "error": "#REF! error",
+      "cause": "row_index_num is greater than the number of rows in table_array.",
+      "fix": "Reduce row_index_num to a valid row."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "HLOOKUP works the same in Google Sheets.",
+    "formula": "=HLOOKUP(\"Q2\",A1:E5,3,FALSE)",
+    "notes": "Identical behavior to Excel; XLOOKUP is also available in Sheets."
+  },
+  "faq": [
+    {
+      "question": "HLOOKUP vs VLOOKUP?",
+      "answer": "HLOOKUP searches horizontally across the first row; VLOOKUP searches vertically down the first column."
+    },
+    {
+      "question": "Why do I get #N/A?",
+      "answer": "Usually the key isn't found for an exact match, or the first row isn't sorted for an approximate match."
+    },
+    {
+      "question": "Is there a better alternative?",
+      "answer": "XLOOKUP (Microsoft 365) is more flexible and avoids the row-index fragility."
+    }
+  ],
+  "relatedFunctions": [
+    "vlookup",
+    "xlookup",
+    "lookup",
+    "index",
+    "match"
+  ]
 }

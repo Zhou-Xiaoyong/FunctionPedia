@@ -3,38 +3,101 @@
   "slug": "percentile",
   "category": "statistical",
   "excelVersion": "All versions",
-  "description": "PERCENTILE is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "PERCENTILE is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(percentile)",
-  "parameters": [],
+  "description": "PERCENTILE returns the k-th percentile of values in a dataset using the inclusive method. It is the legacy function, retained for compatibility.",
+  "tldr": "Returns the value at a given percentile (k from 0 to 1, inclusive).",
+  "syntax": "(array, k)",
+  "parameters": [
+    {
+      "name": "array",
+      "description": "The range or array of numeric values.",
+      "required": true
+    },
+    {
+      "name": "k",
+      "description": "The percentile value, a number between 0 and 1 inclusive (e.g. 0.5 for the median).",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the PERCENTILE function",
-    "formula": "=PERCENTILE(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the PERCENTILE function."
+    "description": "Median (50th percentile) of four values",
+    "formula": "=PERCENTILE({1,2,3,4}, 0.5)",
+    "result": "2.5",
+    "explanation": "Using the inclusive method the rank is 1 + 0.5*(4-1) = 2.5, interpolated between 2 and 3 to give 2.5."
   },
-  "advancedExamples": [],
-  "howItWorks": "The PERCENTILE function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "25th percentile with exact position",
+      "scenario": "Five evenly spaced values",
+      "description": "When the computed rank lands on an integer, the value at that position is returned.",
+      "formula": "=PERCENTILE({1,2,3,4,5}, 0.25)",
+      "result": "2",
+      "explanation": "Rank = 1 + 0.25*(5-1) = 2, so the 2nd value, 2, is returned."
+    },
+    {
+      "title": "75th percentile with interpolation",
+      "scenario": "Fractional rank between two values",
+      "description": "A non-integer rank is linearly interpolated.",
+      "formula": "=PERCENTILE({1,2,3,4}, 0.75)",
+      "result": "3.25",
+      "explanation": "Rank = 1 + 0.75*(4-1) = 3.25; interpolate 25% from the 3rd to the 4th value: 3 + 0.25*(4-3) = 3.25."
+    }
+  ],
+  "howItWorks": "PERCENTILE uses the inclusive (INC) method. It calculates a rank position as 1 + k*(n-1), where n is the count of values, then interpolates linearly between the surrounding sorted values. k must be between 0 and 1 inclusive; k=0 returns the minimum and k=1 returns the maximum. This function is equivalent to PERCENTILE.INC. Text and logical values in the array are ignored.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the result cell",
+      "text": "Click where you want the percentile."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =PERCENTILE(arguments)."
+      "text": "Type =PERCENTILE(range, k) with k between 0 and 1."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The interpolated percentile value is returned."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "k must be between 0 and 1 inclusive; values outside this range cause #NUM!.",
+    "May linearly interpolate between data points, returning a value not present in the data.",
+    "Ignores text and logical values in the array."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "k is less than 0 or greater than 1, or the array is empty.",
+      "fix": "Use a k value between 0 and 1 and ensure the range contains numbers."
+    },
+    {
+      "error": "Unexpected decimal result",
+      "cause": "Interpolation between two data points is by design.",
+      "fix": "This is expected; the percentile need not be an actual data value."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "PERCENTILE works identically in Google Sheets with the same syntax.",
-    "formula": "=PERCENTILE(A1)"
+    "description": "Google Sheets supports PERCENTILE with the same inclusive behavior as legacy Excel.",
+    "formula": "=PERCENTILE({1,2,3,4}, 0.5)",
+    "notes": "Returns 2.5, identical to Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Is PERCENTILE the same as PERCENTILE.INC?",
+      "answer": "Yes. PERCENTILE is the legacy name and PERCENTILE.INC was added in Excel 2010; both use the inclusive method."
+    },
+    {
+      "question": "Why might the result not be in my data?",
+      "answer": "The inclusive method interpolates between the two nearest values when the rank is fractional."
+    },
+    {
+      "question": "What does k = 0 or k = 1 return?",
+      "answer": "k = 0 returns the minimum value and k = 1 returns the maximum value."
+    }
+  ],
+  "relatedFunctions": [
+    "percentile-inc",
+    "percentile-exc",
+    "quartile",
+    "median",
+    "rank"
+  ]
 }

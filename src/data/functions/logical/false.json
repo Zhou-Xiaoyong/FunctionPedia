@@ -3,38 +3,81 @@
   "slug": "false",
   "category": "logical",
   "excelVersion": "All versions",
-  "description": "FALSE is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "FALSE is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(false)",
+  "description": "FALSE returns the logical value FALSE. It takes no arguments and is equivalent to typing the literal FALSE into a cell.",
+  "tldr": "Returns the logical value FALSE.",
+  "syntax": "()",
   "parameters": [],
   "basicExample": {
-    "description": "Basic usage of the FALSE function",
-    "formula": "=FALSE(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the FALSE function."
+    "description": "Return a FALSE value",
+    "formula": "=FALSE()",
+    "result": "FALSE",
+    "explanation": "The function evaluates to the logical constant FALSE with no input needed."
   },
-  "advancedExamples": [],
-  "howItWorks": "The FALSE function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "advancedExamples": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "title": "Use inside a condition",
+      "scenario": "Force the false branch of an IF",
+      "description": "Return FALSE from a formula",
+      "formula": "=IF(FALSE(),\"Yes\",\"No\")",
+      "result": "No",
+      "explanation": "Because FALSE() is logical FALSE, the IF returns its value_if_false."
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =FALSE(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "title": "Explicit boolean in a check",
+      "scenario": "Compare a cell to a target",
+      "description": "Return FALSE on a non-match",
+      "formula": "=IF(A1=10,TRUE(),FALSE())",
+      "result": "FALSE when A1 is not 10",
+      "explanation": "Returns the explicit TRUE/FALSE constants instead of relying on implicit coercion."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "howItWorks": "FALSE is a function wrapper around the FALSE logical constant. It performs no computation and accepts no arguments; it is provided for compatibility and explicit boolean building.",
+  "howToSteps": [
+    {
+      "name": "Type the function",
+      "text": "Enter =FALSE() with empty parentheses."
+    },
+    {
+      "name": "Use the result",
+      "text": "Reference it in logical tests like IF or AND."
+    }
+  ],
+  "limitations": [
+    "Takes no arguments; supplying any returns #VALUE!.",
+    "Mostly redundant because the literal FALSE works the same in formulas.",
+    "Stored as a logical value, not the text \"FALSE\"."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! error",
+      "cause": "Passing an argument such as =FALSE(1).",
+      "fix": "Leave the parentheses empty: =FALSE()."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "FALSE works identically in Google Sheets with the same syntax.",
-    "formula": "=FALSE(A1)"
+    "description": "FALSE works identically in Google Sheets with no arguments.",
+    "formula": "=FALSE()",
+    "notes": "Same behavior as Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Is FALSE() different from typing FALSE?",
+      "answer": "No, =FALSE() and the constant FALSE behave the same in calculations."
+    },
+    {
+      "question": "Can FALSE take arguments?",
+      "answer": "No; it returns #VALUE! if you supply any."
+    },
+    {
+      "question": "What type is the result?",
+      "answer": "A logical (boolean) value, not text."
+    }
+  ],
+  "relatedFunctions": [
+    "true",
+    "if",
+    "ifna",
+    "and",
+    "or"
+  ]
 }

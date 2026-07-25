@@ -3,38 +3,87 @@
   "slug": "lower",
   "category": "text",
   "excelVersion": "All versions",
-  "description": "LOWER is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "LOWER is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(lower)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the LOWER function",
-    "formula": "=LOWER(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the LOWER function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The LOWER function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "LOWER converts all letters in a text string to lowercase, leaving numbers, symbols, and spaces unchanged.",
+  "tldr": "Makes every letter lowercase.",
+  "syntax": "(text)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
-    },
-    {
-      "name": "Enter the formula",
-      "text": "Type =LOWER(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "text",
+      "description": "The text or cell reference to convert; can be a literal string in quotes or a cell.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "LOWER works identically in Google Sheets with the same syntax.",
-    "formula": "=LOWER(A1)"
+  "basicExample": {
+    "description": "Lowercase a word",
+    "formula": "=LOWER(\"HELLO\")",
+    "result": "hello",
+    "explanation": "All uppercase letters are converted to lowercase."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Normalize an email prefix",
+      "scenario": "Cell A1 contains \"User@Example.com\"",
+      "description": "Standardize to lowercase",
+      "formula": "=LOWER(A1)",
+      "result": "user@example.com",
+      "explanation": "Mixed-case text is forced to a consistent lowercase form."
+    },
+    {
+      "title": "Combine with other text",
+      "scenario": "Build a lowercase key from a cell",
+      "description": "Lowercase within a concatenation",
+      "formula": "=LOWER(\"key-\" & A1)",
+      "result": "key-abc123",
+      "explanation": "LOWER is applied to the combined string so the whole result is lowercase."
+    }
+  ],
+  "howItWorks": "LOWER scans each character of the input; uppercase letters are mapped to their lowercase equivalents while every other character (digits, punctuation, spaces) passes through unchanged.",
+  "howToSteps": [
+    {
+      "name": "Select the text",
+      "text": "Click the cell with the text to convert."
+    },
+    {
+      "name": "Enter LOWER",
+      "text": "Type =LOWER(cell) and press Enter."
+    }
+  ],
+  "limitations": [
+    "Does not change non-letter characters.",
+    "Case conversion follows the system's locale rules and may not cover every Unicode casing edge case.",
+    "Only affects a single text value; use with arrays or helper columns for ranges."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! error",
+      "cause": "Passing a non-text argument in strict contexts.",
+      "fix": "Ensure the argument is text or wrap it with TEXT()."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "LOWER works identically in Google Sheets.",
+    "formula": "=LOWER(\"HELLO\")",
+    "notes": "Same behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "Does LOWER affect numbers?",
+      "answer": "No, numbers, spaces, and symbols are left untouched."
+    },
+    {
+      "question": "What is the opposite of LOWER?",
+      "answer": "UPPER converts to uppercase; PROPER capitalizes each word."
+    },
+    {
+      "question": "Can LOWER handle a range?",
+      "answer": "In modern Excel it can spill across an array; otherwise apply it per cell or with MAP."
+    }
+  ],
+  "relatedFunctions": [
+    "upper",
+    "proper",
+    "text",
+    "concatenate",
+    "rept"
+  ]
 }

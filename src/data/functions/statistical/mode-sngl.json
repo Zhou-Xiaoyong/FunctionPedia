@@ -2,39 +2,102 @@
   "name": "MODE.SNGL",
   "slug": "mode-sngl",
   "category": "statistical",
-  "excelVersion": "All versions",
-  "description": "MODE.SNGL is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "MODE.SNGL is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(mode.sngl)",
-  "parameters": [],
+  "excelVersion": "Excel 2010+",
+  "description": "MODE.SNGL returns the most frequently occurring numeric value in a dataset. It is the modern replacement for the legacy MODE function.",
+  "tldr": "Returns the single most frequent value, choosing the lowest on a tie.",
+  "syntax": "(number1, [number2], ...)",
+  "parameters": [
+    {
+      "name": "number1",
+      "description": "The first number, cell, or range to evaluate.",
+      "required": true
+    },
+    {
+      "name": "number2",
+      "description": "Additional numbers, cells, or ranges (optional).",
+      "required": false
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the MODE.SNGL function",
-    "formula": "=MODE.SNGL(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the MODE.SNGL function."
+    "description": "Most frequent value in a small list",
+    "formula": "=MODE.SNGL(1,2,2,3,4)",
+    "result": "2",
+    "explanation": "2 appears twice, more often than any other value."
   },
-  "advancedExamples": [],
-  "howItWorks": "The MODE.SNGL function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Tied frequencies return the smallest mode",
+      "scenario": "Two values share the top frequency",
+      "description": "MODE.SNGL returns one value and prefers the lowest when tied.",
+      "formula": "=MODE.SNGL(1,2,2,3,3,4)",
+      "result": "2",
+      "explanation": "Both 2 and 3 occur twice; the smaller value, 2, is returned."
+    },
+    {
+      "title": "Mode from a range with blanks",
+      "scenario": "Survey tally with gaps",
+      "description": "Empty cells are ignored when counting frequencies.",
+      "formula": "=MODE.SNGL(5,5,5,8,9)",
+      "result": "5",
+      "explanation": "5 occurs three times, the highest frequency in the set."
+    }
+  ],
+  "howItWorks": "MODE.SNGL counts the frequency of each numeric value and returns the value with the greatest frequency. When several values tie, it returns the smallest of them. If no value repeats it returns #N/A. Text, logical values, and empty cells are ignored. It is identical in behavior to the legacy MODE.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the result cell",
+      "text": "Click where you want the mode."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =MODE.SNGL(arguments)."
+      "text": "Type =MODE.SNGL(range)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The most frequent value appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Returns only a single value even when multiple values tie for the highest frequency.",
+    "Returns #N/A when all values are unique.",
+    "Ignores text labels, so a repeated category name is not counted."
+  ],
+  "commonErrors": [
+    {
+      "error": "#N/A error",
+      "cause": "No value repeats in the supplied data.",
+      "fix": "Use MODE.MULT to return all tied values, or confirm the data has duplicates."
+    },
+    {
+      "error": "Unexpected blank result",
+      "cause": "Repeated values are stored as text and ignored.",
+      "fix": "Convert text entries to numbers before applying MODE.SNGL."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "MODE.SNGL works identically in Google Sheets with the same syntax.",
-    "formula": "=MODE.SNGL(A1)"
+    "description": "Google Sheets supports MODE.SNGL with the same syntax and result as Excel.",
+    "formula": "=MODE.SNGL(1,2,2,3,4)",
+    "notes": "Returns 2, matching Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Is MODE.SNGL the same as MODE?",
+      "answer": "Yes, they behave identically. MODE.SNGL is the name introduced in Excel 2010; MODE remains for compatibility."
+    },
+    {
+      "question": "How is it different from MODE.MULT?",
+      "answer": "MODE.MULT can return several values (an array) when multiple modes exist, while MODE.SNGL returns only one."
+    },
+    {
+      "question": "What happens with a tie?",
+      "answer": "MODE.SNGL returns the smallest value among those tied for the highest frequency."
+    }
+  ],
+  "relatedFunctions": [
+    "mode",
+    "mode-mult",
+    "median",
+    "average",
+    "count"
+  ]
 }

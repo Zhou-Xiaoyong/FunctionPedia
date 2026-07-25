@@ -3,38 +3,113 @@
   "slug": "database",
   "category": "database",
   "excelVersion": "All versions",
-  "description": "DATABASE is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "DATABASE is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(database)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the DATABASE function",
-    "formula": "=DATABASE(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the DATABASE function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The DATABASE function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "The database (D) functions are a family of Excel and Google Sheets functions that perform calculations on records in a list or database that satisfy one or more conditions. They all share the same three-argument signature: a database range, a field, and a criteria range.",
+  "tldr": "D-functions calculate on database rows that match a criteria range, using a shared (database, field, criteria) signature.",
+  "syntax": "(database, field, criteria)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "database",
+      "description": "The range of cells that makes up the list or database, including the header row as its first row. Each column is a field and each following row is a record.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =DATABASE(arguments)."
+      "name": "field",
+      "description": "The column to use in the calculation. Supply the column label in quotes (e.g. \"Yield\") or the column's 1-based position within the database (e.g. 4).",
+      "required": true
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "criteria",
+      "description": "The range of cells that contains the conditions, including a header row that matches database column names and at least one condition row beneath it. A record matches only if it satisfies every condition in a given criteria row; multiple criteria rows are treated as OR.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "DATABASE works identically in Google Sheets with the same syntax.",
-    "formula": "=DATABASE(A1)"
+  "basicExample": {
+    "description": "Sum the Yield of apple trees taller than 10 using the shared D-function pattern",
+    "formula": "=DSUM(A1:E7, \"Yield\", A9:B10)",
+    "result": "24",
+    "explanation": "The criteria range A9:B10 holds Tree = Apple and Height > 10; only two records match (Yield 14 and 10), which sum to 24."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "How the criteria range works",
+      "scenario": "A small orchard table",
+      "description": "The database is A1:E7 with headers Tree, Height, Age, Yield, Profit. The criteria block A9:B10 reuses two of those headers so the function knows which columns to filter on.",
+      "formula": "=DAVERAGE(A1:E7, \"Yield\", A9:B10)",
+      "result": "12",
+      "explanation": "Matching rows have Yield 14 and 10, so the average is (14+10)/2 = 12. The criteria headers must exactly match database headers for the filter to apply."
+    },
+    {
+      "title": "Multiple criteria rows act as OR",
+      "scenario": "Find tall apples OR any cherry tree",
+      "description": "Build a criteria range with two condition rows: row one is Tree=Apple, Height>10; row two is Tree=Cherry. Records matching either row are included.",
+      "formula": "=DCOUNT(A1:E7, \"Yield\", A9:B11)",
+      "result": "3",
+      "explanation": "Two tall apples plus the single cherry record match, giving a count of 3 numeric Yield values."
+    }
+  ],
+  "howItWorks": "Each D-function first filters the database rows so that only records matching the criteria range remain. It then applies its specific calculation (sum, average, count, max, min, product, or a statistic) to the values in the specified field column of those matching records. Filtering uses the same rules as Excel's advanced filter: criteria on the same row are AND-ed, criteria on different rows are OR-ed, and operators such as >, <, >=, <=, <>, and wildcards (*, ?) are supported.",
+  "howToSteps": [
+    {
+      "name": "Build the database",
+      "text": "Put your data in a range with a header row of unique column names, one record per row."
+    },
+    {
+      "name": "Build the criteria range",
+      "text": "Copy the column header(s) you want to filter on to a separate area and type the condition(s) below them."
+    },
+    {
+      "name": "Write the D-function",
+      "text": "Call =DFUNC(database, \"Field\", criteria) with the field name in quotes or its column index."
+    }
+  ],
+  "limitations": [
+    "The criteria header labels must exactly match the database headers or the condition is ignored.",
+    "Field names with spaces or special characters must be quoted; an unquoted bare column name in the formula will error.",
+    "DCOUNT only counts numeric cells, while DCOUNTA counts any non-blank cell, so they can return different results."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "The field argument is a text column name not enclosed in quotes, or the criteria range has no header.",
+      "fix": "Wrap the field name in double quotes and ensure the criteria range includes a header row."
+    },
+    {
+      "error": "Wrong or zero result",
+      "cause": "Criteria headers do not match database headers, so no rows are filtered.",
+      "fix": "Make the criteria header text identical to the database column name."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "Google Sheets supports all the same D-functions with identical syntax and behavior.",
+    "formula": "=DSUM(A1:E7, \"Yield\", A9:B10)",
+    "notes": "Criteria and wildcard rules match Excel exactly."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between field as text and as a number?",
+      "answer": "You may pass the column label in quotes, e.g. \"Yield\", or its 1-based position, e.g. 4. Both refer to the same column."
+    },
+    {
+      "question": "How do I filter on more than one column?",
+      "answer": "Add more condition columns to the criteria range, each with a matching header. Conditions on the same row are AND-ed; additional rows are OR-ed."
+    },
+    {
+      "question": "Which D-function should I use to count matches?",
+      "answer": "Use DCOUNT to count numeric matches and DCOUNTA to count any non-blank matches; use DGET to pull a single value when exactly one record matches."
+    }
+  ],
+  "relatedFunctions": [
+    "dsum",
+    "daverage",
+    "dcount",
+    "dcounta",
+    "dmax",
+    "dmin",
+    "dget",
+    "dproduct",
+    "dstdev",
+    "dstdevp",
+    "dvar",
+    "dvarp"
+  ]
 }

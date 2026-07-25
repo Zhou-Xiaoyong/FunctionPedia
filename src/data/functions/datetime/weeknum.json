@@ -3,38 +3,101 @@
   "slug": "weeknum",
   "category": "datetime",
   "excelVersion": "All versions",
-  "description": "WEEKNUM is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "WEEKNUM is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(weeknum)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the WEEKNUM function",
-    "formula": "=WEEKNUM(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the WEEKNUM function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The WEEKNUM function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "WEEKNUM returns the week number of a date within the year, where the return_type argument controls which day the week starts on; return_type 21 returns the ISO 8601 week number.",
+  "tldr": "Returns the week-of-year number for a date.",
+  "syntax": "(serial_number, [return_type])",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "serial_number",
+      "description": "The date serial to evaluate.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =WEEKNUM(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "return_type",
+      "description": "Optional. Controls the week-start day: 1 (default) = week starts Sunday; 2 = week starts Monday; 11-17 select a specific start day; 21 = ISO 8601 (week starts Monday, week 1 is the one containing the first Thursday).",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "WEEKNUM works identically in Google Sheets with the same syntax.",
-    "formula": "=WEEKNUM(A1)"
+  "basicExample": {
+    "description": "Week number of New Year 2024",
+    "formula": "=WEEKNUM(DATE(2024, 1, 1), 2)",
+    "result": "1",
+    "explanation": "2024-01-01 is a Monday. With return_type 2 (Monday start), the week containing Jan 1 is week 1."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "ISO 8601 week for a late-December date spill",
+      "scenario": "A date that belongs to the previous ISO year",
+      "description": "return_type 21 follows the ISO rule",
+      "formula": "=WEEKNUM(DATE(2021, 1, 1), 21)",
+      "result": "53",
+      "explanation": "2021-01-01 is a Friday that falls in the last ISO week of 2020, so it returns 53."
+    },
+    {
+      "title": "US week starting Sunday",
+      "scenario": "Comparing numbering systems",
+      "description": "return_type 1 starts the week on Sunday",
+      "formula": "=WEEKNUM(DATE(2021, 1, 1), 1)",
+      "result": "1",
+      "explanation": "With return_type 1, the week containing Jan 1 is always week 1, so 2021-01-01 returns 1."
+    }
+  ],
+  "howItWorks": "WEEKNUM determines which week a date falls in based on the chosen week-start day. Week 1 always contains January 1. The ISO mode (21) defines week 1 as the week with the first Thursday (equivalently the week containing Jan 4), which can place early January dates in week 52 or 53 of the prior year.",
+  "howToSteps": [
+    {
+      "name": "Enter the date",
+      "text": "Provide a date serial or a DATE(...) expression."
+    },
+    {
+      "name": "Choose return_type",
+      "text": "Use 1/2 for US-style, or 21 for ISO 8601 weeks."
+    },
+    {
+      "name": "Read the week number",
+      "text": "The function returns an integer 1-53."
+    }
+  ],
+  "limitations": [
+    "Week 1 always contains Jan 1, so early or late dates can return 52 or 53 under the ISO system.",
+    "For strict ISO weeks in Excel 2013 and later, the dedicated ISOWEEKNUM function is an alternative.",
+    "return_type must be 1, 2, 11-17, or 21; other values return #NUM!."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM!",
+      "cause": "An invalid return_type value was supplied.",
+      "fix": "Use 1, 2, 11-17, or 21."
+    },
+    {
+      "error": "Week number seems off by one",
+      "cause": "Mixing Sunday-start and Monday-start systems, or expecting ISO behavior.",
+      "fix": "Use return_type 21 for ISO 8601 weeks."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "WEEKNUM works identically in Google Sheets and supports return_type 1, 2, 11-17, and 21 for ISO weeks.",
+    "formula": "=WEEKNUM(DATE(2024, 1, 1), 2)",
+    "notes": "Same behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "How do I get ISO 8601 week numbers?",
+      "answer": "Use return_type 21, e.g. =WEEKNUM(date, 21)."
+    },
+    {
+      "question": "Why is Jan 1 sometimes week 53?",
+      "answer": "Under ISO (21), if Jan 1 falls in the last week of the previous year, it returns 52 or 53."
+    },
+    {
+      "question": "What is the difference between return_type 1 and 2?",
+      "answer": "1 starts the week on Sunday, 2 starts it on Monday."
+    }
+  ],
+  "relatedFunctions": [
+    "weekday",
+    "isoweeknum",
+    "workday",
+    "networkdays",
+    "date"
+  ]
 }

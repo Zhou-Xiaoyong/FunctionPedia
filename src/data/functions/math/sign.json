@@ -3,38 +3,91 @@
   "slug": "sign",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "SIGN is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "SIGN is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(sign)",
-  "parameters": [],
+  "description": "SIGN returns the sign of a number: 1 if the number is positive, 0 if zero, and -1 if negative.",
+  "tldr": "Returns 1, 0, or -1 indicating a number's sign.",
+  "syntax": "(number)",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The real number whose sign you want to determine.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the SIGN function",
-    "formula": "=SIGN(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the SIGN function."
+    "description": "Sign of a negative number",
+    "formula": "=SIGN(-7)",
+    "result": "-1",
+    "explanation": "Because -7 is negative, SIGN returns -1."
   },
-  "advancedExamples": [],
-  "howItWorks": "The SIGN function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Sign of zero",
+      "scenario": "Boundary case.",
+      "description": "Zero returns 0.",
+      "formula": "=SIGN(0)",
+      "result": "0",
+      "explanation": "Zero is neither positive nor negative, so SIGN returns 0."
+    },
+    {
+      "title": "Sign of a positive number",
+      "scenario": "Standard case.",
+      "description": "Positive returns 1.",
+      "formula": "=SIGN(3.14)",
+      "result": "1",
+      "explanation": "3.14 is positive, so SIGN returns 1."
+    }
+  ],
+  "howItWorks": "SIGN evaluates the sign of the input: it returns 1 when number > 0, 0 when number = 0, and -1 when number < 0. It is often combined with other functions to branch logic.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the cell",
+      "text": "Click the cell for the result."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =SIGN(arguments)."
+      "text": "Type =SIGN(number)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The sign indicator (1, 0, or -1) appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "SIGN only returns -1, 0, or 1; it does not indicate magnitude.",
+    "Non-numeric text returns #VALUE!.",
+    "It is not affected by formatting or rounding; only the value's sign matters."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "Non-numeric argument.",
+      "fix": "Supply a numeric value."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "SIGN works identically in Google Sheets with the same syntax.",
-    "formula": "=SIGN(A1)"
+    "description": "SIGN works identically in Google Sheets.",
+    "formula": "=SIGN(-7)",
+    "notes": "Returns -1, same as Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "What does SIGN return for zero?",
+      "answer": "It returns 0, since zero has no sign."
+    },
+    {
+      "question": "How is SIGN useful?",
+      "answer": "It lets you apply different calculations depending on whether a value is positive, zero, or negative, often inside IF or other formulas."
+    },
+    {
+      "question": "Does SIGN round the number first?",
+      "answer": "No. SIGN only looks at the sign of the exact value; -0.0001 still returns -1."
+    }
+  ],
+  "relatedFunctions": [
+    "abs",
+    "int",
+    "trunc",
+    "round",
+    "mod"
+  ]
 }

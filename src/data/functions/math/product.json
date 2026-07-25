@@ -3,38 +3,101 @@
   "slug": "product",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "PRODUCT is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "PRODUCT is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(product)",
-  "parameters": [],
+  "description": "PRODUCT multiplies all the numbers given as arguments or contained in the referenced ranges.",
+  "tldr": "Multiplies together all supplied numbers.",
+  "syntax": "(number1, [number2], ...)",
+  "parameters": [
+    {
+      "name": "number1",
+      "description": "The first number, range, or cell reference to multiply.",
+      "required": true
+    },
+    {
+      "name": "number2",
+      "description": "Additional numbers, ranges, or references (optional). Up to 255 arguments.",
+      "required": false
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the PRODUCT function",
-    "formula": "=PRODUCT(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the PRODUCT function."
+    "description": "Multiply a few values",
+    "formula": "=PRODUCT(2, 3, 4)",
+    "result": "24",
+    "explanation": "2 × 3 × 4 = 24."
   },
-  "advancedExamples": [],
-  "howItWorks": "The PRODUCT function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Multiply an entire range",
+      "scenario": "Product of cells A1:A3 containing 2, 3, 4.",
+      "description": "Reference a range directly.",
+      "formula": "=PRODUCT(A1:A3)",
+      "result": "24",
+      "explanation": "PRODUCT multiplies every numeric cell in the range; text and blanks are ignored."
+    },
+    {
+      "title": "A zero anywhere zeroes the product",
+      "scenario": "Mixed values including 0.",
+      "description": "Show the effect of a zero factor.",
+      "formula": "=PRODUCT(2, 0, 5)",
+      "result": "0",
+      "explanation": "Any factor of 0 makes the whole product 0."
+    }
+  ],
+  "howItWorks": "PRODUCT multiplies all numeric values across its arguments. Empty cells, text, and logical values in ranges are ignored, but explicitly typed TRUE/FALSE and numbers are multiplied. Supplying zero yields zero.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the cell",
+      "text": "Click the cell for the product."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =PRODUCT(arguments)."
+      "text": "Type =PRODUCT(number1, [number2], ...)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The multiplied result appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Empty cells, text, and logical values inside ranges are ignored (unlike explicitly entered TRUE/FALSE).",
+    "A single zero factor makes the entire product zero.",
+    "Extremely large products overflow to #NUM!."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM!",
+      "cause": "The product is too large to represent.",
+      "fix": "Use logarithms (EXP(SUMPRODUCT(LN(range)))) or scale the inputs."
+    },
+    {
+      "error": "Result is 0 unexpectedly",
+      "cause": "A zero is present in the data.",
+      "fix": "Inspect the range for zeros or use an array formula that excludes them."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "PRODUCT works identically in Google Sheets with the same syntax.",
-    "formula": "=PRODUCT(A1)"
+    "description": "PRODUCT works identically in Google Sheets.",
+    "formula": "=PRODUCT(2, 3, 4)",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Does PRODUCT ignore text and blanks?",
+      "answer": "Yes, within ranges text and empty cells are ignored, so they don't contribute a zero."
+    },
+    {
+      "question": "How is PRODUCT different from multiplying with *?",
+      "answer": "PRODUCT can take ranges and many arguments at once and skips non-numeric cells, while * requires each operand explicitly."
+    },
+    {
+      "question": "What happens with a zero in the range?",
+      "answer": "The entire product becomes 0, since multiplying by zero yields zero."
+    }
+  ],
+  "relatedFunctions": [
+    "sum",
+    "sumproduct",
+    "power",
+    "sumif",
+    "sqrt"
+  ]
 }

@@ -2,39 +2,116 @@
   "name": "WORKDAY.INTL",
   "slug": "workday-intl",
   "category": "datetime",
-  "excelVersion": "All versions",
-  "description": "WORKDAY.INTL is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "WORKDAY.INTL is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(workday.intl)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the WORKDAY.INTL function",
-    "formula": "=WORKDAY.INTL(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the WORKDAY.INTL function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The WORKDAY.INTL function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "excelVersion": "Excel 2010+",
+  "description": "WORKDAY.INTL returns the date that is a given number of working days before or after a start date, with a customizable weekend (a weekend code or a 7-character string) and optional holidays.",
+  "tldr": "Returns a date n workdays away with a custom weekend.",
+  "syntax": "(start_date, days, [weekend], [holidays])",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "start_date",
+      "description": "The starting date serial.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =WORKDAY.INTL(arguments)."
+      "name": "days",
+      "description": "The number of workdays to move. Positive moves forward, negative moves backward. The start date itself is not counted.",
+      "required": true
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "weekend",
+      "description": "Optional. A number 1-7 or 11-17 selecting weekend days (1 = Sat+Sun default, 2 = Sun only, 3 = Mon only, ... 7 = Fri only, 11 = Sun+Mon, ... 17 = Sat+Sun), or a 7-character string of 0/1 for Mon-Sun where 1 means weekend.",
+      "required": false
+    },
+    {
+      "name": "holidays",
+      "description": "Optional range or array of dates to exclude as non-working days.",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "WORKDAY.INTL works identically in Google Sheets with the same syntax.",
-    "formula": "=WORKDAY.INTL(A1)"
+  "basicExample": {
+    "description": "Five workdays after Jan 1, 2024 (default Sat/Sun weekend)",
+    "formula": "=WORKDAY.INTL(DATE(2024, 1, 1), 5, 1)",
+    "result": "45298",
+    "explanation": "With the default weekend (code 1, Sat+Sun), five workdays from Monday Jan 1 land on Monday Jan 8 2024 (serial 45298)."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Custom weekend via string (Mon and Sun off)",
+      "scenario": "A schedule where Monday and Sunday are non-working",
+      "description": "A 7-character string sets the weekend pattern",
+      "formula": "=WORKDAY.INTL(DATE(2024, 1, 1), 5, \"1000001\")",
+      "result": "45296",
+      "explanation": "The string \"1000001\" marks Monday and Sunday as weekends (Mon-Sun order). Five workdays from Jan 1 land on Saturday Jan 6 (serial 45296), since Mon and Sun are skipped."
+    },
+    {
+      "title": "Sunday-only weekend via code",
+      "scenario": "A six-day work week",
+      "description": "Weekend code 2 treats only Sunday as non-working",
+      "formula": "=WORKDAY.INTL(DATE(2024, 1, 1), 5, 2)",
+      "result": "45295",
+      "explanation": "With only Sunday off, five consecutive workdays (Jan 1-5, none of which is Sunday) land on Friday Jan 5 2024 (serial 45295)."
+    }
+  ],
+  "howItWorks": "WORKDAY.INTL walks from start_date counting only days that are not designated weekends by the weekend argument, also skipping listed holidays, until it reaches the requested number of workdays. The weekend can be a preset code or a 7-character 0/1 string in Monday-to-Sunday order.",
+  "howToSteps": [
+    {
+      "name": "Enter the start date",
+      "text": "Provide a date serial or DATE(...) expression."
+    },
+    {
+      "name": "Enter the number of workdays",
+      "text": "Use a positive or negative integer."
+    },
+    {
+      "name": "Set the weekend",
+      "text": "Use a code (1-7/11-17) or a 7-char 0/1 string (Mon-Sun)."
+    },
+    {
+      "name": "Optionally list holidays",
+      "text": "Pass a range or array of holiday dates."
+    }
+  ],
+  "limitations": [
+    "Available only in Excel 2010 and later.",
+    "The weekend string must be exactly seven characters in Monday-to-Sunday order.",
+    "The start date itself is not counted toward the days total."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "The weekend string is not exactly seven 0/1 characters.",
+      "fix": "Use a valid 7-character string such as \"0000011\"."
+    },
+    {
+      "error": "#NUM!",
+      "cause": "An invalid weekend code (not 1-7 or 11-17) was supplied.",
+      "fix": "Use a supported weekend code or a valid string."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "WORKDAY.INTL is available in Google Sheets with identical syntax, codes, and the 7-character weekend string.",
+    "formula": "=WORKDAY.INTL(DATE(2024, 1, 1), 5, 1)",
+    "notes": "Same behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What does the weekend string mean?",
+      "answer": "It is seven characters for Mon, Tue, Wed, Thu, Fri, Sat, Sun, where 1 marks a weekend day, e.g. \"0000011\" = Sat+Sun off."
+    },
+    {
+      "question": "Which code is the default?",
+      "answer": "Code 1, meaning Saturday and Sunday are weekends."
+    },
+    {
+      "question": "How do I make Friday and Saturday the weekend?",
+      "answer": "Use code 7 or the string \"0000110\"."
+    }
+  ],
+  "relatedFunctions": [
+    "workday",
+    "networkdays-intl",
+    "networkdays",
+    "eomonth",
+    "date"
+  ]
 }

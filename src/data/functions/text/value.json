@@ -3,38 +3,96 @@
   "slug": "value",
   "category": "text",
   "excelVersion": "All versions",
-  "description": "VALUE is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "VALUE is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(value)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the VALUE function",
-    "formula": "=VALUE(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the VALUE function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The VALUE function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "VALUE converts a text string that represents a number, date, or time into its underlying numeric value.",
+  "tldr": "Turns number-like text into an actual number.",
+  "syntax": "(text)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
-    },
-    {
-      "name": "Enter the formula",
-      "text": "Type =VALUE(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "text",
+      "description": "The text enclosed in quotes or a cell reference containing text that looks like a number.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "VALUE works identically in Google Sheets with the same syntax.",
-    "formula": "=VALUE(A1)"
+  "basicExample": {
+    "description": "Convert a numeric text string",
+    "formula": "=VALUE(\"123.45\")",
+    "result": "123.45",
+    "explanation": "The quoted text is parsed into the numeric value 123.45."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Convert currency text",
+      "scenario": "A cell A1 contains the text \"$1,000\"",
+      "description": "Strip formatting and get a number",
+      "formula": "=VALUE(A1)",
+      "result": "1000",
+      "explanation": "VALUE understands currency symbols and thousand separators, returning the numeric 1000."
+    },
+    {
+      "title": "Convert a time string",
+      "scenario": "Cell A1 holds \"6:00\" as text",
+      "description": "Get the fractional day value",
+      "formula": "=VALUE(\"6:00\")",
+      "result": "0.25",
+      "explanation": "Times are stored as fractions of a day, so 6:00 AM equals 0.25."
+    }
+  ],
+  "howItWorks": "VALUE parses the text using the workbook's locale settings for decimals, thousands separators, currency, dates, and times, and returns the corresponding serial number. In modern Excel, many functions coerce text automatically, so VALUE is less often required.",
+  "howToSteps": [
+    {
+      "name": "Locate the text",
+      "text": "Find the cell whose text looks like a number."
+    },
+    {
+      "name": "Apply VALUE",
+      "text": "Enter =VALUE(cell) and press Enter."
+    },
+    {
+      "name": "Verify the type",
+      "text": "The result is now a real number usable in math."
+    }
+  ],
+  "limitations": [
+    "If the text is not recognizable as a number, VALUE returns #VALUE!.",
+    "Date and time parsing depends on the system locale.",
+    "Largely redundant in modern Excel because arithmetic and functions auto-coerce text numbers."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! error",
+      "cause": "The text contains non-numeric characters VALUE cannot interpret.",
+      "fix": "Clean the text with functions like SUBSTITUTE or CLEAN before converting."
+    },
+    {
+      "error": "Wrong decimal interpretation",
+      "cause": "Locale uses a comma as the decimal separator but the text uses a period.",
+      "fix": "Match the text format to the workbook locale or use SUBSTITUTE to swap separators."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "VALUE works the same way in Google Sheets.",
+    "formula": "=VALUE(\"123.45\")",
+    "notes": "Identical behavior to Excel."
+  },
+  "faq": [
+    {
+      "question": "Is VALUE still needed?",
+      "answer": "Often not; arithmetic and functions like SUM auto-convert text numbers, but VALUE is explicit and clear."
+    },
+    {
+      "question": "Does VALUE handle dates?",
+      "answer": "Yes, it converts date/time text into the underlying serial number."
+    },
+    {
+      "question": "What is the opposite of VALUE?",
+      "answer": "TEXT, which formats a number back into a text string."
+    }
+  ],
+  "relatedFunctions": [
+    "text",
+    "sum",
+    "clean",
+    "upper",
+    "lower"
+  ]
 }

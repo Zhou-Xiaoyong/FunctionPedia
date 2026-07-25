@@ -3,38 +3,96 @@
   "slug": "rept",
   "category": "text",
   "excelVersion": "All versions",
-  "description": "REPT is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "REPT is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(rept)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the REPT function",
-    "formula": "=REPT(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the REPT function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The REPT function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "REPT repeats a text string a specified number of times and returns the combined result.",
+  "tldr": "Repeats text a given number of times.",
+  "syntax": "(text, number_times)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "text",
+      "description": "The text string to repeat.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =REPT(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "number_times",
+      "description": "A positive number indicating how many times to repeat text. Fractional values are truncated to integers.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "REPT works identically in Google Sheets with the same syntax.",
-    "formula": "=REPT(A1)"
+  "basicExample": {
+    "description": "Repeat a separator",
+    "formula": "=REPT(\"*- \",3)",
+    "result": "*- *- *- ",
+    "explanation": "The string \"*- \" is concatenated three times."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "In-cell bar chart",
+      "scenario": "Cell A1 holds a count like 5",
+      "description": "Visualize with repeated bars",
+      "formula": "=REPT(\"|\",A1)",
+      "result": "|||||",
+      "explanation": "REPT draws one bar per unit, creating a quick text-based chart without a chart object."
+    },
+    {
+      "title": "Pad a value with leading zeros",
+      "scenario": "Make a 5-digit code from A1 = 42",
+      "description": "Pad to a fixed width",
+      "formula": "=REPT(\"0\",5-LEN(A1)) & A1",
+      "result": "00042",
+      "explanation": "REPT creates the needed number of leading zeros, then concatenates the number."
+    }
+  ],
+  "howItWorks": "REPT concatenates the text argument to itself number_times times. The repeat count is truncated to an integer, and if it is 0 the result is an empty string.",
+  "howToSteps": [
+    {
+      "name": "Choose the text",
+      "text": "Decide the string to repeat."
+    },
+    {
+      "name": "Set the count",
+      "text": "Provide how many times to repeat it."
+    },
+    {
+      "name": "Enter REPT",
+      "text": "Type =REPT(text, count) and press Enter."
+    }
+  ],
+  "limitations": [
+    "The result is limited to 32,767 characters; longer outputs return #VALUE!.",
+    "number_times is truncated to an integer and must be non-negative.",
+    "Purely cosmetic; the repeated text is not a real chart or formatted number."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! error",
+      "cause": "The repeated result would exceed 32,767 characters, or number_times is negative.",
+      "fix": "Reduce the repeat count so the total length stays under the limit and keep it non-negative."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "REPT works identically in Google Sheets.",
+    "formula": "=REPT(\"|\",5)",
+    "notes": "Same behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "Can REPT create a bar chart?",
+      "answer": "Yes, repeating a character like \"|\" a number of times proportional to a value is a common in-cell chart trick."
+    },
+    {
+      "question": "What happens if number_times is 0?",
+      "answer": "REPT returns an empty string."
+    },
+    {
+      "question": "Is the repeat count rounded?",
+      "answer": "Fractional counts are truncated to an integer, not rounded."
+    }
+  ],
+  "relatedFunctions": [
+    "len",
+    "concatenate",
+    "textjoin",
+    "upper",
+    "lower"
+  ]
 }

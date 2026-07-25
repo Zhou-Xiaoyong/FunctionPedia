@@ -3,38 +3,98 @@
   "slug": "find",
   "category": "text",
   "excelVersion": "All versions",
-  "description": "FIND is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "FIND is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(find)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the FIND function",
-    "formula": "=FIND(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the FIND function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The FIND function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "FIND returns the position of one text string inside another. It is case-sensitive.",
+  "tldr": "Finds the position of text within another text string, case-sensitive.",
+  "syntax": "(find_text, within_text, [start_num])",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "find_text",
+      "description": "The text to find.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =FIND(arguments)."
+      "name": "within_text",
+      "description": "The text to search within.",
+      "required": true
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "start_num",
+      "description": "The character position to start searching from (default 1).",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "FIND works identically in Google Sheets with the same syntax.",
-    "formula": "=FIND(A1)"
+  "basicExample": {
+    "description": "Find the position of a hyphen in a product code",
+    "formula": "=FIND(\"-\", \"ABC-123\")",
+    "result": "4",
+    "explanation": "The first hyphen appears at the 4th character."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Find a specific instance",
+      "scenario": "File paths",
+      "description": "Find the second backslash in a path",
+      "formula": "=FIND(\"\\\", A2, FIND(\"\\\", A2) + 1)",
+      "result": "Position of second backslash",
+      "explanation": "The second FIND starts searching after the first backslash."
+    }
+  ],
+  "howItWorks": "FIND scans within_text for find_text and returns the position of the first match. It is case-sensitive. If the text is not found, it returns #VALUE!.",
+  "howToSteps": [
+    {
+      "name": "Enter text to find",
+      "text": "Type the substring."
+    },
+    {
+      "name": "Enter text to search",
+      "text": "Type the cell or string containing the text."
+    },
+    {
+      "name": "Optional start position",
+      "text": "Add a start number to skip earlier characters."
+    }
+  ],
+  "limitations": [
+    "Case-sensitive. Use SEARCH for case-insensitive search.",
+    "Does not support wildcards.",
+    "Returns #VALUE! if the text is not found."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! error",
+      "cause": "The text was not found.",
+      "fix": "Use IFERROR to handle missing text, or use SEARCH for case-insensitive matching."
+    },
+    {
+      "error": "Wrong position",
+      "cause": "Case mismatch because FIND is case-sensitive.",
+      "fix": "Use SEARCH if case does not matter."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "FIND works identically in Google Sheets.",
+    "formula": "=FIND(\"-\", \"ABC-123\")",
+    "notes": "Same case-sensitive behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What is the difference between FIND and SEARCH?",
+      "answer": "FIND is case-sensitive and does not support wildcards. SEARCH is case-insensitive and supports wildcards."
+    },
+    {
+      "question": "Can FIND use wildcards?",
+      "answer": "No. Use SEARCH for wildcard support."
+    },
+    {
+      "question": "How do I avoid #VALUE! when text is missing?",
+      "answer": "Wrap with IFERROR: =IFERROR(FIND(\"-\", A2), 0)."
+    }
+  ],
+  "relatedFunctions": [
+    "search",
+    "substitute",
+    "mid",
+    "left",
+    "right"
+  ]
 }

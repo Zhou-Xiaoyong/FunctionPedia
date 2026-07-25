@@ -2,39 +2,102 @@
   "name": "QUARTILE.INC",
   "slug": "quartile-inc",
   "category": "statistical",
-  "excelVersion": "All versions",
-  "description": "QUARTILE.INC is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "QUARTILE.INC is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(quartile.inc)",
-  "parameters": [],
+  "excelVersion": "Excel 2010+",
+  "description": "QUARTILE.INC returns the specified quartile (0 through 4) of a dataset using the inclusive method, where quart 0 is the minimum and quart 4 is the maximum.",
+  "tldr": "Returns the chosen quartile (0=min to 4=max) using the inclusive method.",
+  "syntax": "(array, quart)",
+  "parameters": [
+    {
+      "name": "array",
+      "description": "The range or array of numeric values.",
+      "required": true
+    },
+    {
+      "name": "quart",
+      "description": "Quartile to return: 0, 1, 2, 3, or 4 (integer).",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the QUARTILE.INC function",
-    "formula": "=QUARTILE.INC(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the QUARTILE.INC function."
+    "description": "Median (second quartile) of eight values",
+    "formula": "=QUARTILE.INC({2,4,6,8,10,12,14,16}, 2)",
+    "result": "9",
+    "explanation": "The median is the average of the 4th and 5th values: (8+10)/2 = 9."
   },
-  "advancedExamples": [],
-  "howItWorks": "The QUARTILE.INC function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "First quartile via inclusive interpolation",
+      "scenario": "25th percentile of eight values",
+      "description": "Equivalent to PERCENTILE.INC with k = 0.25.",
+      "formula": "=QUARTILE.INC({2,4,6,8,10,12,14,16}, 1)",
+      "result": "5.5",
+      "explanation": "Inclusive rank = 1 + 0.25*(8-1) = 2.75; interpolate 75% from 4 to 6: 4 + 0.75*(6-4) = 5.5."
+    },
+    {
+      "title": "Third quartile",
+      "scenario": "75th percentile",
+      "description": "quart = 3 corresponds to k = 0.75.",
+      "formula": "=QUARTILE.INC({2,4,6,8,10,12,14,16}, 3)",
+      "result": "12.5",
+      "explanation": "Inclusive rank = 1 + 0.75*7 = 6.25; interpolate 25% from 12 to 14: 12 + 0.25*(14-12) = 12.5."
+    }
+  ],
+  "howItWorks": "QUARTILE.INC uses the inclusive method, internally equivalent to PERCENTILE.INC(array, quart/4). It returns quart 0 (minimum), 1 (first quartile), 2 (median), 3 (third quartile), or 4 (maximum). The quartile position is interpolated linearly when fractional. quart must be an integer from 0 to 4, else #NUM!. It is functionally identical to the legacy QUARTILE. Text and logical values are ignored.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the result cell",
+      "text": "Click where you want the quartile."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =QUARTILE.INC(arguments)."
+      "text": "Type =QUARTILE.INC(range, quart)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The quartile value is returned."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "quart must be an integer from 0 to 4; other values cause #NUM!.",
+    "Interpolates, so results may not equal actual data points.",
+    "Ignores text and logical values."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "quart is outside 0..4 or non-integer, or the array is empty.",
+      "fix": "Use an integer quart in 0..4 with a non-empty numeric range."
+    },
+    {
+      "error": "Result differs from QUARTILE.EXC",
+      "cause": "The two use different interpolation formulas.",
+      "fix": "Use QUARTILE.EXC only when the exclusive method is required."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "QUARTILE.INC works identically in Google Sheets with the same syntax.",
-    "formula": "=QUARTILE.INC(A1)"
+    "description": "Google Sheets supports QUARTILE.INC with the same inclusive behavior as Excel 2010+.",
+    "formula": "=QUARTILE.INC({2,4,6,8,10,12,14,16}, 2)",
+    "notes": "Returns 9, identical to Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "What is the difference between .INC and .EXC?",
+      "answer": ".INC (inclusive) allows quart 0..4 including the actual min and max, and uses rank 1 + k*(n-1). .EXC (exclusive) accepts only quart 1, 2, 3 and uses rank k*(n+1), never returning the min or max."
+    },
+    {
+      "question": "Is QUARTILE.INC the same as QUARTILE?",
+      "answer": "Yes. QUARTILE is the legacy name; QUARTILE.INC is the Excel 2010+ equivalent using the inclusive method."
+    },
+    {
+      "question": "Why are QUARTILE.INC and QUARTILE.EXC answers different?",
+      "answer": "They apply different interpolation formulas; the exclusive method excludes the data endpoints."
+    }
+  ],
+  "relatedFunctions": [
+    "quartile",
+    "quartile-exc",
+    "percentile-inc",
+    "median",
+    "rank"
+  ]
 }

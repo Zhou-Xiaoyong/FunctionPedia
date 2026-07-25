@@ -2,39 +2,107 @@
   "name": "RANK.AVG",
   "slug": "rank-avg",
   "category": "statistical",
-  "excelVersion": "All versions",
-  "description": "RANK.AVG is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "RANK.AVG is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(rank.avg)",
-  "parameters": [],
+  "excelVersion": "Excel 2010+",
+  "description": "RANK.AVG returns the rank of a number in a list and assigns tied values their average (fractional) rank, avoiding skipped ranks.",
+  "tldr": "Ranks a value; ties receive the average of the ranks they occupy.",
+  "syntax": "(number, ref, [order])",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The value whose rank you want to find.",
+      "required": true
+    },
+    {
+      "name": "ref",
+      "description": "The list (range or array) of numbers to rank against.",
+      "required": true
+    },
+    {
+      "name": "order",
+      "description": "Optional. 0 or omitted = descending (largest = rank 1); any nonzero value = ascending (smallest = rank 1).",
+      "required": false
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the RANK.AVG function",
-    "formula": "=RANK.AVG(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the RANK.AVG function."
+    "description": "Two equal values get the average of their ranks",
+    "formula": "=RANK.AVG(20, {10,20,20,30})",
+    "result": "2.5",
+    "explanation": "The 20s would be ranks 2 and 3, so each receives their average, 2.5."
   },
-  "advancedExamples": [],
-  "howItWorks": "The RANK.AVG function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Three-way tie averages three ranks",
+      "scenario": "Three identical entries",
+      "description": "With three equal values the rank is the mean of 2, 3, and 4.",
+      "formula": "=RANK.AVG(15, {10,15,15,15,20})",
+      "result": "3",
+      "explanation": "The 15s occupy ranks 2, 3, and 4, whose average is 3."
+    },
+    {
+      "title": "Ascending order with a tie",
+      "scenario": "Smallest-first ranking",
+      "description": "order = 1 reverses the order but ties still get averaged ranks.",
+      "formula": "=RANK.AVG(20, {10,20,20,30}, 1)",
+      "result": "2.5",
+      "explanation": "In ascending order the 20s are ranks 2 and 3, averaged to 2.5."
+    }
+  ],
+  "howItWorks": "RANK.AVG ranks a value against the reference list, defaulting to descending order (largest = rank 1). When several values tie, all of them receive the arithmetic mean of the ranks they would have occupied, so no ranks are skipped. This contrasts with RANK.EQ, which gives ties the same whole rank and skips the following one. It returns #N/A if the value is not found.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the result cell",
+      "text": "Click where you want the rank."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =RANK.AVG(arguments)."
+      "text": "Type =RANK.AVG(number, range, [order])."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The (possibly fractional) rank appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Returns fractional ranks for ties, which may need rounding for display.",
+    "Only ranks against numbers; text in the reference is ignored.",
+    "In pre-2010 Excel this function is unavailable (use RANK)."
+  ],
+  "commonErrors": [
+    {
+      "error": "#N/A error",
+      "cause": "The number is not present in the reference list.",
+      "fix": "Ensure the value is included in the range being ranked."
+    },
+    {
+      "error": "Unexpected decimal rank",
+      "cause": "A tie produced an averaged fractional rank by design.",
+      "fix": "This is expected; round the result with ROUND if you need a whole number for display."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "RANK.AVG works identically in Google Sheets with the same syntax.",
-    "formula": "=RANK.AVG(A1)"
+    "description": "Google Sheets supports RANK.AVG with the same syntax and averaging behavior as Excel 2010+.",
+    "formula": "=RANK.AVG(20, {10,20,20,30})",
+    "notes": "Returns 2.5, matching Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "How is RANK.AVG different from RANK.EQ?",
+      "answer": "RANK.EQ gives ties the same whole rank and skips the next rank; RANK.AVG gives ties their average rank, so no ranks are skipped."
+    },
+    {
+      "question": "Why is my rank a decimal?",
+      "answer": "Because of a tie. RANK.AVG averages the ranks the tied values occupy, producing a fractional result."
+    },
+    {
+      "question": "Which should I use for statistical work?",
+      "answer": "Use RANK.AVG when ties should not distort subsequent rank-based calculations, since it preserves the rank count."
+    }
+  ],
+  "relatedFunctions": [
+    "rank",
+    "rank-eq",
+    "percentile",
+    "large",
+    "small"
+  ]
 }

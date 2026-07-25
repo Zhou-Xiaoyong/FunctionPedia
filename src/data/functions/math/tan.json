@@ -3,38 +3,96 @@
   "slug": "tan",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "TAN is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "TAN is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(tan)",
-  "parameters": [],
+  "description": "TAN returns the tangent of a given angle. The angle must be expressed in radians.",
+  "tldr": "Returns the tangent of an angle given in radians.",
+  "syntax": "(number)",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The angle, in radians, for which you want the tangent.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the TAN function",
-    "formula": "=TAN(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the TAN function."
+    "description": "Tangent of 45 degrees",
+    "formula": "=TAN(RADIANS(45))",
+    "result": "1",
+    "explanation": "RADIANS(45) is π/4; the tangent of π/4 is 1."
   },
-  "advancedExamples": [],
-  "howItWorks": "The TAN function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Tangent of 0",
+      "scenario": "Baseline check.",
+      "description": "Tangent of zero radians.",
+      "formula": "=TAN(0)",
+      "result": "0",
+      "explanation": "The tangent of 0 is 0."
+    },
+    {
+      "title": "Tangent of π/4",
+      "scenario": "Quarter-eighth turn.",
+      "description": "Use PI()/4.",
+      "formula": "=TAN(PI()/4)",
+      "result": "1",
+      "explanation": "The tangent of π/4 radians (45°) is 1."
+    }
+  ],
+  "howItWorks": "TAN computes the tangent of an angle measured in radians, equivalently SIN(number)/COS(number). The function is periodic with period π and is undefined (returns a very large magnitude) at π/2 + kπ, where cosine is zero.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Convert if needed",
+      "text": "If your angle is in degrees, wrap it with RADIANS()."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =TAN(arguments)."
+      "text": "Type =TAN(number) with the angle in radians."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The tangent value appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "The angle must be in radians; degrees must be converted with RADIANS or PI()/180.",
+    "Near π/2 + kπ the result grows extremely large (approaching the undefined tangent).",
+    "Results are approximate due to floating-point math."
+  ],
+  "commonErrors": [
+    {
+      "error": "Huge/odd result",
+      "cause": "Angle is close to π/2 (90°), where tangent is undefined.",
+      "fix": "Check the angle; the value is mathematically approaching infinity."
+    },
+    {
+      "error": "#VALUE!",
+      "cause": "Non-numeric argument.",
+      "fix": "Supply a numeric angle."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "TAN works identically in Google Sheets with the same syntax.",
-    "formula": "=TAN(A1)"
+    "description": "TAN works identically in Google Sheets.",
+    "formula": "=TAN(RADIANS(45))",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "My TAN gives wrong values — why?",
+      "answer": "Most likely you passed degrees. Convert with RADIANS() first, e.g. =TAN(RADIANS(45))."
+    },
+    {
+      "question": "What is the period of TAN?",
+      "answer": "π radians (unlike SIN/COS, which have period 2π)."
+    },
+    {
+      "question": "Why is TAN(90°) enormous instead of an error?",
+      "answer": "At exactly π/2 radians cosine is 0, so TAN = SIN/COS diverges; floating-point gives a very large number rather than an error."
+    }
+  ],
+  "relatedFunctions": [
+    "sin",
+    "cos",
+    "atan",
+    "atan2",
+    "radians"
+  ]
 }

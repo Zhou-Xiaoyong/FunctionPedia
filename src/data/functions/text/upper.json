@@ -3,38 +3,87 @@
   "slug": "upper",
   "category": "text",
   "excelVersion": "All versions",
-  "description": "UPPER is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "UPPER is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(upper)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the UPPER function",
-    "formula": "=UPPER(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the UPPER function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The UPPER function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "UPPER converts all letters in a text string to uppercase, leaving numbers, symbols, and spaces unchanged.",
+  "tldr": "Makes every letter uppercase.",
+  "syntax": "(text)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
-    },
-    {
-      "name": "Enter the formula",
-      "text": "Type =UPPER(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "text",
+      "description": "The text or cell reference to convert; can be a literal string in quotes or a cell.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "UPPER works identically in Google Sheets with the same syntax.",
-    "formula": "=UPPER(A1)"
+  "basicExample": {
+    "description": "Uppercase a word",
+    "formula": "=UPPER(\"hello\")",
+    "result": "HELLO",
+    "explanation": "All lowercase letters are converted to uppercase."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Normalize user input",
+      "scenario": "Cell A1 contains \"Mr. smith\"",
+      "description": "Standardize a name prefix",
+      "formula": "=UPPER(A1)",
+      "result": "MR. SMITH",
+      "explanation": "Mixed-case input is forced to a consistent uppercase form."
+    },
+    {
+      "title": "Combine with other text",
+      "scenario": "Build an uppercase label from a cell",
+      "description": "Uppercase within a concatenation",
+      "formula": "=UPPER(\"id-\" & A1)",
+      "result": "ID-ABC123",
+      "explanation": "UPPER is applied to the combined string so the whole result is uppercase."
+    }
+  ],
+  "howItWorks": "UPPER scans each character of the input; ASCII and Unicode lowercase letters are mapped to their uppercase equivalents while every other character (digits, punctuation, spaces) passes through unchanged.",
+  "howToSteps": [
+    {
+      "name": "Select the text",
+      "text": "Click the cell with the text to convert."
+    },
+    {
+      "name": "Enter UPPER",
+      "text": "Type =UPPER(cell) and press Enter."
+    }
+  ],
+  "limitations": [
+    "Does not change non-letter characters.",
+    "Case conversion follows the system's locale rules and may not cover every Unicode casing edge case.",
+    "Only affects a single text value; use with arrays or helper columns for ranges."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! error",
+      "cause": "Passing a non-text argument in strict contexts.",
+      "fix": "Ensure the argument is text or wrap it with TEXT()."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "UPPER works identically in Google Sheets.",
+    "formula": "=UPPER(\"hello\")",
+    "notes": "Same behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "Does UPPER affect numbers?",
+      "answer": "No, numbers, spaces, and symbols are left untouched."
+    },
+    {
+      "question": "What is the opposite of UPPER?",
+      "answer": "LOWER converts to lowercase; PROPER capitalizes each word."
+    },
+    {
+      "question": "Can UPPER handle a range?",
+      "answer": "In modern Excel it can spill across an array; otherwise apply it per cell or with MAP."
+    }
+  ],
+  "relatedFunctions": [
+    "lower",
+    "proper",
+    "text",
+    "concatenate",
+    "rept"
+  ]
 }

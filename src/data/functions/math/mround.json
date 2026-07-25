@@ -3,38 +3,101 @@
   "slug": "mround",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "MROUND is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "MROUND is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(mround)",
-  "parameters": [],
+  "description": "MROUND returns a number rounded to the nearest specified multiple.",
+  "tldr": "Rounds a number to the nearest multiple of a given value.",
+  "syntax": "(number, multiple)",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The value to round.",
+      "required": true
+    },
+    {
+      "name": "multiple",
+      "description": "The multiple to which you want to round. Must share the sign of number.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the MROUND function",
-    "formula": "=MROUND(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the MROUND function."
+    "description": "Round 10 to the nearest multiple of 3",
+    "formula": "=MROUND(10, 3)",
+    "result": "9",
+    "explanation": "The multiples of 3 nearest to 10 are 9 (distance 1) and 12 (distance 2), so 9 is returned."
   },
-  "advancedExamples": [],
-  "howItWorks": "The MROUND function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Tie-breaking rounds away from zero",
+      "scenario": "When exactly halfway between two multiples.",
+      "description": "MROUND rounds a half-multiple away from zero.",
+      "formula": "=MROUND(7.5, 2)",
+      "result": "8",
+      "explanation": "7.5 is exactly between 6 and 8 (both multiples of 2); MROUND rounds away from zero to 8."
+    },
+    {
+      "title": "Round to a decimal multiple",
+      "scenario": "Snap a value to the nearest 0.05.",
+      "description": "Pass multiple 0.05.",
+      "formula": "=MROUND(0.87, 0.05)",
+      "result": "0.85",
+      "explanation": "0.85 and 0.90 are the nearest multiples of 0.05; 0.87 is closer to 0.85."
+    }
+  ],
+  "howItWorks": "MROUND divides number by multiple, rounds that quotient to the nearest integer (rounding half away from zero), then multiplies back. number and multiple must have the same sign, or the function returns #NUM!.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the cell",
+      "text": "Click the cell for the result."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =MROUND(arguments)."
+      "text": "Type =MROUND(number, multiple)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The rounded value appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "number and multiple must share the same sign; opposite signs return #NUM!.",
+    "When the value is exactly halfway between two multiples, MROUND rounds away from zero.",
+    "Results are floating-point and may show tiny rounding artifacts."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM!",
+      "cause": "number and multiple have opposite signs.",
+      "fix": "Use the same sign for both arguments."
+    },
+    {
+      "error": "#VALUE!",
+      "cause": "Non-numeric argument.",
+      "fix": "Supply numeric values."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "MROUND works identically in Google Sheets with the same syntax.",
-    "formula": "=MROUND(A1)"
+    "description": "MROUND works identically in Google Sheets.",
+    "formula": "=MROUND(10, 3)",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "How does MROUND break ties?",
+      "answer": "When a value is exactly halfway between two multiples, it rounds away from zero (e.g. MROUND(7.5,2)=8)."
+    },
+    {
+      "question": "Why do I get #NUM!?",
+      "answer": "Because number and multiple have opposite signs; make them the same sign."
+    },
+    {
+      "question": "What's the difference between MROUND and CEILING/FLOOR?",
+      "answer": "MROUND rounds to the nearest multiple; CEILING always rounds up and FLOOR always rounds down."
+    }
+  ],
+  "relatedFunctions": [
+    "round",
+    "ceiling",
+    "floor",
+    "ceiling-math",
+    "floor-math"
+  ]
 }

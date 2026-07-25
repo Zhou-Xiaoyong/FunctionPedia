@@ -5,6 +5,15 @@ import { SITE, CATEGORIES, POPULAR_FUNCTIONS } from '../utils/config';
 const title = SITE.title;
 const description = SITE.description;
 const canonical = SITE.url;
+
+// Dynamically count functions per category from data files
+const allFunctionFiles = import.meta.glob('../data/functions/**/*.json', { eager: true });
+const categoryCounts: Record<string, number> = {};
+for (const path of Object.keys(allFunctionFiles)) {
+  const match = path.match(/data\/functions\/([^/]+)\//);
+  if (match) categoryCounts[match[1]] = (categoryCounts[match[1]] || 0) + 1;
+}
+const categories = CATEGORIES.map((cat) => ({ ...cat, count: categoryCounts[cat.slug] ?? cat.count }));
 ---
 
 <BaseLayout title={title} description={description} canonical={canonical}>
@@ -57,7 +66,7 @@ const canonical = SITE.url;
     <p class="text-gray-600 text-center mb-10">From financial calculations to dynamic arrays — find the function you need</p>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      {CATEGORIES.map((cat) => (
+      {categories.map((cat) => (
         <a
           href={`/category/${cat.slug}/`}
           class="group block p-6 rounded-xl bg-white border border-gray-200 hover:border-primary-500 hover:shadow-lg transition-all"

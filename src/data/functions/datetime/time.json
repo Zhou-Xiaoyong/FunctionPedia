@@ -3,38 +3,106 @@
   "slug": "time",
   "category": "datetime",
   "excelVersion": "All versions",
-  "description": "TIME is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "TIME is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(time)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the TIME function",
-    "formula": "=TIME(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the TIME function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The TIME function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "TIME builds a time-of-day serial as a decimal fraction of a 24-hour day (0 to 0.999988) from hour, minute, and second components, rolling over values that exceed their normal ranges.",
+  "tldr": "Converts hour, minute, and second into a time fraction of a day.",
+  "syntax": "(hour, minute, second)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "hour",
+      "description": "The hour component, 0-23. Values of 24 or more roll over into whole days, keeping only the remainder (24 becomes 0, 25 becomes 1).",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =TIME(arguments)."
+      "name": "minute",
+      "description": "The minute component, 0-59. Values of 60 or more roll over into hours.",
+      "required": true
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "second",
+      "description": "The second component, 0-59. Values of 60 or more roll over into minutes.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "TIME works identically in Google Sheets with the same syntax.",
-    "formula": "=TIME(A1)"
+  "basicExample": {
+    "description": "Build a noon time value",
+    "formula": "=TIME(12, 0, 0)",
+    "result": "0.5",
+    "explanation": "12 hours is exactly half of a 24-hour day, so TIME returns the fraction 0.5."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Hour overflow drops the day",
+      "scenario": "A clock reading past midnight",
+      "description": "Hours of 24+ wrap and discard the extra day",
+      "formula": "=TIME(25, 0, 0)",
+      "result": "0.0416667",
+      "explanation": "25 hours = 1 day and 1 hour; the day is dropped, leaving 1 hour = 1/24 approximately 0.0416667."
+    },
+    {
+      "title": "Minute overflow rolls into hours",
+      "scenario": "90 minutes past midnight",
+      "description": "Minutes beyond 59 carry into the hour",
+      "formula": "=TIME(0, 90, 0)",
+      "result": "0.0625",
+      "explanation": "90 minutes = 1 hour 30 minutes = 1.5/24 = 0.0625."
+    }
+  ],
+  "howItWorks": "TIME converts the three integer inputs into the fraction of a day they represent (hour/24 + minute/1440 + second/86400). It first rolls over out-of-range components, seconds into minutes, minutes into hours, and hours modulo 24, so the final value always lies between 0 and 1.",
+  "howToSteps": [
+    {
+      "name": "Enter hour, minute, second",
+      "text": "Provide integers for each component."
+    },
+    {
+      "name": "Apply a time format",
+      "text": "Format the cell as time so the fraction shows as hh:mm:ss."
+    },
+    {
+      "name": "Combine with a date if needed",
+      "text": "Add a date serial to anchor the time to a specific day."
+    }
+  ],
+  "limitations": [
+    "TIME returns only the fractional part of a day; hour values of 24+ discard the whole-day portion.",
+    "The result is a fraction and must be time-formatted to display correctly.",
+    "It cannot represent a time of exactly 24:00:00 (that wraps back to 0)."
+  ],
+  "commonErrors": [
+    {
+      "error": "Time shows as a decimal",
+      "cause": "The cell is in General number format.",
+      "fix": "Apply a time number format (e.g. h:mm:ss)."
+    },
+    {
+      "error": "Unexpected value with large hours",
+      "cause": "Hours of 24+ wrap modulo 24.",
+      "fix": "Use MOD or split into date and time if you need the day count as well."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "TIME is identical in Google Sheets, returning the same fraction of a day.",
+    "formula": "=TIME(12, 0, 0)",
+    "notes": "Same rollover behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "Why is the result 0.5 for noon?",
+      "answer": "Excel stores time as a fraction of a day; 12/24 = 0.5."
+    },
+    {
+      "question": "What does TIME(25,0,0) return?",
+      "answer": "0.0416667, because 25 hours wraps to 1 hour (the extra day is dropped)."
+    },
+    {
+      "question": "Can I combine TIME with a date?",
+      "answer": "Yes, add a date serial, e.g. =DATE(2024,1,1)+TIME(12,0,0) for 2024-01-01 12:00 PM."
+    }
+  ],
+  "relatedFunctions": [
+    "date",
+    "hour",
+    "minute",
+    "second",
+    "now"
+  ]
 }

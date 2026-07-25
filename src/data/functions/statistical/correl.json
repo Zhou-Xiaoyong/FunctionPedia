@@ -3,38 +3,101 @@
   "slug": "correl",
   "category": "statistical",
   "excelVersion": "All versions",
-  "description": "CORREL is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "CORREL is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(correl)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the CORREL function",
-    "formula": "=CORREL(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the CORREL function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The CORREL function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "CORREL returns the Pearson product-moment correlation coefficient for two data sets, measuring the strength and direction of their linear relationship.",
+  "tldr": "Pearson correlation coefficient between two arrays.",
+  "syntax": "(array1, array2)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "array1",
+      "description": "The first set of independent (or paired) numeric values.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =CORREL(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "array2",
+      "description": "The second set of numeric values, the same length as array1.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "CORREL works identically in Google Sheets with the same syntax.",
-    "formula": "=CORREL(A1)"
+  "basicExample": {
+    "description": "Correlation between two paired series",
+    "formula": "=CORREL({2,3,5,7,9},{1,2,3,4,5})",
+    "result": "0.993883",
+    "explanation": "The two series move closely together; the coefficient is near 1, indicating a strong positive linear relationship."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Correlation from ranges",
+      "scenario": "Comparing advertising spend to sales",
+      "description": "Both ranges must have the same number of points",
+      "formula": "=CORREL(B2:B13,C2:C13)",
+      "result": "Correlation coefficient between -1 and 1",
+      "explanation": "Excel pairs B2 with C2, B3 with C3, and so on, so mismatched sizes cause #N/A."
+    },
+    {
+      "title": "Negative relationship",
+      "scenario": "Price versus demand",
+      "description": "Higher price tends to lower demand",
+      "formula": "=CORREL(A2:A20,B2:B20)",
+      "result": "A negative value near -1",
+      "explanation": "A coefficient close to -1 means the two variables move in opposite directions linearly."
+    }
+  ],
+  "howItWorks": "CORREL computes r = Σ((x - x̄)(y - ȳ)) / sqrt(Σ(x - x̄)² · Σ(y - ȳ)²), where x̄ and ȳ are the means. The result always lies between -1 and 1: 1 is a perfect positive linear relationship, -1 a perfect negative one, and 0 no linear relationship. Text, logicals, and empty cells are ignored in each array.",
+  "howToSteps": [
+    {
+      "name": "Arrange paired data",
+      "text": "Put the two related series in equal-length ranges."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =CORREL(array1, array2)."
+    },
+    {
+      "name": "Read the coefficient",
+      "text": "Values near 1 or -1 indicate strong linear association."
+    }
+  ],
+  "limitations": [
+    "Measures only linear association; it can be near 0 even when a strong non-linear relationship exists.",
+    "Both arrays must contain the same number of data points, or #N/A is returned.",
+    "If either array has zero variance (all identical values), the function returns #DIV/0!."
+  ],
+  "commonErrors": [
+    {
+      "error": "#N/A",
+      "cause": "The two arrays have different numbers of data points.",
+      "fix": "Make sure array1 and array2 are the same length."
+    },
+    {
+      "error": "#DIV/0!",
+      "cause": "One of the arrays has no variance (all values equal).",
+      "fix": "Use data with variation, or check for constant columns."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "CORREL works identically in Google Sheets.",
+    "formula": "=CORREL({2,3,5,7,9},{1,2,3,4,5})",
+    "notes": "Same result as Excel; PEARSON is also available and equivalent."
+  },
+  "faq": [
+    {
+      "question": "Is CORREL the same as PEARSON?",
+      "answer": "Yes. In both Excel and Google Sheets, CORREL and PEARSON return the identical Pearson coefficient."
+    },
+    {
+      "question": "What does a correlation of 0 mean?",
+      "answer": "It means there is no linear relationship; a non-linear relationship may still exist."
+    },
+    {
+      "question": "Does correlation imply causation?",
+      "answer": "No. Correlation only measures association, not cause and effect."
+    }
+  ],
+  "relatedFunctions": [
+    "pearson",
+    "forecast",
+    "forecast-linear",
+    "linest",
+    "trend"
+  ]
 }

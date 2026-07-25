@@ -3,38 +3,97 @@
   "slug": "iserror",
   "category": "information",
   "excelVersion": "All versions",
-  "description": "ISERROR is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "ISERROR is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(iserror)",
-  "parameters": [],
+  "description": "ISERROR returns TRUE if the supplied value is any Excel error (#N/A, #VALUE!, #REF!, #DIV/0!, #NUM!, #NAME?, or #NULL!), and FALSE otherwise.",
+  "tldr": "Tests whether a value is any error.",
+  "syntax": "(value)",
+  "parameters": [
+    {
+      "name": "value",
+      "description": "The value, cell reference, or formula result to test.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the ISERROR function",
-    "formula": "=ISERROR(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the ISERROR function."
+    "description": "Catch a divide-by-zero error",
+    "formula": "=ISERROR(1/0)",
+    "result": "TRUE",
+    "explanation": "1/0 produces #DIV/0!, which ISERROR detects."
   },
-  "advancedExamples": [],
-  "howItWorks": "The ISERROR function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Test a cell that holds an error",
+      "scenario": "A1 contains #N/A from a failed lookup.",
+      "description": "Detect any error in a cell",
+      "formula": "=ISERROR(A1)",
+      "result": "TRUE",
+      "explanation": "#N/A is an error, so ISERROR returns TRUE."
+    },
+    {
+      "title": "Branch on error safely",
+      "scenario": "Show a fallback when a calculation fails.",
+      "description": "Combine with IF to replace errors",
+      "formula": "=IF(ISERROR(A1/B1), \"check input\", A1/B1)",
+      "result": "check input",
+      "explanation": "If B1 is 0 the division errors and ISERROR returns TRUE, triggering the fallback."
+    }
+  ],
+  "howItWorks": "ISERROR returns TRUE when the value is any of the seven Excel error values, and FALSE for normal values. It is broader than ISNA (which catches only #N/A) and ISERR (which catches all errors except #N/A). To learn which error occurred, use ERROR.TYPE.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Pick the value",
+      "text": "Select the cell or formula result to test."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =ISERROR(arguments)."
+      "text": "Type =ISERROR(value)."
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "Use with IF",
+      "text": "Wrap it in IF to provide a fallback for errors."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Catches all errors including #N/A; use ISNA if #N/A is meaningful and should be left alone.",
+    "Does not identify which error occurred; use ERROR.TYPE for that.",
+    "Returns FALSE for ordinary values (not an error)."
+  ],
+  "commonErrors": [
+    {
+      "error": "Swallowing meaningful #N/A",
+      "cause": "ISERROR treats #N/A like any other error.",
+      "fix": "Use ISNA or IFNA when #N/A should be handled differently."
+    },
+    {
+      "error": "Double computation",
+      "cause": "IF(ISERROR(x),...,x) evaluates x twice.",
+      "fix": "Use IFERROR, which evaluates the expression once."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "ISERROR works identically in Google Sheets with the same syntax.",
-    "formula": "=ISERROR(A1)"
+    "description": "ISERROR works identically in Google Sheets with the same syntax and behavior.",
+    "formula": "=ISERROR(A1)",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "ISERROR vs ISERR?",
+      "answer": "ISERR is the same except it ignores #N/A; ISERROR includes #N/A."
+    },
+    {
+      "question": "How do I get the error code?",
+      "answer": "Use ERROR.TYPE on the error cell to get a numeric code."
+    },
+    {
+      "question": "What is the simplest way to replace errors?",
+      "answer": "IFERROR replaces any error with a fallback in a single step."
+    }
+  ],
+  "relatedFunctions": [
+    "isna",
+    "iserr",
+    "iferror",
+    "error-type",
+    "isnumber",
+    "ifna"
+  ]
 }

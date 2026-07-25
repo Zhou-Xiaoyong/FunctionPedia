@@ -2,39 +2,107 @@
   "name": "DATEDIF",
   "slug": "datedif",
   "category": "datetime",
-  "excelVersion": "All versions",
-  "description": "DATEDIF is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "DATEDIF is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(datedif)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the DATEDIF function",
-    "formula": "=DATEDIF(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the DATEDIF function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The DATEDIF function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "excelVersion": "All versions (legacy, undocumented function)",
+  "description": "DATEDIF calculates the difference between two dates in a chosen unit: full years (Y), full months (M), days (D), or the remaining days/months after removing the larger units (MD, YM, YD). It is a legacy function still supported but not shown in the formula autocomplete.",
+  "tldr": "Returns the difference between two dates in years, months, or days.",
+  "syntax": "(start_date, end_date, unit)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "start_date",
+      "description": "The earlier date. Must be less than or equal to end_date.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =DATEDIF(arguments)."
+      "name": "end_date",
+      "description": "The later date.",
+      "required": true
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "unit",
+      "description": "Text code: \"Y\" full years, \"M\" full months, \"D\" days, \"MD\" days excluding months/years, \"YM\" months excluding years, \"YD\" days excluding years.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "DATEDIF works identically in Google Sheets with the same syntax.",
-    "formula": "=DATEDIF(A1)"
+  "basicExample": {
+    "description": "Full years between two dates",
+    "formula": "=DATEDIF(DATE(2020, 1, 1), DATE(2024, 6, 1), \"Y\")",
+    "result": "4",
+    "explanation": "From Jan 1 2020 to Jun 1 2024 there are 4 complete years (the sixth month is not yet reached)."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Total complete months",
+      "scenario": "Measuring tenure in months",
+      "description": "Unit \"M\" counts full months",
+      "formula": "=DATEDIF(DATE(2020, 1, 1), DATE(2024, 6, 1), \"M\")",
+      "result": "53",
+      "explanation": "Four years (48 months) plus five months (Jan to Jun) equals 53 full months."
+    },
+    {
+      "title": "Remaining months after full years",
+      "scenario": "Age in years and months",
+      "description": "Unit \"YM\" ignores the year count",
+      "formula": "=DATEDIF(DATE(2021, 3, 15), DATE(2024, 7, 20), \"YM\")",
+      "result": "4",
+      "explanation": "After removing the 3 full years (to 2024-03-15), 4 full months remain until July 20."
+    }
+  ],
+  "howItWorks": "DATEDIF compares the two date serials. For Y/M it counts whole years or months, while the remainder units (YM, YD, MD) compute what is left after stripping the larger unit. It is an undocumented compatibility function carried over from Lotus 1-2-3.",
+  "howToSteps": [
+    {
+      "name": "Enter start and end dates",
+      "text": "Make sure start_date is on or before end_date."
+    },
+    {
+      "name": "Pick the unit",
+      "text": "Use \"Y\", \"M\", \"D\", \"MD\", \"YM\", or \"YD\" in quotes."
+    },
+    {
+      "name": "Read the difference",
+      "text": "The function returns an integer according to the unit."
+    }
+  ],
+  "limitations": [
+    "It is undocumented, so it does not appear in formula autocomplete or help.",
+    "start_date must be less than or equal to end_date, otherwise it returns #NUM!.",
+    "The \"MD\" unit has a long-standing Microsoft bug that can return incorrect or negative values in some date combinations; prefer \"D\" or compute days manually when precision matters."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM!",
+      "cause": "start_date is later than end_date, or the unit text is invalid.",
+      "fix": "Ensure start_date <= end_date and use one of the six valid unit codes."
+    },
+    {
+      "error": "#VALUE!",
+      "cause": "A non-date value or an unrecognized unit code was supplied.",
+      "fix": "Pass real date serials and a valid unit string in quotes."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "DATEDIF is also available in Google Sheets with the same syntax and units, including the same \"MD\" quirk.",
+    "formula": "=DATEDIF(DATE(2020, 1, 1), DATE(2024, 6, 1), \"Y\")",
+    "notes": "Identical behavior; the MD unit bug exists there too."
+  },
+  "faq": [
+    {
+      "question": "Why can't I find DATEDIF in the function list?",
+      "answer": "It is a legacy compatibility function that is supported but intentionally not shown in autocomplete."
+    },
+    {
+      "question": "What is wrong with the MD unit?",
+      "answer": "Microsoft documents a bug in MD that can return incorrect/negative results; verify critical calculations another way."
+    },
+    {
+      "question": "Which unit gives total days?",
+      "answer": "Use \"D\" for the full day count; \"YD\" ignores the year difference."
+    }
+  ],
+  "relatedFunctions": [
+    "days",
+    "edate",
+    "eomonth",
+    "yearfrac",
+    "date"
+  ]
 }

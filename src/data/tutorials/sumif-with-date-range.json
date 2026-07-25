@@ -1,0 +1,76 @@
+{
+  "slug": "sumif-with-date-range",
+  "title": "SUMIF with a Date Range",
+  "description": "SUMIF only takes one condition, so summing between two dates needs a trick. Learn three clean ways to SUMIF (or SUMIFS) over a date range in Excel and Google Sheets.",
+  "category": "SUM & COUNT",
+  "functions": ["SUMIF", "SUMIFS", "SUM", "COUNTIF"],
+  "intro": "A very common question is \"how do I SUMIF the amounts where the date is between Jan 1 and Mar 31?\" Because SUMIF accepts a single criterion, a single date range isn't enough. This guide shows three patterns — two SUMIFs, the modern SUMIFS, and a SUMPRODUCT fallback — so you can total by any date window.",
+  "tags": ["SUMIF", "Date Range", "SUMIFS", "SUM", "Reporting"],
+  "estimatedTime": "10 min read",
+  "prerequisites": [
+    "Dates stored as real Excel dates (not text)",
+    "A column of dates and a column of values to sum",
+    "Microsoft 365 only needed for dynamic array tricks"
+  ],
+  "sections": [
+    {
+      "title": "The Problem with One SUMIF",
+      "content": "SUMIF(range, criteria, sum_range) compares the whole range to a single test. To capture a window you need BOTH a lower bound and an upper bound, which is two criteria — so a single SUMIF can't do it alone.",
+      "tips": [
+        "Confirm your dates are real serial numbers: a date formatted as text won't compare correctly."
+      ]
+    },
+    {
+      "title": "Method 1: Two SUMIFs (Subtract the Upper Bound)",
+      "content": "Sum everything from the start date, then subtract everything after the end date. The difference is the window. This works in every version.",
+      "steps": [
+        { "name": "Sum from start", "text": "Include all dates on or after the start.", "formula": "=SUMIF(A:A, \">=\"&DATE(2024,1,1), B:B)" },
+        { "name": "Subtract after end", "text": "Remove dates after the window's last day.", "formula": "=SUMIF(A:A, \">\"&DATE(2024,3,31), B:B)" }
+      ],
+      "example": {
+        "formula": "=SUMIF(A:A, \">=\"&DATE(2024,1,1), B:B) - SUMIF(A:A, \">\"&DATE(2024,3,31), B:B)",
+        "result": "Total of column B where date is 1 Jan – 31 Mar 2024",
+        "explanation": "The second SUMIF excludes the end day, so use 31 Mar as the cutoff; rows on 31 Mar are kept in the first sum and removed by the second."
+      },
+      "tips": [
+        "Use \">=\" for the start and \">\" (strictly greater) for the end so the last day is included."
+      ]
+    },
+    {
+      "title": "Method 2: SUMIFS (Cleanest, Excel 2007+/Sheets)",
+      "content": "SUMIFS handles multiple criteria natively, so the same lower/upper pair becomes two simple conditions in one function.",
+      "example": {
+        "formula": "=SUMIFS(B:B, A:A, \">=\"&DATE(2024,1,1), A:A, \"<=\"&DATE(2024,3,31))",
+        "result": "Total of column B for dates 1 Jan – 31 Mar 2024 (inclusive)",
+        "explanation": "Both bounds are inclusive here, which is usually what a report wants."
+      },
+      "tips": [
+        "SUMIFS is generally faster and easier to read than the two-SUMIF trick."
+      ]
+    },
+    {
+      "title": "Method 3: SUMPRODUCT (Maximum Control)",
+      "content": "SUMPRODUCT multiplies arrays, so you can express the date window as TRUE/FALSE math and even combine it with other conditions.",
+      "example": {
+        "formula": "=SUMPRODUCT((A:A>=DATE(2024,1,1))*(A:A<=DATE(2024,3,31))*B:B)",
+        "result": "Total of column B for the same quarter",
+        "explanation": "Each condition returns 1/0; only rows where both are 1 contribute their B value."
+      },
+      "tips": [
+        "Restrict to your data range (A2:A1000) instead of whole columns to keep SUMPRODUCT fast."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "SUMIF", "slug": "sumif", "description": "Adds the cells specified by a single condition" },
+    { "name": "SUMIFS", "slug": "sumifs", "description": "Adds the cells in a range that meet multiple criteria" },
+    { "name": "SUM", "slug": "sum", "description": "Adds all the numbers in a range of cells" },
+    { "name": "COUNTIF", "slug": "countif", "description": "Counts the cells that meet a single condition" }
+  ],
+  "summary": "To SUMIF over a date range, remember that one criterion isn't enough. The two-SUMIF subtraction works everywhere, SUMIFS is the cleanest modern choice, and SUMPRODUCT gives you the most flexibility when you start mixing in extra conditions. Prefer SUMIFS for new work.",
+  "nextSteps": [
+    "Count rows in the same window with COUNTIFS",
+    "Switch the DATE() bounds for cell references so the report is reusable",
+    "Combine the date window with a category condition using SUMIFS"
+  ]
+}

@@ -3,38 +3,96 @@
   "slug": "sin",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "SIN is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "SIN is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(sin)",
-  "parameters": [],
+  "description": "SIN returns the sine of a given angle. The angle must be expressed in radians.",
+  "tldr": "Returns the sine of an angle given in radians.",
+  "syntax": "(number)",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The angle, in radians, for which you want the sine.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the SIN function",
-    "formula": "=SIN(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the SIN function."
+    "description": "Sine of 30 degrees",
+    "formula": "=SIN(RADIANS(30))",
+    "result": "0.5",
+    "explanation": "RADIANS(30) converts to π/6; the sine of π/6 is 0.5."
   },
-  "advancedExamples": [],
-  "howItWorks": "The SIN function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Sine of π/2",
+      "scenario": "Quarter turn.",
+      "description": "Use PI()/2.",
+      "formula": "=SIN(PI()/2)",
+      "result": "1",
+      "explanation": "The sine of π/2 radians (90°) is 1."
+    },
+    {
+      "title": "Sine of 0",
+      "scenario": "Baseline check.",
+      "description": "Sine of zero radians.",
+      "formula": "=SIN(0)",
+      "result": "0",
+      "explanation": "The sine of 0 is 0."
+    }
+  ],
+  "howItWorks": "SIN computes the sine of an angle measured in radians. The function is periodic with period 2π, so SIN(x) = SIN(x + 2πk) for any integer k.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Convert if needed",
+      "text": "If your angle is in degrees, wrap it with RADIANS()."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =SIN(arguments)."
+      "text": "Type =SIN(number) with the angle in radians."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The sine value appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "The angle must be in radians; degrees must be converted with RADIANS or PI()/180.",
+    "Results are approximate due to floating-point math.",
+    "SIN cannot directly take degrees."
+  ],
+  "commonErrors": [
+    {
+      "error": "Unexpected value",
+      "cause": "Angle supplied in degrees instead of radians.",
+      "fix": "Wrap the angle in RADIANS() or multiply by PI()/180."
+    },
+    {
+      "error": "#VALUE!",
+      "cause": "Non-numeric argument.",
+      "fix": "Supply a numeric angle."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "SIN works identically in Google Sheets with the same syntax.",
-    "formula": "=SIN(A1)"
+    "description": "SIN works identically in Google Sheets.",
+    "formula": "=SIN(RADIANS(30))",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "My SIN gives wrong values — why?",
+      "answer": "Most likely you passed degrees. Convert with RADIANS() first, e.g. =SIN(RADIANS(30))."
+    },
+    {
+      "question": "What is the period of SIN?",
+      "answer": "2π radians; SIN repeats every 2π."
+    },
+    {
+      "question": "How do I get the inverse (angle from sine)?",
+      "answer": "Use ASIN, which returns the angle in radians."
+    }
+  ],
+  "relatedFunctions": [
+    "cos",
+    "tan",
+    "asin",
+    "radians",
+    "pi"
+  ]
 }

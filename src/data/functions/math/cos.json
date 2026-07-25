@@ -3,38 +3,96 @@
   "slug": "cos",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "COS is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "COS is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(cos)",
-  "parameters": [],
+  "description": "COS returns the cosine of a given angle. The angle must be expressed in radians.",
+  "tldr": "Returns the cosine of an angle given in radians.",
+  "syntax": "(number)",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The angle, in radians, for which you want the cosine.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the COS function",
-    "formula": "=COS(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the COS function."
+    "description": "Cosine of 60 degrees",
+    "formula": "=COS(RADIANS(60))",
+    "result": "0.5",
+    "explanation": "RADIANS(60) converts to π/3; the cosine of π/3 is 0.5."
   },
-  "advancedExamples": [],
-  "howItWorks": "The COS function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Cosine of 0",
+      "scenario": "Baseline check.",
+      "description": "Cosine of zero radians.",
+      "formula": "=COS(0)",
+      "result": "1",
+      "explanation": "The cosine of 0 is 1."
+    },
+    {
+      "title": "Cosine of π",
+      "scenario": "Half turn.",
+      "description": "Use PI() for π.",
+      "formula": "=COS(PI())",
+      "result": "-1",
+      "explanation": "The cosine of π radians (180°) is -1."
+    }
+  ],
+  "howItWorks": "COS computes the cosine of an angle measured in radians. The function is periodic with period 2π, so COS(x) = COS(x + 2πk) for any integer k.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Convert if needed",
+      "text": "If your angle is in degrees, wrap it with RADIANS()."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =COS(arguments)."
+      "text": "Type =COS(number) with the angle in radians."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The cosine value appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "The angle must be in radians; degrees must be converted with RADIANS or PI()/180.",
+    "Results are approximate due to floating-point math.",
+    "COS cannot directly take degrees, unlike some calculator conventions."
+  ],
+  "commonErrors": [
+    {
+      "error": "Unexpected large/small result",
+      "cause": "Angle was supplied in degrees instead of radians.",
+      "fix": "Wrap the angle in RADIANS() or multiply by PI()/180."
+    },
+    {
+      "error": "#VALUE!",
+      "cause": "Non-numeric argument.",
+      "fix": "Supply a numeric angle."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "COS works identically in Google Sheets with the same syntax.",
-    "formula": "=COS(A1)"
+    "description": "COS works identically in Google Sheets.",
+    "formula": "=COS(RADIANS(60))",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "My COS gives wrong values — why?",
+      "answer": "Most likely you passed degrees. Convert with RADIANS() first, e.g. =COS(RADIANS(60))."
+    },
+    {
+      "question": "What is the period of COS?",
+      "answer": "2π radians. COS repeats every 2π."
+    },
+    {
+      "question": "How do I get the inverse (angle from cosine)?",
+      "answer": "Use ACOS, which returns the angle in radians."
+    }
+  ],
+  "relatedFunctions": [
+    "sin",
+    "tan",
+    "acos",
+    "radians",
+    "pi"
+  ]
 }

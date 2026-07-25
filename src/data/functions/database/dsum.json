@@ -3,38 +3,107 @@
   "slug": "dsum",
   "category": "database",
   "excelVersion": "All versions",
-  "description": "DSUM is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "DSUM is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(dsum)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the DSUM function",
-    "formula": "=DSUM(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the DSUM function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The DSUM function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "DSUM adds the numeric values in a specified field (column) of the records in a database that match the given criteria.",
+  "tldr": "Sums the values in a database column for rows that meet the criteria.",
+  "syntax": "(database, field, criteria)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "database",
+      "description": "The range containing the database, including the header row as the first row.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =DSUM(arguments)."
+      "name": "field",
+      "description": "The column to sum, given as the column label in quotes (e.g. \"Yield\") or its 1-based column index.",
+      "required": true
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "criteria",
+      "description": "The range with a header row matching database column names and one or more condition rows; only matching records are summed.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "DSUM works identically in Google Sheets with the same syntax.",
-    "formula": "=DSUM(A1)"
+  "basicExample": {
+    "description": "Sum the Yield of apple trees taller than 10",
+    "formula": "=DSUM(A1:E7, \"Yield\", A9:B10)",
+    "result": "24",
+    "explanation": "The criteria A9:B10 (Tree=Apple, Height>10) matches two rows with Yield 14 and 10, which add up to 24."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Field referenced by column index",
+      "scenario": "Sum Profit instead of Yield without editing the criteria",
+      "description": "Pass the 1-based column position of Profit (column 5) as the field argument.",
+      "formula": "=DSUM(A1:E7, 5, A9:B10)",
+      "result": "180",
+      "explanation": "The same two matching rows have Profit 105 and 75, so the sum is 180."
+    },
+    {
+      "title": "Combine with other conditions",
+      "scenario": "Sum Yield for apple trees with Age greater than 12",
+      "description": "Extend the criteria range with an Age column and condition >12 below the Apple/Height condition.",
+      "formula": "=DSUM(A1:E7, \"Yield\", A9:C10)",
+      "result": "24",
+      "explanation": "Both tall apples (Age 20 and 15) exceed 12, so Yield 14 and 10 still sum to 24."
+    }
+  ],
+  "howItWorks": "DSUM filters the database down to the rows matching the criteria range, then totals the numeric values found in the specified field column of those rows. Non-numeric and blank cells in the field are ignored by the sum.",
+  "howToSteps": [
+    {
+      "name": "Set up the database",
+      "text": "Enter your table with a header row; here A1:E7 with Tree, Height, Age, Yield, Profit."
+    },
+    {
+      "name": "Set up criteria",
+      "text": "Place criteria headers and values in a separate range, e.g. A9:B10."
+    },
+    {
+      "name": "Enter DSUM",
+      "text": "Type =DSUM(A1:E7, \"Yield\", A9:B10) and press Enter."
+    }
+  ],
+  "limitations": [
+    "Only numeric values in the field are summed; text and blanks are skipped.",
+    "Criteria header labels must exactly match database headers.",
+    "DSUM ignores records the criteria filter out entirely, so an over-broad criteria returns a larger total."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "The field was supplied as an unquoted column name rather than text or a number.",
+      "fix": "Wrap the field name in quotes, e.g. \"Yield\", or use the column index."
+    },
+    {
+      "error": "0 result",
+      "cause": "Criteria headers do not match the database, so no rows match.",
+      "fix": "Make criteria header text identical to the database column name."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "DSUM works identically in Google Sheets with the same arguments and criteria behavior.",
+    "formula": "=DSUM(A1:E7, \"Yield\", A9:B10)",
+    "notes": "No differences from Excel."
+  },
+  "faq": [
+    {
+      "question": "Can DSUM use a column index instead of a name?",
+      "answer": "Yes. Supply the 1-based column position, e.g. 4 for the fourth column, instead of \"Yield\"."
+    },
+    {
+      "question": "Does DSUM ignore text in the field?",
+      "answer": "Yes. Only numeric values in the matching rows are added; text and blank cells are ignored."
+    },
+    {
+      "question": "How is DSUM different from SUMIF?",
+      "answer": "DSUM filters a multi-column database by an entire criteria range (with AND/OR logic), while SUMIF handles a single condition over one range."
+    }
+  ],
+  "relatedFunctions": [
+    "daverage",
+    "dcount",
+    "dmax",
+    "dmin",
+    "database",
+    "sum"
+  ]
 }

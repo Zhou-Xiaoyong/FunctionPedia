@@ -2,39 +2,112 @@
   "name": "NETWORKDAYS.INTL",
   "slug": "networkdays-intl",
   "category": "datetime",
-  "excelVersion": "All versions",
-  "description": "NETWORKDAYS.INTL is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "NETWORKDAYS.INTL is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(networkdays.intl)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the NETWORKDAYS.INTL function",
-    "formula": "=NETWORKDAYS.INTL(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the NETWORKDAYS.INTL function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The NETWORKDAYS.INTL function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "excelVersion": "Excel 2010+",
+  "description": "NETWORKDAYS.INTL counts the number of working days between two dates with a customizable weekend (a weekend code or a 7-character string) and optional holidays; both endpoints are included.",
+  "tldr": "Counts workdays between two dates with a custom weekend.",
+  "syntax": "(start_date, end_date, [weekend], [holidays])",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "start_date",
+      "description": "The first date of the period.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =NETWORKDAYS.INTL(arguments)."
+      "name": "end_date",
+      "description": "The last date of the period. Both start and end dates are counted.",
+      "required": true
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "weekend",
+      "description": "Optional. A number 1-7 or 11-17 selecting weekend days (1 = Sat+Sun default, 2 = Sun only, ... 7 = Fri only, 11 = Sun+Mon, ... 17 = Sat+Sun), or a 7-character string of 0/1 for Mon-Sun where 1 means weekend.",
+      "required": false
+    },
+    {
+      "name": "holidays",
+      "description": "Optional range or array of dates to exclude as non-working days.",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "NETWORKDAYS.INTL works identically in Google Sheets with the same syntax.",
-    "formula": "=NETWORKDAYS.INTL(A1)"
+  "basicExample": {
+    "description": "Workdays in January 2024 (default Sat/Sun weekend)",
+    "formula": "=NETWORKDAYS.INTL(DATE(2024, 1, 1), DATE(2024, 1, 31), 1)",
+    "result": "23",
+    "explanation": "With the default weekend (code 1, Sat+Sun), January 2024 has 23 weekdays. This matches NETWORKDAYS."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Custom weekend (Mon and Sun off) over a week",
+      "scenario": "Counting a non-standard work week",
+      "description": "A 7-character string defines the off days",
+      "formula": "=NETWORKDAYS.INTL(DATE(2024, 1, 1), DATE(2024, 1, 7), \"1000001\")",
+      "result": "5",
+      "explanation": "The string \"1000001\" marks Monday and Sunday as weekends. In Jan 1-7, only Tue-Sat (Jan 2-6) are working, giving 5 workdays."
+    },
+    {
+      "title": "Friday-Saturday weekend for a whole month",
+      "scenario": "A schedule where Fri and Sat are off",
+      "description": "The weekend string changes which days are skipped",
+      "formula": "=NETWORKDAYS.INTL(DATE(2024, 1, 1), DATE(2024, 1, 31), \"0000110\")",
+      "result": "15",
+      "explanation": "The string \"0000110\" marks Friday and Saturday as weekends. In January 2024, excluding the 4 Fridays and 4 Saturdays leaves 15 working days (23 minus 8)."
+    }
+  ],
+  "howItWorks": "NETWORKDAYS.INTL counts every day from start_date through end_date, subtracts the days marked as weekends by the weekend argument, and then subtracts any dates in the holidays list. Both endpoints are included. The weekend can be a preset code or a 7-character 0/1 string in Monday-to-Sunday order.",
+  "howToSteps": [
+    {
+      "name": "Enter the start and end dates",
+      "text": "Supply the period boundaries as date serials."
+    },
+    {
+      "name": "Set the weekend",
+      "text": "Use a code (1-7/11-17) or a 7-char 0/1 string (Mon-Sun)."
+    },
+    {
+      "name": "Optionally list holidays",
+      "text": "Pass a range or array of holiday dates."
+    }
+  ],
+  "limitations": [
+    "Available only in Excel 2010 and later.",
+    "The weekend string must be exactly seven characters in Monday-to-Sunday order.",
+    "If start_date is after end_date, the result is negative."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "The weekend string is not exactly seven 0/1 characters.",
+      "fix": "Use a valid 7-character string such as \"0000011\"."
+    },
+    {
+      "error": "#NUM!",
+      "cause": "An invalid weekend code (not 1-7 or 11-17) was supplied.",
+      "fix": "Use a supported weekend code or a valid string."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "NETWORKDAYS.INTL is available in Google Sheets with identical syntax, codes, and the 7-character weekend string.",
+    "formula": "=NETWORKDAYS.INTL(DATE(2024, 1, 1), DATE(2024, 1, 31), 1)",
+    "notes": "Same behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "What does the weekend string mean?",
+      "answer": "Seven characters for Mon, Tue, Wed, Thu, Fri, Sat, Sun, where 1 marks a weekend day, e.g. \"0000011\" = Sat+Sun off."
+    },
+    {
+      "question": "Are both endpoints counted?",
+      "answer": "Yes, both the start and end dates are included in the count."
+    },
+    {
+      "question": "How do I set Friday and Saturday as the weekend?",
+      "answer": "Use code 7 or the string \"0000110\"."
+    }
+  ],
+  "relatedFunctions": [
+    "networkdays",
+    "workday-intl",
+    "workday",
+    "days",
+    "date"
+  ]
 }

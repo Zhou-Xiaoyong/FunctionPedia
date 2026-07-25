@@ -3,38 +3,106 @@
   "slug": "networkdays",
   "category": "datetime",
   "excelVersion": "All versions",
-  "description": "NETWORKDAYS is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "NETWORKDAYS is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(networkdays)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the NETWORKDAYS function",
-    "formula": "=NETWORKDAYS(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the NETWORKDAYS function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The NETWORKDAYS function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "NETWORKDAYS counts the number of working days between two dates, inclusive of both endpoints, skipping Saturdays and Sundays and optionally a list of holidays.",
+  "tldr": "Counts workdays between two dates.",
+  "syntax": "(start_date, end_date, [holidays])",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "start_date",
+      "description": "The first date of the period.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =NETWORKDAYS(arguments)."
+      "name": "end_date",
+      "description": "The last date of the period. Both start and end dates are counted.",
+      "required": true
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "holidays",
+      "description": "Optional range or array of dates to exclude as non-working days.",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "NETWORKDAYS works identically in Google Sheets with the same syntax.",
-    "formula": "=NETWORKDAYS(A1)"
+  "basicExample": {
+    "description": "Workdays in January 2024",
+    "formula": "=NETWORKDAYS(DATE(2024, 1, 1), DATE(2024, 1, 31))",
+    "result": "23",
+    "explanation": "January 2024 has 31 days; after removing the 4 Saturdays and 4 Sundays, 23 weekdays remain. Both endpoints are included."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Excluding a holiday",
+      "scenario": "Counting workdays with one mid-month holiday",
+      "description": "The holiday reduces the count by one",
+      "formula": "=NETWORKDAYS(DATE(2024, 1, 1), DATE(2024, 1, 31), {\"2024-01-15\"})",
+      "result": "22",
+      "explanation": "Jan 15 2024 is a Monday workday, so removing it leaves 22 workdays."
+    },
+    {
+      "title": "Reversed dates give a negative count",
+      "scenario": "Accidentally swapping start and end",
+      "description": "When start is after end, the result is negative",
+      "formula": "=NETWORKDAYS(DATE(2024, 1, 31), DATE(2024, 1, 1))",
+      "result": "-23",
+      "explanation": "With the start later than the end, NETWORKDAYS returns the negative of the count, here -23."
+    }
+  ],
+  "howItWorks": "NETWORKDAYS counts every day from start_date through end_date, subtracts Saturdays and Sundays, and then subtracts any dates found in the holidays list. Both endpoints are included in the count.",
+  "howToSteps": [
+    {
+      "name": "Enter the start and end dates",
+      "text": "Supply the period boundaries as date serials."
+    },
+    {
+      "name": "Optionally list holidays",
+      "text": "Pass a range or array of holiday dates to exclude."
+    },
+    {
+      "name": "Read the workday count",
+      "text": "The function returns an integer."
+    }
+  ],
+  "limitations": [
+    "Only Saturday and Sunday weekends are supported; use NETWORKDAYS.INTL for custom weekend days.",
+    "Both endpoints are counted, which differs from WORKDAY's behavior.",
+    "If start_date is after end_date, the result is negative."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "A non-date argument or a holiday Excel cannot read as a date.",
+      "fix": "Ensure all date arguments are real date serials."
+    },
+    {
+      "error": "Negative count unexpectedly",
+      "cause": "The start date is later than the end date.",
+      "fix": "Put the earlier date first (start_date, end_date)."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "NETWORKDAYS works identically in Google Sheets, including the optional holidays argument.",
+    "formula": "=NETWORKDAYS(DATE(2024, 1, 1), DATE(2024, 1, 31))",
+    "notes": "Same behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "Are both the start and end dates counted?",
+      "answer": "Yes, NETWORKDAYS includes both endpoints, unlike WORKDAY which excludes the start."
+    },
+    {
+      "question": "How do I use a custom weekend?",
+      "answer": "Use NETWORKDAYS.INTL, which accepts a weekend code or 7-character string."
+    },
+    {
+      "question": "What if start is after end?",
+      "answer": "The result is the negative of the workday count."
+    }
+  ],
+  "relatedFunctions": [
+    "networkdays-intl",
+    "workday",
+    "workday-intl",
+    "days",
+    "date"
+  ]
 }

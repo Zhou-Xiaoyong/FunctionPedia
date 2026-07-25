@@ -3,38 +3,101 @@
   "slug": "stdevpa",
   "category": "statistical",
   "excelVersion": "All versions",
-  "description": "STDEVPA is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "STDEVPA is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(stdevpa)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the STDEVPA function",
-    "formula": "=STDEVPA(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the STDEVPA function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The STDEVPA function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "STDEVPA calculates the population standard deviation (n denominator) while treating text as 0 and logical values TRUE as 1 and FALSE as 0.",
+  "tldr": "Population standard deviation that also counts text and logicals as numbers.",
+  "syntax": "(value1, [value2], ...)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "value1",
+      "description": "The first value, range, or reference in the population.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =STDEVPA(arguments)."
+      "name": "value2",
+      "description": "Additional values, ranges, or references (optional).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Population standard deviation of numeric values only",
+    "formula": "=STDEVPA(10,20,30,40,50)",
+    "result": "14.14213562",
+    "explanation": "With only numbers present, STDEVPA returns the same result as STDEVP."
+  },
+  "advancedExamples": [
+    {
+      "title": "Text and TRUE are counted",
+      "scenario": "A range that mixes numbers, text, and a logical",
+      "description": "Text becomes 0 and TRUE becomes 1 before the calculation",
+      "formula": "=STDEVPA(10,20,30,TRUE,\"apple\")",
+      "result": "11.4612426",
+      "explanation": "The values used are 10,20,30,1,0; the mean is 12.2, the population variance is 131.36, and the square root is 11.4612426."
+    },
+    {
+      "title": "Contrast with STDEVP on a reference",
+      "scenario": "Ignoring non-numeric cells",
+      "description": "STDEVP ignores text and logicals inside a range",
+      "formula": "=STDEVP(A1:A5) where A1:A5 = 10,20,30,TRUE,\"apple\"",
+      "result": "10",
+      "explanation": "STDEVP sees only 10,20,30 (n=3) and returns 10, whereas STDEVPA counts all five values."
+    }
+  ],
+  "howItWorks": "STDEVPA coerces every argument to a number (text to 0, TRUE to 1, FALSE to 0), then computes the population standard deviation using the n denominator. Because it divides by n rather than n-1, it assumes the supplied values constitute the whole population.",
+  "howToSteps": [
+    {
+      "name": "Identify values",
+      "text": "Collect the values, including any text or logicals you want counted."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =STDEVPA(range or values)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The population standard deviation including non-numerics is shown."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Counting text as 0 can distort the result if text cells are labels rather than true zeros.",
+    "Dividing by n assumes a full population; for a sample use STDEVA.",
+    "Requires at least one effective value, otherwise returns #DIV/0!."
+  ],
+  "commonErrors": [
+    {
+      "error": "#DIV/0!",
+      "cause": "No effective numeric values after coercion.",
+      "fix": "Provide at least one value that evaluates to a number."
+    },
+    {
+      "error": "Larger spread than expected",
+      "cause": "Text labels were coerced to 0, pulling the mean down.",
+      "fix": "Use STDEVP when text cells should be ignored."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "STDEVPA works identically in Google Sheets with the same syntax.",
-    "formula": "=STDEVPA(A1)"
+    "description": "STDEVPA is available in Google Sheets with the same coercion rules.",
+    "formula": "=STDEVPA(10,20,30,TRUE,\"apple\")",
+    "notes": "Behavior matches Excel STDEVPA."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Does STDEVPA treat empty cells as 0?",
+      "answer": "No. Empty cells are ignored; only text and logicals are coerced (text to 0, TRUE to 1, FALSE to 0)."
+    },
+    {
+      "question": "When should I use STDEVPA instead of STDEVP?",
+      "answer": "When your data includes logicals or text that genuinely represent 1/0 or zero, and you want them in the population."
+    },
+    {
+      "question": "What is the sample equivalent?",
+      "answer": "STDEVA, which uses the n-1 denominator instead of n."
+    }
+  ],
+  "relatedFunctions": [
+    "stdev",
+    "stdeva",
+    "stdevp",
+    "varpa",
+    "average"
+  ]
 }

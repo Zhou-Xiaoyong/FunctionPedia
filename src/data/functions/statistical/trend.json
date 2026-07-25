@@ -3,38 +3,111 @@
   "slug": "trend",
   "category": "statistical",
   "excelVersion": "All versions",
-  "description": "TREND is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "TREND is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(trend)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the TREND function",
-    "formula": "=TREND(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the TREND function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The TREND function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "TREND returns values along a linear trend line fitted by least squares to known data, predicting one or many y-values for the supplied x-values. It is an array function.",
+  "tldr": "Fits a linear trend and returns predicted y-values (array).",
+  "syntax": "(known_ys, [known_xs], [new_xs], [const])",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "known_ys",
+      "description": "The dependent (y) values of the known data used to fit the line.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =TREND(arguments)."
+      "name": "known_xs",
+      "description": "The independent (x) values of the known data; defaults to 1,2,3,... if omitted.",
+      "required": false
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "new_xs",
+      "description": "The x-values at which to predict y. If omitted, the known x-values are reused.",
+      "required": false
+    },
+    {
+      "name": "const",
+      "description": "TRUE (or omitted) includes an intercept; FALSE forces the line through the origin.",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "TREND works identically in Google Sheets with the same syntax.",
-    "formula": "=TREND(A1)"
+  "basicExample": {
+    "description": "Predict a single future point",
+    "formula": "=TREND({2,3,5,7,11},{1,2,3,4,5},6)",
+    "result": "12.2",
+    "explanation": "The fitted line is y = -1 + 2.2x, so at x=6 the prediction is 12.2 (same as FORECAST)."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Predict several points at once",
+      "scenario": "Project multiple future periods",
+      "description": "Supply an array of new x-values to get an array of predictions",
+      "formula": "=TREND({2,3,5,7,11},{1,2,3,4,5},{6,7})",
+      "result": "{12.2, 14.4}",
+      "explanation": "Spills two values: 12.2 at x=6 and 14.4 at x=7. In older Excel, confirm with Ctrl+Shift+Enter; in Microsoft 365 it spills automatically."
+    },
+    {
+      "title": "Force line through origin",
+      "scenario": "Physical quantity with zero intercept",
+      "description": "Set const to FALSE",
+      "formula": "=TREND(B2:B12,A2:A12,C2:C5,FALSE)",
+      "result": "Predicted y-values with no intercept",
+      "explanation": "The fitted line passes through (0,0); useful when theory requires a zero intercept."
+    }
+  ],
+  "howItWorks": "TREND performs ordinary least-squares linear regression (y = a + bx) on the known data, then evaluates that line at each value in new_xs. Because it accepts an array for new_xs, it can return many predictions in one formula. Text, logicals, and blanks in the known arrays are ignored.",
+  "howToSteps": [
+    {
+      "name": "Provide known data",
+      "text": "List known y-values and, optionally, known x-values."
+    },
+    {
+      "name": "Provide new x-values",
+      "text": "List the x-points you want to predict (a single cell or a range)."
+    },
+    {
+      "name": "Enter as array",
+      "text": "Type =TREND(known_ys, known_xs, new_xs) and press Enter (or Ctrl+Shift+Enter in legacy Excel)."
+    }
+  ],
+  "limitations": [
+    "Models only a linear relationship; use GROWTH for exponential patterns.",
+    "known_xs and known_ys must have the same number of points, or #REF! is returned.",
+    "Returns an array, so in pre-dynamic Excel it must be entered as an array formula and needs enough empty cells to spill into."
+  ],
+  "commonErrors": [
+    {
+      "error": "#REF!",
+      "cause": "known_xs and known_ys differ in size, or new_xs cannot spill into the needed cells.",
+      "fix": "Match the known array sizes and ensure output cells are empty."
+    },
+    {
+      "error": "#VALUE!",
+      "cause": "A non-numeric or mis-shaped argument was supplied.",
+      "fix": "Pass numeric, equal-length ranges."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "TREND works as an array function in Google Sheets, returning a row/column of predictions.",
+    "formula": "=TREND({2,3,5,7,11},{1,2,3,4,5},{6,7})",
+    "notes": "Identical behavior; results spill across cells in Sheets too."
+  },
+  "faq": [
+    {
+      "question": "How is TREND different from FORECAST?",
+      "answer": "FORECAST returns a single predicted y; TREND can return an entire array of predictions at once."
+    },
+    {
+      "question": "Does TREND need array entry?",
+      "answer": "In Microsoft 365 it spills automatically; in older Excel use Ctrl+Shift+Enter."
+    },
+    {
+      "question": "Can TREND fit through the origin?",
+      "answer": "Yes, set the const argument to FALSE to force the line through (0,0)."
+    }
+  ],
+  "relatedFunctions": [
+    "forecast",
+    "forecast-linear",
+    "growth",
+    "linest",
+    "correl"
+  ]
 }

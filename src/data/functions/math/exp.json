@@ -3,38 +3,96 @@
   "slug": "exp",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "EXP is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "EXP is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(exp)",
-  "parameters": [],
+  "description": "EXP returns e raised to the power of a given number, where e is the base of the natural logarithm (approximately 2.71828182845904).",
+  "tldr": "Returns e raised to a power.",
+  "syntax": "(number)",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The exponent to which e is raised.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the EXP function",
-    "formula": "=EXP(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the EXP function."
+    "description": "e raised to the power of 1",
+    "formula": "=EXP(1)",
+    "result": "2.718281828",
+    "explanation": "e¹ equals the constant e, about 2.71828."
   },
-  "advancedExamples": [],
-  "howItWorks": "The EXP function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "e squared",
+      "scenario": "Compound growth base.",
+      "description": "Raise e to 2.",
+      "formula": "=EXP(2)",
+      "result": "7.389056099",
+      "explanation": "e² ≈ 7.38906."
+    },
+    {
+      "title": "Inverse relationship with LN",
+      "scenario": "Verify the log identity.",
+      "description": "LN and EXP cancel each other.",
+      "formula": "=LN(EXP(3))",
+      "result": "3",
+      "explanation": "Taking the natural log of e³ returns 3."
+    }
+  ],
+  "howItWorks": "EXP computes e^number, where e ≈ 2.71828182845904. It is the inverse of LN: LN(EXP(x)) = x and EXP(LN(x)) = x (for x > 0).",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the cell",
+      "text": "Click the cell for the result."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =EXP(arguments)."
+      "text": "Type =EXP(number)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The value of e^number appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Very large exponents overflow to #NUM! (e.g. EXP(710) and above).",
+    "Results are floating-point approximations of e.",
+    "EXP only computes powers of e; use POWER for other bases."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM!",
+      "cause": "The exponent is too large, causing overflow.",
+      "fix": "Use a smaller exponent or scale the calculation."
+    },
+    {
+      "error": "#VALUE!",
+      "cause": "Non-numeric argument.",
+      "fix": "Supply a numeric exponent."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "EXP works identically in Google Sheets with the same syntax.",
-    "formula": "=EXP(A1)"
+    "description": "EXP works identically in Google Sheets.",
+    "formula": "=EXP(1)",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "What is e?",
+      "answer": "e is Euler's number, approximately 2.71828182845904, the base of natural logarithms."
+    },
+    {
+      "question": "How do I raise other numbers to a power?",
+      "answer": "Use POWER(base, exponent) or the ^ operator; EXP only raises e."
+    },
+    {
+      "question": "Why does EXP(LN(x)) equal x?",
+      "answer": "EXP and LN are inverse functions, so they cancel each other for positive x."
+    }
+  ],
+  "relatedFunctions": [
+    "ln",
+    "log",
+    "log10",
+    "power",
+    "sqrt"
+  ]
 }

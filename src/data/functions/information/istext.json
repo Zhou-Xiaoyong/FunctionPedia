@@ -3,38 +3,97 @@
   "slug": "istext",
   "category": "information",
   "excelVersion": "All versions",
-  "description": "ISTEXT is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "ISTEXT is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(istext)",
-  "parameters": [],
+  "description": "ISTEXT returns TRUE if the supplied value is text, and FALSE otherwise.",
+  "tldr": "Tests whether a value is text.",
+  "syntax": "(value)",
+  "parameters": [
+    {
+      "name": "value",
+      "description": "The value, cell reference, or formula result to test.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the ISTEXT function",
-    "formula": "=ISTEXT(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the ISTEXT function."
+    "description": "Check a cell containing a word",
+    "formula": "=ISTEXT(\"Hello\")",
+    "result": "TRUE",
+    "explanation": "\"Hello\" is a text string, so the function returns TRUE."
   },
-  "advancedExamples": [],
-  "howItWorks": "The ISTEXT function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "An empty string is text",
+      "scenario": "A formula returns \"\" to indicate no data.",
+      "description": "Detect a formula-produced empty string",
+      "formula": "=ISTEXT(A1)",
+      "result": "TRUE",
+      "explanation": "A1 holds a formula returning \"\"; because that is text, ISTEXT returns TRUE."
+    },
+    {
+      "title": "Numbers are not text",
+      "scenario": "Verify a numeric cell.",
+      "description": "Confirm a number returns FALSE",
+      "formula": "=ISTEXT(42)",
+      "result": "FALSE",
+      "explanation": "42 is a number, not text, so the result is FALSE."
+    }
+  ],
+  "howItWorks": "ISTEXT checks the data type of the supplied value. If it is a text string—including numbers stored as text and the empty string \"\"—it returns TRUE; numbers, logicals, errors, blank cells, and dates return FALSE.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Pick the value",
+      "text": "Select the cell or value to test."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =ISTEXT(arguments)."
+      "text": "Type =ISTEXT(value)."
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "Read the result",
+      "text": "TRUE means text, FALSE means not."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Numbers formatted as text return TRUE.",
+    "An empty string \"\" produced by a formula is considered text.",
+    "Errors, logicals, and numbers return FALSE."
+  ],
+  "commonErrors": [
+    {
+      "error": "Unexpected TRUE",
+      "cause": "A number is stored as text.",
+      "fix": "Convert it to a number with VALUE() or Text to Columns."
+    },
+    {
+      "error": "FALSE on a date",
+      "cause": "Dates are stored as numbers.",
+      "fix": "Use ISNUMBER to test for dates."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "ISTEXT works identically in Google Sheets with the same syntax.",
-    "formula": "=ISTEXT(A1)"
+    "description": "ISTEXT works identically in Google Sheets with the same syntax and behavior.",
+    "formula": "=ISTEXT(A1)",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Does ISTEXT catch numbers stored as text?",
+      "answer": "Yes, a numeric value stored as text returns TRUE."
+    },
+    {
+      "question": "What about blank cells?",
+      "answer": "A truly blank cell returns FALSE; only an actual empty string or text returns TRUE."
+    },
+    {
+      "question": "Is \"\" considered text?",
+      "answer": "Yes, the empty string is text, so ISTEXT returns TRUE for it."
+    }
+  ],
+  "relatedFunctions": [
+    "isnumber",
+    "isblank",
+    "iserror",
+    "value",
+    "iferror",
+    "isna"
+  ]
 }

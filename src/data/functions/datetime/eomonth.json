@@ -3,38 +3,101 @@
   "slug": "eomonth",
   "category": "datetime",
   "excelVersion": "All versions",
-  "description": "EOMONTH is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "EOMONTH is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(eomonth)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the EOMONTH function",
-    "formula": "=EOMONTH(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the EOMONTH function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The EOMONTH function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "EOMONTH returns the last day of the month that is a given number of months before or after a start date, useful for month-end reporting and period boundaries.",
+  "tldr": "Returns the last day of the month offset by n months.",
+  "syntax": "(start_date, months)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "start_date",
+      "description": "The starting date serial.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =EOMONTH(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "months",
+      "description": "The number of months to move. Positive moves forward, negative moves backward. The value is truncated to an integer.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "EOMONTH works identically in Google Sheets with the same syntax.",
-    "formula": "=EOMONTH(A1)"
+  "basicExample": {
+    "description": "Last day of the same month",
+    "formula": "=EOMONTH(DATE(2024, 1, 15), 0)",
+    "result": "45321",
+    "explanation": "Zero months offset returns the end of January 2024, which is Jan 31 (serial 45321)."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Last day of the next month in a leap year",
+      "scenario": "Computing February month-end",
+      "description": "One month forward lands on Feb 29 in 2024",
+      "formula": "=EOMONTH(DATE(2024, 1, 15), 1)",
+      "result": "45350",
+      "explanation": "2024 is a leap year, so the last day of February is the 29th (serial 45350)."
+    },
+    {
+      "title": "Last day of the previous month",
+      "scenario": "Finding the prior period end",
+      "description": "A negative months value goes backward",
+      "formula": "=EOMONTH(DATE(2024, 1, 15), -1)",
+      "result": "45290",
+      "explanation": "One month before is December 2023, whose last day is Dec 31 (serial 45290)."
+    }
+  ],
+  "howItWorks": "EOMONTH first moves start_date by the supplied number of months, then returns the serial number of the final day of that resulting month. It is often combined with DATE to build the first day of a month (e.g. EOMONTH(...)-DAY(...)+1).",
+  "howToSteps": [
+    {
+      "name": "Enter the start date",
+      "text": "Provide a date serial or DATE(...) expression."
+    },
+    {
+      "name": "Enter the month offset",
+      "text": "Use a positive or negative integer for months."
+    },
+    {
+      "name": "Format as a date",
+      "text": "The result is a serial; apply a date format to view it."
+    }
+  ],
+  "limitations": [
+    "The months argument is truncated to an integer (1.9 becomes 1).",
+    "Negative months go backward in time.",
+    "The result is a serial number and needs a date format to be readable."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE!",
+      "cause": "The start_date is not a valid date serial.",
+      "fix": "Pass a real date value or DATE(...) expression."
+    },
+    {
+      "error": "Unexpected month shown",
+      "cause": "Misreading the offset sign.",
+      "fix": "Remember positive months move forward, negative move backward."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "EOMONTH works identically in Google Sheets with the same arguments.",
+    "formula": "=EOMONTH(DATE(2024, 1, 15), 1)",
+    "notes": "Same result as Excel."
+  },
+  "faq": [
+    {
+      "question": "How do I get the first day of the month?",
+      "answer": "Use EOMONTH(date,-1)+1 for the prior month-end plus one, or DATE(YEAR(date),MONTH(date),1)."
+    },
+    {
+      "question": "What does a 0 month offset return?",
+      "answer": "The last day of the same month as start_date."
+    },
+    {
+      "question": "Is the leap day handled automatically?",
+      "answer": "Yes, EOMONTH returns Feb 29 in leap years and Feb 28 otherwise."
+    }
+  ],
+  "relatedFunctions": [
+    "edate",
+    "datedif",
+    "days",
+    "workday",
+    "date"
+  ]
 }

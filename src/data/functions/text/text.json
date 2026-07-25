@@ -3,38 +3,102 @@
   "slug": "text",
   "category": "text",
   "excelVersion": "All versions",
-  "description": "TEXT is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "TEXT is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(text)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the TEXT function",
-    "formula": "=TEXT(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the TEXT function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The TEXT function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "TEXT converts a number or date into text using a user-supplied format code, so the displayed value can be concatenated or presented in a custom format.",
+  "tldr": "Formats a number or date as text using a format code.",
+  "syntax": "(value, format_text)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "value",
+      "description": "The numeric value, date, time, or cell reference to format.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =TEXT(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "format_text",
+      "description": "A text string enclosed in quotes that specifies the number format, e.g. \"0.0%\" or \"yyyy-mm-dd\".",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "basicExample": {
+    "description": "Show a fraction as a percent",
+    "formula": "=TEXT(0.25,\"0.0%\")",
+    "result": "25.0%",
+    "explanation": "0.25 is formatted with one decimal of percent precision, producing the text string \"25.0%\"."
+  },
+  "advancedExamples": [
+    {
+      "title": "Format a date",
+      "scenario": "Building a label from a date cell A1 containing 2024-01-15",
+      "description": "Convert a date into a readable text label",
+      "formula": "=TEXT(A1,\"yyyy-mm-dd\")",
+      "result": "2024-01-15",
+      "explanation": "The date serial is rendered as a fixed-width text string using the year-month-day pattern."
+    },
+    {
+      "title": "Thousands separator with currency",
+      "scenario": "Display 1234567 as money",
+      "description": "Apply a thousands and currency format",
+      "formula": "=TEXT(1234567,\"$#,##0.00\")",
+      "result": "$1,234,567.00",
+      "explanation": "The #,##0 grouping adds thousand separators and the currency symbol is prepended."
+    }
+  ],
+  "howItWorks": "TEXT takes a numeric value and applies the formatting codes from format_text (which mirror custom number formats). The result is always a text string, not a number, so it can no longer be used directly in math without conversion back via VALUE.",
+  "howToSteps": [
+    {
+      "name": "Pick the value",
+      "text": "Select the number or date cell you want to format."
+    },
+    {
+      "name": "Choose a format code",
+      "text": "Write the format code in double quotes, e.g. \"0.00%\"."
+    },
+    {
+      "name": "Wrap with TEXT",
+      "text": "Enter =TEXT(value, \"format\") and press Enter."
+    }
+  ],
+  "limitations": [
+    "The output is text, so it cannot be used directly in arithmetic without converting back with VALUE.",
+    "Format codes are locale dependent (decimal and thousands separators differ by region).",
+    "TEXT cannot reformat an already-text string; it only formats underlying numeric/date values."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! error",
+      "cause": "The format_text argument is missing or is not a valid text string.",
+      "fix": "Provide a quoted format code such as \"0.0%\"."
+    },
+    {
+      "error": "Unexpected output",
+      "cause": "Forgetting quotes around the format code turns it into a defined name or range.",
+      "fix": "Always enclose the format code in double quotes."
+    }
+  ],
   "googleSheetsEquivalent": {
     "description": "TEXT works identically in Google Sheets with the same syntax.",
-    "formula": "=TEXT(A1)"
+    "formula": "=TEXT(0.25,\"0.0%\")",
+    "notes": "Same behavior as Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Why does TEXT return text instead of a number?",
+      "answer": "Its purpose is to produce a formatted display string, so the result is text even though the input was a number."
+    },
+    {
+      "question": "Can I use TEXT on a date?",
+      "answer": "Yes, supply a date format code such as \"mm/dd/yyyy\" and the underlying date serial is rendered as text."
+    },
+    {
+      "question": "How do I convert the text back to a number?",
+      "answer": "Wrap the result with VALUE, e.g. =VALUE(TEXT(0.25,\"0.0%\"))."
+    }
+  ],
+  "relatedFunctions": [
+    "value",
+    "upper",
+    "lower",
+    "proper",
+    "concatenate",
+    "textjoin"
+  ]
 }

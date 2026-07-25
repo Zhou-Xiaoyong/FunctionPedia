@@ -2,39 +2,118 @@
   "name": "RANDARRAY",
   "slug": "randarray",
   "category": "array",
-  "excelVersion": "All versions",
-  "description": "RANDARRAY is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "RANDARRAY is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(randarray)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the RANDARRAY function",
-    "formula": "=RANDARRAY(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the RANDARRAY function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The RANDARRAY function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "excelVersion": "Microsoft 365",
+  "description": "RANDARRAY returns a dynamic array of random numbers, with a chosen number of rows and columns, bounds, and the option for whole numbers.",
+  "tldr": "Generates an array of random numbers.",
+  "syntax": "( [rows], [columns], [min], [max], [integer] )",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "rows",
+      "description": "The number of rows to return (defaults to 1).",
+      "required": false
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =RANDARRAY(arguments)."
+      "name": "columns",
+      "description": "The number of columns to return (defaults to 1).",
+      "required": false
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "min",
+      "description": "The smallest value (inclusive); defaults to 0.",
+      "required": false
+    },
+    {
+      "name": "max",
+      "description": "The largest value (inclusive for integers); defaults to 1.",
+      "required": false
+    },
+    {
+      "name": "integer",
+      "description": "FALSE for decimal values (default) or TRUE for whole numbers.",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "RANDARRAY works identically in Google Sheets with the same syntax.",
-    "formula": "=RANDARRAY(A1)"
+  "basicExample": {
+    "description": "A 3-row by 2-column block of random decimals",
+    "formula": "=RANDARRAY(3, 2)",
+    "result": "Six random decimals between 0 and 1 in a 3x2 array",
+    "explanation": "With no bounds supplied, RANDARRAY returns values from 0 to 1."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Random integers in a range",
+      "scenario": "Five random whole numbers from 1 to 100.",
+      "description": "Set min, max, and integer",
+      "formula": "=RANDARRAY(5, 1, 1, 100, TRUE)",
+      "result": "Five random integers between 1 and 100",
+      "explanation": "integer TRUE forces whole numbers within the 1-100 bounds."
+    },
+    {
+      "title": "Decimal grid within bounds",
+      "scenario": "A 2x2 array between 0 and 1.",
+      "description": "Explicit bounds and decimals",
+      "formula": "=RANDARRAY(2, 2, 0, 1, FALSE)",
+      "result": "Four random decimals from 0 to 1",
+      "explanation": "integer FALSE keeps the results as decimals."
+    }
+  ],
+  "howItWorks": "RANDARRAY returns an array of random numbers. With no arguments it returns a single random decimal between 0 and 1. rows and columns set the size, min and max set the bounds, and integer forces whole numbers. Like RAND, it recalculates and produces new values on every change.",
+  "howToSteps": [
+    {
+      "name": "Pick the size",
+      "text": "Choose rows and columns."
+    },
+    {
+      "name": "Set bounds and type",
+      "text": "Optionally set min, max, and integer."
+    },
+    {
+      "name": "Ensure spill space",
+      "text": "Leave empty cells for the array."
+    }
+  ],
+  "limitations": [
+    "Microsoft 365 / Excel 2021+ only.",
+    "Volatile: recalculates on every change, which can slow large sheets.",
+    "min must be less than max; integer results are inclusive of the bounds."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! (min > max)",
+      "cause": "The minimum exceeds the maximum.",
+      "fix": "Ensure min is less than max."
+    },
+    {
+      "error": "#SPILL!",
+      "cause": "No room for the spilled array.",
+      "fix": "Clear the cells in the spill range."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "RANDARRAY is available in newer versions of Google Sheets; older Sheets may lack it and would need ARRAYFORMULA(RAND()) as a workaround.",
+    "formula": "=RANDARRAY(3, 2)",
+    "notes": "In Sheets the signature and behavior match Excel for supported versions."
+  },
+  "faq": [
+    {
+      "question": "Is RANDARRAY in Google Sheets?",
+      "answer": "Yes, in recent Google Sheets versions; older Sheets may not support it."
+    },
+    {
+      "question": "How do I get integers?",
+      "answer": "Set the integer argument to TRUE."
+    },
+    {
+      "question": "Why do the values keep changing?",
+      "answer": "Like RAND, RANDARRAY is volatile and recalculates on every change."
+    }
+  ],
+  "relatedFunctions": [
+    "rand",
+    "sequence",
+    "unique",
+    "sort",
+    "rank",
+    "randbetween"
+  ]
 }

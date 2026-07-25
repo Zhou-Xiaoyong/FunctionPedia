@@ -2,39 +2,107 @@
   "name": "RANK.EQ",
   "slug": "rank-eq",
   "category": "statistical",
-  "excelVersion": "All versions",
-  "description": "RANK.EQ is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "RANK.EQ is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(rank.eq)",
-  "parameters": [],
+  "excelVersion": "Excel 2010+",
+  "description": "RANK.EQ returns the rank (position) of a number in a list, giving tied values the same rank. It is the modern replacement for the legacy RANK function.",
+  "tldr": "Ranks a value in a list; ties share a rank and the next rank is skipped.",
+  "syntax": "(number, ref, [order])",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The value whose rank you want to find.",
+      "required": true
+    },
+    {
+      "name": "ref",
+      "description": "The list (range or array) of numbers to rank against.",
+      "required": true
+    },
+    {
+      "name": "order",
+      "description": "Optional. 0 or omitted = descending (largest = rank 1); any nonzero value = ascending (smallest = rank 1).",
+      "required": false
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the RANK.EQ function",
-    "formula": "=RANK.EQ(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the RANK.EQ function."
+    "description": "Rank of 20 when it appears twice",
+    "formula": "=RANK.EQ(20, {10,20,20,30})",
+    "result": "2",
+    "explanation": "The two 20s are the 2nd and 3rd largest, so both receive rank 2."
   },
-  "advancedExamples": [],
-  "howItWorks": "The RANK.EQ function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Ties skip the next rank",
+      "scenario": "Ranking the largest value after a tie",
+      "description": "Because two values share rank 2, the following distinct value jumps to rank 4.",
+      "formula": "=RANK.EQ(30, {10,20,20,30})",
+      "result": "4",
+      "explanation": "Both 20s are rank 2, so 30 becomes rank 4, skipping rank 3."
+    },
+    {
+      "title": "Ascending ranking with a tie",
+      "scenario": "Smallest-first ordering",
+      "description": "With order = 1 the smallest value is rank 1 and ties still share a rank.",
+      "formula": "=RANK.EQ(20, {10,20,20,30}, 1)",
+      "result": "2",
+      "explanation": "In ascending order 10=1, then the two 20s share rank 2."
+    }
+  ],
+  "howItWorks": "RANK.EQ compares a value to the numbers in the reference. By default (order 0) the largest value gets rank 1; order 1 ranks smallest to largest. Equal values are given the same rank, and the following rank is incremented past the tie (so two values at rank 2 leave the next value at rank 4). It is functionally identical to the legacy RANK and returns #N/A if the value is not found.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the result cell",
+      "text": "Click where you want the rank."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =RANK.EQ(arguments)."
+      "text": "Type =RANK.EQ(number, range, [order])."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The rank appears."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Ties share a rank and subsequent ranks are skipped, which can distort rank-based statistics.",
+    "Cannot produce averaged ranks for ties; use RANK.AVG for that.",
+    "Only ranks against numbers; text in the reference is ignored."
+  ],
+  "commonErrors": [
+    {
+      "error": "#N/A error",
+      "cause": "The number is not present in the reference list.",
+      "fix": "Confirm the value exists in the range you are ranking against."
+    },
+    {
+      "error": "Ranking seems off by direction",
+      "cause": "Omitting order defaults to descending.",
+      "fix": "Pass 1 as the third argument to rank ascending."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "RANK.EQ works identically in Google Sheets with the same syntax.",
-    "formula": "=RANK.EQ(A1)"
+    "description": "Google Sheets supports RANK.EQ with identical syntax and behavior to Excel 2010+.",
+    "formula": "=RANK.EQ(20, {10,20,20,30})",
+    "notes": "Returns 2, matching Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Is RANK.EQ the same as RANK?",
+      "answer": "Yes. RANK.EQ is the name introduced in Excel 2010; RANK is preserved for compatibility and behaves the same."
+    },
+    {
+      "question": "How is it different from RANK.AVG?",
+      "answer": "RANK.AVG gives tied values their average rank (e.g. 2.5), while RANK.EQ gives both the same whole rank and skips the next."
+    },
+    {
+      "question": "Why does the next rank get skipped?",
+      "answer": "Because two values occupy the same rank, the sequence continues after the tie, so the next distinct value is ranked one higher than the tie count."
+    }
+  ],
+  "relatedFunctions": [
+    "rank",
+    "rank-avg",
+    "percentile",
+    "large",
+    "small"
+  ]
 }

@@ -3,38 +3,106 @@
   "slug": "forecast",
   "category": "statistical",
   "excelVersion": "All versions",
-  "description": "FORECAST is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "FORECAST is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(forecast)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the FORECAST function",
-    "formula": "=FORECAST(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the FORECAST function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The FORECAST function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "FORECAST predicts a future y-value along a linear trend line fitted by least squares to known x- and y-values. It is the legacy compatibility version of FORECAST.LINEAR.",
+  "tldr": "Predicts a y-value from a linear regression at a given x.",
+  "syntax": "(x, known_ys, known_xs)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "x",
+      "description": "The x-value at which to predict the corresponding y-value.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =FORECAST(arguments)."
+      "name": "known_ys",
+      "description": "The dependent (y) values of the known data used to fit the line.",
+      "required": true
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "known_xs",
+      "description": "The independent (x) values of the known data; must match the size of known_ys.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "FORECAST works identically in Google Sheets with the same syntax.",
-    "formula": "=FORECAST(A1)"
+  "basicExample": {
+    "description": "Predict the next value on a rising trend",
+    "formula": "=FORECAST(6,{2,3,5,7,11},{1,2,3,4,5})",
+    "result": "12.2",
+    "explanation": "The fitted line is y = -1 + 2.2x, so at x=6 the prediction is -1 + 2.2*6 = 12.2."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Forecast from worksheet ranges",
+      "scenario": "Project next month's revenue",
+      "description": "Use a column of past revenues and a column of period numbers",
+      "formula": "=FORECAST(13,B2:B12,A2:A12)",
+      "result": "Predicted revenue for period 13",
+      "explanation": "Least-squares line through the 11 points is extended to x=13."
+    },
+    {
+      "title": "Equivalence to FORECAST.LINEAR",
+      "scenario": "Legacy vs modern name",
+      "description": "Both return the same prediction",
+      "formula": "=FORECAST(6,{2,3,5,7,11},{1,2,3,4,5}) and =FORECAST.LINEAR(6,{2,3,5,7,11},{1,2,3,4,5})",
+      "result": "12.2 for both",
+      "explanation": "FORECAST.LINEAR is the renamed, recommended form of the legacy FORECAST."
+    }
+  ],
+  "howItWorks": "FORECAST fits a straight line y = a + bx by least squares, where the slope b = Σ((x - x̄)(y - ȳ)) / Σ(x - x̄)² and the intercept a = ȳ - b·x̄. It then evaluates that line at the supplied x. The prediction is purely linear and assumes the underlying relationship is roughly straight.",
+  "howToSteps": [
+    {
+      "name": "List known data",
+      "text": "Place known x-values and known y-values in equal-length ranges."
+    },
+    {
+      "name": "Pick target x",
+      "text": "Decide the x at which you want a prediction."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =FORECAST(x, known_ys, known_xs)."
+    }
+  ],
+  "limitations": [
+    "Models only a linear relationship; curved trends need TREND/GROWTH or transforms.",
+    "known_xs and known_ys must have the same number of points, or #N/A is returned.",
+    "If the x-values have no variance (all equal), the function returns #DIV/0!."
+  ],
+  "commonErrors": [
+    {
+      "error": "#N/A",
+      "cause": "known_xs and known_ys have different sizes, or a non-numeric x was supplied.",
+      "fix": "Make the two arrays the same length and pass a numeric x."
+    },
+    {
+      "error": "#DIV/0!",
+      "cause": "All known_xs values are identical, so the slope is undefined.",
+      "fix": "Provide x-values that actually vary."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "Google Sheets has FORECAST and FORECAST.LINEAR with identical behavior.",
+    "formula": "=FORECAST(6,{2,3,5,7,11},{1,2,3,4,5})",
+    "notes": "Same result as Excel; FORECAST.LINEAR is also supported."
+  },
+  "faq": [
+    {
+      "question": "Is FORECAST the same as FORECAST.LINEAR?",
+      "answer": "Yes. FORECAST.LINEAR is the modern name; in current Excel they return the same value."
+    },
+    {
+      "question": "Can FORECAST predict backwards (x smaller than the data)?",
+      "answer": "Yes. It simply evaluates the fitted line at any x, including outside the original range."
+    },
+    {
+      "question": "How is this different from TREND?",
+      "answer": "FORECAST returns a single predicted y; TREND can return an entire array of predictions at once."
+    }
+  ],
+  "relatedFunctions": [
+    "forecast-linear",
+    "trend",
+    "growth",
+    "linest",
+    "correl"
+  ]
 }

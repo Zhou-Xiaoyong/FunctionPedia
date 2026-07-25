@@ -3,38 +3,91 @@
   "slug": "clean",
   "category": "text",
   "excelVersion": "All versions",
-  "description": "CLEAN is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "CLEAN is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(clean)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the CLEAN function",
-    "formula": "=CLEAN(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the CLEAN function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The CLEAN function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "CLEAN removes non-printable characters (character codes 0 through 31) from text, which commonly appear when importing data from other systems.",
+  "tldr": "Strips non-printable control characters from text.",
+  "syntax": "(text)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
-    },
-    {
-      "name": "Enter the formula",
-      "text": "Type =CLEAN(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "text",
+      "description": "The text or cell reference from which to remove non-printable characters.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "CLEAN works identically in Google Sheets with the same syntax.",
-    "formula": "=CLEAN(A1)"
+  "basicExample": {
+    "description": "Remove a non-printable prefix",
+    "formula": "=CLEAN(CHAR(9) & \"Data\")",
+    "result": "Data",
+    "explanation": "CHAR(9) is a tab (a non-printable control character) that CLEAN strips, leaving \"Data\"."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Clean imported data",
+      "scenario": "Cell A1 has hidden line-feed characters from a CSV export",
+      "description": "Strip control codes before matching",
+      "formula": "=CLEAN(A1)",
+      "result": "Text without control characters",
+      "explanation": "Removing codes 0-31 prevents lookup mismatches caused by invisible characters."
+    },
+    {
+      "title": "Combine with TRIM",
+      "scenario": "Data has both control chars and extra spaces",
+      "description": "Remove non-printables and normalize spaces",
+      "formula": "=TRIM(CLEAN(A1))",
+      "result": "Cleaned, single-spaced text",
+      "explanation": "CLEAN removes control characters, then TRIM collapses extra spaces."
+    }
+  ],
+  "howItWorks": "CLEAN scans the string and deletes characters whose code points fall in the 0-31 control range. It does not remove printable characters or, by default, characters above 31.",
+  "howToSteps": [
+    {
+      "name": "Find dirty text",
+      "text": "Locate cells with imported or copy-pasted text."
+    },
+    {
+      "name": "Wrap with CLEAN",
+      "text": "Enter =CLEAN(cell) and press Enter."
+    },
+    {
+      "name": "Pair with TRIM",
+      "text": "Use =TRIM(CLEAN(cell)) to also fix spacing."
+    }
+  ],
+  "limitations": [
+    "Only removes characters 0-31; it does not strip all Unicode control or format characters.",
+    "Excel 2016+ adds an optional second argument for cleaning additional character sets, but the classic form uses one argument.",
+    "Does not remove printable junk like extra spaces (use TRIM for that)."
+  ],
+  "commonErrors": [
+    {
+      "error": "Still mismatched lookups",
+      "cause": "CLEAN removed control chars but extra spaces remain.",
+      "fix": "Wrap the result in TRIM as well: =TRIM(CLEAN(cell))."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "Google Sheets CLEAN also removes codes 0-31 and additionally removes code 127 (DEL).",
+    "formula": "=CLEAN(A1)",
+    "notes": "Sheets removes a slightly broader set (also code 127) than legacy Excel."
+  },
+  "faq": [
+    {
+      "question": "What characters does CLEAN remove?",
+      "answer": "Non-printable control characters with codes 0 through 31 (and code 127 in Google Sheets)."
+    },
+    {
+      "question": "Why combine CLEAN with TRIM?",
+      "answer": "CLEAN handles control characters; TRIM removes extra spaces so the text matches cleanly."
+    },
+    {
+      "question": "Does CLEAN remove line breaks I want?",
+      "answer": "Yes, line feeds (code 10) are removed; if you need them, keep them before cleaning or substitute them back."
+    }
+  ],
+  "relatedFunctions": [
+    "trim",
+    "substitute",
+    "value",
+    "text",
+    "rept"
+  ]
 }

@@ -3,38 +3,111 @@
   "slug": "linest",
   "category": "statistical",
   "excelVersion": "All versions",
-  "description": "LINEST is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "LINEST is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(linest)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the LINEST function",
-    "formula": "=LINEST(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the LINEST function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The LINEST function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "LINEST returns an array of statistics that describe a least-squares linear regression, including the slope and intercept, and optionally full regression diagnostics. It is an array function.",
+  "tldr": "Returns regression statistics (slope, intercept, and more) as an array.",
+  "syntax": "(known_ys, [known_xs], [const], [stats])",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "known_ys",
+      "description": "The dependent (y) values of the known data.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =LINEST(arguments)."
+      "name": "known_xs",
+      "description": "The independent (x) values; for multiple regression supply several columns. Defaults to 1,2,3,... if omitted.",
+      "required": false
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "const",
+      "description": "TRUE (or omitted) includes an intercept; FALSE forces the line through the origin.",
+      "required": false
+    },
+    {
+      "name": "stats",
+      "description": "FALSE (or omitted) returns just slope and intercept; TRUE adds standard errors, R-squared, F, df, and sums of squares.",
+      "required": false
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "LINEST works identically in Google Sheets with the same syntax.",
-    "formula": "=LINEST(A1)"
+  "basicExample": {
+    "description": "Get slope and intercept of a fitted line",
+    "formula": "=LINEST({2,3,5,7,11},{1,2,3,4,5})",
+    "result": "{2.2, -1}",
+    "explanation": "The fitted line is y = -1 + 2.2x, so LINEST returns slope 2.2 and intercept -1 (entered as an array in two cells)."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Full regression statistics",
+      "scenario": "Need diagnostics, not just the line",
+      "description": "Set stats to TRUE for a 2-row by 5-column array",
+      "formula": "=LINEST({2,3,5,7,11},{1,2,3,4,5},TRUE,TRUE)",
+      "result": "{2.2, -1, 0.30551, 1.0132, 0.94531; 0.96609, 51.857, 3, 48.4, 2.8}",
+      "explanation": "Row 1 is slope, intercept, standard error of slope, standard error of intercept, R-squared. Row 2 is standard error of y, F-statistic, degrees of freedom, regression sum of squares, residual sum of squares. In older Excel enter with Ctrl+Shift+Enter; in Microsoft 365 it spills."
+    },
+    {
+      "title": "Multiple regression",
+      "scenario": "Two independent variables",
+      "description": "Pass two columns as known_xs",
+      "formula": "=LINEST(C2:C20,A2:B20,TRUE,TRUE)",
+      "result": "Array of coefficients for both x-columns plus intercept and diagnostics",
+      "explanation": "With n x-columns, LINEST returns n+1 coefficients in the first row (one slope per column, then the intercept)."
+    }
+  ],
+  "howItWorks": "LINEST performs ordinary least-squares regression, minimizing the sum of squared residuals. With a single x it fits y = a + bx and returns the slope and intercept (and, with stats=TRUE, the full diagnostic block). With multiple x-columns it returns one slope per column plus the intercept. Because it is an array function, the results spill into adjacent cells.",
+  "howToSteps": [
+    {
+      "name": "Select output area",
+      "text": "For stats=TRUE, select a 2-row by 5-column range; otherwise two cells."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =LINEST(known_ys, known_xs, TRUE, TRUE) and press Enter (or Ctrl+Shift+Enter in legacy Excel)."
+    },
+    {
+      "name": "Read results",
+      "text": "Use the slope/intercept to build the equation; use R-squared and F to judge fit."
+    }
+  ],
+  "limitations": [
+    "Returns an array, so in pre-dynamic Excel it must be entered as an array formula with enough empty cells to spill into.",
+    "known_xs and known_ys must have the same number of rows, or #REF! is returned.",
+    "If the x-columns are linearly dependent, the function returns #REF! because the regression cannot be solved."
+  ],
+  "commonErrors": [
+    {
+      "error": "#REF!",
+      "cause": "Array sizes mismatch or the x-columns are collinear (linearly dependent).",
+      "fix": "Match row counts and remove redundant/duplicate x-columns."
+    },
+    {
+      "error": "Wrong values spill",
+      "cause": "Output range too small or not entered as an array.",
+      "fix": "Select a large enough range and use Ctrl+Shift+Enter (legacy Excel)."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "LINEST works as an array function in Google Sheets with the same layout and diagnostics.",
+    "formula": "=LINEST({2,3,5,7,11},{1,2,3,4,5},TRUE,TRUE)",
+    "notes": "Identical behavior and array layout to Excel."
+  },
+  "faq": [
+    {
+      "question": "What does the basic LINEST return?",
+      "answer": "Just two values: the slope and the intercept of the fitted line, in that order."
+    },
+    {
+      "question": "How do I get R-squared and other stats?",
+      "answer": "Set the fourth argument (stats) to TRUE to add standard errors, R-squared, F, df, and sums of squares."
+    },
+    {
+      "question": "How is LINEST related to SLOPE/INTERCEPT/FORECAST?",
+      "answer": "SLOPE, INTERCEPT, and FORECAST use the same least-squares line; LINEST returns all of it (plus diagnostics) in one array."
+    }
+  ],
+  "relatedFunctions": [
+    "forecast",
+    "forecast-linear",
+    "trend",
+    "growth",
+    "correl"
+  ]
 }

@@ -1,0 +1,90 @@
+{
+  "slug": "vlookup-with-multiple-criteria",
+  "title": "VLOOKUP with Multiple Criteria",
+  "description": "VLOOKUP only matches one column, but real lookups often need two or more. Learn four reliable ways to do a VLOOKUP with multiple criteria in Excel and Google Sheets.",
+  "category": "VLOOKUP & XLOOKUP",
+  "functions": ["VLOOKUP", "INDEX", "MATCH", "XLOOKUP", "SUMIFS"],
+  "intro": "A classic complaint about VLOOKUP is that it can only search one column. In practice you often need to match on two keys at once — for example, find the price for Product A in Region North. This guide walks through four techniques, from a quick helper column to the modern XLOOKUP approach, so you can pick the one that fits your Excel version.",
+  "tags": ["VLOOKUP", "Multiple Criteria", "INDEX MATCH", "XLOOKUP", "Lookup"],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "Basic VLOOKUP syntax",
+    "Understanding of absolute vs relative references",
+    "Microsoft 365 (only needed for the XLOOKUP method)"
+  ],
+  "sections": [
+    {
+      "title": "Why VLOOKUP Alone Falls Short",
+      "content": "VLOOKUP takes a single lookup_value and searches the first column of your table. If your match depends on two columns — say Product and Region — there is no second lookup_value to pass. The fix is to combine the keys into one value VLOOKUP can match.",
+      "tips": [
+        "Keep the combined key in the FIRST column of the lookup table.",
+        "Both the search value and the table key must use the same join order."
+      ]
+    },
+    {
+      "title": "Method 1: Helper Column (Most Compatible)",
+      "content": "Add a column that concatenates the two keys, then VLOOKUP that combined value. This works in every version of Excel and Google Sheets.",
+      "steps": [
+        { "name": "Build the key", "text": "In a new first column of your table, join the two criteria.", "formula": "=A2&B2" },
+        { "name": "Lookup the joined key", "text": "Concatenate your two search cells the same way in the VLOOKUP.", "formula": "=VLOOKUP(G2&H2, A:E, 4, FALSE)" }
+      ],
+      "example": {
+        "formula": "=VLOOKUP(G2&H2, Table1, 4, FALSE)",
+        "result": "Returns the row where column A = G2 AND column B = H2",
+        "explanation": "Because the first column is A&B, only rows matching BOTH criteria produce a hit."
+      },
+      "tips": [
+        "Use a delimiter like A2&\"|\"&B2 if keys could run together (e.g. 'AB'+'C' vs 'A'+'BC')."
+      ]
+    },
+    {
+      "title": "Method 2: CHOOSE + VLOOKUP (No Helper Column)",
+      "content": "CHOOSE({1,2}, range1&range2, returnRange) builds a virtual two-column table on the fly, letting VLOOKUP match the concatenated key without editing your sheet.",
+      "example": {
+        "formula": "=VLOOKUP(G2&H2, CHOOSE({1,2}, A:A&B:B, D:D), 2, FALSE)",
+        "result": "Returns column D for the matching combined key",
+        "explanation": "In legacy Excel this is an array formula — confirm with Ctrl+Shift+Enter. In Microsoft 365 it spills automatically."
+      },
+      "tips": [
+        "Whole-column references (A:A) in array formulas can be slow; restrict to your data range."
+      ]
+    },
+    {
+      "title": "Method 3: INDEX + MATCH (Recommended Classic)",
+      "content": "INDEX returns a value from a range; MATCH finds the row. Multiplying two TRUE/FALSE conditions inside MATCH gives an exact two-criteria match without any helper column.",
+      "example": {
+        "formula": "=INDEX(D:D, MATCH(1, (A:A=G2)*(B:B=H2), 0))",
+        "result": "Returns the column D value where A = G2 and B = H2",
+        "explanation": "MATCH(1, ...) finds the first row where both conditions are TRUE (1). Array-enter in legacy Excel."
+      },
+      "tips": [
+        "INDEX + MATCH also looks LEFT, something VLOOKUP can never do."
+      ]
+    },
+    {
+      "title": "Method 4: XLOOKUP (Microsoft 365 / Google Sheets)",
+      "content": "XLOOKUP accepts array conditions directly, so multiple criteria are just AND-ed inside the lookup_value. This is the cleanest solution if your version supports it.",
+      "example": {
+        "formula": "=XLOOKUP(1, (A:A=G2)*(B:B=H2), D:D)",
+        "result": "Returns the column D value matching both criteria",
+        "explanation": "No array-entry, no helper column, and you can return multiple columns by widening the return array."
+      },
+      "tips": [
+        "Add a 4th argument, like \"Not found\", to handle missing combinations gracefully."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "VLOOKUP", "slug": "vlookup", "description": "Looks up a value in the first column of a table and returns a value from another column" },
+    { "name": "INDEX", "slug": "index", "description": "Returns the value of a cell in a range based on row and column numbers" },
+    { "name": "MATCH", "slug": "match", "description": "Returns the relative position of an item in a range" },
+    { "name": "XLOOKUP", "slug": "xlookup", "description": "Modern lookup that searches any column and returns any column, with built-in error handling" },
+    { "name": "SUMIFS", "slug": "sumifs", "description": "Sums values that meet multiple criteria — useful when you want an aggregated match" }
+  ],
+  "summary": "VLOOKUP can't natively match two columns, but you have options: a helper column for maximum compatibility, CHOOSE for a no-edit workaround, INDEX + MATCH for a robust classic formula, and XLOOKUP when your version allows. Pick the helper column or XLOOKUP for day-to-day work, and keep INDEX + MATCH in your back pocket for leftward lookups.",
+  "nextSteps": [
+    "Try the INDEX + MATCH version on a dataset where the result is to the LEFT of the key",
+    "Switch to XLOOKUP if you are on Microsoft 365",
+    "Explore SUMIFS when you need an aggregated (summed) match instead of a single cell"
+  ]
+}

@@ -2,39 +2,102 @@
   "name": "PERCENTILE.EXC",
   "slug": "percentile-exc",
   "category": "statistical",
-  "excelVersion": "All versions",
-  "description": "PERCENTILE.EXC is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "PERCENTILE.EXC is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(percentile.exc)",
-  "parameters": [],
+  "excelVersion": "Excel 2010+",
+  "description": "PERCENTILE.EXC returns the k-th percentile using the exclusive method, where k must be strictly between 0 and 1, so the result never equals the minimum or maximum.",
+  "tldr": "Returns the value at percentile k (0 < k < 1) using the exclusive method.",
+  "syntax": "(array, k)",
+  "parameters": [
+    {
+      "name": "array",
+      "description": "The range or array of numeric values.",
+      "required": true
+    },
+    {
+      "name": "k",
+      "description": "The percentile, a number strictly between 0 and 1 (e.g. 0.25, 0.75).",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the PERCENTILE.EXC function",
-    "formula": "=PERCENTILE.EXC(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the PERCENTILE.EXC function."
+    "description": "25th percentile of six values",
+    "formula": "=PERCENTILE.EXC({1,2,3,4,5,6}, 0.25)",
+    "result": "1.75",
+    "explanation": "Rank = 0.25*(6+1) = 1.75; interpolate 75% from the 1st to the 2nd value: 1 + 0.75*(2-1) = 1.75."
   },
-  "advancedExamples": [],
-  "howItWorks": "The PERCENTILE.EXC function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "75th percentile of six values",
+      "scenario": "Upper quartile via exclusive method",
+      "description": "The exclusive rank places the percentile inside the data range.",
+      "formula": "=PERCENTILE.EXC({1,2,3,4,5,6}, 0.75)",
+      "result": "5.25",
+      "explanation": "Rank = 0.75*(6+1) = 5.25; interpolate 25% from the 5th to the 6th value: 5 + 0.25*(6-5) = 5.25."
+    },
+    {
+      "title": "k at the edge is rejected",
+      "scenario": "Why k = 0 or 1 fails",
+      "description": "The exclusive method requires k strictly between 0 and 1, so the extremes are invalid.",
+      "formula": "=PERCENTILE.EXC({1,2,3,4,5,6}, 0)",
+      "result": "#NUM!",
+      "explanation": "k = 0 is not allowed; the exclusive method cannot return the minimum."
+    }
+  ],
+  "howItWorks": "PERCENTILE.EXC uses the exclusive (EXC) method. It computes a rank as k*(n+1), where n is the count of values, then linearly interpolates between the surrounding sorted values. Because k is strictly between 0 and 1, the result always lies strictly between the minimum and maximum. k must fall in the open interval (1/(n+1), n/(n+1)); values outside this range return #NUM!. Text and logical values are ignored.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Select the result cell",
+      "text": "Click where you want the percentile."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =PERCENTILE.EXC(arguments)."
+      "text": "Type =PERCENTILE.EXC(range, k) with k strictly between 0 and 1."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The interpolated percentile value is returned."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "k must be strictly between 0 and 1; k = 0 or k = 1 cause #NUM!.",
+    "Only certain k values are valid; k must be in (1/(n+1), n/(n+1)) or #NUM! occurs.",
+    "Interpolates, so the result is generally not an actual data value."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM! error",
+      "cause": "k is 0 or 1, or k is outside the valid range (1/(n+1), n/(n+1)).",
+      "fix": "Use a k strictly between 0 and 1, or switch to PERCENTILE.INC if you need the minimum or maximum."
+    },
+    {
+      "error": "Result differs from PERCENTILE.INC",
+      "cause": "The two functions use different interpolation formulas.",
+      "fix": "Choose .INC when you need inclusive 0..1 bounds; .EXC otherwise."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "PERCENTILE.EXC works identically in Google Sheets with the same syntax.",
-    "formula": "=PERCENTILE.EXC(A1)"
+    "description": "Google Sheets supports PERCENTILE.EXC with the same exclusive behavior as Excel 2010+.",
+    "formula": "=PERCENTILE.EXC({1,2,3,4,5,6}, 0.25)",
+    "notes": "Returns 1.75, identical to Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "What is the difference between .INC and .EXC?",
+      "answer": ".INC allows k from 0 to 1 and uses rank 1 + k*(n-1), potentially returning the min or max. .EXC requires k strictly between 0 and 1 and uses rank k*(n+1), so it never returns the min or max."
+    },
+    {
+      "question": "Why do I get #NUM! with k = 0.1 on a small list?",
+      "answer": "On a small dataset the valid range (1/(n+1), n/(n+1)) may exclude small k; for n=6, k must be above 1/7 (~0.143)."
+    },
+    {
+      "question": "When should I use PERCENTILE.EXC?",
+      "answer": "Use it when your statistical definition requires excluding the endpoints, such as certain textbook percentile formulas."
+    }
+  ],
+  "relatedFunctions": [
+    "percentile",
+    "percentile-inc",
+    "quartile-exc",
+    "median",
+    "rank"
+  ]
 }

@@ -3,38 +3,111 @@
   "slug": "replace",
   "category": "text",
   "excelVersion": "All versions",
-  "description": "REPLACE is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "REPLACE is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(replace)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the REPLACE function",
-    "formula": "=REPLACE(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the REPLACE function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The REPLACE function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "REPLACE swaps out a specific number of characters in a text string, starting at a given position, with new text.",
+  "tldr": "Replaces characters by position.",
+  "syntax": "(old_text, start_num, num_chars, new_text)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "old_text",
+      "description": "The original text or cell reference containing the text to modify.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =REPLACE(arguments)."
+      "name": "start_num",
+      "description": "The character position (1-based) at which to begin replacing.",
+      "required": true
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "num_chars",
+      "description": "The number of characters in old_text to replace with new_text.",
+      "required": true
+    },
+    {
+      "name": "new_text",
+      "description": "The text that replaces the specified characters.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "REPLACE works identically in Google Sheets with the same syntax.",
-    "formula": "=REPLACE(A1)"
+  "basicExample": {
+    "description": "Replace the middle of a string",
+    "formula": "=REPLACE(\"abcdef\",2,3,\"XYZ\")",
+    "result": "aXYZef",
+    "explanation": "Starting at position 2, three characters (\"bcd\") are replaced by \"XYZ\"."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Mask part of an account number",
+      "scenario": "Cell A1 holds \"1234567890\"",
+      "description": "Hide the middle digits",
+      "formula": "=REPLACE(A1,4,4,\"****\")",
+      "result": "123****890",
+      "explanation": "Characters 4 through 7 are replaced with asterisks for a masked display."
+    },
+    {
+      "title": "Insert text without removing any",
+      "scenario": "Add a dash after the first two characters of A1 = \"AB1234\"",
+      "description": "Use num_chars of 0 to insert",
+      "formula": "=REPLACE(A1,3,0,\"-\")",
+      "result": "AB-1234",
+      "explanation": "With num_chars set to 0, new_text is inserted at the position without deleting anything."
+    }
+  ],
+  "howItWorks": "REPLACE identifies characters by position. It deletes num_chars characters beginning at start_num and inserts new_text in their place, then returns the rebuilt string.",
+  "howToSteps": [
+    {
+      "name": "Find the position",
+      "text": "Note the 1-based index where the change begins."
+    },
+    {
+      "name": "Count characters",
+      "text": "Decide how many characters to replace."
+    },
+    {
+      "name": "Write REPLACE",
+      "text": "Enter =REPLACE(old, start, count, new) and press Enter."
+    }
+  ],
+  "limitations": [
+    "Replacement is positional, so it does not search for matching text the way SUBSTITUTE does.",
+    "If start_num is beyond the text length the result may be unchanged or appended depending on version.",
+    "Doubles as an insertion tool only when num_chars is 0."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! error",
+      "cause": "start_num is less than 1 or num_chars is negative.",
+      "fix": "Use a start_num of at least 1 and a non-negative num_chars."
+    },
+    {
+      "error": "Wrong characters changed",
+      "cause": "Off-by-one in start_num or miscounting num_chars.",
+      "fix": "Remember positions are 1-based and count carefully."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "REPLACE works identically in Google Sheets.",
+    "formula": "=REPLACE(\"abcdef\",2,3,\"XYZ\")",
+    "notes": "Same behavior as Excel."
+  },
+  "faq": [
+    {
+      "question": "REPLACE vs SUBSTITUTE?",
+      "answer": "REPLACE changes characters by position; SUBSTITUTE replaces specific text you search for."
+    },
+    {
+      "question": "Can REPLACE insert text?",
+      "answer": "Yes, set num_chars to 0 and new_text is inserted at start_num."
+    },
+    {
+      "question": "Is the first character position 1?",
+      "answer": "Yes, positions in REPLACE are 1-based."
+    }
+  ],
+  "relatedFunctions": [
+    "substitute",
+    "left",
+    "mid",
+    "right",
+    "concatenate"
+  ]
 }

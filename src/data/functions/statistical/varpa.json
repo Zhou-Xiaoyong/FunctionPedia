@@ -3,38 +3,101 @@
   "slug": "varpa",
   "category": "statistical",
   "excelVersion": "All versions",
-  "description": "VARPA is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "VARPA is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(varpa)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the VARPA function",
-    "formula": "=VARPA(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the VARPA function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The VARPA function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "VARPA calculates the population variance (n denominator) while treating text as 0 and logical values TRUE as 1 and FALSE as 0.",
+  "tldr": "Population variance that also counts text and logicals as numbers.",
+  "syntax": "(value1, [value2], ...)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "value1",
+      "description": "The first value, range, or reference in the population.",
+      "required": true
     },
     {
-      "name": "Enter the formula",
-      "text": "Type =VARPA(arguments)."
+      "name": "value2",
+      "description": "Additional values, ranges, or references (optional).",
+      "required": false
+    }
+  ],
+  "basicExample": {
+    "description": "Population variance of numeric values only",
+    "formula": "=VARPA(10,20,30,40,50)",
+    "result": "200",
+    "explanation": "With only numbers present, VARPA returns the same result as VARP."
+  },
+  "advancedExamples": [
+    {
+      "title": "Text and TRUE are counted",
+      "scenario": "A range that mixes numbers, text, and a logical",
+      "description": "Text becomes 0 and TRUE becomes 1 before the calculation",
+      "formula": "=VARPA(10,20,30,TRUE,\"apple\")",
+      "result": "131.36",
+      "explanation": "The values used are 10,20,30,1,0; the mean is 12.2 and the population variance (sum of squared deviations 656.8 divided by 5) is 131.36."
+    },
+    {
+      "title": "Contrast with VARP on a reference",
+      "scenario": "Ignoring non-numeric cells",
+      "description": "VARP ignores text and logicals inside a range",
+      "formula": "=VARP(A1:A5) where A1:A5 = 10,20,30,TRUE,\"apple\"",
+      "result": "100",
+      "explanation": "VARP sees only 10,20,30 (n=3), variance 100, whereas VARPA counts all five values for 131.36."
+    }
+  ],
+  "howItWorks": "VARPA coerces every argument to a number (text to 0, TRUE to 1, FALSE to 0), then computes the population variance using the n denominator. Because it divides by n rather than n-1, it assumes the supplied values constitute the whole population.",
+  "howToSteps": [
+    {
+      "name": "Identify values",
+      "text": "Collect the values, including any text or logicals you want counted."
+    },
+    {
+      "name": "Enter formula",
+      "text": "Type =VARPA(range or values)."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The population variance including non-numerics is shown."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Counting text as 0 can distort the result if text cells are labels rather than true zeros.",
+    "Dividing by n assumes a full population; for a sample use VARA.",
+    "Requires at least one effective value, otherwise returns #DIV/0!."
+  ],
+  "commonErrors": [
+    {
+      "error": "#DIV/0!",
+      "cause": "No effective numeric values after coercion.",
+      "fix": "Provide at least one value that evaluates to a number."
+    },
+    {
+      "error": "Larger variance than expected",
+      "cause": "Text labels were coerced to 0, pulling the mean down.",
+      "fix": "Use VARP when text cells should be ignored."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "VARPA works identically in Google Sheets with the same syntax.",
-    "formula": "=VARPA(A1)"
+    "description": "VARPA is available in Google Sheets with the same coercion rules.",
+    "formula": "=VARPA(10,20,30,TRUE,\"apple\")",
+    "notes": "Behavior matches Excel VARPA."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Does VARPA treat empty cells as 0?",
+      "answer": "No. Empty cells are ignored; only text and logicals are coerced (text to 0, TRUE to 1, FALSE to 0)."
+    },
+    {
+      "question": "When should I use VARPA instead of VARP?",
+      "answer": "When your data includes logicals or text that genuinely represent 1/0 or zero, and you want them in the population."
+    },
+    {
+      "question": "What is the sample equivalent?",
+      "answer": "VARA, which uses the n-1 denominator instead of n."
+    }
+  ],
+  "relatedFunctions": [
+    "var",
+    "vara",
+    "varp",
+    "stdevpa",
+    "average"
+  ]
 }

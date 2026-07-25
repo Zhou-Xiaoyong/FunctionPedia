@@ -3,38 +3,96 @@
   "slug": "acos",
   "category": "math",
   "excelVersion": "All versions",
-  "description": "ACOS is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "ACOS is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(acos)",
-  "parameters": [],
+  "description": "ACOS returns the arccosine, or inverse cosine, of a number. The result is the angle in radians whose cosine is the given number, ranging from 0 to π.",
+  "tldr": "Returns the angle (in radians) whose cosine is the supplied number.",
+  "syntax": "(number)",
+  "parameters": [
+    {
+      "name": "number",
+      "description": "The cosine of the angle you want, which must be a real number between -1 and 1 inclusive.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the ACOS function",
-    "formula": "=ACOS(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the ACOS function."
+    "description": "Find the angle whose cosine is -1",
+    "formula": "=ACOS(-1)",
+    "result": "3.141592654",
+    "explanation": "The arccosine of -1 is π radians (180°), the angle whose cosine equals -1."
   },
-  "advancedExamples": [],
-  "howItWorks": "The ACOS function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Convert the result to degrees",
+      "scenario": "An engineering problem needs the angle in degrees.",
+      "description": "Wrap ACOS in DEGREES to read the angle in degrees.",
+      "formula": "=DEGREES(ACOS(0.5))",
+      "result": "60",
+      "explanation": "ACOS(0.5) returns π/3 radians (about 1.047), and DEGREES converts that to 60°."
+    },
+    {
+      "title": "Angle of a right triangle",
+      "scenario": "Given adjacent/hypotenuse = 0.6, find the angle.",
+      "description": "Use the ratio directly as the argument.",
+      "formula": "=DEGREES(ACOS(0.6))",
+      "result": "53.13010235",
+      "explanation": "ACOS(0.6) is the angle whose cosine is 0.6, about 53.13°."
+    }
+  ],
+  "howItWorks": "ACOS is the inverse of COS. For an input x in [-1, 1] it returns the unique angle θ in [0, π] (radians) such that cos(θ) = x. It uses the principal value only.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Pick the cell",
+      "text": "Select the cell where you want the angle."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =ACOS(arguments)."
+      "text": "Type =ACOS(number) where number is between -1 and 1."
     },
     {
       "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "The angle in radians appears; use DEGREES for degrees."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "The argument must be between -1 and 1; outside that range the function returns #NUM!.",
+    "The result is always in radians, never degrees, so apply DEGREES for degree output.",
+    "ACOS returns only the principal value, so it cannot produce angles outside the [0, π] range."
+  ],
+  "commonErrors": [
+    {
+      "error": "#NUM!",
+      "cause": "The argument is less than -1 or greater than 1.",
+      "fix": "Ensure the value is a valid cosine between -1 and 1."
+    },
+    {
+      "error": "#VALUE!",
+      "cause": "The argument is non-numeric text.",
+      "fix": "Supply a numeric value or a cell that contains a number."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "ACOS works identically in Google Sheets with the same syntax.",
-    "formula": "=ACOS(A1)"
+    "description": "ACOS works identically in Google Sheets with the same syntax and behavior.",
+    "formula": "=ACOS(-1)",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Does ACOS return degrees?",
+      "answer": "No. ACOS returns radians. Multiply by 180/PI() or wrap with DEGREES to get degrees."
+    },
+    {
+      "question": "What range of values does ACOS return?",
+      "answer": "It returns angles from 0 to π radians, i.e. 0° to 180°."
+    },
+    {
+      "question": "What if I need a full-circle angle for a point?",
+      "answer": "Use ATAN2(x, y) instead, which returns angles across the full -π to π range using both coordinates."
+    }
+  ],
+  "relatedFunctions": [
+    "cos",
+    "asin",
+    "atan2",
+    "radians",
+    "degrees"
+  ]
 }

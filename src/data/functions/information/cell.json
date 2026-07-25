@@ -3,38 +3,102 @@
   "slug": "cell",
   "category": "information",
   "excelVersion": "All versions",
-  "description": "CELL is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "CELL is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(cell)",
-  "parameters": [],
+  "description": "CELL returns information about the formatting, location, or contents of a cell, selected by the info_type argument (e.g. \"address\", \"contents\", \"row\", \"col\", \"format\", \"type\", \"filename\").",
+  "tldr": "Returns information about a cell (address, contents, format, etc.).",
+  "syntax": "(info_type, [reference])",
+  "parameters": [
+    {
+      "name": "info_type",
+      "description": "A quoted text string naming the info to return, such as \"address\", \"contents\", \"row\", \"col\", \"width\", \"format\", \"type\", or \"filename\".",
+      "required": true
+    },
+    {
+      "name": "reference",
+      "description": "The cell or range to inspect. If omitted, CELL uses the last cell that was changed.",
+      "required": false
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the CELL function",
-    "formula": "=CELL(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the CELL function."
+    "description": "Get the absolute address of a cell",
+    "formula": "=CELL(\"address\", A1)",
+    "result": "$A$1",
+    "explanation": "The \"address\" info type returns the absolute reference of the cell."
   },
-  "advancedExamples": [],
-  "howItWorks": "The CELL function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "Read a cell's contents",
+      "scenario": "A1 contains 42.",
+      "description": "Return the value held in a cell",
+      "formula": "=CELL(\"contents\", A1)",
+      "result": "42",
+      "explanation": "The \"contents\" info type returns the value stored in the referenced cell."
+    },
+    {
+      "title": "Get the row number",
+      "scenario": "Find which row a cell is on.",
+      "description": "Return the row with \"row\"",
+      "formula": "=CELL(\"row\", B5)",
+      "result": "5",
+      "explanation": "The \"row\" info type returns the row number of the reference."
+    }
+  ],
+  "howItWorks": "CELL returns a single piece of information about a cell chosen by info_type. Common types include \"address\" (absolute reference as text), \"contents\" (the cell's value), \"row\"/\"col\" (row/column numbers), \"width\" (column width), \"format\" (a code describing number format), \"type\" (b/l/v for blank/label/value), and \"filename\" (the full path and sheet). If reference is omitted, CELL refers to the last cell changed, which is unpredictable.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Choose info_type",
+      "text": "Decide what you need, e.g. \"address\" or \"row\"."
+    },
+    {
+      "name": "Pick a reference",
+      "text": "Select the cell to inspect (recommended)."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =CELL(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "text": "Type =CELL(\"info_type\", reference)."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "Volatile: CELL recalculates on every change, which can slow large workbooks.",
+    "If reference is omitted, it refers to the last changed cell, which is unpredictable.",
+    "'filename' returns an empty string if the workbook has not been saved."
+  ],
+  "commonErrors": [
+    {
+      "error": "#VALUE! error",
+      "cause": "An invalid info_type string was supplied.",
+      "fix": "Use a valid code such as \"address\", \"row\", or \"format\"."
+    },
+    {
+      "error": "Stale filename or path",
+      "cause": "CELL('filename') result is cached until recalculation.",
+      "fix": "Press F9 to recalculate and refresh the value."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "CELL works identically in Google Sheets with the same syntax.",
-    "formula": "=CELL(A1)"
+    "description": "CELL exists in Google Sheets but supports only a subset of info_type values (e.g. \"address\", \"row\", \"col\", \"content\", \"width\", \"height\", \"format\", \"bgcolor\", \"fontcolor\"); \"filename\" and \"type\" behave differently or are unsupported.",
+    "formula": "=CELL(\"address\", A1)",
+    "notes": "Not all Excel info_type codes are available in Sheets; check support for the specific code."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Is CELL volatile?",
+      "answer": "Yes, it recalculates on every change to the workbook."
+    },
+    {
+      "question": "What does \"type\" return?",
+      "answer": "'b' for blank, 'l' for label (text), or 'v' for value (number/date)."
+    },
+    {
+      "question": "How do I get the file path?",
+      "answer": "Use =CELL(\"filename\", A1), which returns something like C:[book.xlsx]Sheet1!A1."
+    }
+  ],
+  "relatedFunctions": [
+    "address",
+    "indirect",
+    "row",
+    "column",
+    "info",
+    "type"
+  ]
 }

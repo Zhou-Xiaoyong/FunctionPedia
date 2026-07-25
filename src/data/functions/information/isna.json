@@ -3,38 +3,97 @@
   "slug": "isna",
   "category": "information",
   "excelVersion": "All versions",
-  "description": "ISNA is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "ISNA is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(isna)",
-  "parameters": [],
-  "basicExample": {
-    "description": "Basic usage of the ISNA function",
-    "formula": "=ISNA(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the ISNA function."
-  },
-  "advancedExamples": [],
-  "howItWorks": "The ISNA function processes input values and returns a result based on its specific algorithm.",
-  "howToSteps": [
+  "description": "ISNA returns TRUE if the supplied value is the #N/A error, and FALSE for any other value or error.",
+  "tldr": "Tests specifically for the #N/A error.",
+  "syntax": "(value)",
+  "parameters": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
-    },
-    {
-      "name": "Enter the formula",
-      "text": "Type =ISNA(arguments)."
-    },
-    {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "value",
+      "description": "The value, cell reference, or formula result to test.",
+      "required": true
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
-  "googleSheetsEquivalent": {
-    "description": "ISNA works identically in Google Sheets with the same syntax.",
-    "formula": "=ISNA(A1)"
+  "basicExample": {
+    "description": "Test for #N/A directly",
+    "formula": "=ISNA(NA())",
+    "result": "TRUE",
+    "explanation": "NA() returns the #N/A error, which ISNA detects."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "advancedExamples": [
+    {
+      "title": "Trap a missing VLOOKUP",
+      "scenario": "Return a friendly message when a lookup fails.",
+      "description": "Replace #N/A with text using IF and ISNA",
+      "formula": "=IF(ISNA(VLOOKUP(\"x\", A2:B10, 2, FALSE)), \"Not found\", VLOOKUP(\"x\", A2:B10, 2, FALSE))",
+      "result": "Not found",
+      "explanation": "When the lookup returns #N/A, ISNA is TRUE and the formula shows \"Not found\"."
+    },
+    {
+      "title": "Other errors are not #N/A",
+      "scenario": "Division by zero.",
+      "description": "Show ISNA ignores non-#N/A errors",
+      "formula": "=ISNA(1/0)",
+      "result": "FALSE",
+      "explanation": "1/0 produces #DIV/0!, which is not #N/A, so ISNA returns FALSE."
+    }
+  ],
+  "howItWorks": "ISNA returns TRUE only when the value is exactly the #N/A error. Other error values (#VALUE!, #REF!, #DIV/0!, #NUM!, #NAME?, #NULL!) and normal values all return FALSE. It is commonly paired with IF to handle lookup misses gracefully.",
+  "howToSteps": [
+    {
+      "name": "Build the lookup",
+      "text": "Write the formula that may return #N/A."
+    },
+    {
+      "name": "Wrap with ISNA",
+      "text": "Type =IF(ISNA(formula), fallback, formula)."
+    },
+    {
+      "name": "Review",
+      "text": "When #N/A occurs, the fallback value appears."
+    }
+  ],
+  "limitations": [
+    "Detects only #N/A; use ISERROR for all error types.",
+    "Does not catch #N/A produced indirectly unless the error cell is referenced.",
+    "Returns FALSE (not an error) for ordinary values."
+  ],
+  "commonErrors": [
+    {
+      "error": "Using ISNA to catch every error",
+      "cause": "Only #N/A returns TRUE.",
+      "fix": "Use IFERROR or ISERROR to handle all error types."
+    },
+    {
+      "error": "Computing the lookup twice",
+      "cause": "IF(ISNA(...),...,original) evaluates the formula twice.",
+      "fix": "Prefer IFNA or IFERROR, which evaluate once."
+    }
+  ],
+  "googleSheetsEquivalent": {
+    "description": "ISNA works identically in Google Sheets with the same syntax and behavior.",
+    "formula": "=ISNA(A1)",
+    "notes": "No differences from Excel."
+  },
+  "faq": [
+    {
+      "question": "ISNA vs IFNA?",
+      "answer": "IFNA replaces only #N/A with a value; ISNA only tests and returns TRUE/FALSE."
+    },
+    {
+      "question": "Does ISNA catch #VALUE!?",
+      "answer": "No, only #N/A returns TRUE; other errors return FALSE."
+    },
+    {
+      "question": "When is #N/A returned?",
+      "answer": "Typically by lookup misses in VLOOKUP, HLOOKUP, MATCH, XLOOKUP, or by the NA() function."
+    }
+  ],
+  "relatedFunctions": [
+    "iserror",
+    "ifna",
+    "iferror",
+    "vlookup",
+    "isnumber",
+    "xlookup"
+  ]
 }

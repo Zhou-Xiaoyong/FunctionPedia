@@ -3,38 +3,97 @@
   "slug": "isref",
   "category": "information",
   "excelVersion": "All versions",
-  "description": "ISREF is a built-in function in Excel and Google Sheets used for various purposes.",
-  "tldr": "ISREF is a function used for data processing and analysis in spreadsheets.",
-  "syntax": "(isref)",
-  "parameters": [],
+  "description": "ISREF returns TRUE if the supplied value is a cell or range reference (or a function that returns one), and FALSE otherwise.",
+  "tldr": "Tests whether a value is a reference.",
+  "syntax": "(value)",
+  "parameters": [
+    {
+      "name": "value",
+      "description": "The value, cell reference, or formula result to test.",
+      "required": true
+    }
+  ],
   "basicExample": {
-    "description": "Basic usage of the ISREF function",
+    "description": "Test a direct cell reference",
     "formula": "=ISREF(A1)",
-    "result": "Result",
-    "explanation": "This is a basic example demonstrating how to use the ISREF function."
+    "result": "TRUE",
+    "explanation": "A1 is a cell reference, so ISREF returns TRUE."
   },
-  "advancedExamples": [],
-  "howItWorks": "The ISREF function processes input values and returns a result based on its specific algorithm.",
+  "advancedExamples": [
+    {
+      "title": "A text address is not a reference",
+      "scenario": "Passing the string \"A1\".",
+      "description": "Show that text naming a cell is not a reference",
+      "formula": "=ISREF(\"A1\")",
+      "result": "FALSE",
+      "explanation": "\"A1\" is text, not an actual reference, so ISREF returns FALSE."
+    },
+    {
+      "title": "Reference-returning functions",
+      "scenario": "Convert a text address into a real reference.",
+      "description": "INDIRECT returns a reference, so ISREF is TRUE",
+      "formula": "=ISREF(INDIRECT(\"B2\"))",
+      "result": "TRUE",
+      "explanation": "INDIRECT evaluates to a reference, which ISREF detects."
+    }
+  ],
+  "howItWorks": "ISREF returns TRUE if the value is a cell or range reference, or the result of a function that returns a reference such as INDIRECT or OFFSET. Plain values, text, and most value-returning functions return FALSE.",
   "howToSteps": [
     {
-      "name": "Select a cell",
-      "text": "Choose where you want the result to appear."
+      "name": "Pick the value",
+      "text": "Select the value or formula to test."
     },
     {
       "name": "Enter the formula",
-      "text": "Type =ISREF(arguments)."
+      "text": "Type =ISREF(value)."
     },
     {
-      "name": "Press Enter",
-      "text": "The result will be displayed."
+      "name": "Read the result",
+      "text": "TRUE means it is a reference."
     }
   ],
-  "limitations": [],
-  "commonErrors": [],
+  "limitations": [
+    "A text string like \"A1\" is not a reference even though it names one.",
+    "Most functions return values, not references, so ISREF returns FALSE for them.",
+    "Rarely needed outside advanced formula validation."
+  ],
+  "commonErrors": [
+    {
+      "error": "FALSE for a text address",
+      "cause": "'A1' is text, not a reference.",
+      "fix": "Use INDIRECT to turn a text address into a real reference."
+    },
+    {
+      "error": "Unexpected TRUE",
+      "cause": "A function like OFFSET returns a reference.",
+      "fix": "Expected behavior; ISREF detects reference-returning functions."
+    }
+  ],
   "googleSheetsEquivalent": {
-    "description": "ISREF works identically in Google Sheets with the same syntax.",
-    "formula": "=ISREF(A1)"
+    "description": "ISREF works identically in Google Sheets with the same syntax and behavior.",
+    "formula": "=ISREF(A1)",
+    "notes": "No differences from Excel."
   },
-  "faq": [],
-  "relatedFunctions": []
+  "faq": [
+    {
+      "question": "Does INDIRECT make ISREF TRUE?",
+      "answer": "Yes, because INDIRECT returns a reference."
+    },
+    {
+      "question": "Is a named range a reference?",
+      "answer": "Yes, ISREF returns TRUE for a valid named range."
+    },
+    {
+      "question": "When would I use ISREF?",
+      "answer": "Mostly in advanced formulas that validate whether an argument is a reference, or with CHOOSE/INDIRECT tricks."
+    }
+  ],
+  "relatedFunctions": [
+    "indirect",
+    "offset",
+    "isnumber",
+    "iserror",
+    "address",
+    "cell"
+  ]
 }
