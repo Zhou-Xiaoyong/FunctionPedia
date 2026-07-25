@@ -30,6 +30,12 @@ Thumbs.db
 # Temporary generation scripts (not needed for deployment)
 generate_*.py
 
+# Local content-strategy / planning files (kept local, never deployed)
+longtail_keywords.csv
+CONTENT_PLAN.md
+scripts/build_keyword_csv.py
+scripts/next_tutorials.py
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
