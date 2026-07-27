@@ -1,0 +1,98 @@
+{
+  "slug": "calculate-age-from-birthday",
+  "title": "Calculate Age From Birthday",
+  "description": "Learn how to calculate age from birthday in Excel and Google Sheets using DATEDIF, YEAR and TODAY — get exact years, or years, months and days, that update automatically.",
+  "category": "Date & Time",
+  "functions": [
+    "DATEDIF",
+    "YEAR",
+    "TODAY"
+  ],
+  "intro": "Turning a date of birth into an age sounds trivial until you hit the edge cases — someone born on December 31 shouldn't age a year on January 1. This guide shows the reliable ways to calculate age from a birthday in Excel and Google Sheets: DATEDIF for an exact age that respects the month and day, a quick YEAR-based estimate, and a version that returns years, months and days. Every formula uses TODAY() so the age recalculates on its own.",
+  "tags": [
+    "DATEDIF",
+    "Age",
+    "TODAY",
+    "YEAR",
+    "Date & Time"
+  ],
+  "estimatedTime": "10 min read",
+  "prerequisites": [
+    "A birth date stored as a real date, not text",
+    "Basic familiarity with cell references",
+    "Cells formatted as Number (not Date) for the result"
+  ],
+  "sections": [
+    {
+      "title": "The Reliable Way: DATEDIF",
+      "content": "DATEDIF is purpose-built for date differences. With the \"Y\" unit it returns the number of complete years between the birth date and today, automatically accounting for whether this year's birthday has already passed. It's the most accurate one-cell method for age.",
+      "steps": [
+        { "name": "Reference the birth date", "text": "Assume the date of birth is in A2.", "formula": "" },
+        { "name": "Return completed years", "text": "Use TODAY() as the end date so age stays current.", "formula": "=DATEDIF(A2, TODAY(), \"Y\")" }
+      ],
+      "example": {
+        "formula": "=DATEDIF(A2, TODAY(), \"Y\")",
+        "result": "Returns 34 for a birth date of 1991-09-01 evaluated on 2026-07-27",
+        "explanation": "The 2026 birthday (Sep 1) hasn't happened yet, so DATEDIF counts only 34 completed years — exactly what a person would say their age is."
+      },
+      "tips": [
+        "DATEDIF works in Excel and Google Sheets even though Excel hides it from autocomplete — type it in full.",
+        "The start date must be earlier than the end date, or DATEDIF returns #NUM!."
+      ]
+    },
+    {
+      "title": "The Quick Estimate: YEAR Difference",
+      "content": "If you only need a rough age and don't care about the exact birthday, subtract the birth year from the current year using YEAR and TODAY. This is simpler but it can be off by one, because it ignores the month and day.",
+      "example": {
+        "formula": "=YEAR(TODAY()) - YEAR(A2)",
+        "result": "Returns 35 for a birth date of 1991-09-01 evaluated on 2026-07-27",
+        "explanation": "It simply does 2026 - 1991 = 35, even though the person's 2026 birthday hasn't arrived yet. That's why DATEDIF (34) is more accurate for real age."
+      },
+      "tips": [
+        "Use this only for grouping or quick estimates, never for exact age.",
+        "You can force whole-year accuracy by wrapping it in logic, but DATEDIF is easier and correct out of the box."
+      ]
+    },
+    {
+      "title": "Years, Months and Days Together",
+      "content": "For a full breakdown — 34 years, 10 months, 26 days — combine three DATEDIF calls with the \"Y\", \"YM\" and \"MD\" units. \"YM\" returns the leftover months after full years, and \"MD\" returns the leftover days after full months.",
+      "example": {
+        "formula": "=DATEDIF(A2,TODAY(),\"Y\")&\" years, \"&DATEDIF(A2,TODAY(),\"YM\")&\" months, \"&DATEDIF(A2,TODAY(),\"MD\")&\" days\"",
+        "result": "Returns \"34 years, 10 months, 26 days\"",
+        "explanation": "Each DATEDIF pulls a different piece: full years, remaining months, then remaining days. The & operator joins them into one readable string."
+      },
+      "tips": [
+        "The \"MD\" unit can occasionally miscount across certain month boundaries; for legal/precise records prefer the plain \"Y\" age.",
+        "In Google Sheets use the same formula — the & concatenation and units are identical."
+      ]
+    },
+    {
+      "title": "Grouping Ages into Brackets",
+      "content": "Once you have an age you often want to bucket it — child, adult, senior — or into ranges like 18-29, 30-44. Rather than nesting IFs, feed the DATEDIF result into an IFS formula or a lookup table. This keeps the age calculation and the bracketing cleanly separated.",
+      "example": {
+        "formula": "=IFS(DATEDIF(A2,TODAY(),\"Y\")<18,\"Minor\", DATEDIF(A2,TODAY(),\"Y\")<65,\"Adult\", TRUE,\"Senior\")",
+        "result": "Returns \"Adult\" for a 34-year-old",
+        "explanation": "IFS reads the completed-years age and returns the first matching band. The final TRUE catches everyone 65 and older."
+      },
+      "tips": [
+        "Compute the age in a helper cell first, then reference it — the formulas stay short and fast.",
+        "For many brackets, a lookup table is cleaner than IFS."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "DATEDIF", "slug": "datedif", "description": "DATEDIF calculates the difference between two dates in a chosen unit: full years (Y), full months (M), days (D), or the remaining days/months after removing the larger units (MD, YM, YD). It is a legacy function still supported but not shown in the formula autocomplete." },
+    { "name": "YEAR", "slug": "year", "description": "YEAR extracts the year from a date." },
+    { "name": "TODAY", "slug": "today", "description": "TODAY returns the current date, updated each time the worksheet recalculates." }
+  ],
+  "summary": "To calculate age from a birthday, DATEDIF(A2, TODAY(), \"Y\") is the accurate go-to — it counts only completed years and updates itself via TODAY(). A YEAR-difference gives a quick estimate but can be a year off, while stacking the \"Y\", \"YM\" and \"MD\" units returns a full years/months/days breakdown. From there, IFS or a lookup table turns any age into clean brackets.",
+  "nextSteps": [
+    "Replace any YEAR-based age formula with DATEDIF for exact, self-updating results",
+    "Build a years/months/days age string for a birthday tracker or HR sheet",
+    "Bucket ages into brackets with IFS or a lookup table instead of nested IFs"
+  ],
+  "relatedTutorials": [
+    "sumif-with-date-range",
+    "nested-if-alternatives"
+  ]
+}

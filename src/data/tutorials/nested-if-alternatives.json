@@ -1,0 +1,106 @@
+{
+  "slug": "nested-if-alternatives",
+  "title": "Nested If Alternatives",
+  "description": "Long nested IF formulas are hard to read and easy to break. Discover the best nested IF alternatives in Excel and Google Sheets — IFS, lookup tables, and XLOOKUP.",
+  "category": "IF & Logical",
+  "functions": [
+    "IF",
+    "IFS",
+    "XLOOKUP"
+  ],
+  "intro": "A formula like =IF(A1>90,\"A\",IF(A1>80,\"B\",IF(A1>70,\"C\",\"D\"))) works, but stack five or six IFs together and it becomes almost impossible to read, debug, or edit. This guide shows three cleaner nested IF alternatives — the IFS function, a lookup table, and XLOOKUP with approximate match — so you can replace tangled logic with formulas that are shorter and far easier to maintain.",
+  "tags": [
+    "IF",
+    "Nested IF",
+    "IFS",
+    "XLOOKUP",
+    "Logical"
+  ],
+  "estimatedTime": "10 min read",
+  "prerequisites": [
+    "Basic IF syntax",
+    "Comfort with cell references",
+    "IFS/XLOOKUP require Excel 2019+, Microsoft 365, or Google Sheets"
+  ],
+  "sections": [
+    {
+      "title": "Why Nested IFs Become a Problem",
+      "content": "IF only handles one test at a time, so testing several conditions means nesting one IF inside another. Each extra level adds another closing parenthesis and another chance to misplace a bracket. Classic Excel also caps nesting at 64 levels, but readability breaks down long before that. The goal of every alternative below is the same: keep the logic but flatten the structure.",
+      "tips": [
+        "If you find yourself counting parentheses, it's time to switch approaches.",
+        "Nested IFs are fine for two or three conditions — the pain starts at four or more."
+      ]
+    },
+    {
+      "title": "Alternative 1: The IFS Function",
+      "content": "IFS evaluates a list of condition/result pairs and returns the value for the first condition that is TRUE. It reads top to bottom like a rulebook, with no nesting. Put your most specific test first, since IFS stops at the first match. Add a final TRUE condition to act as the catch-all 'else'.",
+      "steps": [
+        { "name": "List conditions in order", "text": "Write each test and its result as a pair, highest threshold first.", "formula": "=IFS(A1>90,\"A\", A1>80,\"B\", A1>70,\"C\")" },
+        { "name": "Add a catch-all", "text": "Finish with TRUE so any remaining value gets a default result.", "formula": "=IFS(A1>90,\"A\", A1>80,\"B\", A1>70,\"C\", TRUE,\"D\")" }
+      ],
+      "example": {
+        "formula": "=IFS(A1>90,\"A\", A1>80,\"B\", A1>70,\"C\", TRUE,\"D\")",
+        "result": "Returns \"B\" when A1 is 85",
+        "explanation": "IFS checks A1>90 (FALSE), then A1>80 (TRUE) and stops, returning \"B\". The final TRUE catches anything 70 or below and returns \"D\"."
+      },
+      "tips": [
+        "Without a final TRUE, an unmatched value returns #N/A.",
+        "IFS works identically in Excel 2019+, Microsoft 365, and Google Sheets."
+      ]
+    },
+    {
+      "title": "Alternative 2: A Lookup Table with XLOOKUP",
+      "content": "When your logic is really a set of thresholds, move it out of the formula and into a small two-column table (lower bound + result). XLOOKUP with match mode -1 finds the largest value that is less than or equal to the lookup value — perfect for banded grading, tax brackets, or shipping tiers. Editing a threshold now means editing a cell, not rewriting a formula.",
+      "steps": [
+        { "name": "Build the table", "text": "In two columns list the lower bound of each band and its label, sorted ascending (e.g. 0/D, 71/C, 81/B, 91/A).", "formula": "" },
+        { "name": "Look up the band", "text": "Search the bounds and return the label using approximate (next-smaller) match.", "formula": "=XLOOKUP(A1, E:E, F:F, \"n/a\", -1)" }
+      ],
+      "example": {
+        "formula": "=XLOOKUP(A1, E2:E5, F2:F5, \"n/a\", -1)",
+        "result": "Returns \"B\" when A1 is 85 and the table has 81 -> B",
+        "explanation": "Match mode -1 finds the largest bound not exceeding 85 (which is 81) and returns its label \"B\". Add rows to the table instead of nesting more IFs."
+      },
+      "tips": [
+        "In Google Sheets XLOOKUP works the same; on older Excel use =VLOOKUP(A1, E2:F5, 2, TRUE) with the table sorted ascending.",
+        "A lookup table scales to dozens of bands without touching the formula."
+      ]
+    },
+    {
+      "title": "Alternative 3: Combine Conditions with AND / OR",
+      "content": "Sometimes people nest IFs only because a single branch depends on two things being true. In that case you don't need a new function — you need AND or OR inside one IF. This keeps a single, readable IF instead of stacking them.",
+      "example": {
+        "formula": "=IF(AND(A1>=70, B1=\"Pass\"), \"Qualified\", \"Review\")",
+        "result": "Returns \"Qualified\" only when the score is at least 70 AND status is \"Pass\"",
+        "explanation": "AND collapses two tests into one condition, removing an entire nested IF layer. Use OR when any one of several conditions should trigger the result."
+      },
+      "tips": [
+        "AND returns TRUE only if every argument is TRUE; OR needs just one.",
+        "Combine with IFS for the cleanest results: one row per rule, each row using AND/OR as needed."
+      ]
+    },
+    {
+      "title": "Which Alternative Should You Use?",
+      "content": "Pick IFS when you have a handful of unrelated conditions and want a quick, in-cell rewrite. Pick a lookup table with XLOOKUP (or VLOOKUP) when your logic is threshold-based and likely to grow or change — it's the most maintainable option. Reach for AND/OR when a single decision simply depends on multiple facts. In every case you trade fragile nesting for logic that's easy to read and safe to edit.",
+      "tips": [
+        "Threshold logic that changes often? Always favor the lookup table.",
+        "Only two or three fixed outcomes? A single IF or IFS is perfectly fine."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "IF", "slug": "if", "description": "IF performs a logical test and returns one value if true and another if false." },
+    { "name": "IFS", "slug": "ifs", "description": "IFS checks multiple conditions and returns the value for the first condition that is true." },
+    { "name": "XLOOKUP", "slug": "xlookup", "description": "XLOOKUP is the modern replacement for VLOOKUP. It searches a range or array for a value and returns the corresponding item from a second range or array. It supports exact and approximate matching, wildcards, and can search in any direction." }
+  ],
+  "summary": "Nested IFs get unreadable fast, but you have cleaner options. Use IFS to flatten a list of condition/result pairs, move threshold logic into a lookup table with XLOOKUP (or VLOOKUP) for maximum maintainability, and use AND/OR to fold multiple tests into a single IF. Match the tool to the shape of your logic and you'll never fight a wall of parentheses again.",
+  "nextSteps": [
+    "Rewrite your longest nested IF as an IFS formula and compare readability",
+    "Move a grading or bracket formula into a two-column table and drive it with XLOOKUP",
+    "Practice AND/OR inside a single IF to eliminate an unnecessary nesting level"
+  ],
+  "relatedTutorials": [
+    "index-match-two-way-lookup",
+    "vlookup-with-multiple-criteria",
+    "calculate-age-from-birthday"
+  ]
+}
