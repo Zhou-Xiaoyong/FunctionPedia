@@ -1,0 +1,99 @@
+{
+  "slug": "concatenate-vs-textjoin",
+  "title": "CONCATENATE vs TEXTJOIN",
+  "description": "Concatenate vs TEXTJOIN in Excel and Google Sheets: compare syntax, delimiters, and empty-cell handling to pick the right text-joining function every time.",
+  "category": "Text Functions",
+  "functions": ["TEXTJOIN", "CONCAT", "CONCATENATE"],
+  "intro": "Excel has three ways to glue text together: the legacy CONCATENATE, its modern replacement CONCAT, and the delimiter-aware TEXTJOIN. They look interchangeable until you need to join a whole range, insert commas between values, or skip blanks. This comparison shows exactly where each one wins so you stop fighting your join formulas.",
+  "tags": ["TEXTJOIN", "CONCATENATE", "CONCAT", "Text Functions", "Join Text"],
+  "estimatedTime": "9 min read",
+  "prerequisites": [
+    "Basic cell references (A1, A1:A10)",
+    "Excel 2019/Microsoft 365 or Google Sheets for TEXTJOIN and CONCAT"
+  ],
+  "sections": [
+    {
+      "title": "The Three Join Functions at a Glance",
+      "content": "CONCATENATE(text1, text2, ...) accepts individual values only — you must list every cell by hand and it ignores range references as ranges. CONCAT(text1, ...) is its Excel 2019+ successor and DOES accept ranges, but neither of them supports a delimiter. TEXTJOIN(delimiter, ignore_empty, text1, ...) accepts ranges, inserts a separator between every item, and can skip empty cells. All three exist in Google Sheets with the same behavior; in Google Sheets CONCAT is limited to exactly two arguments, so prefer CONCATENATE or TEXTJOIN there.",
+      "example": {
+        "formula": "=CONCATENATE(A2, \" \", B2)  vs  =CONCAT(A2:B2)  vs  =TEXTJOIN(\" \", TRUE, A2:B2)",
+        "result": "\"John Smith\" from all three (A2=\"John\", B2=\"Smith\")",
+        "explanation": "For two cells the output is identical — but only TEXTJOIN adds the space automatically. CONCAT(A2:B2) returns \"JohnSmith\" with no separator, and CONCATENATE needs the \" \" typed in manually."
+      },
+      "tips": [
+        "The & operator (=A2&\" \"&B2) is equivalent to CONCATENATE and works in every version.",
+        "Google Sheets difference: CONCAT(a, b) takes only 2 arguments there, unlike Excel's CONCAT which takes many."
+      ]
+    },
+    {
+      "title": "Where CONCATENATE Falls Apart: Joining a Range",
+      "content": "Suppose A2:A6 holds five product codes and you want them in one cell separated by commas. With CONCATENATE you must reference every cell AND type every comma — five cells is tedious, fifty is unworkable. TEXTJOIN collapses the whole job into one short formula.",
+      "steps": [
+        { "name": "The painful legacy way", "text": "Reference each cell and each separator manually.", "formula": "=CONCATENATE(A2, \", \", A3, \", \", A4, \", \", A5, \", \", A6)" },
+        { "name": "The TEXTJOIN way", "text": "Pass the delimiter once and the whole range.", "formula": "=TEXTJOIN(\", \", TRUE, A2:A6)" }
+      ],
+      "example": {
+        "formula": "=TEXTJOIN(\", \", TRUE, A2:A6)",
+        "result": "\"SKU-101, SKU-102, SKU-103, SKU-104, SKU-105\"",
+        "explanation": "TEXTJOIN inserts \", \" between every non-empty value in A2:A6. One formula handles 5 cells or 5,000 — just widen the range."
+      },
+      "tips": [
+        "TEXTJOIN's delimiter can be any string: \" | \", CHAR(10) for line breaks (turn on Wrap Text), or even \"\" for no separator."
+      ]
+    },
+    {
+      "title": "Empty Cells: TEXTJOIN's Killer Feature",
+      "content": "The second argument of TEXTJOIN, ignore_empty, decides what happens with blanks. With TRUE, empty cells are skipped so you never get doubled delimiters like \"Smith, , TX\". CONCATENATE and CONCAT have no such option — blanks silently produce ugly output. This matters constantly when building address lines or full names where a middle name or address line 2 may be missing.",
+      "example": {
+        "formula": "=TEXTJOIN(\", \", TRUE, A2, B2, C2)",
+        "result": "\"Anna Lee, Austin\" (B2 is empty)",
+        "explanation": "With ignore_empty = TRUE the empty B2 is dropped, so you get one clean comma. The same data with =CONCATENATE(A2, \", \", B2, \", \", C2) returns \"Anna Lee, , Austin\" with a stray comma."
+      },
+      "tips": [
+        "Set ignore_empty to FALSE only when position matters, e.g. building fixed-width or CSV output where blanks must be preserved.",
+        "Cells containing a formula that returns \"\" count as empty for ignore_empty = TRUE."
+      ]
+    },
+    {
+      "title": "Numbers, Dates, and Formatting Traps",
+      "content": "All three functions convert numbers to plain text, which strips formatting: 0.5 formatted as 50% joins as \"0.5\", and dates join as serial numbers like \"45123\". Wrap values in TEXT() to control the output format before joining. This trap is identical in Excel and Google Sheets.",
+      "example": {
+        "formula": "=TEXTJOIN(\" \", TRUE, \"Due:\", TEXT(B2, \"mmm d, yyyy\"), TEXT(C2, \"$#,##0.00\"))",
+        "result": "\"Due: Mar 15, 2026 $1,250.00\"",
+        "explanation": "TEXT(B2, \"mmm d, yyyy\") converts the date serial to readable text and TEXT(C2, \"$#,##0.00\") formats the amount — without TEXT you would get \"Due: 46096 1250\"."
+      },
+      "tips": [
+        "Google Sheets uses the same TEXT() format codes for dates and currency, so these formulas port over unchanged."
+      ]
+    },
+    {
+      "title": "Which One Should You Use?",
+      "content": "Use TEXTJOIN whenever a delimiter or a range is involved — it is the most capable and the most readable. Use & or CONCAT for quick two-or-three-piece joins where no separator logic is needed. Reach for CONCATENATE only when a workbook must open in Excel 2016 or earlier, where TEXTJOIN and CONCAT do not exist. Microsoft keeps CONCATENATE only for backward compatibility and recommends CONCAT going forward.",
+      "example": {
+        "formula": "=TEXTJOIN(\"-\", TRUE, TEXT(TODAY(), \"yyyymmdd\"), A2, B2)",
+        "result": "\"20260728-WEST-0042\" (order ID built from date, region, and number)",
+        "explanation": "A real-world ID builder: TEXTJOIN handles the hyphens once, TEXT normalizes the date, and adding more parts later means just appending arguments."
+      },
+      "tips": [
+        "If you're on Excel 2016 or older and need TEXTJOIN behavior, the classic workaround is a helper column chain or upgrading — there is no native substitute."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    { "name": "TEXTJOIN", "slug": "textjoin", "description": "TEXTJOIN joins text from multiple ranges or strings using a delimiter you specify, with an option to ignore empty cells." },
+    { "name": "CONCAT", "slug": "concat", "description": "CONCAT joins two or more text strings into one string." },
+    { "name": "CONCATENATE", "slug": "concatenate", "description": "CONCATENATE joins two or more text items into one text string. It is the legacy join function; CONCAT and TEXTJOIN are newer and more flexible." }
+  ],
+  "summary": "CONCATENATE, CONCAT, and TEXTJOIN all merge text, but they are not equals. CONCATENATE is the legacy option kept for old workbooks, CONCAT modernizes it with range support, and TEXTJOIN adds the two features you actually need daily: a delimiter argument and empty-cell skipping. Default to TEXTJOIN for lists, addresses, and IDs; use & for quick two-piece joins; keep CONCATENATE only for pre-2019 compatibility.",
+  "nextSteps": [
+    "Rebuild one of your manual CONCATENATE formulas with TEXTJOIN and a range",
+    "Combine TEXTJOIN with TEXT() to build clean date-stamped IDs",
+    "Explore dynamic arrays — TEXTJOIN pairs perfectly with FILTER to join only matching rows"
+  ],
+  "relatedTutorials": [
+    "excel-dynamic-arrays",
+    "vlookup-with-multiple-criteria",
+    "calculate-age-from-birthday"
+  ]
+}

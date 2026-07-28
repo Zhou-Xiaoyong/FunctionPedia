@@ -1,0 +1,95 @@
+{
+  "slug": "pmt-function-loan-payment",
+  "title": "PMT Function Loan Payment",
+  "description": "Master the PMT function loan payment formula in Excel and Google Sheets: calculate monthly mortgage or car payments and split interest from principal.",
+  "category": "Financial",
+  "functions": ["PMT", "IPMT", "PPMT", "FV", "RATE"],
+  "intro": "PMT is the one formula every borrower and analyst should know: give it a rate, a term, and a loan amount, and it returns the fixed periodic payment. This guide walks through the syntax, the two mistakes that break almost every first attempt (annual vs monthly rate, and the sign convention), and the companion functions IPMT and PPMT that split each payment into interest and principal.",
+  "tags": ["PMT", "Loan Payment", "Mortgage", "Financial Functions", "Amortization"],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Basic formula entry",
+    "Understanding of interest rate and loan term",
+    "Works in all Excel versions and Google Sheets"
+  ],
+  "sections": [
+    {
+      "title": "PMT Syntax and the Monthly-Rate Rule",
+      "content": "PMT(rate, nper, pv, [fv], [type]) needs three required inputs: rate is the interest rate PER PERIOD, nper is the total number of payments, and pv is the present value (the amount borrowed). The #1 mistake is passing an annual rate with monthly periods. For a monthly payment, divide the annual rate by 12 and multiply the years by 12 — always in the same formula. The syntax is identical in Excel and Google Sheets.",
+      "steps": [
+        { "name": "Convert the rate", "text": "6% annual becomes 6%/12 = 0.5% per month.", "formula": "=6%/12" },
+        { "name": "Convert the term", "text": "A 30-year mortgage has 30*12 = 360 monthly payments.", "formula": "=30*12" },
+        { "name": "Assemble PMT", "text": "Plug both converted values in with the loan amount.", "formula": "=PMT(6%/12, 30*12, 300000)" }
+      ],
+      "example": {
+        "formula": "=PMT(6%/12, 30*12, 300000)",
+        "result": "-$1,798.65",
+        "explanation": "A $300,000 loan at 6% annual interest over 360 monthly payments costs $1,798.65 per month. The result is negative because it is money you pay out — see the sign convention below."
+      },
+      "tips": [
+        "For quarterly payments divide the rate by 4 and multiply years by 4; the rule is simply: rate and nper must use the same period."
+      ]
+    },
+    {
+      "title": "Why PMT Returns a Negative Number",
+      "content": "Excel's financial functions follow a cash-flow sign convention: money you receive is positive, money you pay is negative. You RECEIVED the $300,000 loan (positive pv), so the payment flows out (negative result). To display a positive payment, either negate the formula or enter pv as a negative number. Do not wrap it in ABS() out of habit — keeping signs consistent matters as soon as you combine PMT with FV or RATE.",
+      "example": {
+        "formula": "=-PMT(6%/12, 360, 300000)",
+        "result": "$1,798.65",
+        "explanation": "The leading minus flips the sign for display. Equivalently, =PMT(6%/12, 360, -300000) treats the loan from the lender's perspective and returns a positive payment."
+      },
+      "tips": [
+        "Google Sheets uses exactly the same sign convention, so formulas port over unchanged.",
+        "The optional [fv] defaults to 0 (loan fully repaid) and [type] defaults to 0 (payments at period end) — leave both out for standard loans."
+      ]
+    },
+    {
+      "title": "Splitting Payments: IPMT for Interest, PPMT for Principal",
+      "content": "Every fixed payment is part interest, part principal — and the mix shifts over time. IPMT(rate, per, nper, pv) returns the interest portion of payment number `per`, while PPMT returns the principal portion. For any period, IPMT + PPMT = PMT exactly. Early in a mortgage almost everything is interest; near the end it is almost all principal.",
+      "example": {
+        "formula": "=IPMT(6%/12, 1, 360, 300000)  and  =PPMT(6%/12, 1, 360, 300000)",
+        "result": "-$1,500.00 interest and -$298.65 principal in month 1",
+        "explanation": "Month 1 interest is 300000 × 0.5% = $1,500, so only $298.65 of the $1,798.65 payment reduces the balance. By month 360, the split reverses to roughly $8.95 interest and $1,789.70 principal."
+      },
+      "tips": [
+        "Build a full amortization table by filling per = 1..360 down a column with IPMT and PPMT.",
+        "Total interest over the life of the loan: =PMT(...)*nper + pv, or sum the IPMT column."
+      ]
+    },
+    {
+      "title": "Solving Backwards with RATE and Checking Balances with FV",
+      "content": "PMT's siblings answer the inverse questions. RATE(nper, pmt, pv) finds the periodic interest rate when you know the payment — useful for spotting the real rate behind a dealer's \"low monthly payment\" offer. FV(rate, nper, pmt, pv) tells you the remaining balance after a number of payments, which is exactly what you need for early-payoff scenarios.",
+      "example": {
+        "formula": "=RATE(60, -450, 22000)*12",
+        "result": "8.29%",
+        "explanation": "Paying $450/month for 60 months on a $22,000 car loan implies a 0.69% monthly rate; multiplying by 12 annualizes it to about 8.29% APR."
+      },
+      "steps": [
+        { "name": "Remaining balance after 5 years", "text": "FV with the same inputs returns what you still owe (negative = debt outstanding).", "formula": "=FV(6%/12, 60, -1798.65, 300000)" }
+      ],
+      "tips": [
+        "RATE uses iteration; if it returns #NUM!, add a guess as the 6th argument, e.g. =RATE(60, -450, 22000, 0, 0, 0.01).",
+        "After 60 payments on the $300k example, FV shows about -$279,163 still owed — early payments barely dent a 30-year principal."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    { "name": "PMT", "slug": "pmt", "description": "PMT calculates the periodic payment for a loan or investment based on constant payments and a constant interest rate. It's the function you need for mortgage, car loan, and any fixed-rate payment calculations." },
+    { "name": "IPMT", "slug": "ipmt", "description": "IPMT calculates the interest portion of a payment for a specific period of a loan or investment." },
+    { "name": "PPMT", "slug": "ppmt", "description": "PPMT calculates the principal portion of a payment for a specific period of a loan or investment." },
+    { "name": "FV", "slug": "fv", "description": "FV returns the future value of an investment based on periodic, constant payments and a constant interest rate." },
+    { "name": "RATE", "slug": "rate", "description": "RATE returns the periodic interest rate for an annuity based on the number of periods, payment amount, present value, and future value." }
+  ],
+  "summary": "PMT(rate, nper, pv) returns the fixed payment for any standard loan — just remember to convert the annual rate and term to per-period values, and expect a negative result under the cash-flow sign convention. IPMT and PPMT decompose each payment into interest and principal for amortization tables, RATE reverse-engineers the true interest rate from a quoted payment, and FV reveals the balance remaining at any point. Together they cover nearly every fixed-rate loan question in Excel or Google Sheets.",
+  "nextSteps": [
+    "Build a 360-row amortization schedule using IPMT and PPMT side by side",
+    "Use RATE to check the real APR behind a monthly-payment offer you've received",
+    "Try the interactive Loan Payment Calculator tutorial to experiment with rates and terms live"
+  ],
+  "relatedTutorials": [
+    "loan-payment-calculator",
+    "sumif-with-date-range",
+    "nested-if-alternatives"
+  ]
+}
