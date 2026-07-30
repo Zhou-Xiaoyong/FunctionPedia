@@ -1,0 +1,102 @@
+{
+  "slug": "averageif-with-criteria",
+  "title": "AVERAGEIF with Criteria",
+  "description": "Learn how to use AVERAGEIF with criteria in Excel and Google Sheets: syntax, text, number and date conditions, wildcards, and when to switch to AVERAGEIFS.",
+  "category": "Statistical",
+  "functions": ["AVERAGEIF", "AVERAGEIFS", "AVERAGE", "SUMIF"],
+  "intro": "AVERAGE tells you the mean of everything, but most real questions are conditional: what is the average sale for the North region, or the average score above 60? AVERAGEIF answers exactly that with one condition, and AVERAGEIFS extends it to several. This guide covers the syntax, every common criteria pattern — text, numbers, dates, wildcards — and the pitfalls that produce wrong averages silently.",
+  "tags": ["AVERAGEIF", "Criteria", "Conditional Average", "AVERAGEIFS", "Statistical"],
+  "estimatedTime": "10 min read",
+  "prerequisites": [
+    "Basic AVERAGE and SUMIF usage",
+    "Understanding of cell ranges and absolute references"
+  ],
+  "sections": [
+    {
+      "title": "AVERAGEIF Syntax and How Criteria Work",
+      "content": "AVERAGEIF(range, criteria, [average_range]) evaluates the criteria against `range`, then averages the matching rows of `average_range`. If you omit the third argument, the criteria range itself is averaged. Criteria can be a value, a cell reference, or an expression in quotes — the same mini-language used by SUMIF and COUNTIF. The syntax is identical in Excel and Google Sheets.",
+      "example": {
+        "formula": "=AVERAGEIF(A2:A20, \"North\", C2:C20)",
+        "result": "Average of C2:C20 where the same row in A2:A20 equals \"North\"",
+        "explanation": "Text criteria are not case-sensitive, so \"north\", \"North\" and \"NORTH\" all match. Rows where A is anything else are ignored entirely."
+      },
+      "tips": [
+        "If no cell matches the criteria, AVERAGEIF returns #DIV/0! — wrap it in IFERROR if empty groups are possible.",
+        "Blank cells in the average range are skipped, but cells containing 0 ARE counted — a common source of unexpectedly low averages."
+      ]
+    },
+    {
+      "title": "Number and Comparison Criteria",
+      "content": "Comparison operators go inside quotes: \">=60\", \"<100\", \"<>0\". To compare against a cell value, concatenate the operator with the reference — the operator stays in quotes and the reference stays outside.",
+      "steps": [
+        { "name": "Fixed threshold", "text": "Average all scores of 60 or more.", "formula": "=AVERAGEIF(B2:B50, \">=60\")" },
+        { "name": "Threshold from a cell", "text": "Let the user change the cutoff in E1 without editing the formula.", "formula": "=AVERAGEIF(B2:B50, \">=\"&E1)" },
+        { "name": "Exclude zeros", "text": "Average only non-zero values — useful when 0 means 'no data'.", "formula": "=AVERAGEIF(B2:B50, \"<>0\")" }
+      ],
+      "example": {
+        "formula": "=AVERAGEIF(B2:B50, \">=\"&E1)",
+        "result": "Average of values in B2:B50 that are greater than or equal to the number in E1",
+        "explanation": "Writing \">=E1\" (reference inside the quotes) is the classic mistake — it compares against the literal text 'E1', matches nothing, and returns #DIV/0!."
+      }
+    },
+    {
+      "title": "Text Wildcards and Date Criteria",
+      "content": "Use * for any sequence of characters and ? for a single character in text criteria. For dates, compare against a real date built with the DATE function or a properly formatted date string — combining two AVERAGEIF calls does NOT work for date ranges; that requires AVERAGEIFS.",
+      "steps": [
+        { "name": "Starts with", "text": "Average sales for every product whose name starts with 'Pro'.", "formula": "=AVERAGEIF(A2:A100, \"Pro*\", C2:C100)" },
+        { "name": "After a date", "text": "Average amounts for orders on or after 1 Jan 2026.", "formula": "=AVERAGEIF(D2:D100, \">=\"&DATE(2026,1,1), C2:C100)" }
+      ],
+      "example": {
+        "formula": "=AVERAGEIF(A2:A100, \"*USB*\", C2:C100)",
+        "result": "Average of column C where column A contains the text \"USB\" anywhere",
+        "explanation": "Wildcards only work on text. To match a literal asterisk or question mark, escape it with a tilde: \"~*\"."
+      },
+      "tips": [
+        "Google Sheets supports the same * and ? wildcards in AVERAGEIF as Excel."
+      ]
+    },
+    {
+      "title": "Multiple Criteria: Switch to AVERAGEIFS",
+      "content": "AVERAGEIF accepts exactly one condition. For two or more — region AND month, score between two bounds — use AVERAGEIFS(average_range, criteria_range1, criteria1, criteria_range2, criteria2, ...). Note the argument order flips: in AVERAGEIFS the average range comes FIRST.",
+      "example": {
+        "formula": "=AVERAGEIFS(C2:C100, A2:A100, \"North\", D2:D100, \">=\"&DATE(2026,1,1), D2:D100, \"<\"&DATE(2026,2,1))",
+        "result": "Average of C for North-region rows dated within January 2026",
+        "explanation": "All conditions are AND-ed. Using the same date column twice (>= start, < end) is the standard between-two-dates pattern."
+      },
+      "tips": [
+        "For OR logic (e.g. North OR South), average each group separately, or compute SUMIF totals and counts and divide — AVERAGEIFS cannot OR conditions directly.",
+        "AVERAGEIFS works identically in Excel 2007+ and Google Sheets."
+      ]
+    },
+    {
+      "title": "Common Errors and How to Fix Them",
+      "content": "Three failures account for almost every wrong conditional average: #DIV/0! when nothing matches, mismatched range sizes between the criteria range and average range, and numbers stored as text that quietly fail numeric comparisons.",
+      "steps": [
+        { "name": "Guard against empty groups", "text": "Return a dash instead of an error when a group has no rows.", "formula": "=IFERROR(AVERAGEIF(A2:A100, F1, C2:C100), \"—\")" },
+        { "name": "Check for text-numbers", "text": "Count cells that look numeric but are stored as text; if it returns more than 0, clean the data.", "formula": "=SUMPRODUCT(--ISTEXT(B2:B50))" }
+      ],
+      "example": {
+        "formula": "=IFERROR(AVERAGEIF(A2:A100, F1, C2:C100), \"No data\")",
+        "result": "The conditional average, or \"No data\" when no row matches F1",
+        "explanation": "IFERROR keeps dashboards clean when a slicer or dropdown selects a group that has no records yet."
+      },
+      "tips": [
+        "Keep range and average_range the same size and starting row — misaligned ranges shift which values are averaged without raising any error."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    { "name": "AVERAGEIF", "slug": "averageif", "description": "AVERAGEIF calculates the average of cells that meet a single criterion." },
+    { "name": "AVERAGEIFS", "slug": "averageifs", "description": "AVERAGEIFS calculates the average of cells that satisfy multiple criteria." },
+    { "name": "AVERAGE", "slug": "average", "description": "AVERAGE returns the arithmetic mean of a set of numbers." },
+    { "name": "SUMIF", "slug": "sumif", "description": "SUMIF adds up all numbers in a range that meet a specified condition. It's the go-to function for conditional summing — like totaling sales for a specific region or summing expenses above a threshold." }
+  ],
+  "summary": "AVERAGEIF gives you a conditional mean with one criterion: text (with * and ? wildcards), numbers with comparison operators, or dates built with DATE. Remember that the operator stays inside quotes while cell references are concatenated outside, that zeros count but blanks don't, and that empty groups return #DIV/0!. The moment you need a second condition — including any date range — switch to AVERAGEIFS and put the average range first.",
+  "nextSteps": [
+    "Rebuild one of your SUMIF/COUNTIF pairs as a single AVERAGEIFS formula and compare the results",
+    "Add IFERROR around dashboard averages so empty groups show a dash instead of #DIV/0!",
+    "Read the SUMIF with a Date Range tutorial — the same criteria patterns apply to conditional sums"
+  ],
+  "relatedTutorials": ["sumif-with-date-range", "nested-if-alternatives", "index-match-formula"]
+}

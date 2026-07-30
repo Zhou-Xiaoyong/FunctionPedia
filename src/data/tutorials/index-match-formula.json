@@ -1,0 +1,99 @@
+{
+  "slug": "index-match-formula",
+  "title": "INDEX MATCH Formula",
+  "description": "Master the INDEX MATCH formula in Excel and Google Sheets step by step: exact syntax, left lookups, two-way lookups, and how it compares to VLOOKUP and XLOOKUP.",
+  "category": "Lookup & Reference",
+  "functions": ["INDEX", "MATCH", "VLOOKUP", "XLOOKUP"],
+  "intro": "INDEX MATCH is the lookup combo power users reach for when VLOOKUP runs out of road. It can look left, survives inserted columns, and only reads the two columns it actually needs. This tutorial builds the formula from its two parts, shows the patterns you will use daily — exact match, left lookup, two-way lookup — and explains when XLOOKUP is the better modern choice.",
+  "tags": ["INDEX MATCH", "Lookup", "INDEX", "MATCH", "VLOOKUP Alternative"],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "Basic VLOOKUP experience",
+    "Understanding of absolute ($A$2:$A$100) vs relative references"
+  ],
+  "sections": [
+    {
+      "title": "The Two Building Blocks: INDEX and MATCH",
+      "content": "INDEX(range, row_num) returns the value at a given position in a range. MATCH(lookup_value, range, 0) returns the position of a value in a range. Neither is impressive alone — the trick is feeding MATCH's answer into INDEX's row_num, so the position is found dynamically instead of hard-coded.",
+      "steps": [
+        { "name": "MATCH finds the row", "text": "Find which row of A2:A100 contains the ID in F1. The 0 means exact match — always include it.", "formula": "=MATCH(F1, A2:A100, 0)" },
+        { "name": "INDEX returns the value", "text": "Return the 5th value from the price column.", "formula": "=INDEX(C2:C100, 5)" }
+      ],
+      "example": {
+        "formula": "=INDEX(C2:C100, MATCH(F1, A2:A100, 0))",
+        "result": "The value from C in the same row where column A equals F1",
+        "explanation": "MATCH computes the row position (say 5), and INDEX collects the 5th value from C2:C100. Together they behave like a lookup that works in any direction."
+      },
+      "tips": [
+        "Both ranges must start on the same row and have the same height, or results silently shift.",
+        "The syntax is identical in Excel and Google Sheets."
+      ]
+    },
+    {
+      "title": "Left Lookup: What VLOOKUP Can Never Do",
+      "content": "VLOOKUP only returns columns to the RIGHT of the key column. INDEX MATCH has no such rule — the return range and the lookup range are independent arguments, so returning a column to the left is exactly the same formula.",
+      "example": {
+        "formula": "=INDEX(A2:A100, MATCH(F1, D2:D100, 0))",
+        "result": "The column A value in the row where column D equals F1",
+        "explanation": "Here the key lives in column D and the answer in column A — a leftward lookup that VLOOKUP would require a rearranged table or helper column to do."
+      },
+      "tips": [
+        "Because you reference only the two columns involved, INDEX MATCH also recalculates faster than a whole-table VLOOKUP on large sheets."
+      ]
+    },
+    {
+      "title": "Two-Way Lookup: Match Both a Row and a Column",
+      "content": "INDEX also accepts a column_num: INDEX(table, row_num, column_num). Use one MATCH to find the row and a second MATCH to find the column, and you get a lookup that finds a value at the intersection — ideal for price grids and month-by-product tables.",
+      "example": {
+        "formula": "=INDEX(B2:E13, MATCH(G1, A2:A13, 0), MATCH(G2, B1:E1, 0))",
+        "result": "The value where the row labeled G1 meets the column labeled G2",
+        "explanation": "The first MATCH scans the row labels in A2:A13, the second scans the column headers in B1:E1. If G1 is \"March\" and G2 is \"West\", you get March's West figure."
+      },
+      "tips": [
+        "Lock the label ranges with $ signs before copying the formula around a dashboard."
+      ]
+    },
+    {
+      "title": "Error Handling and Multiple Criteria",
+      "content": "When MATCH finds nothing it returns #N/A, which propagates through INDEX. Wrap the whole formula in IFERROR for a friendly message. For two-criteria lookups, multiply Boolean arrays inside MATCH — the same trick used for multi-criteria VLOOKUP workarounds.",
+      "steps": [
+        { "name": "Friendly not-found message", "text": "Replace #N/A with readable text.", "formula": "=IFERROR(INDEX(C2:C100, MATCH(F1, A2:A100, 0)), \"Not found\")" },
+        { "name": "Two criteria at once", "text": "Match on product AND region. In legacy Excel confirm with Ctrl+Shift+Enter; Microsoft 365 and Google Sheets accept it as a normal formula.", "formula": "=INDEX(D2:D100, MATCH(1, (A2:A100=F1)*(B2:B100=G1), 0))" }
+      ],
+      "example": {
+        "formula": "=INDEX(D2:D100, MATCH(1, (A2:A100=F1)*(B2:B100=G1), 0))",
+        "result": "The column D value where A matches F1 AND B matches G1",
+        "explanation": "Each comparison yields an array of 1s and 0s; multiplying them leaves 1 only where both are true, and MATCH(1, ...) finds that first row."
+      },
+      "tips": [
+        "In older Google Sheets versions, wrap array-style MATCH formulas in ARRAYFORMULA if they return #N/A unexpectedly."
+      ]
+    },
+    {
+      "title": "INDEX MATCH vs VLOOKUP vs XLOOKUP",
+      "content": "Choose based on your environment. VLOOKUP is fine for quick right-side lookups on small tables. INDEX MATCH wins on flexibility and works in every Excel version ever shipped. XLOOKUP (Microsoft 365, Excel 2021+, Google Sheets) folds the same power into one function with a built-in if_not_found argument — if everyone opening your file has it, XLOOKUP is the cleaner choice.",
+      "example": {
+        "formula": "=XLOOKUP(F1, A2:A100, C2:C100, \"Not found\")",
+        "result": "Same answer as the INDEX MATCH exact-match pattern, with built-in error text",
+        "explanation": "XLOOKUP defaults to exact match and looks in any direction, so it replaces both the IFERROR wrapper and the MATCH 0 argument. Keep INDEX MATCH for files shared with legacy Excel users."
+      },
+      "tips": [
+        "Inserting or deleting table columns breaks VLOOKUP's hard-coded column number but leaves INDEX MATCH and XLOOKUP intact — the biggest practical reason to switch."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    { "name": "INDEX", "slug": "index", "description": "INDEX returns the value at a specified position in a range or array." },
+    { "name": "MATCH", "slug": "match", "description": "MATCH searches for a specified item in a range and returns its relative position." },
+    { "name": "VLOOKUP", "slug": "vlookup", "description": "VLOOKUP (Vertical Lookup) is a built-in function in Excel and Google Sheets that searches for a value in the first column of a table and returns a value in the same row from a specified column." },
+    { "name": "XLOOKUP", "slug": "xlookup", "description": "XLOOKUP is the modern replacement for VLOOKUP. It searches a range or array for a value and returns the corresponding item from a second range or array. It supports exact and approximate matching, wildcards, and can search in any direction." }
+  ],
+  "summary": "The INDEX MATCH formula pairs MATCH (find the position) with INDEX (return the value at that position) to build a lookup that works in any direction, survives column insertions, and touches only the columns it needs. Always pass 0 to MATCH for exact matching, wrap in IFERROR for missing keys, add a second MATCH for two-way grid lookups, and multiply Boolean arrays for multi-criteria matches. On Microsoft 365 or Google Sheets, XLOOKUP delivers the same flexibility in a single function.",
+  "nextSteps": [
+    "Convert one existing VLOOKUP in your workbook to INDEX MATCH and then insert a column to see the difference in resilience",
+    "Build a two-way lookup over a month-by-region grid using the double-MATCH pattern",
+    "Read the VLOOKUP with Multiple Criteria tutorial to compare all four multi-criteria techniques side by side"
+  ],
+  "relatedTutorials": ["index-match-two-way-lookup", "vlookup-with-multiple-criteria", "averageif-with-criteria"]
+}
