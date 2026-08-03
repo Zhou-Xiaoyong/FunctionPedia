@@ -1,0 +1,208 @@
+{
+  "slug": "excel-budget-template",
+  "title": "Excel Budget Template",
+  "description": "Build an Excel budget template from scratch: structure your sheets, total spending by category with SUMIF, flag overspending with IF, and track averages.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "SUMIF",
+    "SUM",
+    "AVERAGE",
+    "IF"
+  ],
+  "intro": "Downloaded budget templates almost always break the moment you add your own categories, because the formulas are hard-wired to a fixed layout. Building your own takes about twenty minutes and gives you a file you can actually extend. This guide constructs a two-sheet monthly budget driven by four functions — SUMIF, SUM, AVERAGE and IF — that works identically in Excel and Google Sheets.",
+  "tags": [
+    "SUMIF",
+    "Budget",
+    "Template",
+    "Personal Finance",
+    "Dashboard"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "Comfort entering formulas and filling them down",
+    "Basic understanding of cell references and the $ symbol",
+    "Excel 2010+ or any version of Google Sheets"
+  ],
+  "sections": [
+    {
+      "title": "Set Up the Two-Sheet Structure",
+      "content": "The single biggest mistake in home-made budgets is mixing raw data with summaries. Keep them apart. Sheet 1, named Transactions, is a flat log you only ever append to: A = Date, B = Category, C = Description, D = Amount. Sheet 2, named Budget, is the dashboard: A = Category, B = Monthly Budget, C = Actual, D = Variance, E = Status. Every figure on the Budget sheet is a formula pointing at Transactions — you never type a total by hand.",
+      "steps": [
+        {
+          "name": "Create the category list",
+          "text": "List each spending category once in column A of the Budget sheet, starting in A2 — Rent, Groceries, Utilities, Transport, Dining, Savings.",
+          "formula": "Budget!A2:A20"
+        },
+        {
+          "name": "Add a drop-down to the Transactions sheet",
+          "text": "Select Transactions column B, then Data > Data Validation > List, and point the source at the Budget category list. This kills typos, which are the number one cause of a category totalling zero.",
+          "formula": "=Budget!$A$2:$A$20"
+        },
+        {
+          "name": "Format the log as a table",
+          "text": "Select the Transactions headers and press Ctrl+T so new rows are picked up automatically. In Google Sheets, skip this and use whole-column references instead.",
+          "formula": "Ctrl+T"
+        }
+      ],
+      "example": {
+        "formula": "=COUNTA(Transactions!B2:B1000)",
+        "result": "148",
+        "explanation": "A quick sanity check that counts how many transactions have been logged. Put it somewhere on the dashboard so you notice immediately if an import silently failed."
+      },
+      "tips": [
+        "Enter expenses as positive numbers and income as a separate category — mixing signs makes every later formula harder to read.",
+        "Never insert blank rows inside the Transactions log; blank rows break table auto-expansion."
+      ]
+    },
+    {
+      "title": "Total Each Category with SUMIF",
+      "content": "SUMIF is the engine of the whole template. It scans the category column of the log, finds every row matching the category on the current dashboard row, and adds up the matching amounts. Because the criteria is a relative reference to column A, one formula filled down handles every category.",
+      "example": {
+        "formula": "=SUMIF(Transactions!$B:$B, $A2, Transactions!$D:$D)",
+        "result": "612.40",
+        "explanation": "Transactions!$B:$B is the range searched, $A2 is the category on this dashboard row, and Transactions!$D:$D holds the amounts actually added. Lock the two Transactions ranges with $ so they don't drift when you fill down."
+      },
+      "steps": [
+        {
+          "name": "Enter the actual-spend formula",
+          "text": "Put this in C2 of the Budget sheet and fill it down alongside your category list.",
+          "formula": "=SUMIF(Transactions!$B:$B, $A2, Transactions!$D:$D)"
+        },
+        {
+          "name": "Restrict it to one month",
+          "text": "Switch to SUMIFS when you want a specific month. B$1 holds the first day of that month, and EDATE finds the first day of the next one.",
+          "formula": "=SUMIFS(Transactions!$D:$D, Transactions!$B:$B, $A2, Transactions!$A:$A, \">=\"&B$1, Transactions!$A:$A, \"<\"&EDATE(B$1,1))"
+        },
+        {
+          "name": "Total everything",
+          "text": "Add a grand-total row beneath the categories so budget and actual can be compared at a glance.",
+          "formula": "=SUM(C2:C20)"
+        }
+      ],
+      "tips": [
+        "SUMIF is identical in Excel and Google Sheets, including the optional third argument.",
+        "If a category returns 0 when you know spending exists, the culprit is almost always a trailing space in the logged category name — TRIM the column."
+      ]
+    },
+    {
+      "title": "Flag Overspending with IF",
+      "content": "A number on its own doesn't prompt action; a label does. Calculate the variance, then use a nested IF to turn it into a three-state traffic light. Ordering the tests from strictest to loosest matters — IF stops at the first TRUE it meets.",
+      "example": {
+        "formula": "=IF(C2>B2, \"Over\", IF(C2>B2*0.9, \"Watch\", \"OK\"))",
+        "result": "Watch",
+        "explanation": "With a 400 budget and 372 spent, the first test (372 > 400) is FALSE, but the second (372 > 360) is TRUE, so the row is flagged Watch before it tips over."
+      },
+      "steps": [
+        {
+          "name": "Calculate the variance",
+          "text": "Budget minus actual. A positive number means money left; a negative one means you are over.",
+          "formula": "=B2-C2"
+        },
+        {
+          "name": "Add the status flag",
+          "text": "Place this in E2 and fill down.",
+          "formula": "=IF(C2>B2, \"Over\", IF(C2>B2*0.9, \"Watch\", \"OK\"))"
+        },
+        {
+          "name": "Guard against an empty budget",
+          "text": "Wrap the test so categories with no budget set don't read as OK.",
+          "formula": "=IF(B2=0, \"No budget set\", IF(C2>B2, \"Over\", IF(C2>B2*0.9, \"Watch\", \"OK\")))"
+        }
+      ],
+      "tips": [
+        "On Microsoft 365 and Google Sheets, IFS reads more cleanly than nested IFs: =IFS(C2>B2,\"Over\", C2>B2*0.9,\"Watch\", TRUE,\"OK\").",
+        "Apply conditional formatting to column E using the rule \"Text is exactly: Over\" so the flag colours itself."
+      ]
+    },
+    {
+      "title": "Track Averages and Spot Trends with AVERAGE",
+      "content": "A single month tells you very little. Once you have three or more months side by side, AVERAGE turns the template from a record into a forecasting tool — and it is the fastest way to set realistic budgets for next quarter.",
+      "example": {
+        "formula": "=AVERAGE(C2:N2)",
+        "result": "418.75",
+        "explanation": "Averages the twelve monthly actuals on one category row. AVERAGE ignores empty cells, so months you haven't filled in yet do not drag the number down — unlike dividing by 12 manually."
+      },
+      "steps": [
+        {
+          "name": "Find the typical transaction size",
+          "text": "AVERAGEIF answers a different question: not what you spend per month, but what a single purchase in that category usually costs.",
+          "formula": "=AVERAGEIF(Transactions!$B:$B, $A2, Transactions!$D:$D)"
+        },
+        {
+          "name": "Set next month's budget from history",
+          "text": "Round the three-month average up to the nearest 10 for a realistic target.",
+          "formula": "=CEILING(AVERAGE(C2:E2), 10)"
+        },
+        {
+          "name": "Calculate your savings rate",
+          "text": "Income minus total spending, divided by income. Format the cell as a percentage.",
+          "formula": "=IF(B$25=0, \"\", (B$25-SUM($C$2:$C$20))/B$25)"
+        }
+      ],
+      "tips": [
+        "AVERAGE skips blanks but counts zeros — a logged 0 will pull the average down, so leave unused months empty.",
+        "In Google Sheets, SPARKLINE(C2:N2) drops a mini trend chart straight into the cell next to each category."
+      ]
+    },
+    {
+      "title": "Add a Running Balance and Keep It Maintainable",
+      "content": "The final piece is a rolling balance on the Transactions sheet so you can see where the account stood after any given row, plus a few habits that stop the template rotting after three months.",
+      "example": {
+        "formula": "=$H$1-SUM($D$2:$D2)",
+        "result": "2387.60",
+        "explanation": "H1 holds the opening balance. The mixed reference $D$2:$D2 expands as the formula is filled down, so each row subtracts everything spent up to and including that row."
+      },
+      "steps": [
+        {
+          "name": "Show the remaining budget for the month",
+          "text": "Total budget minus total actual, in one cell on the dashboard.",
+          "formula": "=SUM(B2:B20)-SUM(C2:C20)"
+        },
+        {
+          "name": "Catch uncategorised rows",
+          "text": "Any transaction whose category is not on the dashboard list is invisible to SUMIF. This flags them before they cost you.",
+          "formula": "=SUM(Transactions!$D:$D)-SUM($C$2:$C$20)"
+        }
+      ],
+      "tips": [
+        "The uncategorised check should read 0. Anything else means a transaction is being silently excluded from every category total.",
+        "Keep one year per file. Twelve months of daily transactions stays fast; five years of whole-column SUMIFs will not.",
+        "In Google Sheets you can replace the entire dashboard with a single QUERY formula that groups by category — useful once your category list grows past twenty."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "SUMIF",
+      "slug": "sumif",
+      "description": "SUMIF adds up all numbers in a range that meet a specified condition. It's the go-to function for conditional summing — like totaling sales for a specific region or summing expenses above a threshold."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "AVERAGE",
+      "slug": "average",
+      "description": "AVERAGE returns the arithmetic mean of a set of numbers."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    }
+  ],
+  "summary": "A budget template that survives contact with real life keeps raw transactions separate from summaries. Log every expense on a flat Transactions sheet, then let the dashboard calculate itself: SUMIF totals each category, SUM produces grand totals and a running balance, IF converts variance into Over / Watch / OK flags, and AVERAGE turns several months of history into realistic targets for the next one. Add a drop-down for categories and an uncategorised-total check, and the file will still be accurate a year from now.",
+  "nextSteps": [
+    "Add a second month column and switch the actual-spend formula from SUMIF to SUMIFS with date bounds",
+    "Build the uncategorised-total check so no transaction can slip past your category list",
+    "Layer conditional formatting on the status column so Over rows turn red automatically"
+  ],
+  "relatedTutorials": [
+    "sumif-with-date-range",
+    "averageif-with-criteria",
+    "excel-n-a-error-fix"
+  ],
+  "calculator": null
+}

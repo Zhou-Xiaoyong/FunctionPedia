@@ -1,0 +1,179 @@
+{
+  "slug": "excel-n-a-error-fix",
+  "title": "Excel N/A Error Fix",
+  "description": "The complete Excel N/A error fix guide: why #N/A appears in VLOOKUP and XLOOKUP, how to repair the root cause, and when to wrap it with IFNA or IFERROR.",
+  "category": "Error Fixes",
+  "functions": [
+    "IFNA",
+    "IFERROR",
+    "VLOOKUP",
+    "XLOOKUP"
+  ],
+  "intro": "#N/A is the most misunderstood error in Excel. It is not a bug in your formula — it is Excel telling you that the value you asked for was not found. The fastest fix is almost never to hide it: first prove whether the lookup key really is missing, then repair the cause, and only wrap the remaining, legitimate misses with IFNA.",
+  "tags": [
+    "IFNA",
+    "N/A Error",
+    "VLOOKUP Errors",
+    "Error Handling",
+    "Troubleshooting"
+  ],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Basic VLOOKUP or XLOOKUP syntax",
+    "Knowing how to select a cell range",
+    "Excel 2013+ or Google Sheets (for IFNA)"
+  ],
+  "sections": [
+    {
+      "title": "What #N/A Actually Means",
+      "content": "#N/A stands for \"no value available\". Lookup functions — VLOOKUP, HLOOKUP, XLOOKUP, MATCH and LOOKUP — return it when they finish scanning the search range without finding an exact match. Unlike #VALUE! or #REF!, it is a legitimate answer, not a broken formula. That distinction matters because it decides which repair you reach for.",
+      "example": {
+        "formula": "=VLOOKUP(\"Widget-A\", A2:D50, 3, FALSE)",
+        "result": "#N/A",
+        "explanation": "Excel compared \"Widget-A\" against every cell in A2:A50 and found no exact match, so it reports that no value is available rather than returning a wrong row."
+      },
+      "tips": [
+        "MATCH and XMATCH also return #N/A, which is why INDEX + MATCH combinations fail with the same error.",
+        "One #N/A inside SUM or AVERAGE poisons the whole result — the aggregate returns #N/A too."
+      ]
+    },
+    {
+      "title": "Step 1: Prove Whether the Value Is Really Missing",
+      "content": "Before rewriting anything, run three quick diagnostics on the lookup key. They tell you whether you have a genuine miss (nothing to fix in the formula) or a formatting mismatch (very fixable).",
+      "steps": [
+        {
+          "name": "Count the matches",
+          "text": "Ask Excel how many times the key appears in the lookup column.",
+          "formula": "=COUNTIF(A:A, G2)"
+        },
+        {
+          "name": "Look for hidden spaces",
+          "text": "Compare the raw length of the key with its trimmed length. Anything above zero means stray spaces.",
+          "formula": "=LEN(G2)-LEN(TRIM(G2))"
+        },
+        {
+          "name": "Check for a text vs number mismatch",
+          "text": "Both sides of the comparison should return the same TRUE/FALSE answer.",
+          "formula": "=ISTEXT(G2)&\" / \"&ISTEXT(A2)"
+        }
+      ],
+      "example": {
+        "formula": "=COUNTIF(A:A, G2)",
+        "result": "0",
+        "explanation": "Zero means the key genuinely is not in the lookup column, so no formula rewrite will find it. Any result above zero means the value does exist and the #N/A is caused by formatting or by the lookup's own arguments."
+      },
+      "tips": [
+        "COUNTIF ignores leading and trailing spaces on the criteria in some cases, so pair it with the LEN test rather than trusting it alone.",
+        "If COUNTIF returns 0 but you can see the value, the two cells almost always differ by type (1000 vs \"1000\") or by an invisible character."
+      ]
+    },
+    {
+      "title": "Step 2: Repair the Root Cause",
+      "content": "Four causes account for the vast majority of avoidable #N/A results: stray whitespace, numbers stored as text, an unlocked table range that drifts when the formula is filled down, and approximate matching left on by accident.",
+      "steps": [
+        {
+          "name": "Strip stray spaces",
+          "text": "TRIM removes leading, trailing and doubled spaces from the search key.",
+          "formula": "=VLOOKUP(TRIM(G2), $A$2:$D$500, 3, FALSE)"
+        },
+        {
+          "name": "Convert a text key to a number",
+          "text": "Use this when the lookup column holds real numbers but your key was imported as text.",
+          "formula": "=VLOOKUP(VALUE(G2), $A$2:$D$500, 3, FALSE)"
+        },
+        {
+          "name": "Convert a numeric key to text",
+          "text": "The reverse case — appending an empty string forces the key to text.",
+          "formula": "=VLOOKUP(G2&\"\", $A$2:$D$500, 3, FALSE)"
+        },
+        {
+          "name": "Always demand an exact match",
+          "text": "Omitting the fourth argument silently switches VLOOKUP to approximate match, which returns #N/A on unsorted data.",
+          "formula": "=VLOOKUP(G2, $A$2:$D$500, 3, FALSE)"
+        }
+      ],
+      "example": {
+        "formula": "=VLOOKUP(TRIM(CLEAN(G2)), $A$2:$D$500, 3, FALSE)",
+        "result": "1240",
+        "explanation": "CLEAN strips non-printing characters left behind by CSV exports, TRIM removes the trailing space, and the absolute range $A$2:$D$500 stops the table from sliding down as the formula is filled."
+      },
+      "tips": [
+        "VLOOKUP only searches the FIRST column of table_array. If your key sits in column C, VLOOKUP will never find it — switch to INDEX + MATCH or XLOOKUP.",
+        "Press F4 on a selected range to toggle the $ signs instead of typing them."
+      ]
+    },
+    {
+      "title": "Step 3: Wrap the Legitimate Misses with IFNA",
+      "content": "Once the fixable causes are gone, some #N/A results are simply correct — a new product that is not in the price list yet, or a staff member who joined after the roster was exported. IFNA replaces only that specific error with a message of your choosing and leaves every other error visible.",
+      "example": {
+        "formula": "=IFNA(VLOOKUP(G2, $A$2:$D$500, 3, FALSE), \"Not in price list\")",
+        "result": "Not in price list",
+        "explanation": "IFNA substitutes text only for #N/A. If the same formula later breaks with #REF! because someone deleted a column, that error still surfaces so you can fix it."
+      },
+      "steps": [
+        {
+          "name": "Return a blank instead of text",
+          "text": "An empty string keeps dashboards clean while still allowing SUM to work.",
+          "formula": "=IFNA(VLOOKUP(G2, $A$2:$D$500, 3, FALSE), \"\")"
+        },
+        {
+          "name": "Return zero so totals still calculate",
+          "text": "Use 0 when the column feeds a SUM or an AVERAGE downstream.",
+          "formula": "=IFNA(VLOOKUP(G2, $A$2:$D$500, 3, FALSE), 0)"
+        }
+      ],
+      "tips": [
+        "IFNA requires Excel 2013 or later; Google Sheets has supported it since 2014.",
+        "Wrapping too early is the classic mistake — you hide a broken lookup instead of repairing it, and the report quietly under-reports for months."
+      ]
+    },
+    {
+      "title": "IFNA vs IFERROR vs XLOOKUP's Built-In Fallback",
+      "content": "IFERROR catches every error type: #N/A, #VALUE!, #REF!, #DIV/0!, #NUM!, #NAME? and #NULL!. That sounds convenient, but it also masks your own typos. IFNA is the surgical choice for lookups. If you are on a modern version, XLOOKUP removes the wrapper entirely with a native if_not_found argument.",
+      "example": {
+        "formula": "=XLOOKUP(G2, $A$2:$A$500, $C$2:$C$500, \"Not in price list\")",
+        "result": "Not in price list",
+        "explanation": "The fourth argument is XLOOKUP's built-in if_not_found value, so no IFNA wrapper is needed. XLOOKUP is available in Microsoft 365, Excel 2021 and later, and in Google Sheets."
+      },
+      "tips": [
+        "Use IFERROR only when you genuinely want every error hidden — for example a division that may legitimately hit a zero denominator.",
+        "In Google Sheets the second argument of IFERROR is optional and defaults to an empty string; in Excel it is required.",
+        "XLOOKUP also defaults to exact match, which removes the most common source of #N/A in VLOOKUP formulas."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "IFNA",
+      "slug": "ifna",
+      "description": "IFNA returns a specified value when a formula results in the #N/A error, and otherwise returns the formula's own result. It catches only #N/A, not other errors."
+    },
+    {
+      "name": "IFERROR",
+      "slug": "iferror",
+      "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise."
+    },
+    {
+      "name": "VLOOKUP",
+      "slug": "vlookup",
+      "description": "VLOOKUP (Vertical Lookup) is a built-in function in Excel and Google Sheets that searches for a value in the first column of a table and returns a value in the same row from a specified column."
+    },
+    {
+      "name": "XLOOKUP",
+      "slug": "xlookup",
+      "description": "XLOOKUP is the modern replacement for VLOOKUP. It searches a range or array for a value and returns the corresponding item from a second range or array. It supports exact and approximate matching, wildcards, and can search in any direction."
+    }
+  ],
+  "summary": "#N/A means \"not found\", not \"broken\". Diagnose first with COUNTIF, LEN/TRIM and ISTEXT to learn whether the key is genuinely missing. Repair the real causes — stray spaces, numbers stored as text, an unlocked table range, or approximate match left switched on. Only then wrap the remaining, legitimate misses in IFNA, which hides #N/A while still letting #REF! and #VALUE! warn you. On Microsoft 365, Excel 2021+ or Google Sheets, XLOOKUP's if_not_found argument does the same job with no wrapper at all.",
+  "nextSteps": [
+    "Run =COUNTIF(A:A, G2) next to your failing lookup to confirm whether the key exists at all",
+    "Replace bare VLOOKUP formulas with XLOOKUP and its if_not_found argument where your version allows",
+    "Audit any existing IFERROR wrappers in your workbook and downgrade them to IFNA so real errors stay visible"
+  ],
+  "relatedTutorials": [
+    "vlookup-with-multiple-criteria",
+    "index-match-formula",
+    "nested-if-alternatives"
+  ],
+  "calculator": null
+}
