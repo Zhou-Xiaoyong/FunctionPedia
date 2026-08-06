@@ -1,0 +1,109 @@
+{
+  "slug": "absolute-vs-relative-reference",
+  "title": "Absolute vs Relative Reference",
+  "description": "Absolute vs relative reference in Excel explained: what $ really locks, when to use mixed refs, the F4 shortcut, and dynamic alternatives in Google Sheets.",
+  "category": "Concepts & Beginners",
+  "functions": ["OFFSET", "INDIRECT", "INDEX"],
+  "intro": "Almost every broken spreadsheet formula traces back to one thing: a reference that moved when it shouldn't have, or stayed put when it should have moved. The difference between an absolute and a relative reference is a single dollar sign, but it decides whether your formula still works after you copy it down 500 rows. This guide shows exactly what $ locks, when to reach for a mixed reference, and what to do when $ isn't enough.",
+  "tags": ["Absolute Reference", "Relative Reference", "Mixed Reference", "F4", "Beginners"],
+  "estimatedTime": "10 min read",
+  "prerequisites": [
+    "You can type a basic formula such as =A1*B1",
+    "You know how to copy a cell or drag the fill handle"
+  ],
+  "sections": [
+    {
+      "title": "What a Relative Reference Actually Stores",
+      "content": "When you type =A2*B2 in cell C2, Excel does not remember 'A2 and B2'. It remembers 'two cells to the left and one cell to the left'. The reference is stored as an offset from the formula's own position, which is why it shifts when you copy it. This is the default behaviour and it is usually what you want for row-by-row calculations.",
+      "example": {
+        "formula": "=A2*B2",
+        "result": "Copied from C2 down to C3, the formula becomes =A3*B3",
+        "explanation": "Both references are relative, so both shift down by one row. Copying one column to the right instead would produce =B2*C2."
+      },
+      "tips": [
+        "Relative references are correct for 'do this same calculation on every row' formulas.",
+        "Copying a formula sideways shifts columns; copying down shifts rows. Cut-and-paste does NOT shift references — only copy does."
+      ]
+    },
+    {
+      "title": "Absolute References: Locking a Cell with $",
+      "content": "A dollar sign freezes whatever comes after it. $A$1 means 'column A, row 1, always' — copy that formula anywhere and it still points to A1. Use it whenever a formula must keep pointing at a single constant, such as a tax rate, an exchange rate, or the top-left corner of a lookup table.",
+      "steps": [
+        { "name": "Put the constant in one cell", "text": "Store the VAT rate 0.2 in cell F1 rather than hard-coding it in every formula.", "formula": "F1 = 0.2" },
+        { "name": "Reference it absolutely", "text": "In C2, multiply the row amount by the locked rate.", "formula": "=B2*$F$1" },
+        { "name": "Fill down", "text": "Drag C2 down the column. B2 becomes B3, B4… while $F$1 never moves." , "formula": "=B3*$F$1" }
+      ],
+      "example": {
+        "formula": "=B2*$F$1",
+        "result": "Copied to C10 it becomes =B10*$F$1 — the rate stays locked",
+        "explanation": "Without the dollar signs the formula would drift to =B10*F9, silently multiplying by an empty cell and returning 0."
+      },
+      "tips": [
+        "Lookup tables should almost always be absolute: =VLOOKUP(A2, $H$2:$J$50, 3, FALSE).",
+        "A named range is an even cleaner alternative — names are absolute by default, so =B2*VATRate never drifts."
+      ]
+    },
+    {
+      "title": "Mixed References: One Formula for a Whole Grid",
+      "content": "You can lock just the column ($A1) or just the row (A$1). This is the trick behind any cross-tab grid where headers run down the left AND across the top: a single mixed-reference formula fills the entire block correctly in both directions.",
+      "example": {
+        "formula": "=$A2*B$1",
+        "result": "Entered in B2 and filled across and down, it builds a complete multiplication table",
+        "explanation": "$A2 locks the column so the row labels are always read from column A; B$1 locks the row so the column headers are always read from row 1. Only the unlocked half moves as you fill."
+      },
+      "tips": [
+        "Read it as: the $ sticks to the letter or number immediately after it.",
+        "Mixed references are also ideal for percent-of-total columns: =B2/B$20 keeps dividing by the total row while the numerator moves."
+      ]
+    },
+    {
+      "title": "The F4 Shortcut and the Mistakes It Prevents",
+      "content": "You never need to type dollar signs by hand. Put the cursor on a reference in the formula bar and press F4 to cycle through all four states: A1 → $A$1 → A$1 → $A1 → back to A1. On a Mac use Command+T, and in Google Sheets press F4 (Fn+F4 on a Mac keyboard) for the same cycle.",
+      "steps": [
+        { "name": "Select the reference", "text": "Click inside the formula and place the cursor on the reference you want to change.", "formula": "=B2*F1" },
+        { "name": "Press F4 once", "text": "The reference becomes fully absolute.", "formula": "=B2*$F$1" },
+        { "name": "Press F4 again to fine-tune", "text": "A second press locks only the row, a third locks only the column.", "formula": "=B2*F$1" }
+      ],
+      "example": {
+        "formula": "=SUM($B$2:$B$100)/COUNT($B$2:$B$100)",
+        "result": "Safe to copy anywhere on the sheet",
+        "explanation": "Selecting the whole range before pressing F4 locks both ends at once, which is faster than editing four dollar signs manually."
+      },
+      "tips": [
+        "The #1 fill-down bug is a lookup table left relative — the range slides off the bottom of the data and you get #N/A on the later rows.",
+        "The #2 bug is over-locking: an all-absolute formula copied down gives you the same answer in every row.",
+        "Google Sheets uses identical $ syntax, but it has no R1C1 reference mode — that display option is Excel-only."
+      ]
+    },
+    {
+      "title": "When $ Isn't Enough: INDEX, OFFSET and INDIRECT",
+      "content": "Dollar signs only survive copying — they do not survive structural change or let you build a reference from text. For ranges that must grow with your data, or references assembled from a sheet name, you need functions that return a reference. INDEX is the safe default because it is non-volatile; OFFSET and INDIRECT recalculate on every single edit and will slow a large workbook down.",
+      "example": {
+        "formula": "=SUM($A$2:INDEX($A:$A, COUNTA($A:$A)))",
+        "result": "Sums A2 down to the last non-empty cell in column A, and grows automatically",
+        "explanation": "INDEX returns a reference (not just a value) when used as a range endpoint, so the range self-adjusts as rows are added — without the recalculation cost of OFFSET."
+      },
+      "tips": [
+        "Volatile equivalent: =SUM(OFFSET($A$2, 0, 0, COUNTA($A:$A)-1, 1)) — same result, heavier to recalculate.",
+        "INDIRECT builds a reference from text, e.g. =INDIRECT(\"'\"&A1&\"'!B2\") pulls B2 from the sheet named in A1. Because it is text, it will NOT update if you later rename or move that sheet.",
+        "Best practice: convert your data to a Table (Ctrl+T). Structured references like Table1[Amount] expand on their own and never need a dollar sign."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "OFFSET", "slug": "offset", "description": "OFFSET returns a reference that is a specified number of rows and columns from a starting cell or range." },
+    { "name": "INDIRECT", "slug": "indirect", "description": "INDIRECT converts a text string into a cell reference that Excel can use in a formula." },
+    { "name": "INDEX", "slug": "index", "description": "INDEX returns the value at a specified position in a range or array." }
+  ],
+  "summary": "A relative reference (A1) stores a direction and distance, so it moves when you copy. An absolute reference ($A$1) is pinned to one cell forever. A mixed reference locks only the row or only the column, which lets one formula fill an entire grid. Press F4 to cycle between the four states instead of typing dollar signs. When a reference has to grow with your data or be built from text, step up to INDEX, OFFSET or INDIRECT — or better still, use a Table so the range manages itself.",
+  "nextSteps": [
+    "Audit one existing sheet: find every lookup table reference and make sure it is fully absolute",
+    "Rebuild a multiplication or percent-of-total grid using a single mixed-reference formula",
+    "Replace one OFFSET-based dynamic range with the non-volatile INDEX pattern shown above"
+  ],
+  "relatedTutorials": [
+    "vlookup-approximate-match",
+    "index-match-formula",
+    "excel-dynamic-arrays"
+  ]
+}

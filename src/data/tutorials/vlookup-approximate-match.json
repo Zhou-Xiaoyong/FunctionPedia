@@ -1,0 +1,104 @@
+{
+  "slug": "vlookup-approximate-match",
+  "title": "VLOOKUP Approximate Match",
+  "description": "VLOOKUP approximate match explained: how TRUE range_lookup works, why data must be sorted ascending, tax and grade table examples, plus XLOOKUP alternatives.",
+  "category": "VLOOKUP & XLOOKUP",
+  "functions": ["VLOOKUP", "XLOOKUP", "INDEX", "MATCH"],
+  "intro": "Most people learn VLOOKUP with FALSE as the last argument and never touch the other mode. But approximate match — VLOOKUP's fourth argument set to TRUE — is the fastest way to convert any continuous number into a band: a score into a grade, income into a tax rate, sales into a commission tier. It is also the single most dangerous VLOOKUP setting, because when your data is not sorted it returns a wrong answer instead of an error. This guide shows how to use it safely.",
+  "tags": ["VLOOKUP", "Approximate Match", "Range Lookup", "Tax Brackets", "XLOOKUP"],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Basic VLOOKUP syntax: =VLOOKUP(lookup_value, table_array, col_index_num, [range_lookup])",
+    "A tier or band table with a numeric lower bound in the first column"
+  ],
+  "sections": [
+    {
+      "title": "Exact vs Approximate: What the Fourth Argument Does",
+      "content": "The last argument of VLOOKUP is range_lookup. FALSE (or 0) means exact match — find this precise value or return #N/A. TRUE (or 1) means approximate match — find the largest value that is less than or equal to the lookup value. Critically, if you omit the argument entirely, VLOOKUP defaults to TRUE. That is why a VLOOKUP with only three arguments can quietly return the wrong row.",
+      "example": {
+        "formula": "=VLOOKUP(85, $A$2:$B$6, 2, TRUE)",
+        "result": "B",
+        "explanation": "With a grade table of 0/F, 60/D, 70/C, 80/B, 90/A in A2:B6, VLOOKUP walks down column A and stops at the last value that does not exceed 85 — that is 80, whose grade is B."
+      },
+      "tips": [
+        "Always type the fourth argument explicitly. =VLOOKUP(A2, Table, 2) is an approximate match by accident, not by design.",
+        "Google Sheets calls the same argument is_sorted and it also defaults to TRUE when omitted — the behaviour is identical to Excel."
+      ]
+    },
+    {
+      "title": "The Sorting Rule You Cannot Break",
+      "content": "Approximate match uses a binary search: it jumps to the middle of the first column, compares, then discards half the rows and repeats. That algorithm assumes the first column is sorted in ascending order. If it isn't, VLOOKUP does not detect the problem — it just lands on whatever row the binary search happens to reach and returns it as a valid answer.",
+      "steps": [
+        { "name": "Sort the lookup table", "text": "Select the tier table and sort by the first column, smallest to largest.", "formula": "Data → Sort → Column A → A to Z" },
+        { "name": "Start the table at the floor value", "text": "The first row must cover the lowest possible input, usually 0, or VLOOKUP will return #N/A for small values.", "formula": "A2 = 0" },
+        { "name": "Store lower bounds, not ranges", "text": "Write 60 for '60 to 69', never the text \"60-69\" — VLOOKUP compares numbers, not labels.", "formula": "=VLOOKUP(B2, $A$2:$B$6, 2, TRUE)" }
+      ],
+      "example": {
+        "formula": "=VLOOKUP(55, $A$2:$B$6, 2, TRUE)",
+        "result": "F",
+        "explanation": "55 falls between the first row (0) and the second (60), so VLOOKUP returns the 0 row. Had the table started at 60 instead of 0, this same formula would return #N/A."
+      },
+      "tips": [
+        "#N/A from an approximate match almost always means the lookup value is smaller than the very first entry in the table.",
+        "A silently wrong number — with no error at all — is the classic symptom of an unsorted tier table."
+      ]
+    },
+    {
+      "title": "Real Example: Progressive Commission Tiers",
+      "content": "Tier tables are where approximate match earns its keep. Instead of a five-level nested IF, you keep the thresholds in cells where anyone can update them without touching a formula. Put the lower bound of each tier in column A and the rate in column B, sorted ascending.",
+      "example": {
+        "formula": "=B2*VLOOKUP(B2, $E$2:$F$5, 2, TRUE)",
+        "result": "For sales of 30,000 against tiers 0/0%, 10000/5%, 25000/8%, 50000/12% → 2,400",
+        "explanation": "30,000 sits in the 25,000 tier, so the rate returned is 8%. 30000 * 0.08 = 2400. Adding a new tier later means inserting a row in the table — the formula never changes."
+      },
+      "tips": [
+        "The same pattern handles income tax bands, shipping weight brackets, volume discounts and bonus multipliers.",
+        "Lock the tier table with absolute references ($E$2:$F$5) so it does not slide when you fill the formula down."
+      ]
+    },
+    {
+      "title": "The Modern Way: XLOOKUP's match_mode",
+      "content": "XLOOKUP replaces the TRUE/FALSE flag with a match_mode argument, and it comes with a decisive advantage: it does not require sorted data. Use -1 for 'exact match or next smaller item' — the direct equivalent of VLOOKUP TRUE — or 1 for 'exact match or next larger item', something VLOOKUP simply cannot do.",
+      "example": {
+        "formula": "=XLOOKUP(85, $A$2:$A$6, $B$2:$B$6, \"Out of range\", -1)",
+        "result": "B",
+        "explanation": "match_mode -1 finds the largest value at or below 85. The fourth argument supplies a friendly message instead of #N/A, and the lookup and return ranges are separate so the result column can sit to the LEFT of the key."
+      },
+      "tips": [
+        "XLOOKUP is available in Microsoft 365, Excel 2021 and later, and in Google Sheets.",
+        "Switch -1 to 1 when your table stores upper bounds (the ceiling of each band) instead of lower bounds.",
+        "Because XLOOKUP does a linear scan by default, VLOOKUP TRUE can still be faster on very large sorted tables — add search_mode 2 for a binary search: =XLOOKUP(85, A2:A6, B2:B6, \"\", -1, 2)."
+      ]
+    },
+    {
+      "title": "INDEX + MATCH: The Version That Works Everywhere",
+      "content": "If you are on a version without XLOOKUP but need the return column to sit left of the key, use MATCH with match_type 1. It applies the exact same 'largest value less than or equal to' logic as VLOOKUP TRUE, and it also requires ascending order.",
+      "example": {
+        "formula": "=INDEX($B$2:$B$6, MATCH(85, $A$2:$A$6, 1))",
+        "result": "B",
+        "explanation": "MATCH(85, A2:A6, 1) returns 4 — the position of the 80 row — and INDEX pulls the 4th grade from column B. Use match_type -1 with a descending table when you need the next larger value instead."
+      },
+      "tips": [
+        "MATCH match_type 1 = ascending, 0 = exact, -1 = descending. Only 0 tolerates unsorted data.",
+        "Wrap it in IFNA to catch below-range inputs: =IFNA(INDEX($B$2:$B$6, MATCH(A2, $A$2:$A$6, 1)), \"Below minimum\")."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "VLOOKUP", "slug": "vlookup", "description": "VLOOKUP (Vertical Lookup) is a built-in function in Excel and Google Sheets that searches for a value in the first column of a table and returns a value in the same row from a specified column." },
+    { "name": "XLOOKUP", "slug": "xlookup", "description": "XLOOKUP is the modern replacement for VLOOKUP. It searches a range or array for a value and returns the corresponding item from a second range or array. It supports exact and approximate matching, wildcards, and can search in any direction." },
+    { "name": "INDEX", "slug": "index", "description": "INDEX returns the value at a specified position in a range or array." },
+    { "name": "MATCH", "slug": "match", "description": "MATCH searches for a specified item in a range and returns its relative position." }
+  ],
+  "summary": "VLOOKUP approximate match (range_lookup = TRUE) returns the largest value less than or equal to your lookup value, which makes it the cleanest way to map a number onto a band. It has exactly one hard requirement: the first column must be sorted ascending and must start at the lowest possible input, or you will get #N/A — or worse, a wrong answer with no warning. Always state the fourth argument explicitly, lock the tier table with absolute references, and move to XLOOKUP with match_mode -1 when your version supports it, since it drops the sorting requirement entirely.",
+  "nextSteps": [
+    "Search your workbooks for three-argument VLOOKUPs — each one is an unintended approximate match",
+    "Replace a nested IF grading or commission formula with a sorted tier table and one VLOOKUP",
+    "Rewrite your tier lookup as XLOOKUP with match_mode -1 and compare the error handling"
+  ],
+  "relatedTutorials": [
+    "vlookup-with-multiple-criteria",
+    "index-match-formula",
+    "absolute-vs-relative-reference"
+  ]
+}
