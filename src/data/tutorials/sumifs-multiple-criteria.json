@@ -1,0 +1,109 @@
+{
+  "slug": "sumifs-multiple-criteria",
+  "title": "SUMIFS Multiple Criteria",
+  "description": "Build SUMIFS multiple criteria formulas that total values matching two or more conditions in Excel and Google Sheets, including dates, wildcards and OR logic.",
+  "category": "SUM & COUNT",
+  "functions": ["SUMIFS", "SUMIF", "SUM", "COUNTIFS"],
+  "intro": "SUMIF handles one condition. The moment you need \"North AND Widget\" or \"this quarter AND over $1,000\", you need SUMIFS. It looks almost identical to SUMIF, but the argument order is reversed and the criteria are joined with AND by default — two details that trip up almost everyone the first time. This guide covers the syntax, date and number criteria, wildcards, the OR workaround, and the errors you will hit along the way.",
+  "tags": ["SUMIFS", "Multiple Criteria", "Conditional Sum", "COUNTIFS", "Excel Formulas"],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Basic SUMIF syntax",
+    "Comfort with cell ranges and absolute references",
+    "A dataset with at least two columns you can filter on"
+  ],
+  "sections": [
+    {
+      "title": "SUMIFS Syntax: The Sum Range Comes First",
+      "content": "This is the single biggest source of confusion. SUMIF puts the range you test first and the range you add last. SUMIFS flips it: the range you add comes first, followed by criteria_range / criteria pairs. Every pair you add narrows the result further, because SUMIFS joins criteria with AND — a row must satisfy all of them to be counted.",
+      "steps": [
+        { "name": "Point at the numbers", "text": "Start with the column you want to total. This is sum_range and it is always the first argument.", "formula": "=SUMIFS(D2:D100," },
+        { "name": "Add the first condition", "text": "Give the column to test, then the value to match.", "formula": "=SUMIFS(D2:D100, A2:A100, \"North\")" },
+        { "name": "Add the second condition", "text": "Append another range/criteria pair. Rows must now match both.", "formula": "=SUMIFS(D2:D100, A2:A100, \"North\", B2:B100, \"Widget\")" }
+      ],
+      "example": {
+        "formula": "=SUMIFS(D2:D100, A2:A100, \"North\", B2:B100, \"Widget\")",
+        "result": "4,820 — the total of column D only for rows where region is North AND product is Widget",
+        "explanation": "Two criteria pairs means two tests. A North row selling Gadgets is skipped, and so is a South row selling Widgets. Only rows passing both survive."
+      },
+      "tips": [
+        "Every criteria_range must be the same height and shape as sum_range, or SUMIFS returns #VALUE!.",
+        "SUMIFS accepts up to 127 criteria pairs — far more than you will ever need.",
+        "Google Sheets uses exactly the same argument order, so formulas copy across without edits."
+      ]
+    },
+    {
+      "title": "Number and Date Criteria: Wrap Operators in Quotes",
+      "content": "Criteria are not expressions — they are text strings that SUMIFS interprets. To sum values above a threshold you pass \">=1000\" as text, not >=1000. When the threshold lives in a cell, concatenate it with & so the operator and the value join into one string. Dates are the same idea, but always build them with DATE() rather than typing \"01/03/2026\", because a typed date string is read using the file's locale and will silently swap day and month.",
+      "example": {
+        "formula": "=SUMIFS(D2:D100, C2:C100, \">=\"&DATE(2026,1,1), C2:C100, \"<=\"&DATE(2026,3,31))",
+        "result": "12,450 — the Q1 2026 total",
+        "explanation": "The same column C is used twice: once for the lower bound and once for the upper bound. Because criteria are AND-ed, this gives you a date range. DATE() removes any ambiguity about US vs European date formats."
+      },
+      "tips": [
+        "Threshold in a cell: =SUMIFS(D2:D100, D2:D100, \">=\"&G1) — never \">=G1\", which searches for the literal text.",
+        "To sum only blanks use \"\" as criteria; to sum only non-blanks use \"<>\".",
+        "If a criteria cell is empty, SUMIFS reads it as 0 and may return a total you did not expect. Guard it with IF(G1=\"\", …) when the input is optional."
+      ]
+    },
+    {
+      "title": "Cell References and Wildcards",
+      "content": "Hard-coding \"North\" into a formula means editing the formula every time the question changes. Point criteria at input cells instead and your summary table becomes a mini dashboard. For partial text matches, SUMIFS supports two wildcards: * for any number of characters and ? for exactly one character.",
+      "example": {
+        "formula": "=SUMIFS($D$2:$D$100, $A$2:$A$100, $G2, $B$2:$B$100, \"*cable*\")",
+        "result": "1,275 — every product whose name contains \"cable\", in the region named in G2",
+        "explanation": "Absolute references ($D$2:$D$100) keep the data ranges locked while $G2 lets the row change, so you can fill the formula down a list of regions. The wildcard matches HDMI Cable, Cable Tie and Fibre Cable Kit alike."
+      },
+      "tips": [
+        "Wildcards only apply to text criteria — they do nothing against numbers or dates.",
+        "To match a literal asterisk or question mark, escape it with a tilde: \"~*\".",
+        "Criteria are case-insensitive in both Excel and Google Sheets: \"north\" and \"North\" behave identically."
+      ]
+    },
+    {
+      "title": "Getting OR Logic Out of SUMIFS",
+      "content": "SUMIFS has no OR mode — extra criteria always narrow the result. To total rows matching North OR South, pass an array constant as the criteria and wrap the whole thing in SUM. SUMIFS then returns one subtotal per item in the array, and SUM adds them together.",
+      "example": {
+        "formula": "=SUM(SUMIFS(D2:D100, A2:A100, {\"North\",\"South\"}))",
+        "result": "8,940 — the North total plus the South total",
+        "explanation": "The inner SUMIFS returns a two-element array like {5210, 3730}; SUM collapses it to a single number. Add more items to the array to widen the OR, and keep any AND criteria as normal extra pairs."
+      },
+      "tips": [
+        "Do not double-count: this pattern assumes a row can only belong to one of the listed values.",
+        "In Google Sheets the same formula works, but if you only get the first subtotal, wrap it in ARRAYFORMULA().",
+        "For OR across two different columns, it is usually cleaner to add the two SUMIFS results and subtract the overlap."
+      ]
+    },
+    {
+      "title": "Fixing the Three Errors You Will Actually Hit",
+      "content": "SUMIFS fails loudly in a couple of predictable ways, and quietly in one. #VALUE! almost always means mismatched range sizes. A result of 0 usually means the criteria never matched anything. And a total that is too low often means your \"numbers\" are text.",
+      "example": {
+        "formula": "=SUMIFS(D2:D50, A2:A100, \"North\")",
+        "result": "#VALUE! — sum_range covers 49 rows but criteria_range covers 99",
+        "explanation": "SUMIFS aligns the ranges row by row, so they must be identical in height. Fix it by making both D2:D100 and A2:A100, or by converting the data to a Table and using structured references so the ranges grow together."
+      },
+      "tips": [
+        "Getting 0? Test one criterion at a time, and check for trailing spaces with =COUNTIFS(A2:A100,\"North\") — if that is 0 too, the data is the problem, not the formula.",
+        "Numbers stored as text are ignored by SUMIFS. Select the column and use Data ▸ Text to Columns, or multiply by 1, to convert them.",
+        "Swap SUMIFS for COUNTIFS with the same criteria to see how many rows matched — the fastest way to debug a suspicious total."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "SUMIFS", "slug": "sumifs", "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges." },
+    { "name": "SUMIF", "slug": "sumif", "description": "SUMIF adds up all numbers in a range that meet a specified condition. It's the go-to function for conditional summing — like totaling sales for a specific region or summing expenses above a threshold." },
+    { "name": "SUM", "slug": "sum", "description": "SUM adds all the numbers in a range of cells and returns the total." },
+    { "name": "COUNTIFS", "slug": "countifs", "description": "COUNTIFS counts cells that satisfy multiple criteria across one or more ranges." }
+  ],
+  "summary": "SUMIFS is SUMIF with the arguments reversed and unlimited conditions: sum_range first, then criteria_range / criteria pairs that are joined with AND. Wrap comparison operators in quotes, build dates with DATE(), use * and ? for partial text, and reach for SUM(SUMIFS(…, {\"a\",\"b\"})) when you genuinely need OR. When something breaks, check that every range is the same height and run the same criteria through COUNTIFS to see whether any rows matched at all.",
+  "nextSteps": [
+    "Rebuild one of your SUMIF formulas as SUMIFS and add a date-range condition",
+    "Use COUNTIFS alongside SUMIFS to show both the total and the number of matching rows",
+    "Convert your data to an Excel Table so criteria ranges expand automatically as rows are added"
+  ],
+  "relatedTutorials": [
+    "sumif-with-date-range",
+    "averageif-with-criteria",
+    "if-with-and-or"
+  ]
+}

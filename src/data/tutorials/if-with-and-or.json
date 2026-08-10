@@ -1,0 +1,104 @@
+{
+  "slug": "if-with-and-or",
+  "title": "IF with AND / OR",
+  "description": "Combining IF with AND OR logic lets a single formula test several conditions at once. Learn the syntax, nesting order and Excel and Google Sheets examples.",
+  "category": "IF & Logical",
+  "functions": ["IF", "AND", "OR", "NOT"],
+  "intro": "A plain IF asks one question. Real spreadsheets ask several at once: did the deal close AND clear $1,000? Is the customer in the North OR the South region? AND and OR are the two functions that let you bundle those questions into a single logical test that IF can read. Once you understand that AND and OR return nothing but TRUE or FALSE, the whole pattern clicks — and the same formulas work identically in Excel and Google Sheets.",
+  "tags": ["IF", "AND", "OR", "NOT", "Logical Functions", "Multiple Conditions"],
+  "estimatedTime": "9 min read",
+  "prerequisites": [
+    "Basic IF syntax: IF(test, value_if_true, value_if_false)",
+    "Comparison operators (=, <>, >, >=, <, <=)"
+  ],
+  "sections": [
+    {
+      "title": "AND and OR Return Only TRUE or FALSE",
+      "content": "Before nesting anything, type AND and OR on their own and watch what they do. AND(...) is TRUE only when every argument is TRUE. OR(...) is TRUE when at least one argument is TRUE. That is the whole story — they output a single TRUE/FALSE, which is exactly what IF wants for its first argument. So the structure is always IF( AND(...) , value_if_true , value_if_false ).",
+      "steps": [
+        { "name": "Test AND alone", "text": "Put both conditions in one cell and read the answer.", "formula": "=AND(B2>=60, C2>=60)" },
+        { "name": "Test OR alone", "text": "Same conditions, but only one needs to pass.", "formula": "=OR(B2>=60, C2>=60)" },
+        { "name": "Feed the result into IF", "text": "Drop the working test into IF's first slot and add your two outputs.", "formula": "=IF(AND(B2>=60, C2>=60), \"Pass\", \"Fail\")" }
+      ],
+      "example": {
+        "formula": "=AND(B2>=60, C2>=60)",
+        "result": "FALSE when B2 is 72 and C2 is 55",
+        "explanation": "The second condition fails, so AND returns FALSE. Change AND to OR with the same numbers and you get TRUE, because one condition passed. Testing the logic on its own is the fastest way to debug a misbehaving IF."
+      },
+      "tips": [
+        "Both functions take up to 255 arguments, so you can stack many conditions in one call.",
+        "AND and OR ignore text and empty cells passed as arguments — only genuine logical values and numbers are evaluated."
+      ]
+    },
+    {
+      "title": "IF with AND: Every Condition Must Pass",
+      "content": "Use AND when the outcome requires a full checklist. A bonus that needs both a sales target and a signed contract, a shipment that needs a paid invoice and an in-stock item, a student who must pass both papers — all of these are AND situations. Conditions do not need to look at the same column or even the same data type.",
+      "example": {
+        "formula": "=IF(AND(B2>=1000, C2=\"Yes\"), \"Bonus\", \"No Bonus\")",
+        "result": "\"Bonus\" when B2 is 1500 and C2 is \"Yes\"; \"No Bonus\" if either fails",
+        "explanation": "AND checks the numeric target and the text flag together. If B2 is 1500 but C2 is \"No\", AND returns FALSE and IF falls through to the second output. Text comparisons here are case-insensitive, so \"yes\" also matches."
+      },
+      "tips": [
+        "Wrap text criteria in double quotes; numbers and cell references go in bare.",
+        "You cannot write 60 <= B2 <= 100 in a spreadsheet — that is what AND(B2>=60, B2<=100) is for."
+      ]
+    },
+    {
+      "title": "IF with OR: Any One Condition Is Enough",
+      "content": "OR is the shortcut for \"is this value in my list?\" and for flagging a row when any single warning applies. It is much easier to read than a chain of nested IFs that all return the same answer.",
+      "example": {
+        "formula": "=IF(OR(A2=\"North\", A2=\"South\"), \"Domestic\", \"Export\")",
+        "result": "\"Domestic\" for both North and South rows, \"Export\" for everything else",
+        "explanation": "OR stops caring once one condition is TRUE. Adding a third region is just another argument — no restructuring needed, unlike nesting a second IF."
+      },
+      "tips": [
+        "For a long list, OR gets unwieldy. =IF(COUNTIF($G$2:$G$20, A2)>0, \"Domestic\", \"Export\") checks membership against a range instead.",
+        "OR is also handy for validation: =IF(OR(B2=\"\", C2=\"\"), \"Incomplete\", \"Ready\") flags any missing field."
+      ]
+    },
+    {
+      "title": "Nesting AND Inside OR (and Vice Versa)",
+      "content": "Real rules are rarely pure AND or pure OR. You can nest one inside the other freely — just decide which one is the outer wrapper. Put the operator that describes the overall rule on the outside, and the sub-rule inside. Reading it aloud usually settles the question: \"the order must be over 100 AND come from either North or South\" tells you AND is outside and OR is inside.",
+      "example": {
+        "formula": "=IF(AND(D2>=100, OR(A2=\"North\", A2=\"South\")), \"Qualified\", \"Not qualified\")",
+        "result": "\"Qualified\" when D2 is 250 and A2 is \"South\"; \"Not qualified\" when D2 is 250 and A2 is \"East\"",
+        "explanation": "The inner OR resolves to TRUE or FALSE first, then AND combines it with the value test. Swapping the wrapper — OR(AND(...), ...) — produces a completely different rule, so parenthesis placement matters more than anything else here."
+      },
+      "tips": [
+        "Build these in stages: get the OR working in a spare cell, confirm it, then paste it inside the AND.",
+        "In Excel, the Formulas ▸ Evaluate Formula tool steps through each layer and shows you where the logic goes wrong."
+      ]
+    },
+    {
+      "title": "NOT, the * and + Shortcuts, and the Range Trap",
+      "content": "NOT flips a result, which is useful for exclusion rules. There are also arithmetic shortcuts: multiplying conditions acts like AND (TRUE*TRUE = 1) and adding them acts like OR (TRUE+FALSE = 1). These matter because of the one real gotcha — AND and OR collapse an entire range into a single TRUE/FALSE, so they do not work row by row inside array formulas. Multiplication does.",
+      "example": {
+        "formula": "=IF(NOT(OR(B2=\"Closed\", B2=\"Cancelled\")), \"Active\", \"Inactive\")",
+        "result": "\"Active\" for any status that is neither Closed nor Cancelled",
+        "explanation": "OR finds the unwanted statuses and NOT inverts the answer, which is clearer than listing every acceptable status. The same rule can also be written as =IF(AND(B2<>\"Closed\", B2<>\"Cancelled\"), \"Active\", \"Inactive\")."
+      },
+      "tips": [
+        "The range trap: =IF(AND(A2:A10=\"North\"), …) asks whether ALL ten cells say North, not each one. Use =IF((A2:A10=\"North\")*(B2:B10>100), \"Yes\", \"No\") for a per-row array result.",
+        "The * and + shortcuts are also the standard way to build multi-criteria SUMPRODUCT and FILTER formulas.",
+        "Google Sheets behaves identically for IF, AND, OR and NOT — including the range trap. If you are on Excel 365 or Google Sheets and find yourself nesting three or more IFs, switch to IFS or SWITCH for readability."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "IF", "slug": "if", "description": "IF performs a logical test and returns one value if true and another if false." },
+    { "name": "AND", "slug": "and", "description": "AND returns TRUE if all arguments are TRUE, and FALSE if any argument is FALSE." },
+    { "name": "OR", "slug": "or", "description": "OR returns TRUE if any argument is TRUE, and FALSE if all arguments are FALSE." },
+    { "name": "NOT", "slug": "not", "description": "NOT reverses the logic of its argument." }
+  ],
+  "summary": "AND and OR do one job: they turn several conditions into the single TRUE/FALSE that IF needs. Use AND when every condition must pass, OR when any one will do, and nest them — outer operator describing the overall rule — when the logic is mixed. NOT inverts a test for exclusion rules, while * and + are the array-safe equivalents of AND and OR. The only real trap is handing AND or OR a whole range: it collapses to one answer instead of evaluating row by row.",
+  "nextSteps": [
+    "Rewrite one of your nested IF formulas as a single IF with AND or OR and compare the readability",
+    "Try the multiplication shortcut, =(A2:A10=\"North\")*(B2:B10>100), to see AND logic spill down a column",
+    "Move on to IFS or SWITCH when a formula needs more than three separate outcomes"
+  ],
+  "relatedTutorials": [
+    "nested-if-alternatives",
+    "sumifs-multiple-criteria",
+    "excel-n-a-error-fix"
+  ]
+}
