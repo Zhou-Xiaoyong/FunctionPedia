@@ -1,0 +1,106 @@
+{
+  "slug": "extract-text-from-string",
+  "title": "Extract Text From String",
+  "description": "Extract text from string in Excel and Google Sheets using LEFT, RIGHT, MID, and FIND. Learn to pull the first or last word, a middle substring, or text between two delimiters.",
+  "category": "Text Functions",
+  "functions": [
+    "MID",
+    "LEFT",
+    "RIGHT",
+    "FIND"
+  ],
+  "intro": "Spreadsheets rarely store data exactly how you need it — names, codes, and IDs often arrive jammed into a single column. Excel and Google Sheets give you four core text functions to pull pieces out: LEFT grabs from the start, RIGHT from the end, MID from the middle, and FIND tells the others where to cut. This guide shows how to combine them for real-world extractions.",
+  "tags": [
+    "LEFT",
+    "RIGHT",
+    "MID",
+    "FIND",
+    "Text Extraction"
+  ],
+  "estimatedTime": "10 min read",
+  "prerequisites": [
+    "Basic knowledge of cell references",
+    "Understanding that text positions are counted from 1 (the first character is position 1)"
+  ],
+  "sections": [
+    {
+      "title": "Extract from the Start with LEFT",
+      "content": "LEFT returns a set number of characters from the beginning of a string. Omit the count to get just the first character. It is ideal for fixed-width prefixes or for grabbing everything before the first space.",
+      "example": {
+        "formula": "=LEFT(\"Hello World\", 5)",
+        "result": "Hello",
+        "explanation": "Returns the first 5 characters. LEFT counts every character, including spaces, as one position."
+      },
+      "tips": [
+        "To extract the first word dynamically, use =LEFT(A1, FIND(\" \", A1)-1) so it stops at the first space."
+      ]
+    },
+    {
+      "title": "Extract from the End with RIGHT",
+      "content": "RIGHT mirrors LEFT but counts from the end of the string, making it perfect for suffixes like file extensions, area codes at the tail, or the last name in a 'First Last' cell. Pair it with LEN and FIND to make the cut position dynamic.",
+      "example": {
+        "formula": "=RIGHT(\"Hello World\", 5)",
+        "result": "World",
+        "explanation": "Returns the last 5 characters. RIGHT counts back from the end of the string."
+      },
+      "tips": [
+        "Extract everything after the first space with =RIGHT(A1, LEN(A1)-FIND(\" \", A1))."
+      ]
+    },
+    {
+      "title": "Extract from the Middle with MID",
+      "content": "MID returns a number of characters starting at a position you specify. Because positions are 1-based, MID is how you pull a substring once you know where it begins — often with FIND supplying that starting point.",
+      "example": {
+        "formula": "=MID(\"Hello World\", 7, 5)",
+        "result": "World",
+        "explanation": "Starts at position 7 (the 'W' in World) and returns 5 characters. If start + length runs past the end, MID returns whatever is available."
+      },
+      "tips": [
+        "MID is 1-based: the first character is position 1, not 0."
+      ]
+    },
+    {
+      "title": "Locate the Cut Point with FIND",
+      "content": "FIND returns the position of one string inside another and is case-sensitive. It does not extract anything by itself, but it hands LEFT, RIGHT, and MID the exact position to cut at. When text is missing, FIND throws #VALUE!, so wrap it in IFERROR for safe formulas.",
+      "example": {
+        "formula": "=FIND(\"-\", \"ABC-123\")",
+        "result": "4",
+        "explanation": "The first hyphen appears at the 4th character. Use this number as the start position for MID or to size a LEFT/RIGHT extraction."
+      },
+      "tips": [
+        "For case-insensitive searching, use SEARCH instead of FIND.",
+        "Avoid #VALUE! on missing text with =IFERROR(FIND(\"-\", A1), 0)."
+      ]
+    },
+    {
+      "title": "Combine Them: Text Between Two Delimiters",
+      "content": "The real power shows up when you nest these functions. To pull the segment between the first and second dash of a code like 'US-12345-CA', use FIND twice to locate both delimiters and let MID return everything in between. This pattern works for SKUs, paths, and any repeated-separator data.",
+      "example": {
+        "formula": "=MID(A1, FIND(\"-\",A1)+1, FIND(\"-\",A1,FIND(\"-\",A1)+1)-FIND(\"-\",A1)-1)",
+        "result": "12345 (when A1 = US-12345-CA)",
+        "explanation": "The first FIND finds the opening dash; the nested FIND starting just after it finds the closing dash. MID starts one character past the opening dash and runs for the gap between the two dashes."
+      },
+      "tips": [
+        "In Microsoft 365 you can simplify this with TEXTBEFORE and TEXTAFTER, but the MID+FIND pattern works in every version and in Google Sheets."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    { "name": "MID", "slug": "mid", "description": "MID returns a specific number of characters from a text string starting at a specified position." },
+    { "name": "LEFT", "slug": "left", "description": "LEFT returns the first character(s) from the beginning of a text string." },
+    { "name": "RIGHT", "slug": "right", "description": "RIGHT returns the last character(s) from the end of a text string." },
+    { "name": "FIND", "slug": "find", "description": "FIND returns the position of one text string inside another. It is case-sensitive." }
+  ],
+  "summary": "Extracting text from a string is a four-function toolkit: LEFT and RIGHT for the edges, MID for the middle, and FIND to locate the exact cut point. Once you can nest FIND inside MID, you can pull any segment between delimiters — the single most reusable text-extraction pattern in Excel and Google Sheets.",
+  "nextSteps": [
+    "Use LEFT(A1, FIND(\" \", A1)-1) to extract the first word of a name",
+    "Combine MID + FIND to split SKUs and codes at their delimiters",
+    "Compare LEFT/RIGHT/MID with TEXTBEFORE/TEXTAFTER if you are on Microsoft 365"
+  ],
+  "relatedTutorials": [
+    "calculate-days-between-two-dates",
+    "concatenate-vs-textjoin",
+    "excel-n-a-error-fix"
+  ]
+}

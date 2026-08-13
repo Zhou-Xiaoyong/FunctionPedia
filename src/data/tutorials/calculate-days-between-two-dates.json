@@ -1,0 +1,109 @@
+{
+  "slug": "calculate-days-between-two-dates",
+  "title": "Calculate Days Between Two Dates",
+  "description": "Calculate days between two dates in Excel and Google Sheets with DAYS, DATEDIF, and NETWORKDAYS. Learn which formula counts total, working, or elapsed days and how to skip weekends.",
+  "category": "Date & Time",
+  "functions": [
+    "DAYS",
+    "DATEDIF",
+    "NETWORKDAYS",
+    "TODAY"
+  ],
+  "intro": "Counting the days between two dates is one of the most common spreadsheet tasks, from tracking project durations to measuring age. Excel and Google Sheets each offer several functions, and the right one depends on whether you want total calendar days, broken-down years/months/days, or only working days. This guide walks through the four formulas you'll reach for most.",
+  "tags": [
+    "DAYS",
+    "DATEDIF",
+    "NETWORKDAYS",
+    "Date Difference",
+    "Working Days"
+  ],
+  "estimatedTime": "10 min read",
+  "prerequisites": [
+    "Dates stored as real date serials (not text)",
+    "Basic understanding of cell references"
+  ],
+  "sections": [
+    {
+      "title": "The Simplest Method: Subtract the Dates",
+      "content": "If both cells hold real dates, a plain subtraction already gives the day count: later date minus earlier date. This is the fastest approach and works identically in Excel and Google Sheets. The result is a number you can format as a whole value.",
+      "example": {
+        "formula": "=B1-A1",
+        "result": "14 (when A1 = Jan 1 2024 and B1 = Jan 15 2024)",
+        "explanation": "Subtracting the earlier date from the later one returns the number of elapsed days. Negative results mean the dates were entered in the wrong order."
+      },
+      "tips": [
+        "Make sure the cells are formatted as Dates, not Text, or subtraction returns #VALUE!."
+      ]
+    },
+    {
+      "title": "Using the DAYS Function",
+      "content": "DAYS is a dedicated function that returns the number of days between two dates. Its only quirk is the argument order: it is (end_date, start_date), the opposite of the intuitive left-to-right order. Use DAYS when you want an explicit, self-documenting formula.",
+      "example": {
+        "formula": "=DAYS(DATE(2024,1,15), DATE(2024,1,1))",
+        "result": "14",
+        "explanation": "end_date (Jan 15) minus start_date (Jan 1) equals 14 days. Swapping the arguments returns -14."
+      },
+      "tips": [
+        "DAYS is available in Excel 2013 and later; in older versions just subtract the dates directly.",
+        "Behavior is identical in Google Sheets, including the (end_date, start_date) order."
+      ]
+    },
+    {
+      "title": "Break It Down with DATEDIF",
+      "content": "DATEDIF measures the gap in a unit you choose: \"Y\" for full years, \"M\" for full months, \"D\" for total days, plus remainder units \"YM\", \"YD\", and \"MD\". It is a legacy compatibility function, so it won't appear in autocomplete, but it is perfect when you need a result in years and months rather than a raw day count.",
+      "example": {
+        "formula": "=DATEDIF(DATE(2024,1,1), DATE(2024,1,15), \"D\")",
+        "result": "14",
+        "explanation": "Unit \"D\" returns the full day count. Use \"Y\" to get whole years or \"M\" for whole months between the same two dates."
+      },
+      "tips": [
+        "Avoid the \"MD\" unit for critical math — it has a long-standing Microsoft bug that can return wrong values.",
+        "Google Sheets supports DATEDIF with the same units and the same MD quirk."
+      ]
+    },
+    {
+      "title": "Count Only Working Days with NETWORKDAYS",
+      "content": "When weekends don't count — payroll, project timelines, SLA windows — NETWORKDAYS counts weekdays from Monday to Friday, inclusive of both endpoints, and optionally subtracts a holiday list. This is the function to use for 'business days between' questions.",
+      "example": {
+        "formula": "=NETWORKDAYS(DATE(2024,1,1), DATE(2024,1,31))",
+        "result": "23",
+        "explanation": "January 2024 has 31 calendar days; removing the 4 Saturdays and 4 Sundays leaves 23 weekdays. Both the start and end dates are included."
+      },
+      "tips": [
+        "Add a third argument with a holiday range to exclude specific days: =NETWORKDAYS(start, end, holidays).",
+        "Use NETWORKDAYS.INTL for custom weekend days (e.g. Friday-only weekends)."
+      ]
+    },
+    {
+      "title": "Calculate from Today Automatically",
+      "content": "TODAY returns the current date and recalculates every time the sheet updates. Pairing it with a fixed target date lets you build a live 'days until' or 'days since' counter without typing dates by hand.",
+      "example": {
+        "formula": "=A1-TODAY()",
+        "result": "15 (when A1 holds a deadline 15 days in the future)",
+        "explanation": "Subtracting TODAY() from a future date yields the days remaining; a past date returns a negative number."
+      },
+      "tips": [
+        "Wrap with MAX or IFERROR if you want to avoid negatives on overdue items.",
+        "TODAY() works the same way in Google Sheets."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    { "name": "DAYS", "slug": "days", "description": "DAYS returns the number of days between two dates by subtracting the start date from the end date; note that the argument order is (end_date, start_date)." },
+    { "name": "DATEDIF", "slug": "datedif", "description": "DATEDIF calculates the difference between two dates in a chosen unit: full years (Y), full months (M), days (D), or the remaining days/months after removing the larger units (MD, YM, YD). It is a legacy function still supported but not shown in the formula autocomplete." },
+    { "name": "NETWORKDAYS", "slug": "networkdays", "description": "NETWORKDAYS counts the number of working days between two dates, inclusive of both endpoints, skipping Saturdays and Sundays and optionally a list of holidays." },
+    { "name": "TODAY", "slug": "today", "description": "TODAY returns the current date, updated each time the worksheet recalculates." }
+  ],
+  "summary": "To calculate days between two dates, subtract them directly for a plain day count, use DAYS for an explicit formula (remember end_date comes first), reach for DATEDIF when you need years/months/days breakdowns, and switch to NETWORKDAYS whenever weekends should be excluded. Combine any of these with TODAY to keep a live count against the current date.",
+  "nextSteps": [
+    "Try NETWORKDAYS with a holiday range for an accurate business-day count",
+    "Use DATEDIF \"Y\" and \"YM\" together to display an age as 'X years, Y months'",
+    "Pair TODAY with conditional formatting to highlight overdue or upcoming dates"
+  ],
+  "relatedTutorials": [
+    "extract-text-from-string",
+    "calculate-age-from-birthday",
+    "sumif-with-date-range"
+  ]
+}
