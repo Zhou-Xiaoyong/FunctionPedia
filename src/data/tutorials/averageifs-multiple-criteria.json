@@ -1,0 +1,126 @@
+{
+  "slug": "averageifs-multiple-criteria",
+  "title": "AVERAGEIFS Multiple Criteria",
+  "description": "AVERAGEIFS multiple criteria lets you average cells that satisfy two or more conditions at once. Learn the syntax, real examples, and how it differs from AVERAGEIF and SUMIFS.",
+  "category": "Statistical",
+  "functions": [
+    "AVERAGEIFS",
+    "AVERAGEIF",
+    "AVERAGE",
+    "SUMIFS"
+  ],
+  "intro": "AVERAGEIFS averages values only when every one of its criteria is true, which makes it perfect for questions like 'what is the average sales amount for Product A in the West region?' This guide covers the syntax, walks through worked examples with several conditions, and shows where AVERAGEIFS beats both AVERAGEIF and SUMIFS.",
+  "tags": [
+    "AVERAGEIFS",
+    "Multiple Criteria",
+    "Statistical",
+    "Conditional Average"
+  ],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Familiarity with cell ranges and basic criteria",
+    "The difference between a value range and a criteria range"
+  ],
+  "sections": [
+    {
+      "title": "AVERAGEIFS Syntax — Every Range Must Be the Same Size",
+      "content": "AVERAGEIFS takes the average range first, then pairs of criteria range and criteria. All ranges must have the same dimensions, or Excel returns #VALUE!. A row is included in the average only if it satisfies every condition you list. The function is AND-based: more criteria means a narrower (usually smaller) average.",
+      "steps": [
+        {
+          "name": "Pick the average range",
+          "text": "This is the column of numbers you want to average.",
+          "formula": "D2:D100"
+        },
+        {
+          "name": "Add each criteria range + condition pair",
+          "text": "List them in any order after the average range; every range must match the size of the average range.",
+          "formula": "AVERAGEIFS(D2:D100, A2:A100, \"A\", C2:C100, \"West\")"
+        }
+      ],
+      "tips": [
+        "Think of AVERAGEIFS as SUMIFS divided by COUNTIFS for the same conditions."
+      ]
+    },
+    {
+      "title": "Example: Average by Product AND Region",
+      "content": "Suppose column A holds Product, column C holds Region, and column D holds the Amount sold. To average only the amounts where Product is A and Region is West, you give AVERAGEIFS both conditions. Only rows meeting both are averaged.",
+      "example": {
+        "formula": "=AVERAGEIFS(D2:D100, A2:A100, \"A\", C2:C100, \"West\")",
+        "result": "Returns the average of column D where Product = 'A' AND Region = 'West'",
+        "explanation": "Each criteria pair is AND-ed. If no row matches both, the formula returns #DIV/0! instead of an average."
+      },
+      "tips": [
+        "Reference cells instead of hard-coding text, e.g. A2:A100, G1, so you can change the criteria without editing the formula."
+      ]
+    },
+    {
+      "title": "Numeric and Operator Criteria",
+      "content": "Criteria are not limited to exact matches. You can use operators such as >, >=, <, and <> by joining them to a value, and you can mix a numeric condition with a text condition in the same formula. Wildcards (* and ?) work for partial text matches.",
+      "example": {
+        "formula": "=AVERAGEIFS(D2:D100, B2:B100, \">100\", C2:C100, \"West\")",
+        "result": "Average of column D where Amount > 100 AND Region = 'West'",
+        "explanation": "The \">100\" criteria is a text string; Excel evaluates it as a greater-than comparison. Use \"Pro*\" to average only products whose names start with 'Pro'."
+      },
+      "tips": [
+        "When the threshold lives in a cell, concatenate: \">\"&G2 so the cutoff updates automatically."
+      ]
+    },
+    {
+      "title": "AVERAGEIFS vs AVERAGEIF vs SUMIFS",
+      "content": "AVERAGEIF handles a single condition and puts the average range LAST, while AVERAGEIFS takes the average range FIRST and supports many conditions. SUMIFS mirrors AVERAGEIFS exactly in argument order but returns a sum instead of an average. If you already know SUMIFS, AVERAGEIFS will feel identical except for the first range.",
+      "example": {
+        "formula": "=SUMIFS(D2:D100, A2:A100, \"A\", C2:C100, \"West\")",
+        "result": "Sum of column D (not the average) for the same two conditions",
+        "explanation": "Same conditions as the AVERAGEIFS example, but a total. Divide this SUMIFS by a COUNTIFS with the same criteria to reproduce AVERAGEIFS manually."
+      },
+      "tips": [
+        "Prefer AVERAGEIFS over a SUMIFS/COUNTIFS pair — it is one function and avoids divide-by-zero handling."
+      ]
+    },
+    {
+      "title": "Handling the #DIV/0! When Nothing Matches",
+      "content": "When no row satisfies all criteria, AVERAGEIFS returns #DIV/0! because it has nothing to divide by. Wrap the formula in IFERROR to show a clean zero or message instead of an error, which keeps dashboards tidy.",
+      "example": {
+        "formula": "=IFERROR(AVERAGEIFS(D2:D100, A2:A100, \"A\", C2:C100, \"West\"), 0)",
+        "result": "0 when no row matches both criteria, otherwise the average",
+        "explanation": "IFERROR catches the #DIV/0! and substitutes 0 (or any value you choose) so reports stay readable."
+      },
+      "tips": [
+        "Use a text fallback like \"No data\" instead of 0 if a blank average would be misleading."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "AVERAGEIFS",
+      "slug": "averageifs",
+      "description": "AVERAGEIFS calculates the average of cells that satisfy multiple criteria."
+    },
+    {
+      "name": "AVERAGEIF",
+      "slug": "averageif",
+      "description": "AVERAGEIF calculates the average of cells that meet a single criterion."
+    },
+    {
+      "name": "AVERAGE",
+      "slug": "average",
+      "description": "AVERAGE returns the arithmetic mean of a set of numbers."
+    },
+    {
+      "name": "SUMIFS",
+      "slug": "sumifs",
+      "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges."
+    }
+  ],
+  "summary": "AVERAGEIFS is the conditional-average workhorse: give it an average range plus any number of criteria-range pairs, and it averages only the rows that satisfy all conditions. Remember the average range comes first, all ranges must be the same size, and a no-match result is a #DIV/0! you can tame with IFERROR.",
+  "nextSteps": [
+    "Try a three-criteria average (Product, Region, and Amount > 100) on your own data",
+    "Read AVERAGEIF with Criteria for the single-condition version and its argument quirks",
+    "See SUMIFS Multiple Criteria to apply the same multi-condition logic to totals"
+  ],
+  "relatedTutorials": [
+    "averageif-with-criteria",
+    "sumifs-multiple-criteria",
+    "calculate-loan-interest"
+  ]
+}

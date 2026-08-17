@@ -1,0 +1,127 @@
+{
+  "slug": "calculate-loan-interest",
+  "title": "Calculate Loan Interest",
+  "description": "Calculate loan interest in Excel using IPMT, PPMT, and PMT. Learn how to split every payment into interest and principal, and find the true total cost of a loan.",
+  "category": "Financial",
+  "functions": [
+    "IPMT",
+    "PPMT",
+    "PMT",
+    "RATE"
+  ],
+  "intro": "A loan payment is really two payments in one: interest paid to the lender and principal that pays down your balance. Excel's IPMT, PPMT, PMT, and RATE functions let you break a schedule apart so you can see exactly how much of each payment is interest and how much is going toward the debt itself.",
+  "tags": [
+    "IPMT",
+    "PPMT",
+    "PMT",
+    "Loan Interest",
+    "Financial"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "Basic understanding of loans, periods, and interest rates",
+    "How Excel displays negative numbers as cash outflow"
+  ],
+  "sections": [
+    {
+      "title": "How a Loan Payment Splits into Interest and Principal",
+      "content": "Each fixed payment on an amortizing loan covers two things. The interest portion is the lender's charge for the outstanding balance that month (balance x periodic rate). The principal portion is whatever is left over, and it reduces the balance for next month. Early payments are mostly interest; later payments are mostly principal. Excel gives you a direct function for each piece so you never have to hand-calculate it.",
+      "steps": [
+        {
+          "name": "Identify the four inputs",
+          "text": "You need the periodic rate, the period number, the total number of periods, and the loan amount (present value).",
+          "formula": "rate = 6%/12, nper = 360, pv = 200000"
+        },
+        {
+          "name": "Decide the sign convention",
+          "text": "Excel returns loan cash flows as negative (money you pay out). Wrap results in a minus sign or format as positive for display.",
+          "formula": "=-PMT(6%/12, 360, 200000)"
+        }
+      ],
+      "tips": [
+        "Work in consistent periods: if the rate is annual, divide by 12 for a monthly loan and multiply nper by 12."
+      ]
+    },
+    {
+      "title": "PMT — The Total Periodic Payment",
+      "content": "PMT returns the full payment for a loan with constant payments and a constant rate. It is the sum of the interest and principal pieces for any single period. Use it as the foundation before splitting the payment apart.",
+      "example": {
+        "formula": "=PMT(6%/12, 360, 200000)",
+        "result": "Approximately -$1,199.10 (the monthly payment)",
+        "explanation": "A $200,000 loan at 6% over 30 years costs about $1,199.10 per month. The negative sign is Excel's cash-flow convention for money you pay out."
+      },
+      "tips": [
+        "Add a 5th argument, 1, only if payments are due at the start of the period (annuity-due) rather than the end."
+      ]
+    },
+    {
+      "title": "IPMT — Interest Portion of a Specific Payment",
+      "content": "IPMT gives the interest piece of one chosen period. In month 1, the interest is simply the full balance times the periodic rate. As the balance falls, the interest portion falls with it, which is why IPMT shrinks over time.",
+      "example": {
+        "formula": "=IPMT(6%/12, 1, 360, 200000)",
+        "result": "-$1,000.00 (interest in payment 1)",
+        "explanation": "Month 1 interest = 200,000 x 0.5% = $1,000. Because you pay $1,199.10 total, the remaining $199.10 is principal."
+      },
+      "tips": [
+        "Change the period argument (2, 3, 180, ...) to see how the interest share drops across the schedule."
+      ]
+    },
+    {
+      "title": "PPMT — Principal Portion of a Specific Payment",
+      "content": "PPMT returns the principal piece of a single period. It always equals PMT minus IPMT for the same period. Early on it is tiny; near the end of the loan it approaches the full payment.",
+      "example": {
+        "formula": "=PPMT(6%/12, 1, 360, 200000)",
+        "result": "-$199.10 (principal in payment 1)",
+        "explanation": "-$1,199.10 (PMT) minus -$1,000.00 (IPMT) equals -$199.10 of principal paid down in month 1."
+      },
+      "tips": [
+        "Drag PPMT and IPMT down a column with incrementing period numbers to build a full amortization table."
+      ]
+    },
+    {
+      "title": "RATE and the Total Interest Over the Life of the Loan",
+      "content": "RATE works backward: give it the payment, periods, and loan amount, and it returns the periodic interest rate. To find the total interest you will pay, multiply the payment by the number of periods and subtract the amount borrowed. This is the real cost of the loan beyond the sticker price.",
+      "example": {
+        "formula": "=RATE(360, -1199.10, 200000)",
+        "result": "0.005 (0.5% per month, i.e. 6% annual)",
+        "explanation": "RATE confirms the implied periodic rate. Total interest = 1199.10 x 360 - 200000 = about $231,676 over 30 years."
+      },
+      "tips": [
+        "When no rows match or inputs are inconsistent, RATE may return #NUM!; provide a guess argument (e.g. 0.005) to help it converge."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "IPMT",
+      "slug": "ipmt",
+      "description": "IPMT calculates the interest portion of a payment for a specific period of a loan or investment."
+    },
+    {
+      "name": "PPMT",
+      "slug": "ppmt",
+      "description": "PPMT calculates the principal portion of a payment for a specific period of a loan or investment."
+    },
+    {
+      "name": "PMT",
+      "slug": "pmt",
+      "description": "PMT calculates the periodic payment for a loan or investment based on constant payments and a constant interest rate. It's the function you need for mortgage, car loan, and any fixed-rate payment calculations."
+    },
+    {
+      "name": "RATE",
+      "slug": "rate",
+      "description": "RATE returns the periodic interest rate for an annuity based on the number of periods, payment amount, present value, and future value."
+    }
+  ],
+  "summary": "Loan interest is just one half of every payment, and Excel hands you each half directly: PMT for the total, IPMT for the interest slice, PPMT for the principal slice, and RATE to recover the rate from a known payment. Once you can split a payment you can project the full cost of any fixed-rate loan instead of guessing.",
+  "nextSteps": [
+    "Build a month-by-month amortization table by dragging IPMT and PPMT down a column",
+    "Compare a 15-year vs 30-year term by changing nper and watching total interest fall",
+    "Read the PMT Function Loan Payment guide for a deeper walkthrough of the payment formula"
+  ],
+  "relatedTutorials": [
+    "pmt-function-loan-payment",
+    "loan-payment-calculator",
+    "averageifs-multiple-criteria"
+  ]
+}
