@@ -1,0 +1,90 @@
+{
+  "slug": "google-sheets-arrayformula",
+  "title": "Google Sheets ARRAYFORMULA",
+  "description": "Google Sheets ARRAYFORMULA applies one formula to an entire range at once, so you never copy down again. Learn how to combine it with IF, FILTER, and QUERY.",
+  "category": "Google Sheets",
+  "functions": ["ARRAYFORMULA", "QUERY", "FILTER", "SEQUENCE"],
+  "intro": "Copying a formula down hundreds of rows is tedious and brittle — insert a row and the pattern breaks. Google Sheets' ARRAYFORMULA solves this by applying a single formula to a whole range and spilling the results automatically. This guide covers the core pattern and how to combine it with IF, FILTER, and QUERY.",
+  "tags": ["ARRAYFORMULA", "Google Sheets", "Dynamic Arrays", "FILTER", "QUERY"],
+  "estimatedTime": "10 min read",
+  "prerequisites": [
+    "Basic spreadsheet formulas (multiplication, IF)",
+    "A Google Sheets spreadsheet to test in",
+    "Awareness that ARRAYFORMULA is Google Sheets only"
+  ],
+  "sections": [
+    {
+      "title": "What ARRAYFORMULA Does",
+      "content": "ARRAYFORMULA wraps any formula and evaluates it for every cell in the input range at once, returning a spilled array of results. Instead of writing =A2*B2 in C2 and dragging down, you reference the full columns and let Sheets calculate each row in a single cell.",
+      "example": {
+        "formula": "=ARRAYFORMULA(A2:A10 * B2:B10)",
+        "result": "A column of products, one per row of A2:A10 and B2:B10",
+        "explanation": "The multiplication is applied element-by-element. Place the formula in one cell (e.g. C2) and it fills C2:C10 automatically."
+      },
+      "tips": [
+        "Leave the cells below the formula empty so the array has room to spill."
+      ]
+    },
+    {
+      "title": "Replacing Fill-Down with One Formula",
+      "content": "The most common use is to replace a column of copied formulas with a single spilling formula. Write the formula you would copy down, then swap the single-cell references for full column ranges and wrap everything in ARRAYFORMULA.",
+      "steps": [
+        { "name": "Write the scalar version", "text": "Start with the row-by-row formula.", "formula": "=A2*B2" },
+        { "name": "Use full ranges", "text": "Change references to the whole column range.", "formula": "=A2:A10*B2:B10" },
+        { "name": "Wrap with ARRAYFORMULA", "text": "Enclose the expression so Sheets spills it.", "formula": "=ARRAYFORMULA(A2:A10*B2:B10)" }
+      ],
+      "tips": [
+        "This pattern survives inserted rows because the range reference expands with the data."
+      ]
+    },
+    {
+      "title": "Combining ARRAYFORMULA with IF",
+      "content": "IF normally returns one value, but inside ARRAYFORMULA it is applied to every row. This is perfect for row-by-row conditional calculations such as tiered commissions or status flags.",
+      "example": {
+        "formula": "=ARRAYFORMULA(IF(A2:A100 > 1000, A2:A100 * 0.1, 0))",
+        "result": "10% commission for each row above 1000, else 0",
+        "explanation": "The condition A2:A100 > 1000 is evaluated per row, and the true/false branches are computed element-by-element."
+      },
+      "tips": [
+        "Avoid aggregators like SUM inside ARRAYFORMULA — they collapse to one value; use row-by-row math or SUMPRODUCT instead."
+      ]
+    },
+    {
+      "title": "ARRAYFORMULA with FILTER and QUERY",
+      "content": "ARRAYFORMULA pairs naturally with other array functions. You can transform a FILTER result in place, or pre-compute a column that QUERY then references. These combinations let you build entire report tables from one cell.",
+      "example": {
+        "formula": "=ARRAYFORMULA(FILTER(A2:C, B2:B > 50) * 1.1)",
+        "result": "Rows where B > 50, with numeric columns increased by 10%",
+        "explanation": "FILTER returns the qualifying rows, and ARRAYFORMULA applies the 10% increase to the numeric values before spilling."
+      },
+      "tips": [
+        "For very large datasets, QUERY or a pivot table can be faster than one giant ARRAYFORMULA."
+      ]
+    },
+    {
+      "title": "Excel Equivalent: Dynamic Arrays",
+      "content": "ARRAYFORMULA is a Google Sheets exclusive. In Excel 365, the same effect comes from implicit dynamic arrays — =A2:A10*B2:B10 spills on its own with no wrapper. In older Excel you would need Ctrl+Shift+Enter to force array evaluation, which is exactly what ARRAYFORMULA does in Sheets.",
+      "example": {
+        "formula": "=A2:A10 * B2:B10",
+        "result": "Spills automatically in Excel 365; requires Ctrl+Shift+Enter in legacy Excel",
+        "explanation": "Excel 365 recognizes an array expression and spills it, so ARRAYFORMULA is unnecessary there."
+      },
+      "tips": [
+        "If a spilled array lands on occupied cells in Sheets, you get #REF! — clear the target range first."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "ARRAYFORMULA", "slug": "arrayformula", "description": "ARRAYFORMULA lets you apply a single formula to an entire range of cells automatically, expanding results into neighboring rows and columns without manually filling down or across." },
+    { "name": "QUERY", "slug": "query", "description": "QUERY runs a Google Visualization API Query Language statement on a range of data. It's Google Sheets' most powerful data function — essentially SQL for your spreadsheet." },
+    { "name": "FILTER", "slug": "filter", "description": "FILTER extracts rows from a range that meet a condition, returning a dynamic array of matching results. It's the array-era replacement for complex IF/INDEX combinations." },
+    { "name": "SEQUENCE", "slug": "sequence", "description": "SEQUENCE returns a dynamic array of sequential numbers, shaped by the number of rows and columns, starting at a given value and stepping by a given increment." }
+  ],
+  "summary": "Google Sheets ARRAYFORMULA lets one formula replace an entire column of copied-down calculations by evaluating a range element-by-element and spilling the results. Combine it with IF for row-wise conditions, with FILTER or QUERY for in-formula data shaping, and remember there is no Excel equivalent — Excel 365 uses implicit dynamic arrays instead. Keep the spill range clear to avoid #REF! errors.",
+  "nextSteps": [
+    "Rewrite one of your fill-down columns as a single ARRAYFORMULA",
+    "Nest ARRAYFORMULA with IF to compute row-wise conditional values",
+    "Explore QUERY for SQL-like filtering when the dataset grows large"
+  ],
+  "relatedTutorials": ["google-sheets-query-function", "excel-dynamic-arrays", "extract-text-from-string"]
+}

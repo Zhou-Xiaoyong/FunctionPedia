@@ -1,0 +1,96 @@
+{
+  "slug": "index-match-with-multiple-criteria",
+  "title": "INDEX MATCH with Multiple Criteria",
+  "description": "INDEX MATCH with multiple criteria lets you match on two or more columns in Excel and Google Sheets. Learn the exact array formula plus a cleaner XLOOKUP alternative.",
+  "category": "Lookup & Reference",
+  "functions": ["INDEX", "MATCH", "VLOOKUP", "SUMIFS"],
+  "intro": "INDEX and MATCH are a classic pair for flexible lookups, but a single MATCH can only match one column. When your lookup depends on two or more keys at once — say product and region — you need to combine conditions into the formula. This guide shows the array-based INDEX MATCH technique and a modern XLOOKUP shortcut.",
+  "tags": ["INDEX", "MATCH", "Multiple Criteria", "Lookup", "XLOOKUP"],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Basic INDEX and MATCH syntax",
+    "Understanding of TRUE/FALSE Boolean arithmetic",
+    "Microsoft 365 (only needed for the XLOOKUP method)"
+  ],
+  "sections": [
+    {
+      "title": "The Basic INDEX MATCH Pattern",
+      "content": "On its own, INDEX MATCH looks up one value and returns another from any column. MATCH finds the row position where a single condition is true; INDEX then returns the value at that row in a different column. This already works to the left, unlike VLOOKUP.",
+      "example": {
+        "formula": "=INDEX(C2:C100, MATCH(\"Apple\", A2:A100, 0))",
+        "result": "Returns the value in column C where column A equals \"Apple\"",
+        "explanation": "MATCH(\"Apple\", A2:A100, 0) returns the row number; INDEX uses it to pull the matching value from column C."
+      },
+      "tips": [
+        "Use 0 as the match_type for an exact match — the most common case."
+      ]
+    },
+    {
+      "title": "Adding a Second Criterion",
+      "content": "To match on two columns, multiply two TRUE/FALSE conditions inside MATCH. Each condition returns an array of TRUE/FALSE, which Excel turns into 1/0 when multiplied. Only the row where BOTH are true produces 1, so MATCH(1, ...) finds that exact row.",
+      "steps": [
+        { "name": "Build the first condition", "text": "Test the first key against its column.", "formula": "=(A2:A100=G2)" },
+        { "name": "Build the second condition", "text": "Test the second key against its column.", "formula": "=(B2:B100=H2)" },
+        { "name": "Multiply and match", "text": "Multiply the conditions and look for the first 1.", "formula": "=MATCH(1, (A2:A100=G2)*(B2:B100=H2), 0)" }
+      ],
+      "example": {
+        "formula": "=INDEX(D2:D100, MATCH(1, (A2:A100=G2)*(B2:B100=H2), 0))",
+        "result": "Returns the column D value where column A = G2 AND column B = H2",
+        "explanation": "In legacy Excel this is an array formula — confirm with Ctrl+Shift+Enter. In Microsoft 365 it spills automatically. Google Sheets also evaluates it natively without special entry."
+      },
+      "tips": [
+        "Keep lookup ranges the same size as the return range (here both span rows 2 to 100).",
+        "Add a delimiter helper like (A2:A100=G2)*(B2:B100=\"North\") for text keys."
+      ]
+    },
+    {
+      "title": "Three or More Criteria",
+      "content": "You are not limited to two keys. Just multiply additional conditions into the same MATCH. Each new factor is AND-ed, so every condition must be true for the row to match.",
+      "example": {
+        "formula": "=INDEX(E2:E100, MATCH(1, (A2:A100=G2)*(B2:B100=H2)*(C2:C100=I2), 0))",
+        "result": "Returns column E where A = G2, B = H2, AND C = I2",
+        "explanation": "The product of three TRUE/FALSE arrays is 1 only on the row satisfying all three conditions."
+      },
+      "tips": [
+        "Wrap the whole formula in IFERROR(..., \"Not found\") to handle missing combinations gracefully."
+      ]
+    },
+    {
+      "title": "XLOOKUP for a Cleaner Alternative",
+      "content": "If you are on Microsoft 365 or Google Sheets, XLOOKUP accepts array conditions directly, so multiple criteria are simply AND-ed inside the lookup_value. No array-entry, no row math, and it can return whole columns.",
+      "example": {
+        "formula": "=XLOOKUP(1, (A2:A100=G2)*(B2:B100=H2), D2:D100)",
+        "result": "Returns the column D value matching both criteria",
+        "explanation": "XLOOKUP finds the first 1 in the combined condition array and returns the corresponding value from D2:D100. Add a 4th argument like \"Not found\" for missing matches."
+      },
+      "tips": [
+        "XLOOKUP also looks in any direction and avoids the column-index fragility of VLOOKUP."
+      ]
+    },
+    {
+      "title": "When to Use SUMIFS Instead",
+      "content": "If your goal is not a single matching cell but an aggregated total for the matching rows, SUMIFS is simpler and needs no array entry. It sums a range where every criterion is true, which covers the common 'total sales for product X in region Y' case.",
+      "example": {
+        "formula": "=SUMIFS(D2:D100, A2:A100, G2, B2:B100, H2)",
+        "result": "Sum of column D where A = G2 AND B = H2",
+        "explanation": "Each range/criteria pair is combined with AND logic, so only rows meeting all conditions are summed."
+      },
+      "tips": [
+        "Use SUMIFS when the answer is a number total; use INDEX MATCH or XLOOKUP when you need a specific cell value."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "INDEX", "slug": "index", "description": "INDEX returns the value at a specified position in a range or array." },
+    { "name": "MATCH", "slug": "match", "description": "MATCH searches for a specified item in a range and returns its relative position." },
+    { "name": "VLOOKUP", "slug": "vlookup", "description": "VLOOKUP (Vertical Lookup) is a built-in function in Excel and Google Sheets that searches for a value in the first column of a table and returns a value in the same row from a specified column." },
+    { "name": "SUMIFS", "slug": "sumifs", "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges." }
+  ],
+  "summary": "INDEX MATCH with multiple criteria multiplies several TRUE/FALSE conditions inside MATCH(1, ...) to locate the single row where every key matches. In Microsoft 365 or Google Sheets, XLOOKUP does the same with cleaner syntax, while SUMIFS is the better tool when you need an aggregated total rather than one cell. Pick INDEX MATCH or XLOOKUP for value lookups and SUMIFS for sums.",
+  "nextSteps": [
+    "Try the two-criteria INDEX MATCH on a dataset where the result is left of the keys",
+    "Switch to XLOOKUP if you are on Microsoft 365 for a no-array-entry version",
+    "Use SUMIFS when the answer should be a summed total across matching rows"
+  ],
+  "relatedTutorials": ["vlookup-with-multiple-criteria", "index-match-formula", "index-match-two-way-lookup"]
+}
