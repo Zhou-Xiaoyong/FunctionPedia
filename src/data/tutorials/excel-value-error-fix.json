@@ -1,0 +1,95 @@
+{
+  "slug": "excel-value-error-fix",
+  "title": "Excel VALUE! Error Fix",
+  "description": "The #VALUE! error means Excel expected a number but found text. Learn how to fix an excel value error fix fast using IFERROR, VALUE, and clean data checks.",
+  "category": "Error Fixes",
+  "functions": [
+    "IFERROR",
+    "ISERROR",
+    "VALUE",
+    "SUM"
+  ],
+  "intro": "The #VALUE! error is one of the most common Excel warnings and almost always means the same thing: a formula expected a number but met text, a date stored as text, or a broken cell reference. This guide shows three reliable ways to find the cause and fix a #VALUE! error without losing your data.",
+  "tags": [
+    "VALUE error",
+    "IFERROR",
+    "Error Handling",
+    "Data Cleaning"
+  ],
+  "estimatedTime": "10 min read",
+  "prerequisites": [
+    "Basic formula entry ( =A1+B1 )",
+    "Understanding of text vs number cell types"
+  ],
+  "sections": [
+    {
+      "title": "Why the #VALUE! Error Appears",
+      "content": "Excel triggers #VALUE! whenever an operation needs a number but receives something it cannot convert — a text label, a date stored as text, or a cell that already holds an error. Arithmetic operators ( + - * / ) and many functions refuse to calculate against these values.",
+      "example": {
+        "formula": "=A1-B1",
+        "result": "#VALUE!",
+        "explanation": "If A1 contains the text \"N/A\" or a non-numeric label instead of a number, Excel cannot subtract it and returns #VALUE!."
+      },
+      "tips": [
+        "Check the cell alignment: numbers sit right, text sits left by default.",
+        "Even SUM returns an error if any cell in the range already holds an error value."
+      ]
+    },
+    {
+      "title": "Method 1: Catch It Cleanly with IFERROR",
+      "content": "The fastest fix is to wrap the whole formula in IFERROR. It evaluates the expression once; if the result is any error it shows your fallback text instead of #VALUE!.",
+      "steps": [
+        { "name": "Identify the failing formula", "text": "Find the expression that produces #VALUE!.", "formula": "=A1-B1" },
+        { "name": "Wrap with IFERROR", "text": "Pass the expression as the first argument and a friendly message as the second.", "formula": "=IFERROR(A1-B1, \"Check input\")" }
+      ],
+      "example": {
+        "formula": "=IFERROR(VLOOKUP(D2, A:B, 2, FALSE), \"Not found\")",
+        "result": "Not found",
+        "explanation": "When VLOOKUP returns #VALUE! or #N/A, IFERROR intercepts it and displays \"Not found\" instead of an error."
+      }
+    },
+    {
+      "title": "Method 2: Detect Errors Before Calculating with ISERROR",
+      "content": "If you need to branch — for example run a different calculation when an error exists — use ISERROR inside IF. Unlike IFERROR, this lets you choose a completely separate path.",
+      "example": {
+        "formula": "=IF(ISERROR(A1/B1), \"check input\", A1/B1)",
+        "result": "check input",
+        "explanation": "ISERROR returns TRUE when B1 is 0 or the division otherwise fails, so the IF shows the fallback. Note this computes the division twice; IFERROR is more efficient."
+      },
+      "tips": [
+        "Use IFNA instead of ISERROR if only #N/A should be handled and other errors must stay visible.",
+        "ISERROR catches every error type including #N/A, #REF!, and #DIV/0!."
+      ]
+    },
+    {
+      "title": "Method 3: Convert Number-Like Text with VALUE",
+      "content": "Sometimes the data is fine but stored as text — a CSV import, a leading apostrophe, or currency symbols can do this. VALUE converts recognizable number, date, or time text into a real numeric value so arithmetic works again.",
+      "example": {
+        "formula": "=VALUE(A1)",
+        "result": "1000",
+        "explanation": "If A1 holds the text \"$1,000\", VALUE strips the currency symbol and thousands separator and returns the real number 1000, which you can now add, subtract, or SUM."
+      },
+      "tips": [
+        "If VALUE itself returns #VALUE!, the text contains characters it cannot interpret — clean it first with SUBSTITUTE or TRIM/CLEAN.",
+        "In modern Excel, arithmetic and SUM often coerce text numbers automatically, so VALUE is mainly useful when you need an explicit conversion."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "IFERROR", "slug": "iferror", "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise." },
+    { "name": "ISERROR", "slug": "iserror", "description": "ISERROR returns TRUE if the supplied value is any Excel error (#N/A, #VALUE!, #REF!, #DIV/0!, #NUM!, #NAME?, or #NULL!), and FALSE otherwise." },
+    { "name": "VALUE", "slug": "value", "description": "VALUE converts a text string that represents a number, date, or time into its underlying numeric value." },
+    { "name": "SUM", "slug": "sum", "description": "SUM adds all the numbers in a range of cells and returns the total." }
+  ],
+  "summary": "The #VALUE! error almost always means a formula met text where it expected a number. Wrap the expression in IFERROR for a one-step fix, use ISERROR + IF when you need an alternate path, and apply VALUE to convert number-like text back into real numbers. Together these three functions resolve the vast majority of #VALUE! problems.",
+  "nextSteps": [
+    "Audit your source data with ISNUMBER to confirm which cells are text",
+    "Replace manual arithmetic with IFERROR-wrapped lookups to prevent future errors",
+    "Read the companion guide on the #N/A error for lookup-specific failures"
+  ],
+  "relatedTutorials": [
+    "excel-n-a-error-fix",
+    "nested-if-alternatives",
+    "vlookup-with-multiple-criteria"
+  ]
+}

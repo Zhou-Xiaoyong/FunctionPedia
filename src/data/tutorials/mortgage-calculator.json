@@ -1,0 +1,109 @@
+{
+  "slug": "mortgage-calculator",
+  "title": "Mortgage Calculator",
+  "description": "Build a working mortgage calculator in Excel or Google Sheets using PMT, IPMT, and PPMT. Estimate monthly payments, interest, and principal for any fixed-rate loan.",
+  "category": "Calculators",
+  "functions": [
+    "PMT",
+    "IPMT",
+    "PPMT",
+    "CUMIPMT",
+    "RATE"
+  ],
+  "intro": "A mortgage calculator answers the question every homebuyer asks: how much will I actually pay each month? With Excel's financial functions you can build one in minutes and then break the payment down into interest, principal, and total cost. This guide covers the PMT-based calculator plus the IPMT, PPMT, CUMIPMT, and RATE functions that power it.",
+  "tags": [
+    "Mortgage",
+    "PMT",
+    "Loan Payment",
+    "Financial Functions"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "Basic formula entry",
+    "Understanding of annual vs periodic interest rates"
+  ],
+  "sections": [
+    {
+      "title": "How a Mortgage Payment Is Calculated",
+      "content": "A fixed-rate mortgage payment is an annuity: equal payments over time that pay off the principal plus interest. PMT returns that periodic payment given the rate per period, the number of periods, and the loan amount (present value). The single most common mistake is mixing periods — if you pay monthly, both the rate and the number of periods must be monthly.",
+      "example": {
+        "formula": "=PMT(6%/12, 360, 200000)",
+        "result": "$1,199.10",
+        "explanation": "6%/12 converts the 6% annual rate to a monthly rate (0.5%). 360 is 30 years x 12 monthly payments. 200000 is the loan principal. PMT returns a negative number by convention, so display it with ABS if you prefer a positive value."
+      },
+      "tips": [
+        "Always divide the annual rate by 12 for monthly payments.",
+        "PMT does not include taxes, insurance, or fees — it is principal plus interest only."
+      ]
+    },
+    {
+      "title": "Use the Interactive Mortgage Calculator",
+      "content": "Rather than retyping the formula, use the calculator below. Enter your loan amount, annual interest rate, and term in years; it applies the same PMT logic and shows your monthly principal-and-interest payment. Change any input and the result updates instantly.",
+      "tips": [
+        "Try a 15-year vs 30-year term to see how much faster the loan is paid off.",
+        "The calculator assumes end-of-period payments (type = 0) and a fully amortized loan (future value = 0)."
+      ]
+    },
+    {
+      "title": "Break Down Interest vs Principal with IPMT and PPMT",
+      "content": "The PMT result is the total, but each payment is split between interest (IPMT) and principal (PPMT). Early payments are mostly interest; later payments are mostly principal. For any single period, IPMT + PPMT = PMT.",
+      "example": {
+        "formula": "=IPMT(0.05/12, 1, 360, 300000)",
+        "result": "-$1,250.00",
+        "explanation": "On a $300,000 loan at 5% over 30 years, the first month's interest is $1,250. PPMT for the same period returns about -$348.55, and the two add up to the first month's total payment."
+      },
+      "example2": {
+        "formula": "=PPMT(0.05/12, 1, 360, 300000)",
+        "result": "-$348.55",
+        "explanation": "The principal portion is small at first and grows each month as the balance shrinks."
+      }
+    },
+    {
+      "title": "Total Interest Over a Range with CUMIPMT",
+      "content": "To see how much interest you pay in a block of periods — say the first year, or years 6 through 10 — use CUMIPMT. It sums the interest across a start and end period, which is handy for estimating tax-deductible mortgage interest.",
+      "example": {
+        "formula": "=CUMIPMT(0.05/12, 360, 300000, 1, 12, 0)",
+        "result": "-$14,935.43",
+        "explanation": "For the same $300,000 loan, the first 12 monthly payments contain about $14,935 of interest. The type argument (0) is required for CUMIPMT."
+      }
+    },
+    {
+      "title": "Reverse It: Find the Rate with RATE",
+      "content": "If you already know the payment and want to know the effective rate, RATE works backwards from the number of periods, payment, and loan amount. Multiply the periodic result by 12 to estimate the nominal annual rate.",
+      "example": {
+        "formula": "=RATE(360, -1199.10, 200000) * 12",
+        "result": "6.00%",
+        "explanation": "Given a $200,000 loan paid at $1,199.10 per month for 360 months, RATE recovers the 6% annual rate. RATE uses an iterative solver, so add a guess argument if it fails to converge."
+      }
+    }
+  ],
+  "calculator": {
+    "description": "Estimate your monthly mortgage payment. Enter the loan amount, annual interest rate, and loan term in years.",
+    "inputs": [
+      { "key": "loanAmount", "label": "Loan amount ($)", "default": 200000, "step": 1000, "min": 0 },
+      { "key": "annualRate", "label": "Annual interest rate (%)", "default": 6, "step": 0.1, "min": 0 },
+      { "key": "years", "label": "Loan term (years)", "default": 30, "step": 1, "min": 1 }
+    ],
+    "resultLabel": "Monthly payment",
+    "resultFormat": "currency",
+    "compute": "const r = annualRate/100/12; const n = years*12; const pmt = (r===0) ? loanAmount/n : loanAmount*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1); result = Math.abs(pmt);"
+  },
+  "functionsUsed": [
+    { "name": "PMT", "slug": "pmt", "description": "PMT calculates the periodic payment for a loan or investment based on constant payments and a constant interest rate. It's the function you need for mortgage, car loan, and any fixed-rate payment calculations." },
+    { "name": "IPMT", "slug": "ipmt", "description": "IPMT calculates the interest portion of a payment for a specific period of a loan or investment." },
+    { "name": "PPMT", "slug": "ppmt", "description": "PPMT calculates the principal portion of a payment for a specific period of a loan or investment." },
+    { "name": "CUMIPMT", "slug": "cumipmt", "description": "CUMIPMT returns the total interest paid over a specified range of periods for a loan with constant payments and a constant interest rate." },
+    { "name": "RATE", "slug": "rate", "description": "RATE returns the periodic interest rate for an annuity based on the number of periods, payment amount, present value, and future value." }
+  ],
+  "summary": "A mortgage calculator is just PMT applied with the right period math: divide the annual rate by 12 and multiply years by 12. Use IPMT and PPMT to split each payment into interest and principal, CUMIPMT to total interest over any period range, and RATE to work backwards from a known payment. All five functions behave identically in Excel and Google Sheets.",
+  "nextSteps": [
+    "Build a full amortization schedule by dragging IPMT and PPMT down one row per month",
+    "Compare a 15-year vs 30-year term using the CUMIPMT total-interest figure",
+    "Read the PMT function deep-dive for car loans, leases, and savings goals"
+  ],
+  "relatedTutorials": [
+    "loan-payment-calculator",
+    "pmt-function-loan-payment",
+    "calculate-loan-interest"
+  ]
+}
