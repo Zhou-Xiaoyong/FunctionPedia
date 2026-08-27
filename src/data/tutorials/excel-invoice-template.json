@@ -1,0 +1,109 @@
+{
+  "slug": "excel-invoice-template",
+  "title": "Excel Invoice Template",
+  "description": "Build a working Excel invoice template with auto-calculating totals, VLOOKUP price lookups, and TEXT-formatted dates - a practical guide for small businesses.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "SUM",
+    "SUMIF",
+    "TEXT",
+    "VLOOKUP"
+  ],
+  "intro": "A good invoice template does the math for you. Instead of typing totals by hand, you can wire up SUM, VLOOKUP, and TEXT so every invoice you send is accurate and consistently formatted. This guide builds a reusable template from a blank sheet.",
+  "tags": [
+    "Invoice",
+    "Template",
+    "SUM",
+    "VLOOKUP",
+    "Small Business"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "A basic understanding of rows, columns, and cell references",
+    "Familiarity with = as the start of every formula"
+  ],
+  "sections": [
+    {
+      "title": "What Belongs in an Invoice Template",
+      "content": "Every invoice needs four zones: your details, the client's details, a line-item table, and a totals area. Keep the line items as a real Excel table so you can sum rows automatically and reuse the same sheet for every job. The totals area is where formulas earn their keep.",
+      "steps": [
+        { "name": "Issuer and client blocks", "text": "Enter your business details and the client's details at the top of the sheet." },
+        { "name": "Line-item table", "text": "Build columns for ID, Description, Qty, Unit Price, and Line Total (Qty x Unit Price)." },
+        { "name": "Totals area", "text": "Add a Subtotal with SUM, then a Tax line and a Grand Total below it." }
+      ],
+      "tips": [
+        "Put the unit-price lookup table on a separate 'Products' sheet to keep the invoice clean.",
+        "Use a table (Insert ▸ Table) so totals expand as you add rows."
+      ]
+    },
+    {
+      "title": "Totaling Line Items with SUM",
+      "content": "Each row holds a quantity multiplied by a unit price. The invoice subtotal is the SUM of all line totals, with tax and shipping added on top. SUM ignores blank cells and text, so it stays safe even if some rows are empty.",
+      "steps": [
+        { "name": "Compute each line total", "text": "Multiply the quantity by the unit price on the same row.", "formula": "=B2*C2" },
+        { "name": "Sum the line totals", "text": "Add up the whole line-total column for the subtotal.", "formula": "=SUM(D2:D10)" }
+      ],
+      "example": {
+        "formula": "=SUM(D2:D10)",
+        "result": "Returns the invoice subtotal (sum of all line totals)",
+        "explanation": "SUM adds every numeric value in the range; blank or text cells are skipped automatically."
+      },
+      "tips": [
+        "Wrap the total in ROUND(...,2) if you need exact two-decimal currency rounding."
+      ]
+    },
+    {
+      "title": "Fetching Unit Prices with VLOOKUP",
+      "content": "Store your products in a price table and look up the unit price by product ID instead of typing it by hand. This prevents typos and keeps prices consistent across every invoice you issue.",
+      "example": {
+        "formula": "=VLOOKUP(A2, Products!A:C, 3, FALSE)",
+        "result": "Returns the unit price for the product ID in A2",
+        "explanation": "The 4th argument FALSE forces an exact match - never use TRUE for price lookups, or you may bill the wrong tier."
+      },
+      "tips": [
+        "Name your price range (Formulas ▸ Define Name) so the formula reads =VLOOKUP(A2, PriceTable, 3, FALSE)."
+      ]
+    },
+    {
+      "title": "Conditional Totals with SUMIF",
+      "content": "If you bill some items at a discounted rate, SUMIF can total only the rows that carry a given tag, so you can show a separate discount line without manual subtraction.",
+      "example": {
+        "formula": "=SUMIF(E2:E10, \"Discount\", D2:D10)",
+        "result": "Sums line totals in column D only where column E says Discount",
+        "explanation": "SUMIF(range, criteria, sum_range) checks each row and adds the matching sum_range cell."
+      },
+      "tips": [
+        "Use SUMIFS (plural S) when you need two or more conditions at once."
+      ]
+    },
+    {
+      "title": "Formatting Dates and Numbers with TEXT",
+      "content": "Invoice numbers and dates often need a fixed format. TEXT turns a real date into a styled string so your 'Invoice #' and 'Issue Date' cells stay consistent no matter what the system date looks like.",
+      "example": {
+        "formula": "=\"INV-\"&TEXT(TODAY(), \"YYYY-MM-DD\")",
+        "result": "Returns e.g. INV-2026-08-27",
+        "explanation": "TEXT(TODAY(), ...) formats today's date as YYYY-MM-DD and concatenates it to the INV- prefix."
+      },
+      "tips": [
+        "Keep the underlying date in a real date cell for sorting; TEXT only changes how it's displayed."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "SUM", "slug": "sum", "description": "SUM adds all the numbers in a range of cells and returns the total." },
+    { "name": "SUMIF", "slug": "sumif", "description": "SUMIF adds up all numbers in a range that meet a specified condition. It's the go-to function for conditional summing — like totaling sales for a specific region or summing expenses above a threshold." },
+    { "name": "TEXT", "slug": "text", "description": "TEXT converts a number or date into text using a user-supplied format code, so the displayed value can be concatenated or presented in a custom format." },
+    { "name": "VLOOKUP", "slug": "vlookup", "description": "VLOOKUP (Vertical Lookup) is a built-in function in Excel and Google Sheets that searches for a value in the first column of a table and returns a value in the same row from a specified column." }
+  ],
+  "summary": "A solid Excel invoice template leans on four functions: SUM totals your line items, VLOOKUP pulls unit prices from a product table, SUMIF isolates discounted rows, and TEXT keeps dates and invoice numbers consistently formatted. Build the structure once, then reuse the sheet for every client.",
+  "nextSteps": [
+    "Add a Products sheet and switch your price cells to VLOOKUP for error-free billing",
+    "Wrap subtotals in ROUND(...,2) so currency always shows two decimals",
+    "Save the finished sheet as a template (.xltx) so each new invoice starts blank"
+  ],
+  "relatedTutorials": [
+    "excel-budget-template",
+    "sumif-with-date-range",
+    "concatenate-vs-textjoin"
+  ]
+}

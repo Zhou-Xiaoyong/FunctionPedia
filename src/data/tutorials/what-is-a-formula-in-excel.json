@@ -1,0 +1,102 @@
+{
+  "slug": "what-is-a-formula-in-excel",
+  "title": "What Is a Formula in Excel",
+  "description": "What is a formula in Excel? Learn how formulas differ from functions, how cell references and operators work, and build a calculation with SUM, AVERAGE, and IF.",
+  "category": "Concepts & Beginners",
+  "functions": [
+    "SUM",
+    "AVERAGE",
+    "IF"
+  ],
+  "intro": "If you are new to spreadsheets, the word 'formula' is the one concept that unlocks everything else. A formula is simply an instruction that starts with an equals sign and tells Excel to calculate something. This guide explains what formulas are, how they work, and the three you will use most.",
+  "tags": [
+    "Formula",
+    "Beginner",
+    "Basics",
+    "SUM",
+    "IF"
+  ],
+  "estimatedTime": "10 min read",
+  "prerequisites": [
+    "Excel or Google Sheets open in front of you",
+    "No prior spreadsheet experience needed"
+  ],
+  "sections": [
+    {
+      "title": "Formula or Function - What's the Difference",
+      "content": "A formula is any expression you type that begins with = and calculates a result. A function (like SUM or AVERAGE) is a built-in, named operation you call inside a formula. Most formulas you write will use one or more functions, but a formula does not have to.",
+      "example": {
+        "formula": "=A1+A2",
+        "result": "Adds the two cells directly - a plain formula with no function",
+        "explanation": "This is a formula but not a function; it uses only the + operator."
+      },
+      "tips": [
+        "Every formula, with or without a function, must start with = or Excel treats the entry as text."
+      ]
+    },
+    {
+      "title": "The Anatomy of an Excel Formula",
+      "content": "A formula is built from values, cell references, operators, and functions. Excel evaluates it following operator precedence, then shows the result in the cell while the actual formula lives in the formula bar above the grid.",
+      "example": {
+        "formula": "=SUM(A1:A5)*0.1",
+        "result": "Sums A1 through A5, then multiplies the total by 10%",
+        "explanation": "Functions nest inside formulas - here SUM feeds the * operator."
+      },
+      "tips": [
+        "Press F2 to edit a formula, F4 to toggle absolute references while editing."
+      ]
+    },
+    {
+      "title": "Operators You Can Use",
+      "content": "Excel supports arithmetic (+, -, *, /, ^), comparison (=, >, <), and text joining (&). Comparison operators return TRUE or FALSE and are what power logical functions such as IF.",
+      "example": {
+        "formula": "=B1>C1",
+        "result": "Returns TRUE if B1 is greater than C1, otherwise FALSE",
+        "explanation": "A comparison produces a logical TRUE/FALSE value you can feed straight into IF."
+      },
+      "tips": [
+        "Use & (not +) to join text: =\"Total: \"&D10."
+      ]
+    },
+    {
+      "title": "Why Cell References Beat Typed Numbers",
+      "content": "Referencing a cell (=A1*2) instead of hard-coding a value (=5*2) means your formula updates automatically when the source data changes. This single habit - pointing at cells rather than retyping numbers - is what makes spreadsheets powerful.",
+      "example": {
+        "formula": "=A1*1.2",
+        "result": "20% markup on whatever value is in A1",
+        "explanation": "Change A1 and the result recalculates instantly - no formula edits required."
+      },
+      "tips": [
+        "Prefer referencing an input cell over repeating the same number across many formulas."
+      ]
+    },
+    {
+      "title": "Three Formulas Every Beginner Should Know",
+      "content": "SUM totals a range, AVERAGE finds the mean, and IF branches on a test. Together they cover the majority of everyday spreadsheet tasks, and each one is a building block for more advanced work.",
+      "example": {
+        "formula": "=IF(A1>=60, \"Pass\", \"Fail\")",
+        "result": "Returns Pass if A1 is 60 or more, otherwise Fail",
+        "explanation": "IF(logical_test, value_if_true, value_if_false) is the gateway to all conditional logic."
+      },
+      "tips": [
+        "Once IF clicks, explore IFS and nested IF for handling multiple conditions at once."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "SUM", "slug": "sum", "description": "SUM adds all the numbers in a range of cells and returns the total." },
+    { "name": "AVERAGE", "slug": "average", "description": "AVERAGE returns the arithmetic mean of a set of numbers." },
+    { "name": "IF", "slug": "if", "description": "IF performs a logical test and returns one value if true and another if false." }
+  ],
+  "summary": "A formula is any = expression that calculates a result; a function is a named operation you call inside it. Formulas combine values, cell references, and operators, and referencing cells - rather than typed numbers - is what keeps your sheet dynamic. Start with SUM, AVERAGE, and IF and you can handle most everyday tasks.",
+  "nextSteps": [
+    "Open a sheet and try =SUM(A1:A10) on a column of numbers",
+    "Read the absolute vs relative reference guide before copying formulas down",
+    "Move on to nested IF and IFS once a single IF feels comfortable"
+  ],
+  "relatedTutorials": [
+    "absolute-vs-relative-reference",
+    "excel-dynamic-arrays",
+    "nested-if-alternatives"
+  ]
+}
