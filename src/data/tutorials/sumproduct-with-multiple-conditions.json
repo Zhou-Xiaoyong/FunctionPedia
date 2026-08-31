@@ -1,0 +1,122 @@
+{
+  "slug": "sumproduct-with-multiple-conditions",
+  "title": "SUMPRODUCT with Multiple Conditions",
+  "description": "Need more conditions than SUMIFS handles? Learn how SUMPRODUCT with multiple conditions solves AND, OR, case-sensitive and partial-text sums in Excel.",
+  "category": "SUM & COUNT",
+  "functions": ["SUMPRODUCT", "SUMIFS", "SUMIF", "SUM"],
+  "intro": "SUMIFS covers most conditional sums, but it stops at AND logic, ignores case, and cannot compare one cell against a computed value. SUMPRODUCT has none of those limits: because it multiplies arrays, any condition you can express as TRUE or FALSE becomes part of the sum. This guide builds from a single condition up to mixed AND/OR logic, case-sensitive matches, and date windows, using one small order table you can recreate in a minute.",
+  "tags": ["SUMPRODUCT", "Multiple Conditions", "SUMIFS", "Conditional Sum", "Array Formula", "AND OR Logic"],
+  "estimatedTime": "13 min read",
+  "prerequisites": [
+    "Basic SUM and SUMIF syntax",
+    "Willingness to read TRUE/FALSE as 1/0 - that is the whole trick",
+    "Excel 2007 or later, or Google Sheets (no array-entry needed in either)"
+  ],
+  "sections": [
+    {
+      "title": "The Sample Table and the 1/0 Trick",
+      "content": "Put this data in A1:E7 with headers in row 1: column A is Region, B is Product, C is Qty, D is Amount, and E is a real date (not text). Every example below refers to these six rows, so you can verify each result by hand. The mechanism is simple: a comparison such as A2:A7=\"North\" produces an array of TRUE and FALSE values, and in arithmetic Excel treats TRUE as 1 and FALSE as 0. Multiply that array by the Amount column and only the rows where the condition held survive.",
+      "steps": [
+        { "name": "Row 2", "text": "North | Widget | 10 | 500 | 2026-01-15" },
+        { "name": "Row 3", "text": "North | Gadget | 4 | 320 | 2026-02-02" },
+        { "name": "Row 4", "text": "South | Widget | 7 | 350 | 2026-03-20" },
+        { "name": "Row 5", "text": "North | Widget | 3 | 150 | 2026-04-05" },
+        { "name": "Row 6", "text": "East | Gadget | 5 | 250 | 2026-02-18" },
+        { "name": "Row 7", "text": "South | Widget | 2 | 100 | 2026-03-01" }
+      ],
+      "example": {
+        "formula": "=SUMPRODUCT(--(A2:A7=\"North\"), D2:D7)",
+        "result": "970",
+        "explanation": "North appears on rows 2, 3 and 5, so 500 + 320 + 150 = 970. The remaining rows are multiplied by 0 and drop out."
+      },
+      "tips": [
+        "Format column E as a date; date comparisons silently fail against text that only looks like a date.",
+        "The double unary minus -- is just a formal way to turn TRUE/FALSE into 1/0. 1*(condition) works identically.",
+        "Keep ranges bounded. Whole-column SUMPRODUCT references are the number one cause of slow sheets."
+      ]
+    },
+    {
+      "title": "Two Conditions at Once (AND Logic)",
+      "content": "Multiply two conditions together and only rows satisfying both survive, because 1 x 1 = 1 while anything involving a 0 becomes 0. Drop the sum range entirely and the same pattern counts rows instead of totalling them - a useful alternative when you need a COUNTIFS with unusual conditions.",
+      "steps": [
+        { "name": "Count instead of sum", "text": "Omit the amount range and each surviving row contributes 1, giving a count of matching rows.", "formula": "=SUMPRODUCT((A2:A7=\"North\")*(B2:B7=\"Widget\"))" }
+      ],
+      "example": {
+        "formula": "=SUMPRODUCT((A2:A7=\"North\")*(B2:B7=\"Widget\")*D2:D7)",
+        "result": "650",
+        "explanation": "Only rows 2 and 5 are North AND Widget, so 500 + 150 = 650. Rows 3 and 6 are Gadget and rows 4 and 7 are South, so all four are zeroed out. The counting version above returns 2."
+      },
+      "tips": [
+        "This is the direct equivalent of SUMIFS(D2:D7, A2:A7, \"North\", B2:B7, \"Widget\"); use SUMIFS when the question is that simple, it recalculates faster.",
+        "Keep every range the same size - mismatched dimensions return #VALUE!.",
+        "With comma-separated arguments SUMPRODUCT treats non-numeric cells as zero; with the multiplication form, text in the amount range throws #VALUE!. Switch to the comma form when the data is messy."
+      ]
+    },
+    {
+      "title": "OR Logic, Mixed Logic, and Date Windows",
+      "content": "For OR, add the conditions instead of multiplying them: TRUE + TRUE = 2, TRUE + FALSE = 1. This is clean when the branches are mutually exclusive, such as one column tested against two different values; if a row could satisfy both, wrap the group in --(... > 0) to avoid double-counting. Date windows use the same multiplication idea with comparison operators.",
+      "steps": [
+        { "name": "Mixed AND with an OR group", "text": "Region is North AND the product is Widget OR Gadget. Parentheses keep the OR group together before it is multiplied by the region test. Returns 970 (rows 2, 3 and 5: 500 + 320 + 150).", "formula": "=SUMPRODUCT((A2:A7=\"North\")*((B2:B7=\"Widget\")+(B2:B7=\"Gadget\"))*D2:D7)" },
+        { "name": "A date window", "text": "Build the boundaries with DATE() rather than typing \"2026-01-01\" as text. Returns 1520 - every row except row 5 (2026-04-05): 500 + 320 + 350 + 250 + 100.", "formula": "=SUMPRODUCT((E2:E7>=DATE(2026,1,1))*(E2:E7<=DATE(2026,3,31))*D2:D7)" }
+      ],
+      "example": {
+        "formula": "=SUMPRODUCT(((A2:A7=\"North\")+(A2:A7=\"South\"))*(B2:B7=\"Widget\")*D2:D7)",
+        "result": "1100",
+        "explanation": "Widget rows in North or South: rows 2, 4, 5 and 7, so 500 + 350 + 150 + 100 = 1100. Each region is tested separately and added, and no row can be both North and South, so nothing is counted twice."
+      },
+      "tips": [
+        "--(((A2:A7=\"North\")+(A2:A7=\"South\"))>0) is the safe form when one row could match both branches.",
+        "Swap >= for > on the lower bound if your data carries midnight timestamps you do not want to double-count.",
+        "SUMIFS cannot express an OR group across the same column in one formula - this is where SUMPRODUCT earns its place."
+      ]
+    },
+    {
+      "title": "Case-Sensitive and Partial-Text Conditions",
+      "content": "SUMIFS is always case-insensitive and understands only the * and ? wildcards. SUMPRODUCT has no such limit, because any function that returns an array can be dropped inside it. EXACT gives case-sensitive equality, ISNUMBER with SEARCH gives case-insensitive substring matching, and ISNUMBER with FIND gives case-sensitive substring matching. This is the single strongest reason to reach for SUMPRODUCT over SUMIFS.",
+      "steps": [
+        { "name": "Partial text match", "text": "SEARCH returns a character position for the two Gadget rows and #VALUE! elsewhere; ISNUMBER turns that into TRUE/FALSE. Use FIND instead of SEARCH when the match must respect case.", "formula": "=SUMPRODUCT(--ISNUMBER(SEARCH(\"gad\", B2:B7)), D2:D7)" }
+      ],
+      "example": {
+        "formula": "=SUMPRODUCT(--EXACT(A2:A7,\"north\"), D2:D7)",
+        "result": "0",
+        "explanation": "The cells contain \"North\", not \"north\", and EXACT is case-sensitive, so nothing matches. Change the argument to \"North\" and the same formula returns 970. The partial-text version below returns 570 (320 + 250 for the two Gadget rows)."
+      },
+      "tips": [
+        "SUMPRODUCT handles no wildcard characters directly - that is exactly what SEARCH and FIND are for.",
+        "For a plain leading-substring test, SUMIFS with \"gad*\" is shorter and faster; switch to SUMPRODUCT only for in-string or case-sensitive matching.",
+        "In Google Sheets these formulas work unchanged; SUMPRODUCT never needs Ctrl+Shift+Enter there or in modern Excel."
+      ]
+    },
+    {
+      "title": "SUMPRODUCT vs SUMIFS: Which One to Use",
+      "content": "Both functions sum conditionally, and for a plain two-condition AND they return the same number. The difference is capability versus speed. SUMIFS is optimised and stays fast on 100,000-row tables; SUMPRODUCT evaluates every cell in every range, which is fine for thousands of rows and painful for entire columns. Reach for SUMPRODUCT when you need OR logic, case sensitivity, substring matching, or a condition that compares two columns to each other.",
+      "example": {
+        "formula": "=SUMIFS(D2:D7, A2:A7, \"North\", B2:B7, \"Widget\")",
+        "result": "650",
+        "explanation": "Identical to the SUMPRODUCT AND example above. When SUMIFS can express the question, prefer it - then fall back to SUMPRODUCT for everything it cannot say."
+      },
+      "tips": [
+        "Never write SUMPRODUCT((A:A=\"North\")*D:D) - bound the ranges, or convert the data to an Excel Table and use structured references.",
+        "COUNTIFS is the counting counterpart of SUMIFS; try it before reaching for SUMPRODUCT's count form.",
+        "If a SUMPRODUCT result is unexpectedly 0, check for trailing spaces first and TRIM the criteria range or the comparison value."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "SUMPRODUCT", "slug": "sumproduct", "description": "SUMPRODUCT multiplies corresponding components of one or more arrays and returns the sum of those products. It is also widely used for conditional sums and counts without array-entry." },
+    { "name": "SUMIFS", "slug": "sumifs", "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges." },
+    { "name": "SUMIF", "slug": "sumif", "description": "SUMIF adds up all numbers in a range that meet a specified condition. It's the go-to function for conditional summing — like totaling sales for a specific region or summing expenses above a threshold." },
+    { "name": "SUM", "slug": "sum", "description": "SUM adds all the numbers in a range of cells and returns the total." }
+  ],
+  "summary": "SUMPRODUCT with multiple conditions works because TRUE is 1 and FALSE is 0: multiply conditions for AND, add them for OR, and multiply the result by the column you want to total. It covers the cases SUMIFS cannot - OR groups, case-sensitive comparisons with EXACT, substring matches with SEARCH or FIND, and column-to-column comparisons - at the cost of evaluating every cell in the range. Default to SUMIFS for simple AND logic and keep SUMPRODUCT in reserve for everything else.",
+  "nextSteps": [
+    "Rewrite one of your existing SUMIFS formulas as SUMPRODUCT and confirm both return the same total",
+    "Add a case-sensitive check with EXACT to a report where product codes differ only by letter case",
+    "Convert your ranges to an Excel Table so SUMPRODUCT grows with the data instead of needing manual range edits"
+  ],
+  "relatedTutorials": [
+    "sumifs-multiple-criteria",
+    "sumif-with-date-range",
+    "averageifs-multiple-criteria"
+  ]
+}

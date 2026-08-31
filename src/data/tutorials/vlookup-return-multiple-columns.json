@@ -1,0 +1,119 @@
+{
+  "slug": "vlookup-return-multiple-columns",
+  "title": "VLOOKUP Return Multiple Columns",
+  "description": "VLOOKUP is built to return one column, but you often need several. Learn four reliable ways to make VLOOKUP return multiple columns in Excel and Google Sheets.",
+  "category": "VLOOKUP & XLOOKUP",
+  "functions": ["VLOOKUP", "INDEX", "MATCH", "XLOOKUP"],
+  "intro": "VLOOKUP takes a single col_index_num, so by design it hands back one value from one column. When you want a whole record — name, department, and email for one employee ID — the instinct is to write the same VLOOKUP three times. There is a better way. This guide shows four techniques that pull several columns at once, from a spill formula in Microsoft 365 down to a drag-across INDEX + MATCH that works in every version of Excel.",
+  "tags": ["VLOOKUP", "Multiple Columns", "INDEX MATCH", "XLOOKUP", "Spill", "Lookup"],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Basic VLOOKUP syntax (lookup_value, table_array, col_index_num, range_lookup)",
+    "Comfort with absolute references such as $A$2:$D$5",
+    "Microsoft 365 or Excel 2021 for the spill methods (Method 1 and Method 3)"
+  ],
+  "sections": [
+    {
+      "title": "The Sample Table and Why VLOOKUP Returns One Column",
+      "content": "Put this employee list in A1:D5 with headers in row 1, and the ID you want to search for in G2. The third argument of VLOOKUP is col_index_num — a single number that says 'give me column N of the table'. Excel does not accept a range there in the classic syntax, so the standard formula can only ever return one of the three columns. To get all of them, you either hand VLOOKUP a list of column numbers or hand the job to a function that returns a whole block.",
+      "steps": [
+        { "name": "Row 2", "text": "E-101 | Ana Ruiz | Sales | ana@corp.com" },
+        { "name": "Row 3", "text": "E-102 | Ben Cole | Support | ben@corp.com" },
+        { "name": "Row 4", "text": "E-103 | Cia Lin | Finance | cia@corp.com" },
+        { "name": "Row 5", "text": "E-104 | Dev Rao | Sales | dev@corp.com" },
+        { "name": "Set the lookup value", "text": "Put the ID you want to look up in G2.", "formula": "E-103" }
+      ],
+      "example": {
+        "formula": "=VLOOKUP($G$2, $A$2:$D$5, 2, FALSE)",
+        "result": "Cia Lin",
+        "explanation": "With G2 = \"E-103\" this returns the Name column only. Getting Department and Email as well means repeating the formula twice more with 3 and 4 - which is exactly what the methods below avoid."
+      },
+      "tips": [
+        "Column numbering starts at 1 for the LEFTmost column of table_array, not for column A of the sheet.",
+        "All methods below use this same table, so you can copy them straight into a test sheet."
+      ]
+    },
+    {
+      "title": "Method 1: Pass an Array of Column Numbers",
+      "content": "In Microsoft 365 and Excel 2021, VLOOKUP accepts an array constant such as {2,3,4} in the col_index_num position. The formula returns all three columns and spills into the cells to the right. This is the smallest change to the VLOOKUP you already know.",
+      "steps": [
+        { "name": "Set the lookup value", "text": "Put the ID you want to look up in G2.", "formula": "E-103" },
+        { "name": "Pass the column numbers as an array", "text": "Enter the formula in one cell; Excel fills the neighbouring cells automatically.", "formula": "=VLOOKUP($G$2, $A$2:$D$5, {2,3,4}, FALSE)" },
+        { "name": "Handle missing IDs", "text": "Wrap in IFERROR so a bad ID shows a message instead of three #N/A cells.", "formula": "=IFERROR(VLOOKUP($G$2, $A$2:$D$5, {2,3,4}, FALSE), \"Not found\")" }
+      ],
+      "example": {
+        "formula": "=VLOOKUP($G$2, $A$2:$D$5, {2,3,4}, FALSE)",
+        "result": "Cia Lin | Finance | cia@corp.com  (spills across three cells)",
+        "explanation": "With G2 = \"E-103\" and the table A2:D5 holding ID, Name, Department and Email, the array {2,3,4} pulls columns 2, 3 and 4 of the matching row in one formula."
+      },
+      "tips": [
+        "In Excel 2019 and older this still works, but you must select all three target cells first and confirm with Ctrl+Shift+Enter.",
+        "Google Sheets needs the whole thing wrapped: =ARRAYFORMULA(VLOOKUP($G$2, $A$2:$D$5, {2,3,4}, FALSE)).",
+        "In European locales the horizontal array separator is a backslash, so write {2\\3\\4}."
+      ]
+    },
+    {
+      "title": "Method 2: INDEX + MATCH (Works Everywhere)",
+      "content": "INDEX can return a value from a two-dimensional range when you give it both a row number and a column number. MATCH supplies the row number. Instead of typing the column number, use COLUMNS($B$2:B2) — it evaluates to 1 in the first cell and increments to 2 and 3 as you drag the formula to the right. This is the safest choice if you share workbooks with people on older Excel versions.",
+      "steps": [
+        { "name": "Point INDEX at the return block only", "text": "Use B2:D5 (the output columns), not A2:D5 — the lookup column lives in the MATCH part.", "formula": "=INDEX($B$2:$D$5, MATCH($G$2, $A$2:$A$5, 0), COLUMNS($B$2:B2))" },
+        { "name": "Drag right", "text": "Copy the cell two columns to the right. COLUMNS($B$2:B2) becomes COLUMNS($B$2:C2) = 2, then 3." },
+        { "name": "Optional: return the whole row at once", "text": "In Microsoft 365, a column_num of 0 returns the entire row with no dragging.", "formula": "=INDEX($B$2:$D$5, MATCH($G$2, $A$2:$A$5, 0), 0)" }
+      ],
+      "example": {
+        "formula": "=INDEX($B$2:$D$5, MATCH($G$2, $A$2:$A$5, 0), COLUMNS($B$2:B2))",
+        "result": "Cia Lin, then Finance, then cia@corp.com as you drag across three cells",
+        "explanation": "MATCH finds the row where column A equals the lookup ID; COLUMNS() walks the column pointer from 1 to 3 so one formula fills the whole record."
+      },
+      "tips": [
+        "INDEX + MATCH is not limited to left-to-right: the lookup column can sit anywhere.",
+        "Adding a column inside the table does not break the formula, unlike a hard-coded col_index_num."
+      ]
+    },
+    {
+      "title": "Method 3: XLOOKUP Returns a Whole Block",
+      "content": "XLOOKUP separates the lookup array from the return array, and the return array can be several columns wide. That makes the multi-column case the default behaviour rather than a trick. XLOOKUP ships with Microsoft 365 and Excel 2021; Google Sheets added it in 2024.",
+      "example": {
+        "formula": "=XLOOKUP($G$2, $A$2:$A$5, $B$2:$D$5, \"Not found\")",
+        "result": "Cia Lin | Finance | cia@corp.com",
+        "explanation": "The third argument $B$2:$D$5 spans three columns, so XLOOKUP spills all three. The fourth argument replaces #N/A with a friendly message — no IFERROR wrapper needed."
+      },
+      "tips": [
+        "If your ID list can contain duplicates, use FILTER instead: =FILTER($B$2:$D$5, $A$2:$A$5=$G$2) returns every matching row, not just the first.",
+        "XLOOKUP is not available in Excel 2019 or Excel 2016 — fall back to Method 2 there."
+      ]
+    },
+    {
+      "title": "Google Sheets Differences and Error Fixes",
+      "content": "Google Sheets supports all three ideas, with two caveats: array results need ARRAYFORMULA (or an enabling function such as INDEX), and XLOOKUP only arrived in 2024, so older sheets must use INDEX + MATCH. The error codes you will meet are the same as in Excel once the formula is entered correctly.",
+      "example": {
+        "formula": "=ARRAYFORMULA(IFERROR(VLOOKUP($G$2, $A$2:$D$5, {2,3,4}, FALSE), \"Not found\"))",
+        "result": "Cia Lin | Finance | cia@corp.com, or \"Not found\" if the ID is absent",
+        "explanation": "ARRAYFORMULA lets the {2,3,4} array expand across three cells in Google Sheets, and IFERROR catches unmatched IDs."
+      },
+      "tips": [
+        "#REF! means a column number is larger than the table width — recount your table_array columns.",
+        "#N/A from a plain VLOOKUP usually means the ID is missing or has stray spaces; try TRIM on both sides.",
+        "#SPILL! in Excel means something already occupies the cells where the result wants to expand — clear that range.",
+        "Numbers stored as text are the most common silent failure: match the data type of the lookup column and the lookup value."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "VLOOKUP", "slug": "vlookup", "description": "VLOOKUP (Vertical Lookup) is a built-in function in Excel and Google Sheets that searches for a value in the first column of a table and returns a value in the same row from a specified column." },
+    { "name": "INDEX", "slug": "index", "description": "INDEX returns the value at a specified position in a range or array." },
+    { "name": "MATCH", "slug": "match", "description": "MATCH searches for a specified item in a range and returns its relative position." },
+    { "name": "XLOOKUP", "slug": "xlookup", "description": "XLOOKUP is the modern replacement for VLOOKUP. It searches a range or array for a value and returns the corresponding item from a second range or array. It supports exact and approximate matching, wildcards, and can search in any direction." }
+  ],
+  "summary": "VLOOKUP returning multiple columns is really four different problems with four different answers. If you are on Microsoft 365, hand VLOOKUP the array {2,3,4} or switch to XLOOKUP and let it spill. If the workbook has to open in Excel 2019 or older, use INDEX + MATCH with a COLUMNS() column pointer and drag across. Wrap any of them in IFERROR so a missing key shows a message instead of a wall of #N/A.",
+  "nextSteps": [
+    "Test the INDEX + MATCH version on a table where the return columns sit to the LEFT of the lookup column",
+    "Swap XLOOKUP for FILTER when your lookup key can appear on more than one row",
+    "Check the Google Sheets ARRAYFORMULA version if your team works in both apps"
+  ],
+  "relatedTutorials": [
+    "vlookup-with-multiple-criteria",
+    "vlookup-approximate-match",
+    "index-match-two-way-lookup"
+  ]
+}
