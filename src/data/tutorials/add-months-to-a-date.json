@@ -1,0 +1,107 @@
+{
+  "slug": "add-months-to-a-date",
+  "title": "Add Months to a Date",
+  "description": "Learn how to add months to a date in Excel and Google Sheets with EDATE, EOMONTH and DATE, including end-of-month clamping, negative months and pitfalls.",
+  "category": "Date & Time",
+  "functions": ["EDATE", "EOMONTH", "DATE"],
+  "intro": "Adding days to a date is simple arithmetic, but months are not a fixed length, so you cannot add 30 and hope for the best. Excel and Google Sheets give you three purpose-built tools for the job: EDATE for shifting whole months, EOMONTH for landing on month boundaries, and DATE for full control. This guide covers all three, including the end-of-month behaviour that catches most people out.",
+  "tags": ["EDATE", "EOMONTH", "DATE", "Dates", "Scheduling"],
+  "estimatedTime": "8 min read",
+  "prerequisites": [
+    "A date stored as a real date value, not text",
+    "Excel 2007 or later, or Google Sheets"
+  ],
+  "sections": [
+    {
+      "title": "EDATE: Add or Subtract Whole Months",
+      "content": "EDATE(start_date, months) returns the date a set number of months before or after a start date. Use a positive number of months to move forward and a negative number to move back. The day of the month is preserved, and when that day does not exist in the target month, EDATE clamps to the last valid day instead of spilling into the following month.",
+      "steps": [
+        { "name": "Reference a date cell", "text": "Point EDATE at a cell holding a real date and give the month offset.", "formula": "=EDATE(A2, 6)" },
+        { "name": "Go backwards with a negative offset", "text": "Negative months move the date into the past.", "formula": "=EDATE(A2, -3)" },
+        { "name": "Use 0 to keep the same date", "text": "EDATE with 0 returns the start date unchanged — useful when the offset lives in another cell.", "formula": "=EDATE(A2, B2)" }
+      ],
+      "example": {
+        "formula": "=EDATE(DATE(2026,1,31), 1)",
+        "result": "2026-02-28",
+        "explanation": "February 2026 has only 28 days, so EDATE clamps the 31st down to the last day of the month. In the leap year 2024 the same formula returns 2024-02-29."
+      },
+      "tips": [
+        "EDATE returns a date serial number — if you see 46081 instead of a date, apply a date format to the cell.",
+        "Never type a date as text like \"31/01/2026\"; it is interpreted differently under US and UK regional settings. Use DATE(2026,1,31) or DATEVALUE instead.",
+        "Both Excel and Google Sheets support EDATE with identical behaviour; no Analysis ToolPak is needed in Excel 2007 or later."
+      ]
+    },
+    {
+      "title": "Handling End-of-Month Dates Correctly",
+      "content": "The clamping behaviour is usually what you want for billing and subscription cycles: one month after 31 January is 28 February, not 3 March. But it has a side effect worth knowing — adding one month to 31 January and then another month gives 28 March, not 31 March, because EDATE works from the previous result rather than the original date. Chain from the original date when you need a stable anchor.",
+      "example": {
+        "formula": "=EDATE(EDATE(DATE(2026,1,31), 1), 1)",
+        "result": "2026-03-28",
+        "explanation": "The first EDATE clamps to 2026-02-28, and the second adds one month to that clamped date. Anchoring to the original with =EDATE(DATE(2026,1,31), 2) gives 2026-03-31 instead."
+      },
+      "tips": [
+        "For recurring monthly billing, anchor every period to the original start date: =EDATE($A$2, B2) where B2 is 1, 2, 3...",
+        "If you always want the true end of the month, use EOMONTH rather than relying on EDATE clamping."
+      ]
+    },
+    {
+      "title": "EOMONTH: Month-End and Month-Start Dates",
+      "content": "EOMONTH(start_date, months) returns the last day of the month that is the given number of months away. Zero gives the end of the current month, 1 the end of next month, and -1 the end of the previous month. It is the cleanest way to build reporting periods, invoice due dates, and billing boundaries.",
+      "steps": [
+        { "name": "Get the end of the current month", "text": "Use 0 as the month offset.", "formula": "=EOMONTH(A2, 0)" },
+        { "name": "Get the first day of the current month", "text": "Take the end of the previous month and add one day.", "formula": "=EOMONTH(A2, -1) + 1" },
+        { "name": "Count the days in a month", "text": "Subtract the previous month-end from the current month-end.", "formula": "=EOMONTH(A2, 0) - EOMONTH(A2, -1)" }
+      ],
+      "example": {
+        "formula": "=EOMONTH(DATE(2026,1,15), 1)",
+        "result": "2026-02-28",
+        "explanation": "EOMONTH ignores the day of the start date and always lands on the final day of the target month — here the last day of February 2026."
+      },
+      "tips": [
+        "EOMONTH with 0 always gives month-end, whereas EDATE with 0 returns the same date unchanged.",
+        "Add a working-day wrapper, such as =WORKDAY(EOMONTH(A2,0)+1, -1), if a due date must fall on a business day."
+      ]
+    },
+    {
+      "title": "The DATE Alternative — and Its Roll-Over Trap",
+      "content": "DATE(year, month, day) builds a date from parts, so DATE(YEAR(A2), MONTH(A2) + 6, DAY(A2)) adds six months without any dedicated function. This is handy when you need to shift years, months and days in one formula. Be aware of one important difference: unlike EDATE, DATE does not clamp to the end of the month — it rolls the excess days forward.",
+      "example": {
+        "formula": "=DATE(2026, 2, 31)",
+        "result": "2026-03-03",
+        "explanation": "February 2026 has 28 days, so day 31 rolls three days into March. EDATE(DATE(2026,1,31), 1) returns 2026-02-28 for the same shift — pick the behaviour your calculation actually needs."
+      },
+      "tips": [
+        "DATE handles out-of-range months gracefully too: =DATE(2026, 13, 1) returns 2027-01-01.",
+        "Use =DATE(YEAR(A2), MONTH(A2) + B2, 1) when you deliberately want the first of a shifted month regardless of the original day."
+      ]
+    },
+    {
+      "title": "Troubleshooting Common Errors",
+      "content": "Date formulas fail in a few predictable ways. Nearly all of them come down to the input not being a real date, or the result falling outside the range Excel can represent. A quick check of the underlying value usually identifies the problem immediately.",
+      "example": {
+        "formula": "=EDATE(A2, 12)",
+        "result": "#VALUE! if A2 holds text, #NUM! if the result falls outside the supported date range",
+        "explanation": "Either fix the input with DATEVALUE, or verify the offset is not pushing the date beyond Excel's limit of 31 December 9999."
+      },
+      "tips": [
+        "Test whether a cell is a real date with =ISNUMBER(A2) — TRUE means Excel recognises it as a date serial.",
+        "In Google Sheets, text dates are coerced more leniently, but the same sheet opened in Excel may break — always store true date values.",
+        "If a whole column of results shows as numbers, select the column and apply a short date format rather than re-entering the formulas.",
+        "Subtracting two EDATE results gives a day count, which pairs well with DATEDIF for elapsed-period reporting."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    { "name": "EDATE", "slug": "edate", "description": "EDATE returns the date that is a given number of months before or after a start date, preserving the day of the month and rolling to the last day when that day does not exist in the target month." },
+    { "name": "EOMONTH", "slug": "eomonth", "description": "EOMONTH returns the last day of the month that is a given number of months before or after a start date, useful for month-end reporting and period boundaries." },
+    { "name": "DATE", "slug": "date", "description": "DATE builds a date serial number from separate year, month, and day components, and automatically rolls over out-of-range values such as month 13 into the next year or day 32 into the following month." }
+  ],
+  "summary": "EDATE is the default choice for adding months: it preserves the day of the month and clamps sensibly when that day does not exist. EOMONTH is the right tool for month-end and month-start boundaries, and doubling it up gives you the first day of a month or the total days in a period. Reach for DATE only when you need full control over years, months and days at once — and remember that it rolls excess days forward instead of clamping. Store dates as real date values and format the result cells, and these formulas will behave identically in Excel and Google Sheets.",
+  "nextSteps": [
+    "Build a monthly billing schedule by anchoring =EDATE($A$2, B2) to a single start date",
+    "Combine EOMONTH with SUMIFS to total transactions inside a reporting period",
+    "Use DATEDIF on two EDATE results to report elapsed months between milestones"
+  ],
+  "relatedTutorials": ["calculate-days-between-two-dates", "calculate-age-from-birthday", "sumif-with-date-range"]
+}

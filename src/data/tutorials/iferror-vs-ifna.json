@@ -1,0 +1,106 @@
+{
+  "slug": "iferror-vs-ifna",
+  "title": "IFERROR vs IFNA",
+  "description": "IFERROR vs IFNA: which error handler should wrap your formulas? Compare what each one catches, with lookup and division examples for Excel and Google Sheets.",
+  "category": "IF & Logical",
+  "functions": ["IFERROR", "IFNA", "ISERROR", "ISNA"],
+  "intro": "IFERROR and IFNA look interchangeable at a glance — both wrap a formula and swap in a fallback when it breaks. The difference is scope: IFERROR catches every error, while IFNA catches only #N/A. Choosing the wrong one either hides genuine bugs in your sheet or leaves avoidable errors on screen. This guide shows exactly what each function traps and which one to reach for.",
+  "tags": ["IFERROR", "IFNA", "Error Handling", "VLOOKUP", "#N/A"],
+  "estimatedTime": "9 min read",
+  "prerequisites": [
+    "Basic formula syntax",
+    "Familiarity with VLOOKUP or XLOOKUP",
+    "Excel 2007 or later, or Google Sheets"
+  ],
+  "sections": [
+    {
+      "title": "The One-Line Difference: What Each Function Catches",
+      "content": "IFNA traps a single error: #N/A, the value lookups return when they find nothing. IFERROR is a catch-all — it swallows #N/A, #VALUE!, #REF!, #DIV/0!, #NUM!, #NAME? and #NULL!, plus the newer #SPILL! and #CALC! values in current Excel builds. The syntax is nearly identical: IFERROR(value, value_if_error) and IFNA(value, value_if_na). Both arrived in Excel 2007 and both exist in Google Sheets with the same behaviour.",
+      "example": {
+        "formula": "=IFNA(1/0, \"n/a\")",
+        "result": "#DIV/0!",
+        "explanation": "Division by zero is not #N/A, so IFNA does nothing and the error stays visible. IFERROR would have replaced it with \"n/a\"."
+      },
+      "tips": [
+        "Rule of thumb: use IFNA when you expect a lookup to miss; use IFERROR when you expect a calculation to break.",
+        "In Google Sheets the second argument is optional for IFERROR and returns blank; Excel requires both arguments."
+      ]
+    },
+    {
+      "title": "IFNA in Practice: Protecting Lookups",
+      "content": "Most #N/A errors mean something legitimate — the item simply is not in the list yet. That is a data condition, not a bug, so IFNA is the right wrapper. Wrapping a lookup in IFNA keeps genuine formula problems, such as a broken range or a stray text value, visible so you can fix them, while quietly handling the everyday \"not found\" case.",
+      "steps": [
+        { "name": "Wrap the lookup", "text": "Put the whole VLOOKUP inside IFNA and supply the fallback as the second argument.", "formula": "=IFNA(VLOOKUP(E2, A2:C500, 3, FALSE), \"Not listed\")" },
+        { "name": "Use a neutral fallback for numbers", "text": "Return 0 instead of text so downstream sums still work.", "formula": "=IFNA(VLOOKUP(E2, A2:C500, 3, FALSE), 0)" }
+      ],
+      "example": {
+        "formula": "=IFNA(VLOOKUP(\"K-99\", A2:C500, 3, FALSE), \"Not listed\")",
+        "result": "Not listed",
+        "explanation": "Product K-99 is absent from the table, so VLOOKUP returns #N/A and IFNA substitutes the friendly message. The same wrapper works for XLOOKUP and INDEX + MATCH."
+      },
+      "tips": [
+        "XLOOKUP has this built in: =XLOOKUP(E2, A2:A500, C2:C500, \"Not listed\") needs no wrapper at all.",
+        "Return \"\" rather than 0 if a later AVERAGE should ignore missing rows — AVERAGE skips text but counts zeros."
+      ]
+    },
+    {
+      "title": "When IFERROR Is the Right Choice",
+      "content": "Outside lookups you rarely know which error will appear, and that is where IFERROR earns its place. Dividing by a possibly-empty cell, converting text to numbers, or extracting a substring can each fail in several different ways. IFERROR handles them all in one wrapper, and it evaluates the inner expression only once — unlike the older IF(ISERROR(...)) pattern, which computes it twice.",
+      "example": {
+        "formula": "=IFERROR(A2/B2, 0)",
+        "result": "0 when B2 is 0 or empty",
+        "explanation": "A blank or zero divisor raises #DIV/0!, and text in either cell raises #VALUE!. IFERROR covers both with a single wrapper."
+      },
+      "tips": [
+        "IFERROR(A2/B2, 0) also guards against #VALUE! if A2 or B2 holds text — IFNA would leave that error on screen.",
+        "Prefer IFERROR over IF(ISERROR(x), fallback, x): the latter recalculates x twice, which is slower and can return inconsistent results with volatile functions."
+      ]
+    },
+    {
+      "title": "The Hidden Cost of IFERROR: Masked Bugs",
+      "content": "Because IFERROR catches everything, it also catches your mistakes. A mistyped range, a deleted column, or a col_index_num larger than the table all produce errors that IFERROR silently converts into your fallback text. The sheet looks clean while quietly returning wrong answers — the worst kind of bug to track down later.",
+      "example": {
+        "formula": "=IFERROR(VLOOKUP(F2, A2:A10, 2, FALSE), \"Not found\")",
+        "result": "Not found — for every single row",
+        "explanation": "The table has only one column but col_index_num is 2, so VLOOKUP returns #REF!. IFERROR disguises a broken formula as missing data. With IFNA the #REF! would surface immediately."
+      },
+      "tips": [
+        "Build and test the inner formula first; only add the IFERROR wrapper once you have confirmed it returns correct results.",
+        "During development, temporarily drop the wrapper or use IFNA so real errors stay visible.",
+        "Never wrap a formula in IFERROR just to \"make the errors go away\" — fix the underlying cause instead."
+      ]
+    },
+    {
+      "title": "ISERROR and ISNA: Testing Without Wrapping",
+      "content": "Sometimes you do not want a fallback value — you want to know whether an error occurred. ISERROR and ISNA return TRUE or FALSE instead of a substitution, which makes them ideal for conditional formatting, status flags, and counting how many rows failed. ISNA is TRUE only for #N/A; ISERROR is TRUE for any error.",
+      "steps": [
+        { "name": "Flag unmatched rows", "text": "Combine ISNA with MATCH to mark items that are missing from a second list.", "formula": "=ISNA(MATCH(A2, D2:D50, 0))" },
+        { "name": "Count the failures", "text": "Wrap the test in SUMPRODUCT to total the unmatched rows across a range.", "formula": "=SUMPRODUCT(--ISNA(MATCH(A2:A100, D2:D50, 0)))" }
+      ],
+      "example": {
+        "formula": "=SUMPRODUCT(--ISNA(MATCH(A2:A100, D2:D50, 0)))",
+        "result": "The number of items in A2:A100 that are missing from D2:D50",
+        "explanation": "MATCH returns #N/A for each miss, ISNA turns those into TRUE, and the double unary minus converts TRUE/FALSE to 1/0 so SUMPRODUCT can add them up."
+      },
+      "tips": [
+        "In Excel 365 you can skip SUMPRODUCT and wrap ISNA in SUM — it aggregates arrays natively.",
+        "Use =ISERROR(A1) as a conditional formatting rule to highlight every error cell in a report at once.",
+        "Google Sheets behaves identically here, but array formulas over a range need ARRAYFORMULA in legacy Sheets."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    { "name": "IFERROR", "slug": "iferror", "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise." },
+    { "name": "IFNA", "slug": "ifna", "description": "IFNA returns a specified value when a formula results in the #N/A error, and otherwise returns the formula's own result. It catches only #N/A, not other errors." },
+    { "name": "ISERROR", "slug": "iserror", "description": "ISERROR returns TRUE if the supplied value is any Excel error (#N/A, #VALUE!, #REF!, #DIV/0!, #NUM!, #NAME?, or #NULL!), and FALSE otherwise." },
+    { "name": "ISNA", "slug": "isna", "description": "ISNA returns TRUE if the supplied value is the #N/A error, and FALSE for any other value or error." }
+  ],
+  "summary": "Reach for IFNA when the only failure you expect is a lookup that finds nothing — it handles the miss while letting real formula bugs stay visible. Reach for IFERROR when a calculation can fail in unpredictable ways, such as dividing by an empty cell, but build and test the inner formula first so you are not masking a mistake. When you need to detect or count errors rather than replace them, ISNA and ISERROR give you a TRUE/FALSE answer that works in status flags, conditional formatting, and SUMPRODUCT totals.",
+  "nextSteps": [
+    "Audit your existing sheets: replace IFERROR with IFNA around lookups so genuine errors surface again",
+    "Use SUMPRODUCT with ISNA to reconcile two lists and count what is missing",
+    "Pair these tests with IF and AND / OR to build multi-condition error handling"
+  ],
+  "relatedTutorials": ["excel-n-a-error-fix", "nested-if-alternatives", "if-with-and-or"]
+}
