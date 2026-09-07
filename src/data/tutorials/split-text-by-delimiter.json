@@ -1,0 +1,114 @@
+{
+  "slug": "split-text-by-delimiter",
+  "title": "Split Text By Delimiter",
+  "description": "Split text by delimiter in Excel and Google Sheets — use TEXTSPLIT, SPLIT, LEFT with FIND, and Text to Columns to break names, emails and codes into columns.",
+  "category": "Text Functions",
+  "functions": ["TEXTSPLIT", "SPLIT", "LEFT", "RIGHT", "FIND", "SUBSTITUTE"],
+  "intro": "Data often arrives crammed into a single cell — full names, address lines, or email addresses separated by a comma, space, or semicolon. Splitting that text by its delimiter turns one messy column into clean, analyzable columns. This guide covers the one-click modern functions (TEXTSPLIT and SPLIT), the classic formula approach, and Text to Columns.",
+  "tags": ["TEXTSPLIT", "SPLIT", "LEFT", "FIND", "SUBSTITUTE", "Text Functions"],
+  "estimatedTime": "10 min read",
+  "prerequisites": [
+    "Basic formula editing in Excel or Google Sheets",
+    "Understanding of cell references"
+  ],
+  "sections": [
+    {
+      "title": "Modern Way: TEXTSPLIT (Excel 365) and SPLIT (Google Sheets)",
+      "content": "If you are on Excel 365 or using Google Sheets, splitting text is a one-formula job. Excel's TEXTSPLIT takes the text and the delimiter, then spills every part into neighboring cells. Google Sheets' SPLIT does the same with a slightly different syntax. Both accept multi-character delimiters, which older methods struggle with.",
+      "example": {
+        "formula": "=TEXTSPLIT(A1, \",\")",
+        "result": "If A1 contains \"John,Smith,john@example.com\", the result spills across three cells: John | Smith | john@example.com",
+        "explanation": "TEXTSPLIT(A1, \",\") breaks the string at every comma and returns a horizontal array. Add a row delimiter as the second argument to split downward instead."
+      },
+      "steps": [
+        { "name": "Enter the formula", "text": "In the cell where you want the first part to appear, reference the source cell and its delimiter.", "formula": "=TEXTSPLIT(A1, \",\")" },
+        { "name": "Google Sheets equivalent", "text": "Sheets uses SPLIT with the delimiter as the second argument.", "formula": "=SPLIT(A1, \",\")" }
+      ],
+      "tips": [
+        "In Excel 365 the result spills automatically — make sure the cells to the right are empty.",
+        "In Google Sheets, wrap SPLIT in INDEX or ARRAYFORMULA if you need a single part rather than the whole row."
+      ]
+    },
+    {
+      "title": "Classic Formulas: LEFT + FIND for the First Part",
+      "content": "In older Excel versions there is no TEXTSPLIT, but you can extract each piece with LEFT, RIGHT, and FIND. FIND returns the position of the delimiter, and LEFT grabs everything before it. This method works in every version of Excel and Google Sheets.",
+      "example": {
+        "formula": "=LEFT(A1, FIND(\",\", A1) - 1)",
+        "result": "With A1 = \"John,Smith,john@example.com\", the result is John",
+        "explanation": "FIND locates the comma at position 5, so LEFT(A1, 4) returns the four characters before it. Subtracting 1 excludes the delimiter itself."
+      },
+      "steps": [
+        { "name": "Find the delimiter position", "text": "Confirm where the delimiter sits with FIND — it is case-sensitive; use SEARCH if you need a case-insensitive match.", "formula": "=FIND(\",\", A1)" },
+        { "name": "Extract everything before it", "text": "Use LEFT with the position minus one.", "formula": "=LEFT(A1, FIND(\",\", A1) - 1)" },
+        { "name": "Extract everything after it", "text": "RIGHT plus LEN skips past the first delimiter and returns the remainder.", "formula": "=RIGHT(A1, LEN(A1) - FIND(\",\", A1))" }
+      ],
+      "tips": [
+        "RIGHT(A1, LEN(A1) - FIND(\",\", A1)) on our example returns Smith,john@example.com — the rest of the string after the first comma.",
+        "If the delimiter might be missing, wrap the formula in IFERROR to return the original text instead of a #VALUE! error."
+      ]
+    },
+    {
+      "title": "Extract the Nth Part with SUBSTITUTE",
+      "content": "When you need a specific piece — say the third token — the SUBSTITUTE trick turns the delimiter into a block of spaces, then MID reads the block you want. It looks cryptic but works in every Excel version and is fully self-contained.",
+      "example": {
+        "formula": "=TRIM(MID(SUBSTITUTE($A1, \",\", REPT(\" \", 100)), (2-1)*100 + 1, 100))",
+        "result": "With A1 = \"John,Smith,john@example.com\", the result is Smith",
+        "explanation": "SUBSTITUTE replaces each comma with 100 spaces, so every token occupies its own 100-character slot. MID reads slot number n (here n=2), and TRIM removes the padding."
+      },
+      "steps": [
+        { "name": "Pad each token", "text": "Replace the delimiter with REPT(\" \", 100) to give each part a fixed-width slot.", "formula": "=SUBSTITUTE($A1, \",\", REPT(\" \", 100))" },
+        { "name": "Read slot n", "text": "MID starts at (n-1)*100+1 and reads 100 characters; TRIM strips the spaces. Change 2 to any part number.", "formula": "=TRIM(MID(SUBSTITUTE($A1, \",\", REPT(\" \", 100)), (2-1)*100 + 1, 100))" }
+      ],
+      "tips": [
+        "Use a width larger than your longest token — 100 covers almost everything; 250 is safer for long text.",
+        "This formula is a favorite for splitting domain names, SKU codes, and comma-separated tags."
+      ]
+    },
+    {
+      "title": "Text to Columns: The No-Formula Method",
+      "content": "Excel's built-in Text to Columns wizard splits a selected range in a few clicks — ideal for one-off cleanups where you don't want formulas at all. It is destructive, though: the original column is overwritten, so work on a copy.",
+      "steps": [
+        { "name": "Select the column", "text": "Highlight the cells you want to split, then go to Data > Text to Columns.", "formula": null },
+        { "name": "Choose Delimited", "text": "Pick the Delimited option and click Next.", "formula": null },
+        { "name": "Pick the delimiter", "text": "Check Comma, Space, Semicolon, Tab, or type a custom character, then click Finish.", "formula": null }
+      ],
+      "example": {
+        "formula": "Data > Text to Columns > Delimited > Comma",
+        "result": "\"John,Smith,john@example.com\" becomes three separate cells: John, Smith, john@example.com",
+        "explanation": "The wizard writes static values — if the source data changes you must re-run it, which is why formulas are usually better for recurring imports."
+      },
+      "tips": [
+        "Google Sheets has an equivalent: Data > Split text to columns.",
+        "Make sure the columns to the right are empty or Excel will warn you about overwriting data."
+      ]
+    },
+    {
+      "title": "Related Cleanup: SUBSTITUTE, TEXT, and Joining Back",
+      "content": "Splitting is often step one. SUBSTITUTE normalizes delimiters before splitting (for example, turning semicolons into commas), and TEXT formats numbers so they look right once separated. If you later need to reverse the operation, TEXTJOIN stitches the pieces back together.",
+      "example": {
+        "formula": "=SUBSTITUTE(A1, \";\", \",\")",
+        "result": "With A1 = \"a;b;c\", the result is a,b,c",
+        "explanation": "Normalizing every delimiter to one character lets a single splitting formula handle mixed input — run SUBSTITUTE first, then TEXTSPLIT or LEFT/FIND on the result."
+      },
+      "tips": [
+        "TEXTSPLIT also accepts an ignore_empty argument to skip consecutive delimiters like \",,\".",
+        "When formatting numbers as text before joining, use =TEXT(B1, \"0.00\") so 12.5 displays as 12.50."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    { "name": "TEXT", "slug": "text", "description": "TEXT converts a number or date into text using a user-supplied format code, so the displayed value can be concatenated or presented in a custom format." },
+    { "name": "LEFT", "slug": "left", "description": "LEFT returns the first character(s) from the beginning of a text string." },
+    { "name": "RIGHT", "slug": "right", "description": "RIGHT returns the last character(s) from the end of a text string." },
+    { "name": "FIND", "slug": "find", "description": "FIND returns the position of one text string inside another. It is case-sensitive." },
+    { "name": "SUBSTITUTE", "slug": "substitute", "description": "SUBSTITUTE replaces one text string with another in a text string." }
+  ],
+  "summary": "Splitting text by a delimiter is easy in Excel 365 and Google Sheets with TEXTSPLIT and SPLIT, which spill every part into neighboring cells automatically. On older Excel, LEFT + FIND extracts the first part, RIGHT + LEN grabs the remainder, and the SUBSTITUTE + MID trick pulls out any nth token. For one-off cleanups, Text to Columns does the job without formulas — just remember it overwrites the source and must be re-run when data changes.",
+  "nextSteps": [
+    "Apply the SUBSTITUTE + MID formula to a column of SKU codes to isolate the product-code segment",
+    "Try TEXTSPLIT with two delimiters — a comma for columns and a semicolon for rows",
+    "Learn TEXTJOIN to reverse the process and reassemble split parts into one cell"
+  ],
+  "relatedTutorials": ["extract-text-from-string", "concatenate-vs-textjoin", "google-sheets-arrayformula"]
+}

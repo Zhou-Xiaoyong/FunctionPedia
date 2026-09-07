@@ -1,0 +1,105 @@
+{
+  "slug": "calculate-principal-payment",
+  "title": "Calculate Principal Payment",
+  "description": "Calculate the principal payment of any loan with PPMT: formula syntax, a worked $200,000 mortgage example, and how PPMT, IPMT and PMT fit together in Excel and Sheets.",
+  "category": "Financial",
+  "functions": ["PPMT", "IPMT", "PMT", "FV"],
+  "intro": "Every fixed loan payment has two parts: interest and principal. Excel's PPMT function isolates the principal portion for any single payment period, which is exactly what amortization schedules are built on. This guide walks through the syntax, a fully worked mortgage example, and how PPMT relates to PMT and IPMT.",
+  "tags": ["PPMT", "IPMT", "PMT", "Loan", "Amortization", "Financial"],
+  "estimatedTime": "10 min read",
+  "prerequisites": [
+    "Understanding of annual vs periodic interest rates",
+    "Basic familiarity with the PMT function"
+  ],
+  "sections": [
+    {
+      "title": "PPMT Syntax and Sign Convention",
+      "content": "PPMT(rate, per, nper, pv, [fv], [type]) returns the principal part of the payment for period `per`. Rate and nper must use the same time unit — a 6% annual rate with monthly payments becomes 6%/12 per month over 360 months. Because PPMT models money flowing out of your pocket, the result is negative when the loan amount (pv) is entered as positive.",
+      "steps": [
+        { "name": "Convert the rate", "text": "Divide the annual rate by the number of payments per year.", "formula": "=6%/12" },
+        { "name": "Compute total periods", "text": "A 30-year monthly loan spans 360 periods.", "formula": "=30*12" },
+        { "name": "Call PPMT", "text": "Ask for a specific period number — here, the very first payment.", "formula": "=PPMT(6%/12, 1, 30*12, 200000)" }
+      ],
+      "example": {
+        "formula": "=PPMT(6%/12, 1, 30*12, 200000)",
+        "result": "-$199.10",
+        "explanation": "For a $200,000 loan at 6% over 30 years, the first payment contains $199.10 of principal. The value is negative because it is money paid out; multiply by -1 if you want positive numbers in a schedule."
+      },
+      "tips": [
+        "Keep rate and nper in matching units: monthly rate with monthly periods, annual with annual.",
+        "The optional `type` argument (0 = end of period, default; 1 = beginning) matters for annuities-due, rarely for standard loans."
+      ]
+    },
+    {
+      "title": "The Key Identity: PMT = IPMT + PPMT",
+      "content": "The total payment PMT is always the interest portion plus the principal portion for any given period. This identity is the fastest way to sanity-check your formulas, and it explains why principal repayment accelerates: interest is charged on the remaining balance, so as the balance shrinks, a growing slice of the fixed payment goes to principal.",
+      "example": {
+        "formula": "=PPMT(6%/12, 1, 360, 200000) + IPMT(6%/12, 1, 360, 200000)",
+        "result": "-$1,199.10 (equals =PMT(6%/12, 360, 200000))",
+        "explanation": "In period 1 the interest portion is $1,000.00 (200,000 × 0.5% monthly) and the principal portion is $199.10. Together they equal the fixed monthly payment of $1,199.10."
+      },
+      "tips": [
+        "Build a full amortization schedule by dragging per = 1, 2, 3… down a column next to IPMT and PPMT.",
+        "The interest slice shrinks and the principal slice grows every single period while their sum stays constant."
+      ]
+    },
+    {
+      "title": "How Principal Grows Over the Life of the Loan",
+      "content": "Compare an early payment with a late one and the shift is dramatic. In month 12 of our $200,000 mortgage, principal is still just over $210. By the final payment, principal is nearly the entire payment. This is why extra principal payments made early in a loan save the most interest.",
+      "example": {
+        "formula": "=PPMT(6%/12, 360, 360, 200000)",
+        "result": "-$1,193.14",
+        "explanation": "The final (360th) payment is $1,199.10, of which $1,193.14 is principal — only $5.96 is interest left to charge, since the balance is almost fully repaid."
+      },
+      "steps": [
+        { "name": "Early loan principal", "text": "Month 12 is still mostly interest.", "formula": "=PPMT(6%/12, 12, 360, 200000)" },
+        { "name": "Late loan principal", "text": "Month 360 is almost all principal.", "formula": "=PPMT(6%/12, 360, 360, 200000)" },
+        { "name": "Cross-check the balance", "text": "FV confirms the remaining balance after any period approaches zero at the end.", "formula": "=FV(6%/12, 360, PMT(6%/12, 360, 200000), 200000)" }
+      ],
+      "tips": [
+        "Month 12 principal is about $210.33 versus $199.10 in month 1 — steady growth from the first period.",
+        "To sum principal across a range of periods, use CUMPRINC(rate, nper, pv, start_period, end_period, type)."
+      ]
+    },
+    {
+      "title": "Google Sheets: Identical Syntax",
+      "content": "PPMT works exactly the same in Google Sheets — same argument order, same sign convention, same results. Sheets also offers the NPER and RATE functions for reverse-engineering loan terms, and all three functions can be combined in an ARRAYFORMULA to fill an entire amortization column at once.",
+      "example": {
+        "formula": "=PPMT(0.005, 1, 360, 200000)",
+        "result": "-$199.10",
+        "explanation": "0.005 is 6% divided by 12. Sheets returns the same -$199.10 as Excel, so amortization templates transfer between the two with no edits."
+      },
+      "tips": [
+        "In Sheets, wrap =ARRAYFORMULA(PPMT(rate, SEQUENCE(360), nper, pv)) to generate the whole principal column in one cell.",
+        "Format the result as currency (Format > Number > Currency) — Sheets shows raw decimals otherwise."
+      ]
+    },
+    {
+      "title": "Common Errors When Calculating Principal",
+      "content": "Most PPMT mistakes come from unit mismatches or sign confusion. A #NUM! error usually means per is outside 1..nper, and a surprising positive result usually means the loan amount was entered as negative. Check these three points before debugging anything else.",
+      "example": {
+        "formula": "=PPMT(6%, 1, 30, 200000)",
+        "result": "-$2,529.78 — technically valid, but this models 30 ANNUAL payments, not monthly",
+        "explanation": "Mixing an annual rate with what you intend as monthly periods silently produces the wrong loan. Always ask: is my rate per period, and is nper the count of those same periods?"
+      },
+      "tips": [
+        "#NUM!: the period argument must be between 1 and nper inclusive.",
+        "Unexpected sign: wrap the formula as =-PPMT(...) or enter pv as a negative number — just be consistent across PMT/IPMT/PPMT."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    { "name": "PPMT", "slug": "ppmt", "description": "PPMT calculates the principal portion of a payment for a specific period of a loan or investment." },
+    { "name": "IPMT", "slug": "ipmt", "description": "IPMT calculates the interest portion of a payment for a specific period of a loan or investment." },
+    { "name": "PMT", "slug": "pmt", "description": "PMT calculates the periodic payment for a loan or investment based on constant payments and a constant interest rate. It's the function you need for mortgage, car loan, and any fixed-rate payment calculations." },
+    { "name": "FV", "slug": "fv", "description": "FV returns the future value of an investment based on periodic, constant payments and a constant interest rate." }
+  ],
+  "summary": "PPMT isolates the principal portion of any single loan payment: =PPMT(rate, per, nper, pv). On a $200,000, 30-year, 6% mortgage it returns -$199.10 for the first payment and -$1,193.14 for the last, while PMT = IPMT + PPMT holds for every period. Match your rate and period units, expect negative output for positive loan amounts, and use CUMPRINC when you need principal summed across a range of periods.",
+  "nextSteps": [
+    "Build a full amortization schedule with per = 1..360 beside IPMT and PPMT columns",
+    "Use CUMPRINC to see total principal paid in the first five years of your mortgage",
+    "Compare a 15-year vs 30-year loan: total interest saved versus the higher principal-per-payment burden"
+  ],
+  "relatedTutorials": ["calculate-loan-interest", "pmt-function-loan-payment", "loan-payment-calculator"]
+}
