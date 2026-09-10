@@ -1,0 +1,105 @@
+{
+  "slug": "median-vs-average",
+  "title": "Median vs Average",
+  "description": "Median vs average is the classic statistical showdown: median resists outliers, average reacts to them. Learn when to use each in Excel and Google Sheets.",
+  "category": "Statistical",
+  "functions": [
+    "MEDIAN",
+    "AVERAGE",
+    "MODE",
+    "PERCENTILE"
+  ],
+  "intro": "AVERAGE is the arithmetic mean and is pulled hard by extreme values, while MEDIAN returns the middle point that is unaffected by outliers. Knowing the difference is what turns a misleading \"average salary\" report into one that actually reflects the team. This guide walks through both formulas, shows the impact of a single outlier side-by-side, and ends with a quick rule of thumb for picking the right one.",
+  "tags": [
+    "MEDIAN",
+    "AVERAGE",
+    "Statistics",
+    "Outliers"
+  ],
+  "estimatedTime": "8 min read",
+  "prerequisites": [
+    "Basic familiarity with Excel ranges and formulas",
+    "No statistics background required"
+  ],
+  "sections": [
+    {
+      "title": "What Each Function Returns",
+      "content": "AVERAGE sums all numeric values in a range and divides by the count. MEDIAN sorts the values and returns the middle one (or the average of the two middle ones when the count is even). Visually, AVERAGE is the balance point of the data, while MEDIAN is the data point that splits the dataset in half.",
+      "example": {
+        "formula": "=AVERAGE(10,20,30,40,50)",
+        "result": "30",
+        "explanation": "Sum of 150 divided by 5 numbers gives a mean of 30."
+      },
+      "tips": [
+        "AVERAGE includes zero values in the denominator, MEDIAN treats zeros as ordinary values.",
+        "Both functions ignore text, logicals and empty cells by default."
+      ]
+    },
+    {
+      "title": "The Outlier Problem (With Numbers)",
+      "content": "Add a single very large or very small value and the two functions produce dramatically different answers. The example below compares a five-person team salary where one person is the CEO: AVERAGE doubles, MEDIAN barely moves.",
+      "example": {
+        "formula": "=AVERAGE(50,55,60,65,500) vs =MEDIAN(50,55,60,65,500)",
+        "result": "146 vs 60",
+        "explanation": "AVERAGE pulls up to 146 because of the 500 outlier. MEDIAN stays at 60, the middle value, because outliers do not affect position."
+      },
+      "tips": [
+        "Use MEDIAN whenever the dataset can be skewed: salaries, home prices, response times.",
+        "Use AVERAGE when every value genuinely counts, such as total quantity sold or total minutes logged."
+      ]
+    },
+    {
+      "title": "Reporting Both Side by Side",
+      "content": "A common trick in management dashboards is to show AVERAGE and MEDIAN in the same row. When they differ noticeably, the reader immediately knows the data is skewed; when they agree, the distribution is roughly symmetric.",
+      "steps": [
+        { "name": "Pick a label cell", "text": "Use A1 for 'Mean' and B1 for 'Median'." },
+        { "name": "Compute the mean", "text": "In A2 enter the AVERAGE formula.", "formula": "=AVERAGE(B2:B12)" },
+        { "name": "Compute the median", "text": "In B2 enter the MEDIAN formula.", "formula": "=MEDIAN(B2:B12)" },
+        { "name": "Add a sanity check", "text": "Compare the gap; a large gap signals an outlier.", "formula": "=IF(ABS(A2-B2)/B2>0.2,\"Check for outliers\",\"OK\")" }
+      ],
+      "tips": [
+        "A 20% gap between AVERAGE and MEDIAN is a common rule of thumb for \"worth investigating\"."
+      ]
+    },
+    {
+      "title": "How MEDIAN Handles Ties and Even Counts",
+      "content": "With an even number of values, MEDIAN averages the two middle values rather than picking one. Duplicates are treated like any other number - position only. With an odd count, MEDIAN is always one of the actual values in the data.",
+      "example": {
+        "formula": "=MEDIAN(10,20,30,40)",
+        "result": "25",
+        "explanation": "Sorted values are 10,20,30,40. The two middle values 20 and 30 average to 25."
+      },
+      "tips": [
+        "If you want the closest actual value rather than the interpolation, use PERCENTILE.INC with k=0.5 plus rounding, or simply CONFIRM the middle for odd counts."
+      ]
+    },
+    {
+      "title": "Google Sheets Differences",
+      "content": "MEDIAN and AVERAGE work identically in Google Sheets, including the way text and empty cells are ignored. The one practical difference is that Google Sheets shares formulas across cells with ARRAYFORMULA, so a single MEDIAN call over a dynamic range (like FILTER results) updates automatically when the source data changes.",
+      "example": {
+        "formula": "=MEDIAN(FILTER(A2:A100, A2:A100<>\"\"))",
+        "result": "Median of non-blank values",
+        "explanation": "FILTER trims blanks before MEDIAN sees them, which lets you skip a helper column."
+      },
+      "tips": [
+        "In Excel 365 the same effect is achievable with =MEDIAN(A2:A100/A2:A100<>\"\") (array), but Google Sheets is friendlier for dynamic filtered ranges."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "MEDIAN", "slug": "median", "description": "MEDIAN returns the middle value of a set of numbers: the value with an equal number of values above and below it after sorting." },
+    { "name": "AVERAGE", "slug": "average", "description": "AVERAGE returns the arithmetic mean of a set of numbers." },
+    { "name": "MODE", "slug": "mode", "description": "MODE returns the most frequently occurring (most common) numeric value in a dataset. It is the legacy version, retained for backward compatibility." },
+    { "name": "PERCENTILE", "slug": "percentile", "description": "PERCENTILE returns the k-th percentile of values in a dataset using the inclusive method. It is the legacy function, retained for compatibility." }
+  ],
+  "summary": "AVERAGE tells you the total divided by the count and reacts strongly to outliers. MEDIAN returns the middle value and ignores how far the extremes sit. Report both when the distribution could be skewed, lean on MEDIAN for skewed data like income and latency, and use AVERAGE when every value equally contributes (totals, durations, quantities).",
+  "nextSteps": [
+    "Compare AVERAGE and MEDIAN on your own dataset to spot skew quickly",
+    "Add MODE to the same dashboard to surface the most common outcome",
+    "Use PERCENTILE to add P25/P75 alongside the median for richer context"
+  ],
+  "relatedTutorials": [
+    "averageif-with-criteria",
+    "averageifs-multiple-criteria"
+  ]
+}

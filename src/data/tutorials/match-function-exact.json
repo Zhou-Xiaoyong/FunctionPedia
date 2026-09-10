@@ -1,0 +1,104 @@
+{
+  "slug": "match-function-exact",
+  "title": "MATCH Function Exact Match",
+  "description": "MATCH with match_type 0 is Excel's exact-match lookup. See how MATCH finds a precise position in a range and how to use it safely with INDEX and XMATCH.",
+  "category": "Lookup & Reference",
+  "functions": [
+    "MATCH",
+    "INDEX",
+    "XMATCH",
+    "VLOOKUP"
+  ],
+  "intro": "MATCH is the small lookup that powers INDEX/MATCH, two-way lookups, and most array tricks behind the scenes. Set match_type to 0 and you get a strict, exact-match position lookup that ignores the sort order of your data. This guide explains the third argument in plain English, shows the difference between MATCH and XMATCH, and builds a robust INDEX/MATCH that does not break when columns move.",
+  "tags": [
+    "MATCH",
+    "Exact Match",
+    "INDEX MATCH",
+    "XMATCH"
+  ],
+  "estimatedTime": "10 min read",
+  "prerequisites": [
+    "Basic VLOOKUP understanding",
+    "Familiarity with cell ranges and arguments"
+  ],
+  "sections": [
+    {
+      "title": "MATCH Syntax and the Three Match Types",
+      "content": "MATCH takes a value, a one-row or one-column range, and a match_type number. 0 means exact match (no sorting required), 1 means 'less than or equal to' on ascending data, and -1 means 'greater than or equal to' on descending data. For exact lookups always use 0; the other two are reserved for range-bucket problems like tax tables.",
+      "example": {
+        "formula": "=MATCH(\"Apricot\", A2:A20, 0)",
+        "result": "Position of 'Apricot' (or #N/A if not found)",
+        "explanation": "match_type 0 ignores sort order and returns the relative position of the exact match, or #N/A if it is missing."
+      },
+      "tips": [
+        "MATCH is case-insensitive: MATCH(\"pear\", ...) matches \"Pear\".",
+        "MATCH returns a position, not a value. Wrap it in INDEX or use XMATCH on its own."
+      ]
+    },
+    {
+      "title": "Combining MATCH with INDEX for Lookups",
+      "content": "INDEX/MATCH is the classic replacement for VLOOKUP that works in any direction and tolerates column inserts. MATCH locates the row (or column), and INDEX pulls the value from there.",
+      "example": {
+        "formula": "=INDEX(B2:B20, MATCH(\"Apricot\", A2:A20, 0))",
+        "result": "Sales value of the row where column A = 'Apricot'",
+        "explanation": "MATCH returns e.g. 5, so INDEX returns the 5th value of B2:B20, which is the Apricot sales figure."
+      },
+      "tips": [
+        "INDEX/MATCH looks LEFT, something VLOOKUP cannot do (VLOOKUP needs the lookup column on the left)."
+      ]
+    },
+    {
+      "title": "Handling 'Not Found' Cleanly",
+      "content": "A bare MATCH returns #N/A when the value is missing, which can break downstream formulas. Wrap MATCH in IFERROR (Excel) or wrap INDEX/MATCH together to substitute a friendly default like 'Not found' or 0.",
+      "example": {
+        "formula": "=IFERROR(INDEX(B2:B20, MATCH(\"Kiwi\", A2:A20, 0)), \"Not found\")",
+        "result": "\"Not found\" or the matching sales value",
+        "explanation": "If MATCH returns #N/A, IFERROR swaps it for the string 'Not found', keeping reports clean."
+      },
+      "tips": [
+        "In Google Sheets the equivalent is IFNA; in Excel IFNA catches #N/A specifically while IFERROR catches any error."
+      ]
+    },
+    {
+      "title": "MATCH vs XMATCH (Microsoft 365)",
+      "content": "XMATCH is the modern replacement for MATCH with clearer match modes and search modes. It defaults to exact match (no third argument required), supports wildcard text, last-item searches, and binary search on sorted data. For new work in Excel 365 or Google Sheets (where XMATCH is also available), prefer XMATCH.",
+      "example": {
+        "formula": "=XMATCH(\"Apricot\", A2:A20)",
+        "result": "Position of the first 'Apricot' (exact, default)",
+        "explanation": "XMATCH without a third argument is exact match and more readable than MATCH(value, range, 0)."
+      },
+      "tips": [
+        "Use XMATCH(..., ..., 0, -1) to search from the end and return the LAST match instead of the first."
+      ]
+    },
+    {
+      "title": "MATCH for Two-Way and Multi-Column Lookups",
+      "content": "MATCH powers two-dimensional lookups when nested twice: once across the headers and once down the rows. The formula below finds the value at the intersection of a given row label and column header - useful for gradebooks, schedules, and matrix pricing.",
+      "example": {
+        "formula": "=INDEX(B2:F10, MATCH(\"Banana\", A2:A10, 0), MATCH(\"Q2\", B1:F1, 0))",
+        "result": "Banana-Q2 value in the matrix",
+        "explanation": "The first MATCH picks the row, the second MATCH picks the column, and INDEX returns the cell at that intersection."
+      },
+      "tips": [
+        "Use absolute references (e.g. $A$2:$A$10) when copying the formula so the lookup ranges do not shift."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "MATCH", "slug": "match", "description": "MATCH searches for a specified item in a range and returns its relative position." },
+    { "name": "INDEX", "slug": "index", "description": "INDEX returns the value at a specified position in a range or array." },
+    { "name": "XMATCH", "slug": "xmatch", "description": "XMATCH returns the relative position of a lookup value within a lookup array, with modern options for match mode (exact, wildcard, next smaller/larger) and search mode (first, last, binary)." },
+    { "name": "VLOOKUP", "slug": "vlookup", "description": "VLOOKUP (Vertical Lookup) is a built-in function in Excel and Google Sheets that searches for a value in the first column of a table and returns a value in the same row from a specified column." }
+  ],
+  "summary": "MATCH with match_type 0 is the simplest exact-match lookup: give it a value, a range, and 0, and it returns the relative position. Pair MATCH with INDEX to look up a value (not just a position), wrap both in IFERROR to handle missing entries, and upgrade to XMATCH when you are on Excel 365 for cleaner syntax and richer search modes.",
+  "nextSteps": [
+    "Convert one VLOOKUP in your workbook to INDEX/MATCH and confirm it still works",
+    "Replace MATCH(value, range, 0) with XMATCH(value, range) in any new workbook",
+    "Try a two-way INDEX/MATCH/MATCH to pull values from a grid of headers"
+  ],
+  "relatedTutorials": [
+    "index-match-formula",
+    "index-match-two-way-lookup",
+    "index-match-with-multiple-criteria"
+  ]
+}
