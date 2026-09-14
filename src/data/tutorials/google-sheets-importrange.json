@@ -1,0 +1,183 @@
+{
+  "slug": "google-sheets-importrange",
+  "title": "Google Sheets IMPORTRANGE",
+  "description": "Google Sheets IMPORTRANGE pulls live data from another spreadsheet into yours. Learn the syntax, how to grant access, and how to fix the #REF! access error.",
+  "category": "Google Sheets",
+  "functions": [
+    "IMPORTRANGE",
+    "QUERY",
+    "ARRAYFORMULA",
+    "INDIRECT"
+  ],
+  "intro": "IMPORTRANGE is how one Google Sheets file reads from another: you hand it a spreadsheet URL and a range, and it spills those values into your sheet on a refresh schedule. It is the closest thing Sheets has to a live database connection, and it is also the function people abandon fastest — usually because of one authorization prompt they did not expect. This guide covers the syntax, the first-run access grant, dynamic range strings, and the errors you will actually hit.",
+  "tags": [
+    "IMPORTRANGE",
+    "Google Sheets",
+    "Cross-Sheet Data",
+    "QUERY",
+    "ARRAYFORMULA"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "A Google account with at least two spreadsheets open to you",
+    "Basic comfort with cell references like Sheet1!A1:D100",
+    "The ability to edit the source spreadsheet, or at least view access to it"
+  ],
+  "sections": [
+    {
+      "title": "What IMPORTRANGE Does and When to Use It",
+      "content": "IMPORTRANGE(spreadsheet_url, range_string) connects to another Google Sheets file, reads the range you name, and returns it as a spilled array in the cell where you typed the formula. The link is one-way and live: edit the source and the target updates on Google's refresh schedule, with no copy-paste and no import job to maintain. Use it when a report sheet needs to consolidate numbers from team files that other people own and keep editing. Do not use it when you need formatting, formulas or comments carried across — IMPORTRANGE transfers values only.",
+      "example": {
+        "formula": "=IMPORTRANGE(\"https://docs.google.com/spreadsheets/d/1AbCexampleUrl/edit\", \"Sales!A1:D100\")",
+        "result": "100 rows x 4 columns from Sales!A1:D100 of the source file, spilled down and to the right from the formula cell",
+        "explanation": "Neither argument is optional: the URL must point at the source spreadsheet (the /edit URL from your address bar is fine) and the range string must include the sheet name followed by the cell range. The target file needs one empty block of cells large enough to hold the spill."
+      },
+      "tips": [
+        "The source spreadsheet must be one you can open. You do not need edit rights on it, but sharing must not be restricted in a way that excludes your account.",
+        "Keep the import in a dedicated 'Data' tab and point your pivot tables and SUMIFS at that tab instead of scattering IMPORTRANGE across the workbook — Sheets recalculates this function often and it is expensive.",
+        "If you see a spinner or a long loading state instead of values, the formula is fine; the import is simply still resolving."
+      ]
+    },
+    {
+      "title": "Granting Access on First Use (the #REF! You Need to Connect These Sheets)",
+      "content": "The first time a spreadsheet calls IMPORTRANGE on a given source URL, Google blocks the read and returns #REF! with the message 'You need to connect these sheets'. This is not an error in your formula. It is an authorization step that protects the source file, and it only has to be done once per source spreadsheet per target file.",
+      "steps": [
+        {
+          "name": "Write the formula and press Enter",
+          "text": "Sheets evaluates it immediately and refuses the cross-file read.",
+          "formula": "=IMPORTRANGE(\"https://docs.google.com/spreadsheets/d/1AbCexampleUrl/edit\", \"Sales!A1:D100\")"
+        },
+        {
+          "name": "Hover the cell and click Allow access",
+          "text": "A small pop-up appears over the error cell with a Connect sheets or Allow access button. Click it and approve the request. You must be signed in to an account that can already open the source file.",
+          "formula": "=IMPORTRANGE(A1, A2)"
+        },
+        {
+          "name": "Watch the values spill in",
+          "text": "The #REF! is replaced by the imported range. The same file can now read that URL anywhere, without repeating the prompt."
+        }
+      ],
+      "example": {
+        "formula": "=IMPORTRANGE(\"https://docs.google.com/spreadsheets/d/1AbCexampleUrl/edit\", \"Sales!A1:D100\")",
+        "result": "Before approving access: #REF! (You need to connect these sheets). After approving: the 100 x 4 block of values.",
+        "explanation": "The error text is the tell. 'You need to connect these sheets' always means authorization, while an IMPORTRANGE that returns #REF! with 'cannot be evaluated' or 'range cannot be found' means the range string itself is wrong. Read the message before you rewrite the formula."
+      },
+      "tips": [
+        "If clicking Allow access does nothing, you do not have access to the source file at all — ask its owner to share it with the account you are signed in as.",
+        "The approval is stored per target file, so a second tab or a copy of the target file may need the prompt again.",
+        "Copying the formula into another spreadsheet does not carry the permission across; each file authorizes its own reads."
+      ]
+    },
+    {
+      "title": "Building a Range String That Won't Break",
+      "content": "Hard-coding the URL and the range inside the formula is fine for one-off work, but it makes maintenance painful and it hides the two values your teammates actually need to change. Put the URL in one cell and the range in another, then reference them. Sheets treats a cell that contains text as a valid string argument, so the formula stays short and auditable.",
+      "steps": [
+        {
+          "name": "Park the URL in a labelled cell",
+          "text": "Use the /edit URL straight from the source file's address bar. Paste it as text.",
+          "formula": "=IMPORTRANGE($B$1, $B$2)"
+        },
+        {
+          "name": "Quote sheet names that contain spaces",
+          "text": "A range string is read as text, so a sheet name with a space needs single quotes inside the double quotes.",
+          "formula": "=\"'Sales Data'!A1:D1000\""
+        },
+        {
+          "name": "Bound the range instead of using whole columns",
+          "text": "A:D works, but a fixed, right-sized range is far faster and avoids dragging in thousands of empty rows.",
+          "formula": "=\"Sales!A1:D5000\""
+        }
+      ],
+      "example": {
+        "formula": "=IMPORTRANGE($B$1, $B$2)",
+        "result": "Whatever range is written in B2, imported from the spreadsheet whose URL sits in B1",
+        "explanation": "B1 holds the source URL and B2 holds text such as Sales!A1:D5000. Because both arguments are cell references, changing the source file is a one-cell edit rather than a formula rewrite. Named ranges are not accepted as the range_string — it must be a text range reference."
+      },
+      "tips": [
+        "A typo in the sheet name produces #REF! with a 'range cannot be found' style message, not the access prompt; check the sheet name spelling first.",
+        "Sheet names are case-sensitive to a point in the range string — match the tab name exactly and keep the quotes for names with spaces.",
+        "You can stack several IMPORTRANGE calls with { } to concatenate imports, but Sheets caps the IMPORT family at about 50 functions per spreadsheet."
+      ]
+    },
+    {
+      "title": "Filtering and Reshaping Imported Data with QUERY and ARRAYFORMULA",
+      "content": "An IMPORTRANGE result is a plain array, which is exactly what QUERY wants as its first argument. Wrapping the import in QUERY lets you select columns, filter rows, sort and aggregate before the data ever lands in your sheet, so you import hundreds of rows and display twelve. The one rule that trips everyone up: because QUERY receives an array rather than a range with column letters, you must address columns as Col1, Col2, Col3 and so on.",
+      "steps": [
+        {
+          "name": "Filter rows as they arrive",
+          "text": "Select only the columns you need and keep rows above a threshold, sorted by value.",
+          "formula": "=QUERY(IMPORTRANGE($B$1, $B$2), \"select Col1, Col2, Col4 where Col4 > 1000 order by Col4 desc\", 1)"
+        },
+        {
+          "name": "Run a lookup down a whole column",
+          "text": "ARRAYFORMULA applies a VLOOKUP to every row of column A in one cell, using the imported range as the lookup table.",
+          "formula": "=ARRAYFORMULA(IF(LEN(A2:A), VLOOKUP(A2:A, IMPORTRANGE($B$1, \"Products!A2:C500\"), 2, FALSE), \"\"))"
+        },
+        {
+          "name": "Do not reach for INDIRECT",
+          "text": "INDIRECT only builds references inside the same spreadsheet; it cannot open another file, and it cannot consume an IMPORTRANGE result as a range. Its role here is limited to switching between tabs within your own workbook.",
+          "formula": "=SUM(INDIRECT(\"'\"&$B$4&\"'!A1:A100\"))"
+        }
+      ],
+      "example": {
+        "formula": "=QUERY(IMPORTRANGE($B$1, $B$2), \"select Col1, Col2, Col4 where Col4 > 1000 order by Col4 desc\", 1)",
+        "result": "Only the qualifying rows, reduced to three columns and sorted by the fourth value in descending order",
+        "explanation": "The final argument, 1, tells QUERY that the imported data has one header row, so the first row is treated as labels and excluded from the filter and the sort. Without it, QUERY assumes no headers and will try to compare the header text to 1000."
+      },
+      "tips": [
+        "If QUERY returns #VALUE! with 'Unable to parse query string', you almost certainly wrote A, B or C instead of Col1, Col2, Col3 — arrays have no column letters.",
+        "QUERY is case-sensitive in its WHERE clause: use lower(Col3) = 'north' when you cannot trust how the source capitalised the values.",
+        "Imports and queries both recalculate, so keep the QUERY out of tabs that thousands of cells depend on if the sheet feels sluggish."
+      ]
+    },
+    {
+      "title": "Refresh Timing, Quotas and the Excel Equivalent",
+      "content": "IMPORTRANGE is not instantaneous. Google caches imported values and refreshes them on a schedule — usually within a few minutes, sometimes longer for large ranges — so a report built on it should never be treated as second-by-second live. Know the limits, and know what to do if you are on Excel instead.",
+      "example": {
+        "formula": "='C:\\Reports\\[Sales.xlsx]Sheet1'!A1",
+        "result": "The value in A1 of Sheet1 of the external Sales.xlsx workbook",
+        "explanation": "Excel has no IMPORTRANGE. An external workbook reference like this one reads the file directly, but it requires the source workbook to be open or the path to remain valid, and Excel will ask whether to update links each time. Power Query (Data, Get Data, From Workbook) is the sturdier alternative because it lets you refresh on demand and transform the data on the way in."
+      },
+      "tips": [
+        "To nudge a stubborn import, edit and re-enter any cell in the source, or reopen both files. A Google Apps Script onEdit trigger can force a refresh on a timer for scheduled reports.",
+        "Google documents a cap of roughly 50 IMPORT-family functions per spreadsheet, shared by IMPORTRANGE, IMPORTHTML, IMPORTXML, IMPORTDATA and IMPORTFEED.",
+        "Import only the columns and rows you actually display. Every imported cell stays in memory and every IMPORTRANGE re-read costs recalculation time.",
+        "If the source file is deleted or its sharing is revoked, the import collapses to #REF! for everyone using it — for shared dashboards, prefer a copy you control."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "IMPORTRANGE",
+      "slug": "importrange",
+      "description": "IMPORTRANGE pulls data from a different Google Sheets spreadsheet into the current one. It is the standard way to connect workbooks in Google Sheets without copying and pasting."
+    },
+    {
+      "name": "QUERY",
+      "slug": "query",
+      "description": "QUERY runs a Google Visualization API Query Language statement on a range of data. It's Google Sheets' most powerful data function — essentially SQL for your spreadsheet."
+    },
+    {
+      "name": "ARRAYFORMULA",
+      "slug": "arrayformula",
+      "description": "ARRAYFORMULA lets you apply a single formula to an entire range of cells automatically, expanding results into neighboring rows and columns without manually filling down or across."
+    },
+    {
+      "name": "INDIRECT",
+      "slug": "indirect",
+      "description": "INDIRECT converts a text string into a cell reference that Excel can use in a formula."
+    }
+  ],
+  "summary": "IMPORTRANGE(spreadsheet_url, range_string) links one Google Sheets file to another and returns the named range as a live, values-only array. Get the syntax right, then click Allow access the first time the #REF! prompt appears — that message means authorization, not a broken formula. Put the URL and the range in cells so the formula stays readable, bound the range instead of importing whole columns, wrap the import in QUERY when you want to reduce hundreds of rows to the dozen you display, and use ARRAYFORMULA with VLOOKUP for column-wide lookups. Remember that the data refreshes on a schedule rather than instantly, that the IMPORT family is capped at about 50 functions per spreadsheet, and that Excel reaches the same goal with external workbook links or Power Query.",
+  "nextSteps": [
+    "Build a small two-file test: put a range in one spreadsheet and read it from the other, then click Allow access on the #REF! prompt",
+    "Move the URL and range string into labelled cells and rewrite the formula as IMPORTRANGE($B$1, $B$2)",
+    "Wrap the import in a QUERY with a 'select Col1 where Col4 > 1000' clause, remembering to pass 1 as the header argument"
+  ],
+  "relatedTutorials": [
+    "google-sheets-query-function",
+    "google-sheets-arrayformula",
+    "excel-ref-error-fix"
+  ],
+  "calculator": null
+}
