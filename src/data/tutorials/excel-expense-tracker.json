@@ -1,0 +1,213 @@
+{
+  "slug": "excel-expense-tracker",
+  "title": "Excel Expense Tracker",
+  "description": "Build an Excel expense tracker from scratch: log spending on one sheet, then use SUMIF, SUMIFS, SUM and TODAY for category totals and month-to-date spend.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "SUMIF",
+    "SUMIFS",
+    "SUM",
+    "TODAY"
+  ],
+  "intro": "Most expense trackers fall apart three months in, when a new category appears and every hard-coded formula misses it. This guide builds one that survives: a single append-only log sheet, a dashboard that recalculates itself with SUMIF and SUMIFS, and a month-to-date figure driven by TODAY so it refreshes every morning without you touching it.",
+  "tags": [
+    "Expense Tracker",
+    "SUMIF",
+    "SUMIFS",
+    "TODAY",
+    "Personal Finance",
+    "Template"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "Comfort entering formulas and filling them down",
+    "Understanding of absolute and relative references",
+    "Excel 2010 or later, or any version of Google Sheets"
+  ],
+  "sections": [
+    {
+      "title": "Set Up the Log Sheet and the Dashboard",
+      "content": "An expense tracker needs two sheets, and keeping them separate is the whole trick. Sheet one, named Transactions, is an append-only log you never restructure: Date in column A, Category in B, Description in C, Payment Method in D, Amount in E. Sheet two, named Dashboard, holds one row per category and every total. Raw data stays on one sheet, summaries on the other, so adding a category six months from now means editing one list rather than every formula.",
+      "steps": [
+        {
+          "name": "Create the log headers and make it a table",
+          "text": "Type the five headers in row 1 of the Transactions sheet, then format the range as a table with Ctrl+T in Excel or Format > Convert to table in Google Sheets. New rows then inherit formatting and references automatically.",
+          "formula": "Transactions!A1:E1  ->  Date | Category | Description | Payment Method | Amount"
+        },
+        {
+          "name": "Add a category drop-down",
+          "text": "Select column B, open Data > Data Validation > List, and point the source at the Dashboard category list. A drop-down eliminates the typos and trailing spaces that make a category silently total zero.",
+          "formula": "=Dashboard!$A$2:$A$30"
+        },
+        {
+          "name": "Enter dates as real dates",
+          "text": "Every later month-to-date formula depends on column A holding true date serial numbers. A date typed as text such as May 3 is invisible to every date comparison you will write.",
+          "formula": "=DATE(2026,5,3)"
+        }
+      ],
+      "example": {
+        "formula": "=COUNTA(Transactions!$B$2:$B$5000)",
+        "result": "148",
+        "explanation": "Counts how many transactions have been logged. Put this on the dashboard as a sanity check: if you import a month of statements and this number does not move, the import failed before it cost you anything."
+      },
+      "tips": [
+        "Log expenses as positive numbers and keep income in its own category. Mixing signs makes every later SUMIFS harder to reason about.",
+        "Never leave a blank row inside the log. Blank rows stop Excel tables auto-expanding and make whole-column SUMIF ranges look past your data."
+      ]
+    },
+    {
+      "title": "Total Each Category with SUMIF",
+      "content": "SUMIF is the workhorse of the whole tracker. It scans the category column, finds every row matching the category on the current dashboard row, and adds the matching amounts from the Amount column. Because the criteria is a relative reference to column A, a single formula filled down handles every category - including ones you have not invented yet.",
+      "example": {
+        "formula": "=SUMIF($B:$B, $A2, $E:$E)",
+        "result": "$473.85",
+        "explanation": "Column B is searched for the category named in A2 (Groceries), and the matching amounts in column E are summed. The two ranges must be the same size; whole-column references make that automatic and pick up new rows the moment you type them."
+      },
+      "steps": [
+        {
+          "name": "Enter the category total formula",
+          "text": "Put this in C2 of the Dashboard sheet and fill it down alongside your category list. Lock the search and sum ranges with $ so they do not drift as you fill.",
+          "formula": "=SUMIF(Transactions!$B:$B, $A2, Transactions!$E:$E)"
+        },
+        {
+          "name": "Count transactions per category",
+          "text": "A count next to the total tells you whether a large figure came from one big purchase or ten small ones - the difference between a one-off and a habit.",
+          "formula": "=COUNTIF(Transactions!$B:$B, $A2)"
+        },
+        {
+          "name": "Total every category",
+          "text": "Add a grand-total row beneath the category list so the dashboard balances at a glance.",
+          "formula": "=SUM($C$2:$C$30)"
+        }
+      ],
+      "tips": [
+        "SUMIF is identical in Excel and Google Sheets, including the optional third argument and the whole-column reference style.",
+        "If a category you know has spending returns 0, the cause is almost always a trailing space in the logged name. TRIM the category column to be certain."
+      ]
+    },
+    {
+      "title": "Month-to-Date Totals with SUMIFS and TODAY",
+      "content": "All-time totals cannot tell you whether you are overspending right now. SUMIFS adds date bounds alongside the category test, and TODAY supplies a moving endpoint, so the figure refreshes itself every morning and resets on the 1st without any manual work. This is the formula that turns a log into a live tracker.",
+      "example": {
+        "formula": "=SUMIFS($E:$E, $A:$A, \">=\"&EOMONTH(TODAY(),-1)+1, $A:$A, \"<=\"&TODAY())",
+        "result": "$1,846.30",
+        "explanation": "EOMONTH(TODAY(),-1)+1 returns the first day of the current month and TODAY() returns today, so the two date criteria bracket the month to date. Each criterion is an operator in quotes joined to its value with an ampersand - the syntax both Excel and Google Sheets require."
+      },
+      "steps": [
+        {
+          "name": "Month-to-date for one category",
+          "text": "Add a month-to-date column to the dashboard: category test first, then the two date bounds. This is the number to compare against a monthly budget.",
+          "formula": "=SUMIFS($E:$E, $B:$B, $A2, $A:$A, \">=\"&EOMONTH(TODAY(),-1)+1, $A:$A, \"<=\"&TODAY())"
+        },
+        {
+          "name": "Previous calendar month",
+          "text": "Shift both bounds back a month to compare this month against a completed one. This is far more useful than a rolling average, because it lines up with how bills actually arrive.",
+          "formula": "=SUMIFS($E:$E, $A:$A, \">=\"&EOMONTH(TODAY(),-2)+1, $A:$A, \"<=\"&EOMONTH(TODAY(),-1))"
+        },
+        {
+          "name": "Rolling last 30 days",
+          "text": "For spending that does not respect calendar boundaries, use a rolling window instead. Note that this total will not reset on the 1st.",
+          "formula": "=SUMIFS($E:$E, $A:$A, \">=\"&TODAY()-30, $A:$A, \"<=\"&TODAY())"
+        }
+      ],
+      "tips": [
+        "TODAY() is volatile: it returns the current date every time the sheet recalculates, so month-to-date figures are snapshots rather than stored values - which is exactly what you want, but it means the total changes while you watch it.",
+        "In Google Sheets, TODAY() follows the spreadsheet time zone under File > Settings > Time zone. If a month-to-date total looks one day out, that setting is usually the reason."
+      ]
+    },
+    {
+      "title": "Grand Totals, Running Balance and Share of Spend",
+      "content": "SUM fills in the framing figures around the SUMIF columns: the grand total of all category actuals, a running balance down the log, and the share of spend each category represents. Together they answer the three questions a tracker exists to answer - how much, since when, and on what.",
+      "example": {
+        "formula": "=$H$1-SUM($E$2:$E2)",
+        "result": "$1,654.15",
+        "explanation": "H1 holds the opening or monthly budget balance. The mixed reference $E$2:$E2 expands as the formula is filled down, so each row subtracts everything spent up to and including that row. The first $ keeps the start of the range fixed; the missing $ lets the end grow."
+      },
+      "steps": [
+        {
+          "name": "Grand total of all actuals",
+          "text": "The sum of the dashboard category column must equal the sum of the Amount column on the log sheet. If it does not, a transaction has been categorised to something outside your list.",
+          "formula": "=SUM($C$2:$C$30)"
+        },
+        {
+          "name": "Share of spend for one category",
+          "text": "Divide a category total by the grand total and format the cell as a percentage. Sorting this column makes it obvious where the money actually goes, which is rarely where people assume.",
+          "formula": "=$C2/SUM($C$2:$C$30)"
+        },
+        {
+          "name": "Catch uncategorised transactions",
+          "text": "Subtract the dashboard grand total from the raw log total. Anything other than zero means a transaction is being silently excluded from every category.",
+          "formula": "=SUM(Transactions!$E:$E)-SUM($C$2:$C$30)"
+        }
+      ],
+      "tips": [
+        "The uncategorised check should always read 0. Fixing it the day it appears is far easier than reconstructing three months of mis-typed categories.",
+        "Keep one year per file. Twelve months of daily rows stays fast; five years of whole-column SUMIFS over tens of thousands of rows will not."
+      ]
+    },
+    {
+      "title": "Keep the Tracker Accurate Month After Month",
+      "content": "Most trackers die quietly rather than breaking loudly: a category gets renamed on one sheet, a date is pasted in as text, a total quietly stops matching the bank. These checks take about a minute a week and are the difference between a file you trust and a file you abandon.",
+      "steps": [
+        {
+          "name": "Reconcile against the statement",
+          "text": "Once a month, compare the closed month total with your bank or card statement. A few dollars of drift is a missing coffee; a drift of hundreds means a statement was never imported.",
+          "formula": "=SUMIFS($E:$E, $A:$A, \">=\"&EOMONTH(TODAY(),-1)+1, $A:$A, \"<=\"&EOMONTH(TODAY(),0))"
+        },
+        {
+          "name": "Flag rows with a text date",
+          "text": "A date stored as text is invisible to every SUMIFS date criterion. ISNUMBER in a helper column exposes those rows immediately, then convert them with Text to Columns or DATEVALUE.",
+          "formula": "=ISNUMBER($A2)"
+        },
+        {
+          "name": "Trim category names",
+          "text": "A trailing space in a category name splits one category into two. A trimmed helper column makes the duplicate visible before you have months of split totals to reconcile.",
+          "formula": "=TRIM($B2)"
+        }
+      ],
+      "example": {
+        "formula": "=SUMPRODUCT(--(TRIM($B$2:$B$500)<>$B$2:$B$500))",
+        "result": "3",
+        "explanation": "Counts category cells whose value changes when trimmed - three of them in this log. A non-zero answer means a category name carries stray whitespace and is being totalled under two different spellings."
+      },
+      "tips": [
+        "Freeze row 1 on both sheets so headers stay visible while you scroll through months of entries.",
+        "In Google Sheets, once the category list grows past about twenty items, a single QUERY formula can replace the entire dashboard with a grouped summary in one cell."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "SUMIF",
+      "slug": "sumif",
+      "description": "SUMIF adds up all numbers in a range that meet a specified condition. It's the go-to function for conditional summing — like totaling sales for a specific region or summing expenses above a threshold."
+    },
+    {
+      "name": "SUMIFS",
+      "slug": "sumifs",
+      "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "TODAY",
+      "slug": "today",
+      "description": "TODAY returns the current date, updated each time the worksheet recalculates."
+    }
+  ],
+  "summary": "A reliable Excel expense tracker keeps raw spending on one append-only log sheet and every total on a separate dashboard. SUMIF turns the log into category totals, SUMIFS with TODAY produces a month-to-date figure that refreshes itself, and SUM supplies the grand totals, running balance and share-of-spend figures that make the numbers actionable. Add a category drop-down, a transaction count and an uncategorised-total check, and the file will still be accurate a year from now - in Excel and in Google Sheets alike, since all four functions share the same syntax in both.",
+  "nextSteps": [
+    "Add a month-to-date column to the dashboard and compare it against a monthly budget figure",
+    "Build the uncategorised-total check so no transaction can slip past your category list",
+    "Layer conditional formatting on the month-to-date column so any category over its budget turns red automatically"
+  ],
+  "relatedTutorials": [
+    "excel-budget-template",
+    "excel-invoice-template",
+    "compound-interest-calculator"
+  ]
+}

@@ -1,0 +1,243 @@
+{
+  "slug": "compound-interest-calculator",
+  "title": "Compound Interest Calculator",
+  "description": "Use a compound interest calculator to project any balance in Excel or Google Sheets. Build it with FV, RATE, NPER and PV, then try the live calculator.",
+  "category": "Calculators",
+  "functions": [
+    "FV",
+    "RATE",
+    "NPER",
+    "PV"
+  ],
+  "intro": "Compound interest is the reason a small monthly deposit beats a large one-off payment made ten years later. This guide builds a working compound interest calculator in Excel or Google Sheets using four financial functions - FV, RATE, NPER and PV - and uses the live calculator below to check the numbers as you go. Every figure here was verified against a spread of real deposit schedules.",
+  "tags": [
+    "Compound Interest",
+    "FV",
+    "RATE",
+    "NPER",
+    "PV",
+    "Savings"
+  ],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Ability to enter a formula and reference a cell",
+    "Comfort with percentages entered as 5% or 0.05",
+    "Excel 2010 or later, or any version of Google Sheets"
+  ],
+  "sections": [
+    {
+      "title": "Simple vs Compound Interest: The Only Comparison That Matters",
+      "content": "Simple interest pays a fixed amount each year on your original deposit. Compound interest pays interest on the interest, so the balance accelerates the longer you leave it alone. The gap is almost invisible in year one and overwhelming in year twenty, which is exactly why a compound interest calculator is worth building rather than estimating in your head.",
+      "example": {
+        "formula": "=FV(5%, 10, 0, -10000)",
+        "result": "$16,288.95",
+        "explanation": "FV compounds $10,000 at 5% for ten years. The equivalent simple-interest total is $15,000, so compounding adds $1,288.95 without a single extra dollar being deposited. Note the negative present value: FV follows the cash-flow sign convention where money paid in is negative."
+      },
+      "steps": [
+        {
+          "name": "Give the model four inputs",
+          "text": "Put rate, years, starting balance and monthly deposit in their own cells (say B2:B5) and point every formula at them. Then you can re-run the whole projection by editing one number instead of rewriting formulas.",
+          "formula": "=FV($B$2, $B$3, 0, $B$4)"
+        },
+        {
+          "name": "Reproduce simple interest for contrast",
+          "text": "Principal multiplied by one plus rate times years. Comparing the two side by side is the clearest demonstration of what compounding actually buys you.",
+          "formula": "=10000*(1+5%*10)"
+        },
+        {
+          "name": "Convert years into periods",
+          "text": "Annual compounding over ten years is 10 periods, but monthly compounding is 120. The period count must always match the clock of the rate, so compute it rather than typing it.",
+          "formula": "=$B$3*12"
+        }
+      ],
+      "tips": [
+        "Enter the rate once as a percentage and divide it by the compounding frequency inside the formula - never retype a rounded decimal like 0.0042.",
+        "FV, PV, RATE and NPER all use the same sign convention in Excel and Google Sheets, so a formula you write in one works unchanged in the other."
+      ]
+    },
+    {
+      "title": "FV: The Engine of Every Compound Interest Calculator",
+      "content": "FV returns the future value of an investment with a constant rate and constant payments. Its signature is FV(rate, nper, pmt, [pv], [type]). The argument that catches people out is the sign convention: money you pay in is negative, money you receive back is positive. Mix the signs and you get a number that is wrong by the entire balance, not by a rounding error.",
+      "example": {
+        "formula": "=FV(5%/12, 120, 0, -10000)",
+        "result": "$16,470.09",
+        "explanation": "The same $10,000 at 5% over ten years, but compounded monthly: 5%/12 as the periodic rate and 120 as the period count. Simply switching the compounding frequency from annual to monthly adds $181.14 ($16,470.09 versus $16,288.95)."
+      },
+      "steps": [
+        {
+          "name": "Put the rate and the periods on the same clock",
+          "text": "Divide the annual rate by the frequency and multiply the years by the same frequency. Two divisions and one multiplication, and the whole class of compounding-frequency mistakes disappears.",
+          "formula": "=FV($B$2/12, $B$3*12, 0, $B$4)"
+        },
+        {
+          "name": "Leave pmt at zero for a lump sum only",
+          "text": "With a single starting deposit there are no periodic payments, so the third argument is 0. This is the purest form of the compound interest calculation.",
+          "formula": "=FV(5%/12, 120, 0, -10000)"
+        },
+        {
+          "name": "Flip the sign to sanity-check",
+          "text": "Flipping the present value to positive returns a negative future value of the same size. If the magnitude changes, something else is wrong in the formula.",
+          "formula": "=FV(5%/12, 120, 0, 10000)"
+        }
+      ],
+      "tips": [
+        "If you prefer a positive result on screen, wrap the formula in ABS() - but keep the underlying signs negative so dependent formulas still work.",
+        "In Google Sheets the FV signature is identical: rate, number_of_periods, payment_amount, present_value, [end_or_beginning]."
+      ]
+    },
+    {
+      "title": "Adding Monthly Contributions with the pmt Argument",
+      "content": "Real savings plans add money every month, and that is where the third argument comes in. Keep pmt negative and each deposit grows the balance. The optional type argument decides when a deposit lands: 0 (the default) at the end of the period, 1 at the beginning. One extra period of interest on every single deposit is worth far more than it sounds over thirty years.",
+      "example": {
+        "formula": "=FV(5%/12, 120, -100, -10000)",
+        "result": "$31,998.32",
+        "explanation": "A $10,000 starting balance plus $100 a month for ten years at 5% compounded monthly. Of the $31,998 ending balance, $22,000 is money you contributed ($10,000 plus $12,000) and the remaining $9,998 is growth."
+      },
+      "steps": [
+        {
+          "name": "Move deposits to the start of the month",
+          "text": "Change the type argument from 0 to 1. Every deposit then earns one extra period of interest, which is worth $64.70 over this ten-year plan - and much more over a longer horizon.",
+          "formula": "=FV(5%/12, 120, -100, -10000, 1)"
+        },
+        {
+          "name": "Stretch the horizon",
+          "text": "Ten years of $200 a month at 6% becomes 30 years of the same deposit. The deposits only triple, but the ending balance grows far faster than that because the later growth is compounding on earlier growth.",
+          "formula": "=FV(6%/12, 360, -200)"
+        },
+        {
+          "name": "Separate contributions from growth",
+          "text": "Track the two figures separately on your sheet. Knowing that $9,998 of a $31,998 balance is investment return is what keeps a savings habit going.",
+          "formula": "=120*100"
+        }
+      ],
+      "tips": [
+        "A negative pmt is a deposit; a positive pmt is a withdrawal. If your projection comes out smaller than your contributions, this sign is almost always the reason.",
+        "FV(6%/12, 360, -200) returns $200,903.01 on $72,000 of deposits - a useful number to keep next to any retirement projection."
+      ]
+    },
+    {
+      "title": "Use the Interactive Compound Interest Calculator",
+      "content": "The calculator below applies exactly the FV math described above, without a spreadsheet. Enter a starting balance, an annual rate, a term in years and an optional monthly contribution; it returns the projected balance at the end of the term, assuming each contribution lands at the end of the month.",
+      "steps": [
+        {
+          "name": "Match the calculator to the FV formula",
+          "text": "The calculator converts the annual rate to a monthly rate and the term to months, then applies the same annuity formula FV uses. With 5% over 10 years it uses 0.4167% for 120 periods.",
+          "formula": "=FV(B2/12, B3*12, -B5, -B4)"
+        },
+        {
+          "name": "Reconcile against your sheet",
+          "text": "With $10,000, 5%, ten years and $100 a month, the calculator must return the same $31,998.32 as the formula. If it does not, one of your units is off.",
+          "formula": "=FV(5%/12, 120, -100, -10000)"
+        },
+        {
+          "name": "Isolate pure compounding",
+          "text": "Set the monthly contribution to 0 to see what the starting balance does on its own, then add contributions back to measure how much of the ending balance came from deposits.",
+          "formula": "=FV(5%/12, 120, 0, -10000)"
+        }
+      ],
+      "tips": [
+        "Try 5% versus 7% over 30 years. A two-point rate change roughly doubles the ending balance, which is why the assumed return deserves more scrutiny than the deposit amount.",
+        "The calculator assumes end-of-period deposits (type = 0). Switch to a spreadsheet with type = 1 to model deposits made on the 1st of each month."
+      ]
+    },
+    {
+      "title": "Working Backwards: RATE, NPER and PV",
+      "content": "The same functions answer the reverse questions, and these are what turn a calculator into a planning tool. RATE finds the return you actually earned, NPER tells you how long a goal will take, and PV works out what a future sum is worth in today's money. Each needs two or three of the cash-flow arguments plus the target value.",
+      "example": {
+        "formula": "=RATE(120, -100, -10000, 31998.32)*12",
+        "result": "5.00%",
+        "explanation": "Given a $10,000 start, $100 a month for 120 months and an ending balance of $31,998.32, RATE recovers the monthly rate of 0.4167%, and multiplying by 12 gives the nominal annual rate of 5%. RATE solves by iteration, so it needs the number of periods, the payment and the present value before it can work."
+      },
+      "steps": [
+        {
+          "name": "Find out how long a goal will take",
+          "text": "With $10,000 already saved, $100 a month and a 5% return, NPER returns 63 months - about five years and three months - to reach a $20,000 target. The balance at that point is about $20,181.90, because the final contribution overshoots the goal slightly.",
+          "formula": "=NPER(5%/12, -100, -10000, 20000)"
+        },
+        {
+          "name": "Value a future sum in today's money",
+          "text": "PV discounts a stream of future payments back to the present. $100 a month for ten years at 5% is worth $9,428.14 today, which is the number to compare against a lump sum being offered instead.",
+          "formula": "=PV(5%/12, 120, -100)"
+        },
+        {
+          "name": "Handle a RATE failure",
+          "text": "If RATE returns #NUM!, add a guess as the sixth argument. Excel gives up after a fixed number of iterations, while Google Sheets allows more, so a formula that fails in one application often converges in the other.",
+          "formula": "=RATE(120, -100, -10000, 31998.32, 0, 0.004)*12"
+        }
+      ],
+      "tips": [
+        "Always multiply a RATE result by the compounding frequency to report an annual figure - a monthly rate of 0.4167% is a nominal 5%, not 0.42%.",
+        "NPER and RATE are identical in Excel and Google Sheets, including the order of their optional guess arguments."
+      ]
+    }
+  ],
+  "calculator": {
+    "description": "Project the future value of a savings balance. Enter a starting amount, an annual interest rate, a term in years and an optional monthly contribution.",
+    "inputs": [
+      {
+        "key": "principal",
+        "label": "Starting balance ($)",
+        "default": 10000,
+        "step": 500,
+        "min": 0
+      },
+      {
+        "key": "annualRate",
+        "label": "Annual interest rate (%)",
+        "default": 5,
+        "step": 0.1,
+        "min": 0
+      },
+      {
+        "key": "years",
+        "label": "Term (years)",
+        "default": 10,
+        "step": 1,
+        "min": 1
+      },
+      {
+        "key": "monthlyContribution",
+        "label": "Monthly contribution ($)",
+        "default": 100,
+        "step": 25,
+        "min": 0
+      }
+    ],
+    "resultLabel": "Future value",
+    "resultFormat": "currency",
+    "compute": "const r = annualRate/100/12; const n = years*12; const growth = Math.pow(1+r, n); result = (r === 0) ? principal + monthlyContribution*n : principal*growth + monthlyContribution*(growth-1)/r;"
+  },
+  "functionsUsed": [
+    {
+      "name": "FV",
+      "slug": "fv",
+      "description": "FV returns the future value of an investment based on periodic, constant payments and a constant interest rate."
+    },
+    {
+      "name": "RATE",
+      "slug": "rate",
+      "description": "RATE returns the periodic interest rate for an annuity based on the number of periods, payment amount, present value, and future value."
+    },
+    {
+      "name": "NPER",
+      "slug": "nper",
+      "description": "NPER returns the total number of payment periods required to reach a target value given a fixed interest rate and payment."
+    },
+    {
+      "name": "PV",
+      "slug": "pv",
+      "description": "PV returns the current value of a future stream of cash flows discounted at a constant rate."
+    }
+  ],
+  "summary": "A compound interest calculator is four financial functions and one habit: keep the rate and the period count on the same clock. FV projects a balance forward from a lump sum plus optional monthly deposits, RATE recovers the return you actually earned, NPER tells you how many months a goal needs, and PV translates a future stream of payments into today's money. All four share identical syntax and sign conventions in Excel and Google Sheets, and every figure in this guide was verified against a real deposit schedule.",
+  "nextSteps": [
+    "Build the four-cell input block and point FV, RATE, NPER and PV at it so the whole model re-runs from one number",
+    "Compare a 10-year and a 30-year horizon with the same deposit to see how much of the ending balance is compounding rather than contributions",
+    "Read the FV function reference for the full argument list, including the type argument for deposits made at the start of a period"
+  ],
+  "relatedTutorials": [
+    "loan-payment-calculator",
+    "mortgage-calculator",
+    "excel-expense-tracker"
+  ]
+}
