@@ -1,0 +1,115 @@
+{
+  "slug": "excel-functions-vs-formulas",
+  "title": "Excel Functions vs Formulas",
+  "description": "Excel functions vs formulas: learn the difference. A formula is the calculation you write; a function is a built-in tool like SUM, AVERAGE or IF that powers it.",
+  "category": "Concepts & Beginners",
+  "functions": [
+    "SUM",
+    "AVERAGE",
+    "IF"
+  ],
+  "intro": "Excel functions vs formulas is the distinction that trips up most beginners, yet the two words are not opposites. A formula is any instruction you type that starts with = and produces a result; a function is a built-in, pre-named operation such as SUM, AVERAGE or IF that you call from inside a formula. This guide separates the two clearly, shows the same calculation written both ways, and explains where functions become unavoidable.",
+  "tags": [
+    "Formula",
+    "Function",
+    "SUM",
+    "AVERAGE",
+    "IF",
+    "Beginner"
+  ],
+  "estimatedTime": "10 min read",
+  "prerequisites": [
+    "Excel or Google Sheets open in front of you",
+    "No prior formula experience needed"
+  ],
+  "sections": [
+    {
+      "title": "A Formula Is the Instruction, a Function Is the Tool",
+      "content": "A formula is any expression that begins with = and returns a value. A function is a built-in, named routine - SUM, AVERAGE, IF and several hundred others - that you call inside a formula. Every function needs a formula to live in, but a formula does not need a function. The hierarchy is one-way: functions are a subset of formulas, never the other way round.",
+      "example": {
+        "formula": "=A1+A2+A3",
+        "result": "Adds the three cells with plain arithmetic - a formula containing no function at all",
+        "explanation": "The + operator does all the work here, so Excel never calls a built-in function. This is still a formula: it starts with = and calculates something."
+      },
+      "tips": [
+        "If a cell entry starts with = it is a formula; if it starts with a letter, digit or apostrophe it is a value or text."
+      ]
+    },
+    {
+      "title": "The Same Result, Written Two Ways",
+      "content": "Most everyday calculations can be expressed either as manual arithmetic or as a function call. Adding five cells with + signs and wrapping them in SUM describe exactly the same operation - the function version is simply shorter to type, easier to extend when rows are inserted, and far less likely to contain a typo.",
+      "example": {
+        "formula": "=SUM(A1:A5)",
+        "result": "150 when A1:A5 contain 10, 20, 30, 40 and 50",
+        "explanation": "=A1+A2+A3+A4+A5 also returns 150. The function version scales: changing the range to A1:A500 is a two-character edit, while the manual version would need 496 more terms."
+      },
+      "tips": [
+        "SUM ignores text and blank cells inside the range, so a stray column header or empty cell will not break the total."
+      ]
+    },
+    {
+      "title": "Functions Hide Logic That Is Painful to Write by Hand",
+      "content": "Some functions do work you can technically express with operators but would never want to. AVERAGE is the classic case: the manual equivalent has to sum a range and divide by a count, and it has to decide which cells deserve to be counted in the first place.",
+      "example": {
+        "formula": "=AVERAGE(A1:A5)",
+        "result": "30 - the arithmetic mean of 10, 20, 30, 40 and 50",
+        "explanation": "=SUM(A1:A5)/COUNT(A1:A5) produces the same 30, but AVERAGE skips blanks and text automatically, so you never have to think about which cells COUNT would have included."
+      },
+      "tips": [
+        "COUNT counts numeric cells only; COUNTA counts every non-empty cell. AVERAGE follows COUNT's behaviour."
+      ]
+    },
+    {
+      "title": "Where Functions Become Unavoidable",
+      "content": "Conditional logic is the point where plain arithmetic runs out entirely. IF evaluates a test that resolves to TRUE or FALSE, then returns one result or another. There is no combination of +, - and * that can branch like that, which is why IF is the gateway function to everything more advanced.",
+      "example": {
+        "formula": "=IF(C2>=60, \"Pass\", \"Fail\")",
+        "result": "Returns Pass when C2 is 60 or greater, otherwise Fail",
+        "explanation": "IF(logical_test, value_if_true, value_if_false) is a formula whose entire behaviour comes from the function call - strip the IF away and nothing useful remains."
+      },
+      "tips": [
+        "Text results must be wrapped in double quotes; numbers and cell references are written bare."
+      ]
+    },
+    {
+      "title": "Excel and Google Sheets: One Small Difference",
+      "content": "The formula-versus-function model is identical in both apps, and SUM, AVERAGE and IF return the same answers in both. What changes are the edges: Excel adds structured table references and LAMBDA, while Google Sheets leans on ARRAYFORMULA and its own extras such as QUERY and IMPORTRANGE.",
+      "example": {
+        "formula": "=SUM(Products[Price])",
+        "result": "Totals the Price column of the Excel table named Products, wherever that table sits in the workbook",
+        "explanation": "Google Sheets has no structured references, so the Sheets equivalent is =SUM(Products!C2:C100) - the same total, written with an explicit range instead of a table column name."
+      },
+      "tips": [
+        "Functions are conventionally written in uppercase; both apps accept lowercase and normalise it for you."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "AVERAGE",
+      "slug": "average",
+      "description": "AVERAGE returns the arithmetic mean of a set of numbers."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    }
+  ],
+  "summary": "A formula is any = expression that calculates a result, while a function is a built-in named operation you call from inside that formula. Every function is used in a formula, but plenty of formulas use no function at all - =A1+A2+A3 proves it. Practically, functions win wherever logic gets complex: SUM and AVERAGE replace long chains of arithmetic, and IF introduces branching that operators alone cannot express.",
+  "nextSteps": [
+    "Rewrite one of your own manual addition formulas as =SUM(range) and compare the two",
+    "Read what is a formula in Excel for the full anatomy of cell references and operators",
+    "Move on to nested IF alternatives once a single IF feels comfortable"
+  ],
+  "relatedTutorials": [
+    "what-is-a-formula-in-excel",
+    "absolute-vs-relative-reference",
+    "vlookup-from-another-sheet"
+  ]
+}

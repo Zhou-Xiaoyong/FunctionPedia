@@ -1,0 +1,126 @@
+{
+  "slug": "vlookup-from-another-sheet",
+  "title": "VLOOKUP From Another Sheet",
+  "description": "VLOOKUP from another sheet just needs a sheet prefix. Learn the cross-sheet syntax, quoted sheet names, INDIRECT for dynamic tabs and 3D references in Excel.",
+  "category": "VLOOKUP & XLOOKUP",
+  "functions": [
+    "VLOOKUP",
+    "XLOOKUP",
+    "INDIRECT"
+  ],
+  "intro": "Running a VLOOKUP from another sheet is not a special function or a different mode - it is the same VLOOKUP with a sheet name in front of the range. Once you know the sheet prefix rule and how quoted names work, a lookup across tabs is no harder than a lookup in the same column. This guide covers the syntax, the two ways it breaks, XLOOKUP's cleaner alternative, and how to make the source sheet dynamic with INDIRECT.",
+  "tags": [
+    "VLOOKUP",
+    "Cross-Sheet",
+    "INDIRECT",
+    "XLOOKUP",
+    "3D Reference"
+  ],
+  "estimatedTime": "10 min read",
+  "prerequisites": [
+    "Basic VLOOKUP syntax",
+    "A workbook with data on more than one sheet"
+  ],
+  "sections": [
+    {
+      "title": "Cross-Sheet Syntax in One Line",
+      "content": "A reference to another sheet is just the sheet name, an exclamation mark, then the range you already know. Drop that in the table_array argument and the search happens on the other sheet while the formula itself stays where you typed it. The result is a normal value - nothing about the cell bring back tells Excel it came from elsewhere.",
+      "steps": [
+        {
+          "name": "Point at the source sheet",
+          "text": "Type the sheet name, an exclamation mark, then the cell. Excel switches to that sheet and completes the reference for you.",
+          "formula": "=Products!A2"
+        },
+        {
+          "name": "Use the whole other-sheet table as table_array",
+          "text": "Wrap the range in $ signs so it does not shift when you copy the formula down the column.",
+          "formula": "=VLOOKUP(A2, Products!$A$2:$D$100, 3, FALSE)"
+        }
+      ],
+      "example": {
+        "formula": "=VLOOKUP(A2, Products!$A$2:$D$100, 3, FALSE)",
+        "result": "24.99 - the value from column C of the Products sheet, on the row whose SKU matches A2",
+        "explanation": "A2 holds the SKU you are searching for. Products!$A$2:$D$100 is the table on the other tab, and 3 means return the third column of that table. The FALSE forces an exact match."
+      },
+      "tips": [
+        "Anchor the lookup range with $ - a relative range copied down 500 rows will silently slide off your data."
+      ]
+    },
+    {
+      "title": "Sheet Names With Spaces Need Quotes",
+      "content": "If a sheet name contains a space, a hyphen, or begins with a digit, Excel requires single quotes around it. Omitting them is the single most common cause of a cross-sheet #NAME? error, because without quotes Excel tries to read part of the name as a cell address.",
+      "example": {
+        "formula": "=VLOOKUP(A2, 'Q3 Sales'!$A$2:$D$100, 3, FALSE)",
+        "result": "24.99, pulled from the sheet named Q3 Sales",
+        "explanation": "The apostrophes delimit the name so Excel does not mistake Q3 for a cell reference. In practice you rarely type them: click the other sheet's tab while building the formula and Excel inserts them automatically."
+      },
+      "tips": [
+        "If the sheet name itself contains an apostrophe, double it - 'O''Brien'!A1 is the correct form."
+      ]
+    },
+    {
+      "title": "XLOOKUP Across Sheets - Cleaner, and Column-Proof",
+      "content": "XLOOKUP accepts a separate lookup array and return array, so you name each sheet range once and never count columns. That matters in practice: with VLOOKUP, inserting a column in the source sheet breaks every formula that hard-codes an index number.",
+      "example": {
+        "formula": "=XLOOKUP(A2, Products!$A$2:$A$100, Products!$C$2:$C$100, \"Not found\")",
+        "result": "24.99, or the text Not found when the SKU is absent from the Products sheet",
+        "explanation": "A2:A100 is searched and C2:C100 is returned, independently. Adding a column to Products does not change which array is returned, so the formula survives edits that would break VLOOKUP."
+      },
+      "tips": [
+        "Google Sheets also supports XLOOKUP, so this formula works there unchanged; without the fourth argument Sheets returns #N/A instead of a friendly message."
+      ]
+    },
+    {
+      "title": "INDIRECT - When the Source Sheet Changes at Runtime",
+      "content": "Sometimes the sheet you look into is not fixed: one tab per month, per region or per salesperson, chosen by the user. INDIRECT reads a text string and turns it into a live range, so the sheet name can come from a cell or a dropdown.",
+      "example": {
+        "formula": "=VLOOKUP(A2, INDIRECT(\"'\"&$B$1&\"'!$A$2:$D$100\"), 3, FALSE)",
+        "result": "24.99 when B1 contains the text Products; the same formula reads the March sheet as soon as B1 says March",
+        "explanation": "The & operator assembles the string 'Products'!$A$2:$D$100 from the sheet name in B1, and INDIRECT converts that text into a real reference. Two caveats: INDIRECT is volatile, so it recalculates on every change, and it cannot read a workbook that is closed."
+      },
+      "tips": [
+        "The dropdown entries must match the sheet names exactly, capitals included, or INDIRECT returns #REF!."
+      ]
+    },
+    {
+      "title": "3D References, and When Not to Cross Sheets",
+      "content": "If the same cell sits in the same position on many consecutive sheets, Excel can read across all of them at once. This is called a 3D reference, and it is excellent for aggregates - but it cannot power a lookup, because there is no single table to search.",
+      "example": {
+        "formula": "=SUM(Jan:Dec!B2)",
+        "result": "Adds cell B2 on every sheet from Jan through Dec, in sheet-tab order",
+        "explanation": "Aggregates such as SUM, AVERAGE and COUNT accept 3D references; VLOOKUP does not. For lookups across dozens of tabs, consolidate the data into one table first and point VLOOKUP at that - the formula stays readable and recalculates far faster."
+      },
+      "tips": [
+        "Google Sheets has no 3D reference across tabs, so each sheet must be named explicitly there."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "VLOOKUP",
+      "slug": "vlookup",
+      "description": "VLOOKUP (Vertical Lookup) is a built-in function in Excel and Google Sheets that searches for a value in the first column of a table and returns a value in the same row from a specified column."
+    },
+    {
+      "name": "XLOOKUP",
+      "slug": "xlookup",
+      "description": "XLOOKUP is the modern replacement for VLOOKUP. It searches a range or array for a value and returns the corresponding item from a second range or array. It supports exact and approximate matching, wildcards, and can search in any direction."
+    },
+    {
+      "name": "INDIRECT",
+      "slug": "indirect",
+      "description": "INDIRECT converts a text string into a cell reference that Excel can use in a formula."
+    }
+  ],
+  "summary": "Looking up a value on another sheet is the same VLOOKUP with the sheet name and an exclamation mark in front of the range: =VLOOKUP(A2, Products!$A$2:$D$100, 3, FALSE). Quote the sheet name if it contains spaces, anchor the table range with $, and remember that Excel inserts the quotes for you when you build the formula by clicking the other tab. For anything long-lived, prefer XLOOKUP with two named arrays, and reach for INDIRECT only when the source sheet genuinely varies at runtime.",
+  "nextSteps": [
+    "Convert one of your cross-sheet VLOOKUPs to XLOOKUP and stop counting columns",
+    "Build a sheet-name dropdown and drive it with INDIRECT to pull from the selected tab",
+    "Read VLOOKUP with multiple criteria when a single key is not enough to identify the row"
+  ],
+  "relatedTutorials": [
+    "vlookup-with-multiple-criteria",
+    "vlookup-return-multiple-columns",
+    "excel-functions-vs-formulas"
+  ]
+}
