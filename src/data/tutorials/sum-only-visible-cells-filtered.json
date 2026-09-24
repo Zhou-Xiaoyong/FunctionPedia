@@ -1,0 +1,115 @@
+{
+  "slug": "sum-only-visible-cells-filtered",
+  "title": "Sum Only Visible Cells Filtered",
+  "description": "Learn how to sum only visible cells filtered data with SUBTOTAL codes 9 and 109, why a plain SUM keeps hidden rows, and the SUMPRODUCT criteria trick.",
+  "category": "SUM & COUNT",
+  "functions": ["SUM", "SUMIFS", "SUMPRODUCT"],
+  "intro": "Apply a filter and every plain SUM on the sheet keeps counting the rows you just hid. SUBTOTAL is the one built-in aggregate that follows the filter. This guide covers the exact formulas for summing visible rows, the difference between function codes 9 and 109, and how to add criteria on top of a filtered list.",
+  "tags": ["SUBTOTAL", "AGGREGATE", "SUMPRODUCT", "Filter", "Visible Rows"],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Comfort with basic SUM and absolute references (the $ signs)",
+    "A table with an AutoFilter applied",
+    "Google Sheets users: no AGGREGATE available, use SUBTOTAL"
+  ],
+  "sections": [
+    {
+      "title": "Why Plain SUM Counts Rows You Cannot See",
+      "content": "An AutoFilter hides rows visually, it does not remove them from the grid. SUM, SUMIF and SUMIFS read every cell in the range regardless of visibility, so a filtered table keeps reporting the grand total. That mismatch is the single most common reason a dashboard total disagrees with the rows on screen. The sample used throughout this guide has products in A2:A7 and amounts of 100, 200, 300, 400, 500 and 600 in C2:C7, for a full total of 2100.",
+      "example": {
+        "formula": "=SUM($C$2:$C$7)",
+        "result": "2100",
+        "explanation": "With the table filtered to Product = Widget, rows 3, 5 and 7 are hidden. SUM still adds all six amounts and returns 2100, while only 100 + 300 + 500 is actually on screen."
+      },
+      "tips": [
+        "Never drop a plain SUM under a filtered list if the number is meant to follow the filter.",
+        "SUMIF and SUMIFS share the same blind spot — they have no idea which rows are hidden."
+      ]
+    },
+    {
+      "title": "SUBTOTAL with Code 9: The Standard Fix",
+      "content": "SUBTOTAL is filter-aware. Function code 9 means SUM, and rows hidden by an AutoFilter are excluded no matter which code you use — Google's own documentation states this rule for both Excel and Google Sheets. The formulas below use absolute references so the range survives dragging and copying.",
+      "steps": [
+        {
+          "name": "Turn on the filter",
+          "text": "Select the header row and enable filtering: Data > Filter in Excel, Data > Create a filter in Google Sheets."
+        },
+        {
+          "name": "Point SUBTOTAL at the amount column",
+          "text": "Use code 9 for SUM and keep the range to the data rows only.",
+          "formula": "=SUBTOTAL(9,$C$2:$C$7)"
+        },
+        {
+          "name": "Change the filter and watch it follow",
+          "text": "The result recalculates from the visible rows only. No refresh, no macro, no helper column.",
+          "formula": "=SUBTOTAL(9,$C$2:$C$7)"
+        }
+      ],
+      "example": {
+        "formula": "=SUBTOTAL(9,$C$2:$C$7)",
+        "result": "900",
+        "explanation": "Filtered to Widget, rows 2, 4 and 6 stay visible (100 + 300 + 500), so SUBTOTAL returns 900 while SUM on the same range still shows 2100."
+      },
+      "tips": [
+        "Keep the SUBTOTAL cell outside the filtered range, otherwise the filter can hide the formula itself.",
+        "Nested SUBTOTALs inside the range are ignored automatically, which stops per-group subtotal rows from being double counted."
+      ]
+    },
+    {
+      "title": "Code 9 vs Code 109: Manually Hidden Rows",
+      "content": "Codes 101 to 111 are the stricter twins of 1 to 11. They skip manually hidden rows in addition to filtered ones. Use 109 when rows are hidden by hand (Format > Hide Rows) and should stay out of the total; use 9 when a manual hide is just a temporary visual tidy-up that must not move the number.",
+      "example": {
+        "formula": "=SUBTOTAL(109,$C$2:$C$7)",
+        "result": "1600",
+        "explanation": "No filter is applied but row 5 (amount 500) is manually hidden. Code 109 returns 2100 - 500 = 1600, whereas code 9 still returns the full 2100."
+      },
+      "tips": [
+        "The same pairing covers the other aggregates: 1/101 AVERAGE, 2/102 COUNT, 3/103 COUNTA, 4/104 MAX, 5/105 MIN.",
+        "Pick one convention for the workbook and write it on the sheet — mixing 9 and 109 produces two totals that differ by exactly the manually hidden rows."
+      ]
+    },
+    {
+      "title": "Count and Average the Rows You Can See",
+      "content": "Codes 2 and 3 are the counting pair: 2 behaves like COUNT and counts numeric cells only, 3 behaves like COUNTA and counts any non-empty cell. Both respect the filter, which makes them the quickest way to label a filtered report with a meaningful row count instead of a fixed one.",
+      "example": {
+        "formula": "=SUBTOTAL(3,$A$2:$A$7)",
+        "result": "3",
+        "explanation": "With Widget filtered, three of the six product cells remain visible, so SUBTOTAL(3, ...) returns 3. A plain COUNTA on the same range still returns 6."
+      },
+      "tips": [
+        "Use SUBTOTAL(2, range) when a column mixes text and numbers and only numeric entries should be counted.",
+        "SUBTOTAL(1, range) gives a filter-aware average; 101 additionally ignores manually hidden rows."
+      ]
+    },
+    {
+      "title": "Adding Criteria to a Sum of Visible Rows",
+      "content": "SUBTOTAL takes no criteria argument, and SUMIFS ignores visibility entirely. The workaround is to use SUBTOTAL(103, ...) as a visibility flag — 1 for a visible row, 0 for a hidden one — and multiply it by your condition inside SUMPRODUCT. AGGREGATE(9, 5, range) is the shorter Excel-only alternative, but it does not exist in Google Sheets, so the SUMPRODUCT pattern is the portable one.",
+      "example": {
+        "formula": "=SUMPRODUCT(SUBTOTAL(103,OFFSET($A$2,ROW($A$2:$A$7)-ROW($A$2),0)),($A$2:$A$7=\"Widget\")*$C$2:$C$7)",
+        "result": "900",
+        "explanation": "Unfiltered, every row reports a visibility flag of 1, so the formula sums the Widget amounts (100 + 300 + 500) = 900. Filter the list to Widget + South and only row 4 stays visible, so the same formula returns 300."
+      },
+      "tips": [
+        "OFFSET is volatile and recalculates on every edit. On large tables build a helper column with =SUBTOTAL(103,$A2) and reference that instead.",
+        "In Excel 2010 or later, =AGGREGATE(9,5,$C$2:$C$7) is shorter and also ignores hidden rows — but Google Sheets has no AGGREGATE, so keep it out of shared sheets."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    { "name": "SUM", "slug": "sum", "description": "SUM adds all the numbers in a range of cells and returns the total." },
+    { "name": "SUMIFS", "slug": "sumifs", "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges." },
+    { "name": "SUMPRODUCT", "slug": "sumproduct", "description": "SUMPRODUCT multiplies corresponding components of one or more arrays and returns the sum of those products. It is also widely used for conditional sums and counts without array-entry." }
+  ],
+  "summary": "Filter-aware totals come down to one function: SUBTOTAL(9, range) sums what you can see, 109 also drops manually hidden rows, and 2/3 count visible rows without a helper column. When criteria are needed as well, multiply a SUBTOTAL(103, ...) visibility flag into SUMPRODUCT — or use AGGREGATE(9,5,...) if the workbook never leaves Excel.",
+  "nextSteps": [
+    "Replace the SUM in your dashboard footer with =SUBTOTAL(9, range) and re-test each filter",
+    "Add a helper column =SUBTOTAL(103,$A2) if you need both visibility and criteria on a large table",
+    "Decide the 9 or 109 convention for the workbook and note it on the sheet"
+  ],
+  "relatedTutorials": [
+    "sumproduct-with-multiple-conditions",
+    "sumifs-multiple-criteria",
+    "if-statement-with-vlookup"
+  ]
+}

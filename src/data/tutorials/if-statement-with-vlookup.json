@@ -1,0 +1,129 @@
+{
+  "slug": "if-statement-with-vlookup",
+  "title": "If Statement with Vlookup",
+  "description": "Learn how to write an IF statement with VLOOKUP to test lookup results, catch #N/A errors with IFERROR or IFNA, and replace the whole pattern with XLOOKUP.",
+  "category": "IF & Logical",
+  "functions": ["IF", "VLOOKUP", "IFERROR", "XLOOKUP"],
+  "intro": "VLOOKUP finds a value; IF decides what to do with it. Wrapped together they turn a raw lookup into a label, a flag or a tier, and IFERROR keeps the ugly #N/A out of the report. This guide covers the patterns you will actually use, plus the XLOOKUP one-liner that replaces most of them.",
+  "tags": ["IF", "VLOOKUP", "IFERROR", "XLOOKUP", "Conditional Logic"],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Basic VLOOKUP syntax with the final FALSE argument",
+    "Understanding of what a logical TRUE / FALSE test returns",
+    "Microsoft 365, Excel 2021 or Google Sheets for the XLOOKUP section"
+  ],
+  "sections": [
+    {
+      "title": "How IF and VLOOKUP Fit Together",
+      "content": "VLOOKUP returns a value, and IF turns that value into a decision. The classic shape is IF(VLOOKUP(...) > threshold, \"A\", \"B\") — the lookup supplies the number, IF supplies the label. The sample table used here has SKU in A2:A6, product name in B, unit price in C and an In Stock flag in D: P-100 Widget 25 Yes, P-200 Gadget 40 No, P-300 Gizmo 15 Yes, P-400 Doohickey 60 Yes, P-500 Sprocket 12 No.",
+      "steps": [
+        {
+          "name": "Get the value first",
+          "text": "Write the VLOOKUP on its own and confirm it returns the number you expect. Column 3 is Unit Price in this table.",
+          "formula": "=VLOOKUP(\"P-300\",$A$2:$D$6,3,FALSE)"
+        },
+        {
+          "name": "Wrap it in the test",
+          "text": "Drop the whole lookup into IF's first argument and add the two outcomes. Add the exit strategy before the IF, not after.",
+          "formula": "=IF(VLOOKUP(\"P-300\",$A$2:$D$6,3,FALSE)>20,\"Premium\",\"Budget\")"
+        }
+      ],
+      "example": {
+        "formula": "=IF(VLOOKUP(\"P-300\",$A$2:$D$6,3,FALSE)>20,\"Premium\",\"Budget\")",
+        "result": "Budget",
+        "explanation": "P-300 is the Gizmo at 15. The lookup returns 15, the test 15 > 20 is FALSE, so IF returns the second value, \"Budget\"."
+      },
+      "tips": [
+        "Always keep FALSE (or 0) as the last VLOOKUP argument. TRUE allows an approximate match and can quietly return a neighbouring row.",
+        "Excel evaluates every argument before running IF, so a failing VLOOKUP still produces #N/A even when IF's other branch would have hidden it."
+      ]
+    },
+    {
+      "title": "Testing the Lookup Result Instead of a Number",
+      "content": "IF works just as well on text, which is how you convert a status column into readable output. Compare the lookup result against a literal and let IF choose the wording — useful for order statuses, compliance flags and availability checks.",
+      "example": {
+        "formula": "=IF(VLOOKUP(\"P-200\",$A$2:$D$6,4,FALSE)=\"Yes\",\"In stock\",\"Out of stock\")",
+        "result": "Out of stock",
+        "explanation": "P-200 is the Gadget and column 4 holds \"No\", so the equality test is FALSE and IF returns the second value. Change the SKU to P-100 and the same formula returns \"In stock\"."
+      },
+      "tips": [
+        "Text comparisons are case-insensitive in Excel and Google Sheets. Wrap the test in EXACT if case matters.",
+        "Keep the two outcome strings the same data type — mixing text and numbers in the branches makes the column hard to sort."
+      ]
+    },
+    {
+      "title": "Catching #N/A with IFERROR or IFNA",
+      "content": "An exact-match VLOOKUP that finds nothing returns #N/A, and IF cannot rescue it because the error happens before IF's test is evaluated. The fix is to wrap the lookup itself, not the test. IFERROR hides every error; IFNA hides only #N/A and lets genuine mistakes such as #REF! stay visible.",
+      "steps": [
+        {
+          "name": "Wrap the lookup",
+          "text": "IFERROR takes the entire VLOOKUP as its first argument and the fallback as its second.",
+          "formula": "=IFERROR(VLOOKUP(\"P-999\",$A$2:$D$6,3,FALSE),\"Not found\")"
+        },
+        {
+          "name": "Narrow it down with IFNA",
+          "text": "IFNA behaves identically for missing keys but leaves other errors on screen for you to fix.",
+          "formula": "=IFNA(VLOOKUP(\"P-999\",$A$2:$D$6,3,FALSE),\"Not found\")"
+        },
+        {
+          "name": "Combine with a test",
+          "text": "Once the error is handled, IF can safely work on the result.",
+          "formula": "=IF(IFERROR(VLOOKUP(\"P-999\",$A$2:$D$6,3,FALSE),0)>20,\"Premium\",\"Budget\")"
+        }
+      ],
+      "example": {
+        "formula": "=IFERROR(VLOOKUP(\"P-999\",$A$2:$D$6,3,FALSE),\"Not found\")",
+        "result": "Not found",
+        "explanation": "P-999 is absent from column A, so VLOOKUP returns #N/A and IFERROR substitutes the fallback text instead of letting the error spill into the report."
+      },
+      "tips": [
+        "IFNA exists in Excel 2013 and later, Microsoft 365 and Google Sheets — it is the better default when the only expected failure is a missing key.",
+        "Do not use an empty string as the fallback for data you still need to audit; a visible \"Not found\" is worth more than a blank cell."
+      ]
+    },
+    {
+      "title": "Nested IF and IFS for Tiering Lookups",
+      "content": "When one lookup has to map to several bands, nest IF or switch to IFS. IFS reads its conditions top to bottom and returns the value for the first TRUE test, so ordering is everything — put the highest threshold first.",
+      "example": {
+        "formula": "=IF(VLOOKUP(\"P-400\",$A$2:$D$6,3,FALSE)>=50,\"A\",IF(VLOOKUP(\"P-400\",$A$2:$D$6,3,FALSE)>=20,\"B\",\"C\"))",
+        "result": "A",
+        "explanation": "P-400 costs 60, which clears the first threshold, so the outer IF returns \"A\" and the inner IF never has to run. P-100 at 25 would fall through to \"B\", and P-500 at 12 all the way to \"C\"."
+      },
+      "tips": [
+        "IFS has no built-in else branch — close the list with TRUE,\"Otherwise\" or it returns #N/A when no condition matches.",
+        "Beyond three bands a lookup table beats nesting: an approximate-match VLOOKUP against a small band table is far easier to maintain than four stacked IFs."
+      ]
+    },
+    {
+      "title": "The XLOOKUP Shortcut and Cross-App Notes",
+      "content": "XLOOKUP folds the lookup and the error handling into a single function: the fourth argument is what to return when nothing matches. It ships with Excel 2021, Microsoft 365 and Google Sheets, and it removes the need to wrap anything in IFERROR. The older IF + VLOOKUP pattern still matters on Excel 2019 and earlier, where XLOOKUP does not exist.",
+      "example": {
+        "formula": "=XLOOKUP(\"P-999\",$A$2:$A$6,$C$2:$C$6,\"Not found\")",
+        "result": "Not found",
+        "explanation": "The SKU is missing from the lookup range, so XLOOKUP returns the if_not_found argument instead of #N/A — one function where VLOOKUP needed IFERROR around it."
+      },
+      "tips": [
+        "XLOOKUP can look left or right, so the return column may sit before the key — something VLOOKUP can never do.",
+        "Google Sheets supports VLOOKUP, IF, IFERROR, IFNA, IFS and XLOOKUP with the same argument order, so these formulas port across unchanged."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    { "name": "IF", "slug": "if", "description": "IF performs a logical test and returns one value if true and another if false." },
+    { "name": "VLOOKUP", "slug": "vlookup", "description": "VLOOKUP (Vertical Lookup) is a built-in function in Excel and Google Sheets that searches for a value in the first column of a table and returns a value in the same row from a specified column." },
+    { "name": "IFERROR", "slug": "iferror", "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise." },
+    { "name": "XLOOKUP", "slug": "xlookup", "description": "XLOOKUP is the modern replacement for VLOOKUP. It searches a range or array for a value and returns the corresponding item from a second range or array. It supports exact and approximate matching, wildcards, and can search in any direction." }
+  ],
+  "summary": "Wrapping VLOOKUP in IF turns a bare lookup into a decision: compare the result to a threshold or a text literal, and put IFERROR or IFNA around the lookup itself so a missing key becomes readable text instead of #N/A. For anything multi-banded, IFS or a band table beats stacked IFs, and on Excel 2021, Microsoft 365 or Google Sheets XLOOKUP replaces the whole combination with one call.",
+  "nextSteps": [
+    "Rewrite one existing VLOOKUP as IF(VLOOKUP(...)=..., ...) and check the fallback wording",
+    "Swap IFERROR for IFNA where a missing key is the only realistic failure",
+    "Try =XLOOKUP(key, lookup_range, return_range, \"Not found\") and compare it with your nested IF version"
+  ],
+  "relatedTutorials": [
+    "iferror-vs-ifna",
+    "if-with-and-or",
+    "sum-only-visible-cells-filtered"
+  ]
+}
