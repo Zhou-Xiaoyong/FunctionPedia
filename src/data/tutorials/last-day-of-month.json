@@ -1,0 +1,104 @@
+{
+  "slug": "last-day-of-month",
+  "title": "Last Day of Month",
+  "description": "EOMONTH returns the last day of month for any date in Excel and Google Sheets. Build month-end ranges, count days per month and avoid leap-year date bugs.",
+  "category": "Date & Time",
+  "functions": ["EOMONTH", "EDATE", "DATE"],
+  "intro": "Hard-coded month-ends break the moment the month changes length: 31 works for January, 30 for June, 28 or 29 for February. EOMONTH removes the guesswork by shifting a date by a number of months and snapping to the final day of whatever month it lands in. This guide covers the three offsets you will use constantly, how to count the days in a month, and how to build clean month ranges for reports.",
+  "tags": ["EOMONTH", "Month End", "EDATE", "Date Functions", "Google Sheets"],
+  "estimatedTime": "10 min read",
+  "prerequisites": [
+    "Comfort with basic date formulas such as DATE(yyyy, m, d)",
+    "Dates entered as real date values, not text",
+    "A Date number format applied to result cells"
+  ],
+  "sections": [
+    {
+      "title": "Why Hard-Coded Month-Ends Fail",
+      "content": "Every month ends on a different day: 31, 30, 28, or 29 in a leap year. Typing \"31\" into a date formula works for January and silently produces a wrong answer for April. EOMONTH solves the problem by moving a start date a given number of months and then returning the last day of whatever month it lands in, so one formula handles a leap February and a 30-day June without edits.",
+      "example": {
+        "formula": "=EOMONTH(A2, 0)",
+        "result": "31-Jan-2024",
+        "explanation": "A2 holds 15-Jan-2024. An offset of 0 keeps the same month, so EOMONTH returns that month's final day. The raw value is a date serial, which is why the cell must carry a date format to read as a calendar date."
+      },
+      "tips": [
+        "The result is a date serial, so apply a Date number format before sharing the sheet.",
+        "If EOMONTH returns a five-digit number such as 45321, the cell is simply formatted as General — this is not an error."
+      ]
+    },
+    {
+      "title": "EOMONTH Basics: Same, Next and Previous Month",
+      "content": "Once the months argument clicks, month-end arithmetic becomes trivial. A positive offset moves forward, a negative offset moves backward, and 0 stays in the current month. Positive and negative values let you build rolling period tables without ever retyping a calendar date.",
+      "steps": [
+        { "name": "Same month-end", "text": "With a start date in A2, offset 0 returns the final day of the same month.", "formula": "=EOMONTH(A2, 0)" },
+        { "name": "Next month-end", "text": "A positive offset moves forward. From 15-Jan-2024 this lands in February.", "formula": "=EOMONTH(A2, 1)" },
+        { "name": "Previous month-end", "text": "A negative offset moves backward, here into December 2023.", "formula": "=EOMONTH(A2, -1)" }
+      ],
+      "example": {
+        "formula": "=EOMONTH(DATE(2024, 1, 15), 1)",
+        "result": "29-Feb-2024",
+        "explanation": "2024 is a leap year, so the last day of the month one step ahead is 29 February. Run the identical formula with 2023 and it returns 28-Feb — no conditional logic required."
+      },
+      "tips": [
+        "Decimal offsets are truncated: an offset of 1.9 behaves exactly like 1.",
+        "Build the start date with DATE(yyyy, m, d) so the formula stays self-contained and portable."
+      ]
+    },
+    {
+      "title": "Count the Days in a Month with DAY(EOMONTH(...))",
+      "content": "Because EOMONTH always lands on the final day of a month, the day number of that result is the length of the month. Wrapping it in DAY gives you a self-updating day counter: it returns 31 for a long month, 30 for a short one, and 29 or 28 for February depending on the year.",
+      "example": {
+        "formula": "=DAY(EOMONTH(A2, 0))",
+        "result": "31",
+        "explanation": "A2 holds 15-Jan-2024. EOMONTH returns 31-Jan-2024 and DAY extracts the 31. Point A2 at February 2024 and the same formula returns 29; point it at February 2023 and it returns 28."
+      },
+      "tips": [
+        "This is more portable than the DATE(year, month + 1, 0) trick, which relies on day-zero overflow and confuses anyone reading the formula later.",
+        "Use it for proration and daily-rate work: a monthly rate divided by DAY(EOMONTH(date,0)) gives a consistent daily figure."
+      ]
+    },
+    {
+      "title": "Build Month Ranges for SUMIFS and Reports",
+      "content": "Month-end reporting needs two boundaries: the first day and the last day of the period. The first day is the previous month-end plus one; the last day is the current month-end. Because both are genuine date values, they can be concatenated into SUMIFS criteria and the criteria range then covers exactly the reporting month.",
+      "steps": [
+        { "name": "First day of the period", "text": "Take the previous month-end and add a single day.", "formula": "=EOMONTH(A2, -1) + 1" },
+        { "name": "Last day of the period", "text": "A zero offset returns the current month-end.", "formula": "=EOMONTH(A2, 0)" }
+      ],
+      "example": {
+        "formula": "=SUMIFS(C:C, B:B, \">=\"&EOMONTH(A2,-1)+1, B:B, \"<=\"&EOMONTH(A2,0))",
+        "result": "5550",
+        "explanation": "A2 holds 15-Jan-2024, so the window runs from 01-Jan-2024 to 31-Jan-2024. Column C holds 1200, 3400, 950 and 1800 on invoice dates in column B; the 1800 invoice is dated 02-Feb-2024 and falls outside the window, leaving 1200 + 3400 + 950 = 5550."
+      },
+      "tips": [
+        "For greater-than or less-than comparisons you must concatenate the operator to the date with & — a bare cell reference is treated as an equality test.",
+        "Format both boundary cells as dates, otherwise the +1 arithmetic displays as a serial number."
+      ]
+    },
+    {
+      "title": "EOMONTH vs EDATE (and Google Sheets Notes)",
+      "content": "EDATE and EOMONTH both shift a date by months, but they answer different questions. EDATE preserves the day of the month; EOMONTH always snaps to month-end. For a mid-month start date the two diverge immediately. They coincide only when the original day does not exist in the target month, such as 31-Jan plus one month, where EDATE rolls forward to the last valid day.",
+      "example": {
+        "formula": "=EDATE(A2, 1)",
+        "result": "15-Feb-2024",
+        "explanation": "Compare this with =EOMONTH(A2, 1), which returns 29-Feb-2024 for the same input. Use EDATE for anniversaries and billing cycles that must keep the same day number, and EOMONTH for reporting periods that must end on the month boundary."
+      },
+      "tips": [
+        "Google Sheets implements EOMONTH and EDATE with identical arguments and identical leap-year handling, so these formulas move between Excel and Sheets unchanged.",
+        "Both functions return serial numbers, so apply a date format before presenting the results."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    { "name": "EOMONTH", "slug": "eomonth", "description": "EOMONTH returns the last day of the month that is a given number of months before or after a start date, useful for month-end reporting and period boundaries." },
+    { "name": "EDATE", "slug": "edate", "description": "EDATE returns the date that is a given number of months before or after a start date, preserving the day of the month and rolling to the last day when that day does not exist in the target month." },
+    { "name": "DATE", "slug": "date", "description": "DATE builds a date serial number from separate year, month, and day components, and automatically rolls over out-of-range values such as month 13 into the next year or day 32 into the following month." }
+  ],
+  "summary": "EOMONTH is the reliable way to get the last day of a month in Excel and Google Sheets: offset 0 for the current month, 1 for the next, and -1 for the previous. Wrap it in DAY to count the days in a month, add one day to the previous month-end for the first day of a period, and feed both boundaries into SUMIFS for month-range reporting. Reach for EDATE instead when the day of the month must stay fixed.",
+  "nextSteps": [
+    "Rebuild one month-end column in a live report with =EOMONTH(A2,0) and confirm February resolves to 29 in 2024 and 28 in 2023.",
+    "Replace any hard-coded 31st or 30th in your date formulas with EOMONTH and re-run the affected totals.",
+    "Pair the first-day and last-day boundaries with SUMIFS to produce a month-by-month summary that updates itself."
+  ],
+  "relatedTutorials": ["add-months-to-a-date", "calculate-days-between-two-dates", "sumif-with-date-range"]
+}

@@ -1,0 +1,104 @@
+{
+  "slug": "remove-extra-spaces",
+  "title": "Remove Extra Spaces",
+  "description": "TRIM, SUBSTITUTE and CLEAN remove extra spaces, non-breaking spaces and hidden characters in Excel and Google Sheets. Exact formulas plus lookup fixes.",
+  "category": "Text Functions",
+  "functions": ["TRIM", "CLEAN", "SUBSTITUTE"],
+  "intro": "Extra spaces are invisible, so they survive visual inspection and then break exact matching: VLOOKUP returns #N/A, SUMIFS quietly reports zero, and duplicate checks miss obvious repeats. The cure depends on which character is actually in the cell, because TRIM only removes one of the three kinds of whitespace you will meet. This guide shows how to identify the character first, then clean it with the right function.",
+  "tags": ["TRIM", "CLEAN", "SUBSTITUTE", "Data Cleaning", "Google Sheets"],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "A worksheet containing imported or copy-pasted text",
+    "Comfort with basic cell references in formulas",
+    "Willingness to treat the result as text rather than a number"
+  ],
+  "sections": [
+    {
+      "title": "Three Kinds of Space That Break Your Data",
+      "content": "Not every space is a space. The character produced by the space bar is decimal code 32. Text pasted from a web page, a PDF or an enterprise export often carries the non-breaking space, code 160, which is pixel-identical on screen. Imports additionally pick up non-printable control characters such as tabs (9) and line feeds (10). Each needs a different tool: TRIM for code 32, SUBSTITUTE for code 160, and CLEAN for the 0-31 control range. Diagnosis therefore starts with CODE, which reports the numeric code of a character.",
+      "example": {
+        "formula": "=CODE(LEFT(A2, 1))",
+        "result": "160",
+        "explanation": "A2 begins with a non-breaking space, so CODE reports 160 instead of the 32 an ordinary space would give. This single check tells you which remedy to use, because TRIM will never remove character 160."
+      },
+      "tips": [
+        "CODE 32 → TRIM will fix it.",
+        "CODE 160 → you need SUBSTITUTE with CHAR(160).",
+        "CODE between 1 and 31 → CLEAN is the right tool."
+      ]
+    },
+    {
+      "title": "TRIM: The First Line of Defence",
+      "content": "TRIM does three jobs in one call: it removes leading spaces, removes trailing spaces, and collapses any run of internal spaces down to a single space. It ignores character 160 entirely and it does not touch tabs or line breaks. Comparing LEN before and after the trim is the fastest way to see how much junk was hiding in a cell.",
+      "example": {
+        "formula": "=TRIM(\"   Hello   World   \")",
+        "result": "Hello World",
+        "explanation": "The input is 19 characters long and the result is 11. Three leading, three trailing and two of the three internal spaces are removed, leaving exactly one space between the two words. The formula =LEN(A2)-LEN(TRIM(A2)) returns 8 for the same string."
+      },
+      "tips": [
+        "TRIM was designed for the 7-bit ASCII space, code 32 — Microsoft documents this limitation explicitly, and Google Sheets behaves the same way.",
+        "TRIM returns text, so a cleaned number no longer calculates; wrap it in VALUE when you still need arithmetic."
+      ]
+    },
+    {
+      "title": "Non-Breaking Spaces Need SUBSTITUTE",
+      "content": "The non-breaking space (CHAR(160)) arrives with HTML content, PDFs and some ERP exports, and both Microsoft and Google document that TRIM leaves it behind. The fix is to convert it into an ordinary space first and then let TRIM normalise the result, so the cleaned value matches your lookup keys character for character.",
+      "steps": [
+        { "name": "Swap the character", "text": "Replace every non-breaking space with a normal space.", "formula": "=SUBSTITUTE(A2, CHAR(160), \" \")" },
+        { "name": "Normalise the spacing", "text": "Wrap the substitution in TRIM so any doubled spaces collapse.", "formula": "=TRIM(SUBSTITUTE(A2, CHAR(160), \" \"))" }
+      ],
+      "example": {
+        "formula": "=TRIM(SUBSTITUTE(A2, CHAR(160), \" \"))",
+        "result": "Product A",
+        "explanation": "A2 holds a leading non-breaking space, the word Product, a non-breaking space, and the letter A. SUBSTITUTE converts both non-breaking spaces into character 32 and TRIM strips the leading one, so the value finally matches the clean key in the lookup table."
+      },
+      "tips": [
+        "Use =SUBSTITUTE(A2,CHAR(160),\"\") when the character is pure noise and you want it deleted rather than converted to a space.",
+        "To strip every space including the intentional ones, use =SUBSTITUTE(A2,\" \",\"\") — but check the result, because multi-word names will run together."
+      ]
+    },
+    {
+      "title": "CLEAN and the Control Characters",
+      "content": "CLEAN solves a different problem: non-printable control characters in the 0-31 range, which surface as odd symbols, broken line wrapping or blank-looking blocks after an import. Google Sheets additionally removes character 127 (DEL), a small but real difference from Excel. CLEAN does not remove character 160 and does not remove ordinary spaces, so the two functions complement each other rather than overlap.",
+      "example": {
+        "formula": "=TRIM(CLEAN(A2))",
+        "result": "Widget A",
+        "explanation": "A2 contains a tab (code 9), then a space, then \"Widget A\", then a line feed (code 10). CLEAN deletes both control characters, and TRIM removes the ordinary space they were hiding, leaving a clean lookup key. Order matters: run CLEAN first, because TRIM cannot see control characters at all."
+      },
+      "tips": [
+        "CLEAN strips characters outright, so a deliberate in-cell line break is lost — rebuild it with CHAR(10) if you need one.",
+        "Excel's CLEAN does not remove CHAR(160), one of the most common misconceptions in data cleaning."
+      ]
+    },
+    {
+      "title": "Make the Cleanup Stick, and Fix Broken Lookups",
+      "content": "A cleaning formula in a helper column is scaffolding, not a result. For a permanent fix, paste the helper column back over the original data with Paste Special → Values. When you cannot change the source data — because it is imported or owned by someone else — wrap the lookup value instead, so the search key is normalised at the moment of comparison.",
+      "steps": [
+        { "name": "Clean in a helper column", "text": "Put the combined formula beside the raw data and fill it down.", "formula": "=TRIM(CLEAN(SUBSTITUTE(A2, CHAR(160), \" \")))" },
+        { "name": "Freeze the result", "text": "Copy the helper column, paste it over the original using Paste Special → Values, then delete the helper column." }
+      ],
+      "example": {
+        "formula": "=XLOOKUP(TRIM(A2), E2:E50, F2:F50, \"Not found\")",
+        "result": "12.50",
+        "explanation": "A2 holds \" Widget A \" with stray spaces, so an untrimmed lookup returns #N/A even though \"Widget A\" plainly exists in E2:E50. Wrapping the lookup value in TRIM makes both strings identical and the price is found. On older Excel versions use =VLOOKUP(TRIM(A2), $E$2:$F$50, 2, FALSE) instead."
+      },
+      "tips": [
+        "Cleaning one side of a comparison is not enough: if the key column in the lookup table is also dirty, clean both.",
+        "Google Sheets trims text as you type it into a cell, but values that arrive through a formula, an import or an API are not trimmed, so TRIM is still required."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    { "name": "TRIM", "slug": "trim", "description": "TRIM removes extra spaces from text, leaving only single spaces between words." },
+    { "name": "CLEAN", "slug": "clean", "description": "CLEAN removes non-printable characters (character codes 0 through 31) from text, which commonly appear when importing data from other systems." },
+    { "name": "SUBSTITUTE", "slug": "substitute", "description": "SUBSTITUTE replaces one text string with another in a text string." }
+  ],
+  "summary": "Invisible whitespace breaks exact matching, and each kind needs its own remedy: TRIM for ordinary spaces (code 32), SUBSTITUTE with CHAR(160) for the non-breaking spaces that arrive from web content and exports, and CLEAN for the control characters (0-31) left behind by imports. Combine them as =TRIM(CLEAN(SUBSTITUTE(A2,CHAR(160),\" \"))) for a single-pass clean, freeze the result with Paste Special → Values, and wrap lookup values in TRIM whenever the source data is outside your control.",
+  "nextSteps": [
+    "Run =CODE(LEFT(A2,1)) on a cell that TRIM refuses to fix and confirm whether you are fighting character 160 or something else.",
+    "Add a cleaning helper column to your lookup table, paste the results back as values, and retest the lookup that used to fail.",
+    "Wrap the lookup value as well as the table in TRIM, so both sides of the comparison are normalised."
+  ],
+  "relatedTutorials": ["extract-text-from-string", "split-text-by-delimiter", "concatenate-vs-textjoin"]
+}
