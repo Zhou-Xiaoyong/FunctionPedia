@@ -1,0 +1,101 @@
+{
+  "slug": "standard-deviation-excel",
+  "title": "Standard Deviation in Excel: STDEV vs STDEVP",
+  "description": "Standard deviation Excel formulas are not all the same. See when to use STDEV vs STDEVP, how the n-1 divisor works, and how to read the result correctly.",
+  "category": "Statistical",
+  "functions": ["STDEV", "STDEVP", "VAR", "AVERAGE"],
+  "intro": "Excel ships seven functions that all claim to measure spread, and picking the wrong one silently changes your answer. This guide separates the two that matter most — STDEV for a sample and STDEVP for a full population — shows exactly why the divisor differs, and walks through a worked comparison where two datasets share the same average but not the same consistency.",
+  "tags": ["STDEV", "STDEVP", "Standard Deviation", "Variance", "Statistical Functions"],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "Comfort with the AVERAGE function",
+    "Data arranged in a single contiguous range",
+    "No statistics background required — the divisors are explained from scratch"
+  ],
+  "sections": [
+    {
+      "title": "What Standard Deviation Actually Measures",
+      "content": "Standard deviation is the typical distance between a data point and the mean of its dataset. Because it is expressed in the same units as the raw data, it is far easier to interpret than variance, whose units are squared. A standard deviation of 2 on a set of test scores means scores typically sit about 2 points away from the class average — a sentence you can say out loud, which is not true of a variance of 4.",
+      "example": {
+        "formula": "=AVERAGE(A2:A9)",
+        "result": "5",
+        "explanation": "For the values 2, 4, 4, 4, 5, 5, 7 and 9 the mean is 5. Every standard deviation calculation starts by measuring each value's distance from this number, so AVERAGE is always the first step even though it never appears in the final formula."
+      },
+      "tips": [
+        "Standard deviation is never negative, and it is 0 only when every value is identical.",
+        "It is sensitive to outliers: one extreme value can move it more than the other nine combined."
+      ]
+    },
+    {
+      "title": "STDEV vs STDEVP: Choosing the Divisor",
+      "content": "STDEV is the sample standard deviation and divides the sum of squared deviations by n-1. STDEVP is the population standard deviation and divides by n. Both are computed from the same eight numbers here, and both are correct — they simply describe different things.",
+      "example": {
+        "formula": "=STDEV(A2:A9)  and  =STDEVP(A2:A9)",
+        "result": "2.138089935 and 2",
+        "explanation": "The eight values have a mean of 5 and a total squared deviation of 32. STDEVP divides by 8, giving a variance of 4 and a standard deviation of exactly 2. STDEV divides by 7, giving a variance of 4.571428571 and a standard deviation of 2.138089935. Population standard deviation is always the smaller of the two on identical data."
+      },
+      "tips": [
+        "Excel's modern names are STDEV.S and STDEV.P; STDEV and STDEVP are the legacy aliases and return identical results.",
+        "The gulf between the two narrows fast as n grows: on 8 points STDEV is about 7% larger, on 1,000 points only about 0.05% larger."
+      ]
+    },
+    {
+      "title": "Why the n-1 Divisor Exists",
+      "content": "A sample stands in for a population you could not measure, and its mean is only an estimate of the true mean. Measuring spread around an estimated centre understates the real spread, so dividing by n-1 (Bessel's correction) removes that bias. It is not a fudge factor — it is what makes the sample standard deviation an unbiased estimator. Variance behaves the same way, which is why VAR and VARP exist as a matching pair.",
+      "example": {
+        "formula": "=VAR(A2:A9)  and  =VARP(A2:A9)",
+        "result": "4.571428571 and 4",
+        "explanation": "Same 32 total squared deviation, two denominators. The standard deviation is just the square root of these numbers: SQRT(4.571428571) = 2.138089935 and SQRT(4) = 2. Once you see that relationship you never need to guess which variance function pairs with which standard deviation function."
+      },
+      "tips": [
+        "SQRT(VAR(range)) always equals STDEV(range) — a quick way to check that your formula references the whole range and nothing extra.",
+        "The correction only inflates the estimate when the sample is genuinely a subset of a larger group. For a census, it is unnecessary."
+      ]
+    },
+    {
+      "title": "A Worked Comparison: Two Datasets, One Average",
+      "content": "The clearest way to see why the choice matters is to compare two production lines that both average 10.05 millimetres. Their means are identical, so an AVERAGE-based report would declare them equally good. Their standard deviations are not identical, and that is the number that predicts how many units will fall outside tolerance.",
+      "example": {
+        "formula": "=STDEV(C2:C9)",
+        "result": "0.3251",
+        "explanation": "Line A reads 10.1, 10.2, 9.9, 10.0, 10.3, 9.8, 10.1, 10.0 and gives STDEV 0.1604 (STDEVP 0.15). Line B reads 10.0, 10.5, 9.5, 10.2, 9.8, 10.1, 9.9, 10.4 and gives STDEV 0.3251 (STDEVP 0.3041). Both average 10.05, but line B varies about twice as much — and both lines are samples from a longer production run, which is exactly the case where STDEV is the right choice."
+      },
+      "tips": [
+        "Ask whether your range holds every member of the group. All of them — use STDEVP. A selection from a larger group — use STDEV.",
+        "When in doubt in day-to-day reporting, STDEV is the safer default because it never understates uncertainty.",
+        "Standard deviation only makes sense next to the mean. Reporting spread without the average tells the reader nothing."
+      ]
+    },
+    {
+      "title": "Google Sheets and the Dotted Aliases",
+      "content": "Google Sheets implements the whole family with the same names and the same divisors, so a workbook can move between the two apps without changing a digit. Google's own function list maps STDEV.S to STDEV and STDEV.P to STDEVP, mirroring how modern Excel treats its legacy names.",
+      "example": {
+        "formula": "=STDEV.S(A2:A9)",
+        "result": "2.138089935",
+        "explanation": "Excel's STDEV.S and Google Sheets' STDEV.S both return 2.138089935 on the eight-value range — bit-for-bit the same result as the legacy STDEV. The dotted names exist for clarity, not for different maths."
+      },
+      "tips": [
+        "STDEV and STDEVP ignore text, logical values and empty cells inside a range. STDEVA and STDEVPA count text as 0 — reach for those only when a blank cell genuinely means zero.",
+        "Numbers typed directly into the formula are always counted, but text sitting inside a referenced range is always ignored. That asymmetry surprises people who build ranges with stray labels.",
+        "Both functions need at least two numeric values. A single-value range or a text-only range returns #DIV/0! in Excel."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "STDEV", "slug": "stdev", "description": "STDEV estimates the standard deviation based on a sample of a population, using the n-1 denominator (Bessel's correction). It is the legacy compatibility version of STDEV.S." },
+    { "name": "STDEVP", "slug": "stdevp", "description": "STDEVP calculates the standard deviation based on an entire population, using the n denominator. It is the legacy compatibility version of STDEV.P." },
+    { "name": "VAR", "slug": "var", "description": "VAR estimates the variance based on a sample of a population, using the n-1 denominator (Bessel's correction). It is the legacy compatibility version of VAR.S." },
+    { "name": "AVERAGE", "slug": "average", "description": "AVERAGE returns the arithmetic mean of a set of numbers." }
+  ],
+  "summary": "Standard deviation in Excel comes down to one decision: does your range contain every member of the group, or a selection from it? Full population means STDEVP and a divisor of n; a sample means STDEV and a divisor of n-1. The numbers differ by roughly 7% on eight data points and by almost nothing on a thousand, but the reasoning behind the choice never changes. Variance functions follow the identical split, and both Excel and Google Sheets expose the same names.",
+  "nextSteps": [
+    "Recompute one of your existing reports with the other divisor to see how much the answer actually moves",
+    "Pair STDEV with AVERAGE plus a ±1 standard deviation band to describe a normal range instead of a bare average",
+    "Try STDEVA on a range containing text placeholders and confirm for yourself what the text-as-zero rule does to the result"
+  ],
+  "relatedTutorials": [
+    "median-vs-average",
+    "averageif-with-criteria",
+    "averageifs-multiple-criteria"
+  ]
+}

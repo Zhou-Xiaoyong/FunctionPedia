@@ -1,0 +1,111 @@
+{
+  "slug": "fv-future-value",
+  "title": "FV Function: Future Value in Excel",
+  "description": "The FV future value function projects what a lump sum or a series of regular deposits will grow into. Learn the syntax, the sign rule and worked examples.",
+  "category": "Financial",
+  "functions": ["FV", "PV", "PMT", "RATE"],
+  "intro": "FV answers the forward-looking half of every savings plan: if I start with this much and add this much every period at this rate, what will I end up with? It is one of the five core time-value-of-money functions, and once you understand its sign convention it becomes the easiest of them to use. This guide covers the syntax, a worked savings projection, and how FV combines with PV, PMT and RATE to answer the same question from different angles.",
+  "tags": ["FV", "Future Value", "Compound Interest", "Financial Functions", "Time Value of Money"],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Comfort with basic cell references and percentages",
+    "Understanding that a periodic rate is not the same as an annual rate",
+    "No finance background required"
+  ],
+  "sections": [
+    {
+      "title": "What FV Returns",
+      "content": "FV compounds a starting balance forward for every period and adds the compounded value of each deposit made along the way. It assumes the rate never changes and every payment is the same size, which is exactly how most savings accounts, retirement plans and certificate-of-deposit ladders behave in practice.",
+      "example": {
+        "formula": "=FV(0.005, 60, -500)",
+        "result": "$34,885.02",
+        "explanation": "Depositing $500 at the end of every month for 5 years (60 periods) at 6% a year compounded monthly, so 0.005 per period. The result is positive because FV returns the future balance, while the deposits you make are negative (money leaving your pocket). The same formula stretched to 120 periods — =FV(0.06/12, 120, -500) — returns $81,939.67."
+      },
+      "tips": [
+        "FV is a legacy-compatible name with no dotted variant; Excel and Google Sheets both call it plain FV.",
+        "The result inherits the sign of the net cash flow, not of the rate."
+      ]
+    },
+    {
+      "title": "The Syntax and the Sign Rule",
+      "content": "The signature is FV(rate, nper, pmt, [pv], [type]). Only the first three arguments are required, but the sign rule trips up more people than the syntax itself: money you pay out is negative, money you receive is positive.",
+      "steps": [
+        {
+          "name": "Convert the annual rate to a periodic rate",
+          "text": "FV wants the rate for one period, so divide the annual rate by the number of periods per year. For monthly compounding that is 6% ÷ 12 = 0.005.",
+          "formula": "=6%/12"
+        },
+        {
+          "name": "Express the term in periods, not years",
+          "text": "nper is the total number of periods: years multiplied by periods per year. Five years of monthly deposits is 60 periods.",
+          "formula": "=5*12"
+        },
+        {
+          "name": "Enter the deposit as a negative number",
+          "text": "A deposit is an outflow, so pmt is -500. If you enter it as positive, FV returns a negative future value that looks like an error but is really just a sign mismatch.",
+          "formula": "=FV(0.005, 60, -500, 0, 0)"
+        }
+      ],
+      "tips": [
+        "If pmt and pv carry the same sign, FV returns a nonsensical result — this is the single most common FV mistake.",
+        "Keep the optional arguments explicit (pv = 0, type = 0) while you are learning; it makes the formula self-documenting."
+      ]
+    },
+    {
+      "title": "Lump Sum, Regular Deposits, or Both",
+      "content": "pv is a single amount you already hold; pmt is a recurring amount you add. You can supply either one alone, and FV handles both together by compounding each on its own schedule. Comparing the two components is often more useful than the single total, because it shows how much of the final balance came from your own contributions.",
+      "example": {
+        "formula": "=FV(6%, 10, -1200, -10000)",
+        "result": "$33,725.43",
+        "explanation": "$10,000 invested today plus $1,200 at the end of each year for 10 years at 6% a year. With the deposits removed, =FV(6%, 10, 0, -10000) returns only $17,908.48, so $15,816.95 of the final balance comes from the yearly contributions and their compounding."
+      },
+      "tips": [
+        "If you contribute at the beginning of each period instead, set type to 1 — it adds one extra period of interest per deposit."
+      ]
+    },
+    {
+      "title": "Working Backwards with PV, PMT and RATE",
+      "content": "FV tells you where you land. Its three siblings answer the reverse question on the same numbers: how much do I need today, how much must I save each period, and what rate does my plan imply? A spreadsheet that shows all four side by side turns a vague savings goal into a set of numbers you can actually act on.",
+      "example": {
+        "formula": "=PMT(0.005, 60, 0, 50000)",
+        "result": "($716.64)",
+        "explanation": "To reach a $50,000 goal in 5 years at 6% a year you must deposit $716.64 at the end of each month. Swapping PMT for PV on the same figures gives ($37,068.61) — the lump sum that would do the job today — and RATE(60, -500, 0, 50000) returns 1.615% per month, the rate your $500-a-month plan would need."
+      },
+      "tips": [
+        "Wrap any of these results in ABS() if you want a clean positive display without changing the underlying value.",
+        "RATE returns a periodic rate. Multiply by 12 for the nominal annual rate (1.615% × 12 ≈ 19.38%), or use (1+rate)^12-1 for the effective annual rate (≈ 21.20%)."
+      ]
+    },
+    {
+      "title": "Google Sheets, type=1 and Common Traps",
+      "content": "Google Sheets implements FV with exactly the same name, arguments and order, so every formula above works unchanged there. The only real lever left is type: 0 pays at the end of the period, 1 pays at the beginning, and the difference is material over a long horizon.",
+      "example": {
+        "formula": "=FV(0.005, 60, -500, 0, 1)",
+        "result": "$35,059.44",
+        "explanation": "The same plan paid at the start of each month rather than the end earns one extra month of interest on every deposit, adding $174.42 over five years. Google Sheets returns this identical figure."
+      },
+      "tips": [
+        "FV assumes a constant rate. If the rate changes year by year, Excel's FVSCHEDULE takes a list of rates instead.",
+        "A rate of 0 is perfectly legal: FV then returns pv + pmt × nper, which is handy for sanity-checking a formula's structure.",
+        "Both Excel and Google Sheets accept the % shorthand, so =FV(6%/12, 60, -500) is equivalent to =FV(0.005, 60, -500)."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    { "name": "FV", "slug": "fv", "description": "FV returns the future value of an investment based on periodic, constant payments and a constant interest rate." },
+    { "name": "PV", "slug": "pv", "description": "PV returns the current value of a future stream of cash flows discounted at a constant rate." },
+    { "name": "PMT", "slug": "pmt", "description": "PMT calculates the periodic payment for a loan or investment based on constant payments and a constant interest rate. It's the function you need for mortgage, car loan, and any fixed-rate payment calculations." },
+    { "name": "RATE", "slug": "rate", "description": "RATE returns the periodic interest rate for an annuity based on the number of periods, payment amount, present value, and future value." }
+  ],
+  "summary": "FV takes a periodic rate, a period count, and a constant payment and tells you what the balance becomes. The two things that matter are using a per-period rate (not an annual one) and keeping your sign convention straight — deposits negative, future balance positive. Pair it with PV, PMT and RATE and you can move between any two points on the same savings timeline.",
+  "nextSteps": [
+    "Build a four-column projection sheet that shows FV, PV, PMT and RATE for the same goal side by side",
+    "Test the difference between type 0 and type 1 on your own savings plan to see what one extra month of interest per deposit is worth",
+    "Compare a 10-year and a 20-year horizon — the compounding curve is the real lesson, not the single number"
+  ],
+  "relatedTutorials": [
+    "compound-interest-calculator",
+    "pmt-function-loan-payment",
+    "calculate-principal-payment"
+  ]
+}
