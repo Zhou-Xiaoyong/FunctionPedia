@@ -1,0 +1,204 @@
+{
+  "slug": "google-sheets-regexextract",
+  "title": "Google Sheets REGEXEXTRACT: Extract Text by Pattern",
+  "description": "Learn Google Sheets REGEXEXTRACT with RE2 patterns: capture groups, case-insensitive flags, error handling and how to extract all matches from a string.",
+  "category": "Google Sheets",
+  "functions": ["REGEXEXTRACT", "REGEXMATCH", "REGEXREPLACE", "FIND", "IFERROR", "VALUE", "ARRAYFORMULA"],
+  "intro": "LEFT, MID and FIND all need to know where the text you want begins. REGEXEXTRACT does not: you describe the shape of the value, and it returns the part of the string that matches. That makes it the fastest way to pull IDs, domains, dates and amounts out of messy imported data. This guide covers the syntax, capture groups, the patterns worth memorising, and how to keep #N/A out of your sheet.",
+  "tags": ["REGEXEXTRACT", "Google Sheets", "Regular Expressions", "RE2", "Data Cleaning"],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "A Google account with access to Google Sheets",
+    "Comfort reading a simple formula with two arguments",
+    "No previous regular expression experience required"
+  ],
+  "sections": [
+    {
+      "title": "How REGEXEXTRACT Reads a Pattern",
+      "content": "The syntax is only two arguments: the text, and an RE2 regular expression in quotes. Without capture groups the function returns the entire match. With capture groups - the parts you wrap in parentheses - it returns only those parts. It always stops at the first match, so a string containing three numbers gives you one result, not three, and later matches are ignored.",
+      "example": {
+        "formula": "=REGEXEXTRACT(\"My favourite number is 241, but my friend's is 17\", \"\\d+\")",
+        "result": "241",
+        "explanation": "The token \\d+ means one or more digits. REGEXEXTRACT finds the first run of digits and returns it, which is exactly why the later 17 never appears in the result."
+      },
+      "tips": [
+        "Input must be text. A raw number in the cell returns #VALUE!, so wrap numeric cells in TEXT first.",
+        "The pattern is always a string, either typed in quotes or read from another cell."
+      ]
+    },
+    {
+      "title": "Capture Groups: Return Only What You Need",
+      "content": "Real work usually needs one piece of a larger pattern. Put parentheses around just that piece and REGEXEXTRACT returns the captured text instead of the whole match. Several groups are allowed, and Google Sheets returns one value per group, spilling across the adjacent columns. This is normally the end of brittle LEFT and MID combinations, because you describe the shape of the ID rather than counting characters.",
+      "steps": [
+        {
+          "name": "Wrap only the wanted part",
+          "text": "In a cell holding Order INV-84739 shipped 2026-10-05, the invoice number sits right after the literal INV-.",
+          "formula": "=REGEXEXTRACT(A2,\"INV-(\\d+)\")"
+        },
+        {
+          "name": "Return two fields at once",
+          "text": "Two capture groups spill into two cells: the full match in the first, the date in the second.",
+          "formula": "=REGEXEXTRACT(A2,\"(INV-\\d+) shipped (\\d{4}-\\d{2}-\\d{2})\")"
+        },
+        {
+          "name": "Compare with the position-based method",
+          "text": "FIND locates the hyphen and MID takes a fixed width, which only survives while every ID stays five digits.",
+          "formula": "=MID(A2,FIND(\"-\",A2)+1,5)"
+        }
+      ],
+      "example": {
+        "formula": "=REGEXEXTRACT(A2,\"INV-(\\d+)\")",
+        "result": "84739",
+        "explanation": "A2 contains Order INV-84739 shipped 2026-10-05. The literal INV- anchors the pattern and (\\d+) captures the digits after it. FIND plus MID also returns 84739 here, but it breaks the first time an order number is six digits long."
+      },
+      "tips": [
+        "With multiple groups the result spills to the right, so leave the neighbouring cells empty or Sheets reports a spill error.",
+        "A group that does not participate in the match comes back as an empty cell rather than an error."
+      ]
+    },
+    {
+      "title": "Five Patterns Worth Memorising",
+      "content": "RE2 is a large language, but a handful of tokens covers most spreadsheet work: \\d for a digit, \\w for a word character, \\s for whitespace, a character class such as [A-Z], and quantifiers such as + or a fixed length like {3}. Wrap a pattern that must sit at the very start or end in ^ and $. Case-insensitivity is not an argument in Google Sheets - you switch it on inside the pattern with the inline flag (?i).",
+      "steps": [
+        {
+          "name": "Match a phone number",
+          "text": "Describe the exact shape of the value instead of hoping the digits line up.",
+          "formula": "=REGEXEXTRACT(\"Call 555-123-4567 now\",\"\\d{3}-\\d{3}-\\d{4}\")"
+        },
+        {
+          "name": "Switch off case sensitivity",
+          "text": "The inline (?i) flag lets USD match usd or Usd without changing the rest of the pattern.",
+          "formula": "=REGEXEXTRACT(\"Total: usd 1,250.00\",\"(?i)usd\\s*([\\d,.]+)\")"
+        },
+        {
+          "name": "Reformat with REGEXREPLACE",
+          "text": "REGEXREPLACE uses the same engine, and $1, $2 and $3 refer to capture groups in the replacement text.",
+          "formula": "=REGEXREPLACE(\"2026-10-05\",\"(\\d{4})-(\\d{2})-(\\d{2})\",\"$3/$2/$1\")"
+        }
+      ],
+      "example": {
+        "formula": "=REGEXEXTRACT(\"Total: USD 1,250.00\",\"(?i)usd\\s*([\\d,.]+)\")",
+        "result": "1,250.00",
+        "explanation": "The flag matches USD in any case, \\s* allows the space that follows it, and ([\\d,.]+) captures the amount together with its thousands separator. The result is still text, so VALUE is needed before any arithmetic."
+      },
+      "tips": [
+        "Anchors matter more than they look: ^[0-9]+ on 6100 Office Supplies returns 6100, while on 100-2000 Intercompany it returns only 100.",
+        "Keep the pattern as specific as the data allows. A greedy .* will happily swallow the rest of the string."
+      ]
+    },
+    {
+      "title": "Keeping #N/A Out of the Sheet",
+      "content": "No match means #N/A. When you fill a pattern down a column, some rows will always fail to match, so wrap the call in IFERROR and return an empty string or a readable label. Two smaller gotchas bite just as often: numeric input raises #VALUE! because the function only accepts text, and a result that looks like a number is still text until VALUE converts it.",
+      "steps": [
+        {
+          "name": "Handle missing matches",
+          "text": "Return a label instead of a column full of errors.",
+          "formula": "=IFERROR(REGEXEXTRACT(A2,\"INV-(\\d+)\"),\"No invoice found\")"
+        },
+        {
+          "name": "Feed the function text, not numbers",
+          "text": "A numeric cell errors out, so convert it with TEXT before extracting.",
+          "formula": "=REGEXEXTRACT(TEXT(241,\"0\"),\"\\d+\")"
+        },
+        {
+          "name": "Turn the text result into a real number",
+          "text": "VALUE converts the string 84739 into the number 84739 so it can be summed or compared.",
+          "formula": "=VALUE(REGEXEXTRACT(A2,\"INV-(\\d+)\"))"
+        }
+      ],
+      "example": {
+        "formula": "=IFERROR(REGEXEXTRACT(A2,\"PO-(\\d+)\"),\"No PO found\")",
+        "result": "No PO found",
+        "explanation": "A2 holds INV- rather than PO-, so there is no match and REGEXEXTRACT would return #N/A. IFERROR replaces that with the label, which keeps a filled-down helper column readable and sortable."
+      },
+      "tips": [
+        "IFNA is narrower than IFERROR and only catches #N/A, which is useful when you do not want to hide a genuine #REF! in the pattern.",
+        "A malformed pattern fails too - test it with REGEXMATCH on a single cell before filling it down a thousand rows."
+      ]
+    },
+    {
+      "title": "All Matches, Validation, and Excel 365",
+      "content": "REGEXEXTRACT stops at the first match, so pulling every number out of a string takes a different shape: REGEXREPLACE replaces each run of non-digits with a space, TRIM tidies the ends, and SPLIT lays the pieces across columns. When you need a yes or no answer rather than an extraction, REGEXMATCH returns TRUE or FALSE and slots straight into FILTER or Data Validation. The Excel story has also changed: Microsoft 365 now ships REGEXEXTRACT, REGEXTEST and REGEXREPLACE on the PCRE2 engine, with extra arguments for return mode and case sensitivity, while Excel 2021 and earlier return #NAME?.",
+      "steps": [
+        {
+          "name": "Pull every number out of one cell",
+          "text": "Runs of non-digits become single spaces, then SPLIT divides what is left across columns.",
+          "formula": "=SPLIT(TRIM(REGEXREPLACE(A2,\"[^\\d]+\",\" \")),\" \")"
+        },
+        {
+          "name": "Return all matches as one text value",
+          "text": "Use a comma instead of a space when a single comma-separated cell is more useful than spilled columns.",
+          "formula": "=TRIM(REGEXREPLACE(A2,\"[^\\d]+\",\", \"))"
+        },
+        {
+          "name": "Validate instead of extract",
+          "text": "REGEXMATCH answers TRUE or FALSE for a strict ID format and works inside Data Validation.",
+          "formula": "=REGEXMATCH(\"AB-1234\",\"^[A-Z]{2}-\\d{4}$\")"
+        },
+        {
+          "name": "Run it down an entire column",
+          "text": "Wrap the call in ARRAYFORMULA so one formula covers a whole range instead of being filled down by hand.",
+          "formula": "=ARRAYFORMULA(IFERROR(REGEXEXTRACT(A2:A10,\"INV-(\\d+)\"),\"\"))"
+        }
+      ],
+      "example": {
+        "formula": "=SPLIT(TRIM(REGEXREPLACE(A2,\"[^\\d]+\",\" \")),\" \")",
+        "result": "84739 | 2026 | 10 | 05",
+        "explanation": "Every run of non-digits in Order INV-84739 shipped 2026-10-05 becomes a space, giving 84739 2026 10 05 with padding at the ends. TRIM removes the outer spaces and SPLIT spreads the four numbers across four cells."
+      },
+      "tips": [
+        "Google Sheets uses RE2: lookaheads such as (?=...) and backreferences do not work, and Unicode classes like \\p{L} are unsupported.",
+        "Excel 365's REGEXEXTRACT runs on PCRE2, so lookarounds that fail in Sheets do work there - but the argument list differs, so the spreadsheet is not portable without edits."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "REGEXEXTRACT",
+      "slug": "regexextract",
+      "description": "REGEXEXTRACT extracts a substring from text that matches a regular expression pattern. It is useful for pulling specific pieces of text out of larger strings."
+    },
+    {
+      "name": "REGEXMATCH",
+      "slug": "regexmatch",
+      "description": "REGEXMATCH checks whether a text string matches a regular expression pattern and returns TRUE or FALSE."
+    },
+    {
+      "name": "REGEXREPLACE",
+      "slug": "regexreplace",
+      "description": "REGEXREPLACE replaces text that matches a regular expression pattern with new text. It is more powerful than SUBSTITUTE because it can match patterns rather than fixed strings."
+    },
+    {
+      "name": "FIND",
+      "slug": "find",
+      "description": "FIND returns the position of one text string inside another. It is case-sensitive."
+    },
+    {
+      "name": "IFERROR",
+      "slug": "iferror",
+      "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise."
+    },
+    {
+      "name": "VALUE",
+      "slug": "value",
+      "description": "VALUE converts a text string that represents a number, date, or time into its underlying numeric value."
+    },
+    {
+      "name": "ARRAYFORMULA",
+      "slug": "arrayformula",
+      "description": "ARRAYFORMULA lets you apply a single formula to an entire range of cells automatically, expanding results into neighboring rows and columns without manually filling down or across."
+    }
+  ],
+  "summary": "REGEXEXTRACT returns the part of a text string that matches an RE2 pattern, and capture groups let you pull out just the ID, domain or date you need. It only ever returns the first match, so for everything at once combine REGEXREPLACE with SPLIT, and for a yes or no answer use REGEXMATCH. Wrap the call in IFERROR, mind the TEXT and VALUE boundary around numbers, and remember the same job is now possible in Microsoft 365 with the PCRE2-based REGEXEXTRACT.",
+  "nextSteps": [
+    "Extract the domain from a column of email addresses with @([A-Za-z0-9.-]+) and wrap the formula in IFERROR",
+    "Rebuild one MID and FIND formula as a REGEXEXTRACT pattern, then test both against a six-digit ID",
+    "Use REGEXMATCH inside Data Validation to reject IDs that do not match ^[A-Z]{2}-\\d{4}$"
+  ],
+  "relatedTutorials": [
+    "google-sheets-arrayformula",
+    "split-text-by-delimiter",
+    "indirect-function-dynamic-reference"
+  ]
+}

@@ -1,0 +1,179 @@
+{
+  "slug": "indirect-function-dynamic-reference",
+  "title": "INDIRECT Function: Build Dynamic References From Text",
+  "description": "INDIRECT function dynamic reference: convert text into a live reference for dynamic sheet names, expandable SUM ranges and dependent dropdowns in Excel.",
+  "category": "Lookup & Reference",
+  "functions": ["INDIRECT", "OFFSET", "INDEX", "MATCH", "SUM"],
+  "intro": "Most formulas point at a fixed address. INDIRECT does the opposite: you give it text, and it hands back the reference that text describes. That single trick is what makes sheet names, range lengths and dropdown lists driveable from a cell value. This guide builds four increasingly useful references with it, then covers the volatility and row-insert traps you need to know about.",
+  "tags": ["INDIRECT", "Dynamic Reference", "Named Ranges", "Dependent Dropdowns", "OFFSET"],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "Comfort with writing a plain cell reference such as B2",
+    "Basic understanding of absolute vs relative references",
+    "A workbook with two or more tabs to follow the cross-sheet examples"
+  ],
+  "sections": [
+    {
+      "title": "What INDIRECT Really Does",
+      "content": "INDIRECT never reads a cell's value first - it reads a text string and treats that text as an address. So =INDIRECT(\"B2\") is a two-step formula: Excel resolves the text \"B2\" into the reference B2, and only then returns what that cell holds. Because the address arrives as text, you can build it out of other cells, and the reference then follows those cells as they change. That is the whole idea behind a dynamic reference.",
+      "example": {
+        "formula": "=INDIRECT(A1)",
+        "result": "1380",
+        "explanation": "A1 contains the text \"B3\", so INDIRECT resolves it to B3 and returns 1380, the March figure. Type \"B2\" into A1 instead and the same formula returns 1200 with no editing. Nothing about the formula changed - only the text it was handed."
+      },
+      "tips": [
+        "The text must be a valid address or the name of a range. A typo returns #REF! rather than a helpful message.",
+        "Both Excel and Google Sheets support INDIRECT. Google Sheets also accepts R1C1 notation when the optional second argument is FALSE, e.g. INDIRECT(\"R2C3\", FALSE)."
+      ]
+    },
+    {
+      "title": "Dynamic Sheet Names From a Cell",
+      "content": "The most common use is a summary sheet that pulls one number per tab. Put the tab names down a column, join each name to the target address with the ampersand, and hand the string to INDIRECT. Dragging the formula down then reads a different tab on every row - no three-dimensional formulas and no manual edits each month.",
+      "steps": [
+        {
+          "name": "Join the sheet name to the address",
+          "text": "A2 holds the tab name and you want B2 from that tab. The & operator glues the two pieces of text together.",
+          "formula": "=INDIRECT(A2&\"!B2\")"
+        },
+        {
+          "name": "Quote names that contain spaces",
+          "text": "A tab called Q1 Sales needs wrapping single quotes inside the string, otherwise INDIRECT returns #REF!.",
+          "formula": "=INDIRECT(\"'\"&A2&\"'!B2\")"
+        }
+      ],
+      "example": {
+        "formula": "=INDIRECT(A1&\"!B2\")",
+        "result": "1450",
+        "explanation": "A1 holds the text \"Feb\", so the string becomes Feb!B2 and INDIRECT returns 1450 from that tab. Point A1 at the tab named Q1 Sales, switch to the quoted form, and the same idea returns 1520."
+      },
+      "tips": [
+        "Add the inner single quotes whenever a tab name contains a space, punctuation, or begins with a digit.",
+        "INDIRECT cannot reach another workbook: a reference to a closed file returns #REF!, and even an open file needs the workbook name inside the text string."
+      ]
+    },
+    {
+      "title": "Expandable Ranges: Let One Cell Set the Length",
+      "content": "You can also build the end of a range from a cell, which gives you a SUM that grows without being edited. Keep the last row number in its own cell, concatenate it into a range string such as B2:B13, and wrap the whole thing in SUM. Add rows, bump the number, and the total follows.",
+      "steps": [
+        {
+          "name": "Store the last row number",
+          "text": "Put the final row of the block in its own cell - here B10 holds 4, so the block ends at row 4.",
+          "formula": "=B10"
+        },
+        {
+          "name": "Build the range string",
+          "text": "Concatenate the fixed start address with the row number to produce text that looks like a range.",
+          "formula": "=\"B2:B\"&B10"
+        },
+        {
+          "name": "Wrap it in the function that needs a range",
+          "text": "SUM cannot read text on its own. INDIRECT converts the string back into a real reference.",
+          "formula": "=SUM(INDIRECT(\"B2:B\"&B10))"
+        }
+      ],
+      "example": {
+        "formula": "=SUM(INDIRECT(\"B2:B\"&B10))",
+        "result": "4030",
+        "explanation": "B10 is 4, so the range becomes B2:B4 and SUM adds 1200 + 1450 + 1380. Change B10 to 3 and the total becomes 2650 immediately, with no formula edits at all."
+      },
+      "tips": [
+        "Build the address with the same separator your locale uses - a comma-separated locale still writes the range as B2:B4.",
+        "This pattern is also the standard way to feed a growing range to SUMIF, COUNTIF or a chart series."
+      ]
+    },
+    {
+      "title": "Dropdown-Driven Ranges and Dependent Dropdowns",
+      "content": "Named ranges plus INDIRECT are the classic way to build dependent dropdowns. Create a defined name for each list, then point Data Validation at =INDIRECT(A1). When someone picks a list name from the first dropdown, the second dropdown is rebuilt from that name - the selection in a cell literally becomes the address.",
+      "steps": [
+        {
+          "name": "Name each list",
+          "text": "Select the list cells and define a name matching the dropdown label, for example Fruit for the cells holding Apple, Banana, Cherry, and Veggie for the vegetable list.",
+          "formula": "Fruit = Lists!$A$2:$A$4"
+        },
+        {
+          "name": "Add the first dropdown",
+          "text": "In cell A1 create a Data Validation rule of type List and type the range names as the allowed values.",
+          "formula": "Fruit,Veggie"
+        },
+        {
+          "name": "Point the second dropdown at INDIRECT",
+          "text": "In the dependent cell, choose Data Validation, select Custom formula, and use INDIRECT so the range name comes from A1.",
+          "formula": "=INDIRECT(A1)"
+        }
+      ],
+      "example": {
+        "formula": "=INDEX(INDIRECT(A1),2)",
+        "result": "Banana",
+        "explanation": "A1 is \"Fruit\", so INDIRECT resolves to the named range Fruit and INDEX takes its second item. Pick Veggie and the identical formula returns the second vegetable instead - the dropdown is genuinely dependent."
+      },
+      "tips": [
+        "A range name typed into a cell must match the defined name exactly. A stray space returns #REF!.",
+        "Google Sheets expands a named range through INDIRECT by itself; in modern Excel this also spills without Ctrl+Shift+Enter."
+      ]
+    },
+    {
+      "title": "The Traps, and the Non-Volatile Replacements",
+      "content": "INDIRECT is volatile: it recalculates on every workbook change, so thousands of them will visibly slow a model. It also does not follow data when rows or columns are inserted - the text keeps pointing at the same physical cell. And a text address is much harder to audit than a real reference, because nothing on screen shows where it lands. For most jobs INDEX, MATCH and OFFSET do the same work with fewer surprises, and INDEX is not volatile at all.",
+      "steps": [
+        {
+          "name": "Replace a fixed INDIRECT address",
+          "text": "If you only need the nth item of a range, INDEX returns it without any text handling.",
+          "formula": "=INDEX(B2:B4,3)"
+        },
+        {
+          "name": "Replace a lookup built from text",
+          "text": "MATCH finds the position by label and INDEX returns the value - no concatenation required.",
+          "formula": "=INDEX(B2:B4,MATCH(\"Feb\",A2:A4,0))"
+        }
+      ],
+      "example": {
+        "formula": "=OFFSET(B2,2,0)",
+        "result": "1380",
+        "explanation": "OFFSET(B2,2,0) walks two rows down from B2 and lands on B4, returning the same 1380 that =INDIRECT(\"B4\") gives. OFFSET is volatile as well, so prefer INDEX when either will do. The row-insert behaviour is the sharper trap: if a row is inserted above row 2, a normal =B4 reference is rewritten to =B5 so it keeps tracking March, while =INDIRECT(\"B4\") keeps reading whatever now occupies the fourth row."
+      },
+      "tips": [
+        "Google Sheets flags volatile formulas differently but the performance cost is the same - keep INDIRECT out of large arrays.",
+        "If you inherit a workbook full of INDIRECT and see slow recalculation, converting the fixed-address ones to INDEX is usually the fastest win."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "INDIRECT",
+      "slug": "indirect",
+      "description": "INDIRECT converts a text string into a cell reference that Excel can use in a formula."
+    },
+    {
+      "name": "OFFSET",
+      "slug": "offset",
+      "description": "OFFSET returns a reference that is a specified number of rows and columns from a starting cell or range."
+    },
+    {
+      "name": "INDEX",
+      "slug": "index",
+      "description": "INDEX returns the value at a specified position in a range or array."
+    },
+    {
+      "name": "MATCH",
+      "slug": "match",
+      "description": "MATCH searches for a specified item in a range and returns its relative position."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    }
+  ],
+  "summary": "INDIRECT turns text into a real reference, which is what lets a cell value choose a sheet name, set the length of a range, or select a named list for a dropdown. Use it for cross-tab summaries, growable SUM ranges and dependent dropdowns, keep single quotes around any sheet name containing a space, and remember the two traps: it is volatile, and it does not adjust when rows or columns are inserted. When plain INDEX, MATCH or OFFSET can do the job, they read better and are usually faster.",
+  "nextSteps": [
+    "Build a summary sheet that lists tab names in column A and pulls B2 from each tab with INDIRECT",
+    "Set up two dependent dropdowns using named ranges and a Data Validation custom formula of =INDIRECT(A1)",
+    "Rebuild one of your INDIRECT formulas with INDEX and MATCH, then compare recalculation speed on a large workbook"
+  ],
+  "relatedTutorials": [
+    "index-match-two-way-lookup",
+    "match-function-exact",
+    "google-sheets-regexextract"
+  ]
+}
