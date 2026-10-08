@@ -1,0 +1,246 @@
+{
+  "slug": "simple-interest-calculator",
+  "title": "Simple Interest Calculator",
+  "description": "How to build a simple interest calculator in Excel or Google Sheets: the I = P x r x t formula, the IPMT trap, and a live calculator you can try right away.",
+  "category": "Calculators",
+  "functions": [
+    "IPMT",
+    "PMT",
+    "FV",
+    "RATE",
+    "NPER",
+    "PV"
+  ],
+  "intro": "Simple interest is the one interest calculation Excel left out: there is no SIMPLE function, because the whole thing is a single multiplication. This guide builds a working simple interest calculator in Excel and Google Sheets, shows the unit mistakes that make the answer wrong by a factor of twelve, and uses IPMT to prove that a real Excel financial function agrees with the arithmetic - as long as the loan is interest-only. Along the way it measures exactly how far the compound-interest functions FV, RATE, NPER and PV drift away from the simple answer.",
+  "tags": [
+    "Simple Interest",
+    "IPMT",
+    "FV",
+    "Loans",
+    "Interest"
+  ],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Ability to enter a formula and reference a cell",
+    "Comfort with a rate entered as 5% or 0.05",
+    "Excel 2010 or later, or any version of Google Sheets"
+  ],
+  "sections": [
+    {
+      "title": "The Whole Formula Is One Line",
+      "content": "Simple interest is interest on the original principal only. It never earns interest on itself, so the balance grows in a straight line: interest = principal x rate x time. Written the way a spreadsheet wants it, that is =P*r*t, and the total repayable or receivable at the end is P + P*r*t, which factors to P*(1+r*t). Every simple interest calculator you have ever used is that one expression behind a friendlier face. The property worth holding onto is linearity: at 5% a year on $10,000 you earn $500 in year one and exactly $500 in year thirty. Nothing accelerates, so once you know the annual interest you can get any other term by multiplying.",
+      "example": {
+        "formula": "=10000*5%*3",
+        "result": "$1,500.00",
+        "explanation": "With P = $10,000, r = 5% and t = 3 years, the interest is 10000 x 0.05 x 3. The total repayable is $11,500.00, which the factored form =10000*(1+5%*3) produces in one step. The rate is written as a percentage rather than as a pre-rounded decimal on purpose: 5% is exact where 0.05 copied to four places is not."
+      },
+      "steps": [
+        {
+          "name": "Give the three inputs their own cells",
+          "text": "Principal, annual rate and term in B2, B3 and B4. A formula that points at cells can be re-run by editing one number, and the units stay visible where you can check them.",
+          "formula": "=B2*B3*B4"
+        },
+        {
+          "name": "Return the total as well as the interest",
+          "text": "The factored form is the same arithmetic rearranged, and it is the figure a borrower or a saver actually cares about.",
+          "formula": "=B2*(1+B3*B4)"
+        },
+        {
+          "name": "Prove the rate is a number and not text",
+          "text": "A rate typed with a stray character is stored as text, and every formula built on it then behaves oddly or returns zero. ISNUMBER settles the question in one cell.",
+          "formula": "=ISNUMBER(B3)"
+        }
+      ],
+      "tips": [
+        "Simple interest is linear, so an answer you already have scales: triple the term and the interest triples. Compound interest does not have that property, which is the quickest way to tell which of the two a formula you inherited is actually doing."
+      ]
+    },
+    {
+      "title": "Building It in Excel: There Is No SIMPLE Function",
+      "content": "Excel ships several hundred functions and not one of them is a simple-interest function, because there is nothing for a function to do. The calculation is a multiplication, and wrapping it in a function would add a syntax to remember without changing the answer. What you do have to handle yourself is the unit matching that the built-in financial functions normally enforce for you. The rate and the term must sit on the same clock. If the term is in years, use the annual rate as it stands. If the term is in months, convert one of the two - the cleanest route is to divide the annual rate by 12 and leave the term in months, which is exactly what the compound functions do internally.",
+      "example": {
+        "formula": "=10000*(5%/12)*36",
+        "result": "$1,500.00",
+        "explanation": "The same $10,000 at 5% for 36 months, with the annual rate divided by 12 and the term left in months. The answer is identical to the three-year version, and that is the whole point: mismatching the units is what turns $1,500 into $18,000 or into $41.67."
+      },
+      "steps": [
+        {
+          "name": "Decide the term unit once and write it into the label",
+          "text": "Make the label read 'Term (months)' or 'Term (years)'. Arithmetic cannot check this for you, so the label is the only guard.",
+          "formula": "=B2*(B3/12)*B5"
+        },
+        {
+          "name": "Guard the blank-rate case",
+          "text": "A blank rate cell reads as 0, and 0 times anything is 0, so the sheet reports zero interest instead of complaining. An IF makes the omission visible on any sheet that gets shared.",
+          "formula": "=IF(B3=\"\",\"Enter a rate\",B2*B3*B4)"
+        },
+        {
+          "name": "Format as currency without changing the value",
+          "text": "Number formatting only changes the display. Keep the underlying cell a plain number so the figure can still be summed and referenced by other formulas.",
+          "formula": "=B2*(1+B3*B4)"
+        }
+      ],
+      "tips": [
+        "Google Sheets has no simple-interest function either, and the arithmetic is identical, so the same formulas work there unchanged.",
+        "If the term is in months and the rate is annual, dividing the term by 12 instead of the rate works too - as long as you do not divide both, which is the mistake that produces a twelfth of the right answer."
+      ]
+    },
+    {
+      "title": "Simple vs Compound: What the Difference Actually Costs",
+      "content": "Compound interest pays interest on the interest, so the balance follows P*(1+r)^t instead of P*(1+r*t). Over one period the two agree exactly; after that the gap widens without limit, because compounding is multiplicative and simple interest is not. That is where the financial functions live, and it is also why they are the wrong tool for a simple-interest model. FV compounds, RATE solves for a compound rate, NPER counts compound periods and PV discounts compound-wise. Each returns a perfectly good number that drifts smoothly away from the simple-interest figure as the term lengthens, so the arithmetic and the functions agree only in the short run.",
+      "example": {
+        "formula": "=FV(5%,3,0,-10000)",
+        "result": "$11,576.25",
+        "explanation": "FV compounds $10,000 at 5% for three years, returning $11,576.25 against the $11,500.00 the simple-interest formula produces. The gap is $76.25 after three years, which looks like a rounding accident, and $18,219.42 after thirty years, which does not. The negative present value follows the cash-flow convention where money paid in is negative."
+      },
+      "steps": [
+        {
+          "name": "Recover the rate from a single period, where the two agree",
+          "text": "Over one period there is nothing to compound, so compound and simple are the same thing and RATE is exact. The formula returns 15% for the single three-year period; divide by the three years and you are back to 5% a year.",
+          "formula": "=RATE(1,0,10000,-11500)"
+        },
+        {
+          "name": "Watch NPER answer a compound question",
+          "text": "NPER asks how many periods a compound rate needs to reach a target, so it returns about 2.87 periods for a target that simple interest reaches in exactly 3. For simple interest, solve the straight line instead: interest divided by principal times rate.",
+          "formula": "=NPER(5%,0,-10000,11500)"
+        },
+        {
+          "name": "See PV discount compound-wise",
+          "text": "Discounting $11,500 back three years at 5% compound returns $9,934.13, not the $10,000 you started with, so PV cannot reconcile a simple-interest model in reverse.",
+          "formula": "=PV(5%,3,0,-11500)"
+        }
+      ],
+      "tips": [
+        "The simple-interest inverses are arithmetic rather than functions: rate = interest / (principal x time), time = interest / (principal x rate), principal = interest / (rate x time).",
+        "Google Sheets implements FV, PV, RATE and NPER with the same argument order and the same sign convention as Excel, so the drift described here is identical in both applications."
+      ]
+    },
+    {
+      "title": "IPMT and PMT: Getting Simple Interest Out of a Real Function",
+      "content": "IPMT returns the interest portion of a single payment, and on the right kind of loan it reproduces simple interest exactly. The loan has to be interest-only: no principal is repaid along the way, each payment equals principal x periodic rate, and the balance therefore never moves. On that schedule IPMT returns the same figure for every period, and total interest over the term is that figure multiplied by the period count - which is P x r x t arriving from the opposite direction. The moment the loan amortises, the agreement stops, because the balance falls and each period's interest falls with it.",
+      "example": {
+        "formula": "=IPMT(5%/12,1,36,10000,-10000)",
+        "result": "-$41.67",
+        "explanation": "An interest-only loan of $10,000 at 5% a year over 36 months. IPMT returns -$41.67 for period 1 and -$41.67 for period 36 as well, because the balance never changes. Multiply by 36 and you get -$1,500.00, the identical figure the one-line simple-interest formula produced in section 1, this time through a real Excel financial function. The negative sign is the cash-flow convention: money leaving your pocket."
+      },
+      "steps": [
+        {
+          "name": "Confirm the payment is interest-only",
+          "text": "PMT on the same schedule also returns -$41.67, and $41.67 is exactly $10,000 x 5%/12. A payment equal to the interest is the signature of an interest-only loan, and the reason IPMT has nothing else to report.",
+          "formula": "=PMT(5%/12,36,10000,-10000)"
+        },
+        {
+          "name": "Contrast an amortising loan, where IPMT tells a different story",
+          "text": "Drop the balloon repayment and the same $10,000 over 36 months costs $299.71 a month. Interest in period 1 is still $41.67, but by period 36 it has fallen to $1.24 because most of the balance has already been repaid. Total interest is $789.52, barely half the simple-interest figure.",
+          "formula": "=IPMT(5%/12,36,36,10000)"
+        },
+        {
+          "name": "Scale IPMT up to a total",
+          "text": "Periodic interest multiplied by the period count gives the interest-only total. This is the bridge between a spreadsheet function and the I = P x r x t answer.",
+          "formula": "=IPMT(5%/12,1,36,10000,-10000)*36"
+        }
+      ],
+      "tips": [
+        "Do not expect RATE to recover the rate from an interest-only schedule. With the payment equal to principal x rate and the final value equal to the negative of the principal, the underlying equation is satisfied by every possible rate, so RATE has nothing to converge on and its result is meaningless. Use it on a single period or on a genuine compound schedule instead.",
+        "Google Sheets implements IPMT and PMT with the same argument order, the same sign convention and the same interest-only behaviour, so this identity holds there too."
+      ]
+    },
+    {
+      "title": "Use the Interactive Simple Interest Calculator",
+      "content": "The calculator below applies interest = principal x rate x time directly. Enter the principal, the annual rate and the term in years, and it returns the simple interest earned or owed over that term, with no compounding at any point. It is the same arithmetic as section 1 with the units already handled, which makes it a quick way to sanity-check a spreadsheet of your own.",
+      "steps": [
+        {
+          "name": "Reproduce the default answer without the calculator",
+          "text": "With $10,000 at 5% for 3 years the calculator returns $1,500.00. That is exactly the one-line formula from section 1, so the two must agree before you trust either of them.",
+          "formula": "=10000*5%*3"
+        },
+        {
+          "name": "Add the principal back to get the total",
+          "text": "The calculator deliberately reports interest only. Add the principal in the sheet to get the amount actually repayable or receivable at the end of the term.",
+          "formula": "=10000+10000*5%*3"
+        },
+        {
+          "name": "Check a monthly term against the same rate",
+          "text": "Thirty-six months at 5% is three years, so the answer must not change. If it does, the rate was divided by twelve without leaving the term in months, which is the unit mismatch from section 2.",
+          "formula": "=10000*(5%/12)*36"
+        }
+      ],
+      "tips": [
+        "Set the term to 0 and the calculator returns $0.00, which confirms it is multiplying rather than compounding - a compound model would still return the principal.",
+        "The three-input shape here is the same as the compound interest calculator, so if the money is reinvested rather than repaid, that page builds the FV version of the same model."
+      ]
+    }
+  ],
+  "calculator": {
+    "description": "Work out the interest on a fixed principal. Enter the amount, the annual rate and the term in years; the result is the simple interest earned, with no compounding.",
+    "inputs": [
+      {
+        "key": "principal",
+        "label": "Principal ($)",
+        "default": 10000,
+        "step": 1000,
+        "min": 0
+      },
+      {
+        "key": "annualRate",
+        "label": "Annual interest rate (%)",
+        "default": 5,
+        "step": 0.1,
+        "min": 0
+      },
+      {
+        "key": "years",
+        "label": "Term (years)",
+        "default": 3,
+        "step": 1,
+        "min": 0
+      }
+    ],
+    "resultLabel": "Interest earned",
+    "resultFormat": "currency",
+    "compute": "result = principal * (annualRate / 100) * years;"
+  },
+  "functionsUsed": [
+    {
+      "name": "IPMT",
+      "slug": "ipmt",
+      "description": "IPMT calculates the interest portion of a payment for a specific period of a loan or investment."
+    },
+    {
+      "name": "PMT",
+      "slug": "pmt",
+      "description": "PMT calculates the periodic payment for a loan or investment based on constant payments and a constant interest rate. It's the function you need for mortgage, car loan, and any fixed-rate payment calculations."
+    },
+    {
+      "name": "FV",
+      "slug": "fv",
+      "description": "FV returns the future value of an investment based on periodic, constant payments and a constant interest rate."
+    },
+    {
+      "name": "RATE",
+      "slug": "rate",
+      "description": "RATE returns the periodic interest rate for an annuity based on the number of periods, payment amount, present value, and future value."
+    },
+    {
+      "name": "NPER",
+      "slug": "nper",
+      "description": "NPER returns the total number of payment periods required to reach a target value given a fixed interest rate and payment."
+    },
+    {
+      "name": "PV",
+      "slug": "pv",
+      "description": "PV returns the current value of a future stream of cash flows discounted at a constant rate."
+    }
+  ],
+  "summary": "Simple interest is one multiplication - interest = principal x rate x time, total P*(1+r*t) - and Excel deliberately ships no function for it. The work you actually have to do is keeping the rate and the term on the same clock. IPMT reproduces the simple-interest figure exactly, but only on an interest-only loan where the payment equals principal x periodic rate and the balance never moves; on a normal amortising loan it reports $789.52 rather than $1,500.00 over the same three years. FV, RATE, NPER and PV all assume compounding, so each drifts away from the simple answer as the term grows - FV overstates three years by $76.25 and thirty years by $18,219.42. Use the arithmetic for simple interest and keep the compound family for compound questions.",
+  "nextSteps": [
+    "Build the three-input block in a sheet and point every formula at it, so the whole model re-runs from one edited number",
+    "Compare your simple-interest total against FV for the same principal, rate and term to see exactly how much compounding would add",
+    "Read the compound interest calculator guide next if the money is reinvested rather than repaid"
+  ],
+  "relatedTutorials": [
+    "compound-interest-calculator",
+    "loan-payment-calculator",
+    "mortgage-calculator"
+  ]
+}

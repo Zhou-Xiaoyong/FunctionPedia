@@ -1,0 +1,217 @@
+{
+  "slug": "excel-name-error-fix",
+  "title": "Excel Name Error Fix: Why #NAME? Appears and How to Fix It",
+  "description": "A practical Excel name error fix: every real cause of #NAME?, from typos and unquoted text to XLOOKUP on an older build, plus the exact fix for each one.",
+  "category": "Error Fixes",
+  "functions": [
+    "IFERROR",
+    "IF",
+    "ISERROR",
+    "IFNA",
+    "VLOOKUP",
+    "SUM",
+    "XLOOKUP"
+  ],
+  "intro": "#NAME? is the one Excel error that is always a text problem: Excel has met a word it cannot resolve as a function, a defined name or a valid reference, and it has no idea what you meant. This guide works through the causes in the order they actually happen - a typo in the function name, a text label missing its quotation marks, a named range that no longer exists, a range written without its colon, a sheet name that is not quoted, and a function your build of Excel simply does not ship with - and gives the exact fix for each. It closes with the reason Microsoft tells you not to reach for IFERROR, and the one job IFERROR is still good for.",
+  "tags": [
+    "#NAME?",
+    "Excel Errors",
+    "IFERROR",
+    "VLOOKUP",
+    "Troubleshooting"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "Comfort reading and editing a formula in the formula bar",
+    "Excel 2013 or later, or any version of Google Sheets",
+    "For the XLOOKUP example only: Microsoft 365 or Excel 2021 and later to see it work"
+  ],
+  "sections": [
+    {
+      "title": "What #NAME? Actually Means",
+      "content": "Excel resolves every non-numeric word in a formula against three dictionaries: the list of built-in functions, the list of defined names in the workbook, and the syntax of valid references. When a word matches none of them, Excel reports #NAME?, which is Excel saying it does not know that word. That makes it different from #DIV/0! or #VALUE!, which describe something wrong with the data or the arithmetic. #NAME? is always about the text of the formula itself, so the fix is always an edit to the formula and never a change to your data. Microsoft's own guidance on the error is blunt: #NAME? means the syntax needs correcting, so do not cover it up with an error-handling function such as IFERROR. Open the cell, read the formula bar, find the word Excel has rejected, and correct it.",
+      "example": {
+        "formula": "=SUMM(B2:B6)",
+        "result": "#NAME?",
+        "explanation": "Excel assumes that any word followed by an opening parenthesis is a function name, so a two-letter typo breaks the whole cell. The corrected formula =SUM(B2:B6) returns 2200 against the sample sales figures used throughout this guide, where 'Sales Data'!B2:B6 holds 420, 380, 515, 610 and 275."
+      },
+      "tips": [
+        "Click the cell and read the entire formula in the formula bar rather than just the visible result. With #NAME? the offending word is the one Excel could not match to anything, and it is almost always a name rather than an argument.",
+        "The same error value appears in Google Sheets, though its hover message is more useful: it names the offending token and says 'Unknown function' or 'Unknown range name', which saves you hunting for it."
+      ]
+    },
+    {
+      "title": "Cause 1: A Misspelled or Non-Existent Function Name",
+      "content": "Anything that precedes an opening parenthesis is treated as a function name, so the commonest cause of #NAME? by a wide margin is a typo: VLOKUP for VLOOKUP, SUMM for SUM, AVREAGE for AVERAGE. Excel has never been able to guess what you meant, so it fails the cell instead of returning a near miss. Every version since Excel 2007 has offered Formula AutoComplete, which lists valid names as you type and inserts the correct spelling when you press Tab or double-click the entry. If a name you are midway through typing produces no suggestions at all, that is the tell that you have started with a typo.",
+      "example": {
+        "formula": "=VLOKUP(A2,D2:E6,2,FALSE)",
+        "result": "#NAME?",
+        "explanation": "VLOOKUP has been written as VLOKUP. Excel finds no function of that name and returns #NAME? without ever examining the arguments, so the cell fails even though the table, the column index and the product code in A2 are all fine. Renaming it to =VLOOKUP(A2,D2:E6,2,FALSE) returns 24.99, the price attached to code P-1001."
+      },
+      "steps": [
+        {
+          "name": "Read the name, not the arguments",
+          "text": "Nothing after the first parenthesis can cause #NAME? in this case, so ignore the arguments entirely and check only the letters before the bracket.",
+          "formula": "=VLOKUP(A2,D2:E6,2,FALSE)"
+        },
+        {
+          "name": "Retype it using AutoComplete",
+          "text": "Delete the function name, type the first two or three letters and pick the entry from the dropdown. Do not retype the whole name by hand - that is how the typo got there in the first place.",
+          "formula": "=VLOOKUP(A2,D2:E6,2,FALSE)"
+        },
+        {
+          "name": "Lock the fixed formula before filling down",
+          "text": "Once the name resolves, anchor the table so a fill-down does not walk the range off the data.",
+          "formula": "=VLOOKUP($A2,$D$2:$E$6,2,FALSE)"
+        }
+      ],
+      "tips": [
+        "Function names are language-localised. A formula authored in a French or German Excel carries the translated name, and pasting such a formula into an English build (or the reverse) returns #NAME? because the name no longer matches the dictionary."
+      ]
+    },
+    {
+      "title": "Cause 2: Text Labels Missing Their Double Quotes",
+      "content": "An unquoted word is a name, not text. Write =IF(B2>50,Yes,No) and Excel hunts for a defined name called Yes, fails, and returns #NAME?. The formula looks correct to a human and is wrong to Excel, which is what makes this the most confusing variant of the error. Every literal string in a formula must sit inside straight double quotes, and that includes single words, the labels returned by IF, and the criteria arguments of SUMIF and COUNTIF.",
+      "example": {
+        "formula": "=IF(B2>50,\"Yes\",\"No\")",
+        "result": "No",
+        "explanation": "With B2 holding 42 the test is false, so the formula returns the text No. Drop the quotes and write =IF(B2>50,Yes,No) instead, and Excel stops treating Yes and No as words and starts treating them as names it has never seen, which is an immediate #NAME?."
+      },
+      "steps": [
+        {
+          "name": "Quote every literal label",
+          "text": "Both branches of the IF need quotes, not just the one that happens to be showing. An unquoted branch returns #NAME? only when the test happens to take that path, so the error can appear and vanish as the data changes.",
+          "formula": "=IF(B2>50,\"Yes\",\"No\")"
+        },
+        {
+          "name": "Check the criteria arguments too",
+          "text": "SUMIF style criteria are the same trap in a different costume. Without quotes Excel reads North as an undefined name rather than as the text it should match.",
+          "formula": "=SUMIF(C2:C6,\"North\",D2:D6)"
+        },
+        {
+          "name": "Use a cell reference when you did mean a variable",
+          "text": "If the word was supposed to be a value, do not quote it - point at the cell instead. Quotes turn a word into text; they do not turn it into a number.",
+          "formula": "=IF(B2>50,$F$1,$G$1)"
+        }
+      ],
+      "tips": [
+        "Curly quotes pasted in from a word processor or a blog post are text characters, not string delimiters, and produce #NAME? or a parse error. Retype them as straight quotes.",
+        "Google Sheets behaves identically here: =IF(A2=Paid,1,0) returns #NAME? with the message 'Unknown range name: PAID'. Wrap the label in quotes and it resolves."
+      ]
+    },
+    {
+      "title": "Cause 3: Names Excel Cannot Resolve",
+      "content": "The remaining causes all produce the same error from different directions: Excel is looking up a name that does not exist in this workbook, or is not valid syntax. A defined name that was deleted, renamed or mistyped no longer resolves. A range written without its colon, such as B2B6, reads as one long single name. A sheet name containing a space that is not wrapped in single quotes reads as several separate tokens. And a function that your build of Excel does not ship with is not in the dictionary at all. All four are #NAME?, and all four have a mechanical fix.",
+      "example": {
+        "formula": "=XLOOKUP(A2,D2:D6,E2:E6)",
+        "result": "#NAME?",
+        "explanation": "In Excel 2019 and earlier XLOOKUP does not exist, so the cell returns #NAME? even though the syntax is flawless. Open the same workbook in Excel 2019 and the formula bar shows it as =_xlfn.XLOOKUP(...) - the _xlfn. prefix is Excel's own marker that the function came from a newer build. XLOOKUP needs Microsoft 365, Excel 2021 or later. Google Sheets does support XLOOKUP, and produces #NAME? in the reverse case: a Sheets-only function such as IMPORTRANGE, QUERY or GOOGLEFINANCE pasted into Excel."
+      },
+      "steps": [
+        {
+          "name": "Restore or replace the missing defined name",
+          "text": "A formula referencing a name that has been deleted returns #NAME?. Check Formulas > Name Manager (Data > Named ranges in Google Sheets) for the exact spelling, or skip the name entirely and point straight at the cells.",
+          "formula": "=SUM('Sales Data'!B2:B4)"
+        },
+        {
+          "name": "Put the colon back into the range",
+          "text": "Without a colon Excel reads the whole token as a single name rather than as a range from B2 through B6.",
+          "formula": "=SUM(B2:B6)"
+        },
+        {
+          "name": "Quote any sheet name that contains a space",
+          "text": "An unquoted sheet name with a space in it splits into separate tokens and never resolves. Single quotes around the sheet name fix it and cost nothing.",
+          "formula": "=SUM('Sales Data'!B2:B6)"
+        },
+        {
+          "name": "Swap an unavailable function for a portable one",
+          "text": "If the file has to open on Excel 2019 or older hardware, replace XLOOKUP with the INDEX/MATCH pair, which every version of Excel and Google Sheets understands.",
+          "formula": "=INDEX(E2:E6,MATCH(A2,D2:D6,0))"
+        }
+      ],
+      "tips": [
+        "Some functions exist only while an add-in is loaded. EUROCONVERT, for example, requires the Euro Currency Tools add-in and returns #NAME? until you enable it under File > Options > Add-ins.",
+        "INDEX/MATCH is the safe substitute for XLOOKUP: it looks in any direction, survives an inserted column, and needs no version check on the machine that opens the file."
+      ]
+    },
+    {
+      "title": "Why IFERROR Is Not the Fix, and the One Job It Does Well",
+      "content": "Wrapping a formula in IFERROR makes the red text disappear without correcting anything, and Microsoft explicitly warns against it for this error because the syntax still needs fixing. There is a practical cost as well. IFERROR catches every error type, so an IFERROR wrapper will happily hide a #REF! from a deleted column, a #VALUE! from a number stored as text and a #DIV/0! from an empty divisor along with the #NAME? you were actually looking for - and you will not find out until the totals are quietly wrong. IFNA sits at the opposite extreme: it catches only #N/A, so it leaves #NAME? on screen exactly where it belongs. Use IFERROR for a genuinely expected miss, such as a lookup that may legitimately find nothing, and use ISERROR or a diagnostic message while you are still tracking the fault down.",
+      "example": {
+        "formula": "=IFERROR(VLOKUP(A2,D2:E6,2,FALSE),\"check the function name\")",
+        "result": "check the function name",
+        "explanation": "The message replaces the error, but the typo is still in the formula and the cell still returns nothing useful. Compare IFNA on the same formula: =IFNA(VLOKUP(A2,D2:E6,2,FALSE),\"not found\") returns #NAME? unchanged, because IFNA only catches #N/A. That difference is the fastest way to tell an expected miss apart from a broken name."
+      },
+      "steps": [
+        {
+          "name": "Prove the error with ISERROR before hiding it",
+          "text": "ISERROR returns TRUE for any error type, #NAME? included, which confirms you are looking at an error rather than at odd-looking text.",
+          "formula": "=ISERROR(VLOKUP(A2,D2:E6,2,FALSE))"
+        },
+        {
+          "name": "Fix the name, then delete the wrapper",
+          "text": "With the function name corrected the formula returns 24.99, and the IFERROR wrapper is no longer doing anything useful.",
+          "formula": "=IFERROR(VLOOKUP(A2,D2:E6,2,FALSE),\"check the function name\")"
+        },
+        {
+          "name": "Keep IFERROR only for a real, expected miss",
+          "text": "A lookup that may legitimately find nothing is the case IFERROR was built for. Point the second argument at a sensible fallback rather than at a diagnostic message.",
+          "formula": "=IFERROR(VLOOKUP(A9,D2:E6,2,FALSE),\"No such code\")"
+        }
+      ],
+      "tips": [
+        "Google Sheets has both IFERROR and IFNA with identical behaviour and identical argument order, so a debugging formula written in one application behaves the same way in the other.",
+        "If your error text is not #NAME?, check which family it belongs to before changing anything: a broken reference is #REF!, a missing match is #N/A, and a number stored as text is #VALUE!."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "IFERROR",
+      "slug": "iferror",
+      "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "VLOOKUP",
+      "slug": "vlookup",
+      "description": "VLOOKUP (Vertical Lookup) is a built-in function in Excel and Google Sheets that searches for a value in the first column of a table and returns a value in the same row from a specified column."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "XLOOKUP",
+      "slug": "xlookup",
+      "description": "XLOOKUP is the modern replacement for VLOOKUP. It searches a range or array for a value and returns the corresponding item from a second range or array. It supports exact and approximate matching, wildcards, and can search in any direction."
+    },
+    {
+      "name": "ISERROR",
+      "slug": "iserror",
+      "description": "ISERROR returns TRUE if the supplied value is any Excel error (#N/A, #VALUE!, #REF!, #DIV/0!, #NUM!, #NAME?, or #NULL!), and FALSE otherwise."
+    },
+    {
+      "name": "IFNA",
+      "slug": "ifna",
+      "description": "IFNA returns a specified value when a formula results in the #N/A error, and otherwise returns the formula's own result. It catches only #N/A, not other errors."
+    }
+  ],
+  "summary": "#NAME? is always a resolution failure: Excel has met a word it cannot match to a function, a defined name or a reference. Work through the causes in order - misspelled function name, unquoted text label, deleted or mistyped defined name, range written without its colon, unquoted sheet name, and a function that your version of Excel does not include - and the fix is a one-word edit each time. The _xlfn. prefix in the formula bar means the workbook was authored in a newer Excel than the one now open; XLOOKUP needs Microsoft 365 or Excel 2021, and INDEX/MATCH is the portable substitute. Resist IFERROR: it hides #NAME? and every other error along with it. Fix the name first, then delete the wrapper.",
+  "nextSteps": [
+    "Click each #NAME? cell in turn and note in the formula bar which token Excel could not resolve before you change anything",
+    "Adopt the AutoComplete habit: type the first few letters of a function and pick it from the list instead of typing the whole name out",
+    "Read the Excel #REF! error guide next if your error text starts with a broken reference rather than a broken name"
+  ],
+  "relatedTutorials": [
+    "excel-n-a-error-fix",
+    "excel-ref-error-fix",
+    "excel-value-error-fix"
+  ]
+}
