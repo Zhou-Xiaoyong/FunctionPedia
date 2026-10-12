@@ -1,0 +1,254 @@
+{
+  "slug": "excel-sales-dashboard",
+  "title": "Excel Sales Dashboard: Build One That Updates Itself",
+  "description": "Build an Excel sales dashboard that keeps itself current: one flat sales table, SUMIFS KPIs, XLOOKUP targets and FILTER drill-downs that grow with the data.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "SUMIFS",
+    "SUMIF",
+    "XLOOKUP",
+    "FILTER",
+    "COUNTIFS",
+    "SUM",
+    "SORT",
+    "UNIQUE",
+    "COUNTA",
+    "DATE"
+  ],
+  "intro": "Most sales dashboards are a one-off: someone builds twelve summary tabs, the data changes shape a month later, and the file is abandoned. This guide builds the other kind. One flat transaction table feeds a Dashboard sheet where every panel is a single formula, every figure can be drilled back to the rows behind it, and the dimension lists rebuild themselves when a new region or rep appears. The running example is a 13-line quarter worth $12,370, so you can check your own results as you follow along.",
+  "tags": [
+    "Sales Dashboard",
+    "SUMIFS",
+    "XLOOKUP",
+    "FILTER",
+    "KPI",
+    "Excel Template"
+  ],
+  "estimatedTime": "14 min read",
+  "prerequisites": [
+    "Comfort writing SUMIF or COUNTIF and filling a formula down",
+    "Knowing how to convert a range into an Excel Table with Ctrl+T",
+    "Excel 2021 or Microsoft 365 for the dynamic-array sections (the SUMIFS panels work in Excel 2007 and later)"
+  ],
+  "sections": [
+    {
+      "title": "Start With One Flat Sales Table, Not Twelve Summary Tabs",
+      "content": "Every dashboard that survives contact with real work sits on a single heartless flat table: one row per sale, no subtotals, no merged cells, no spacer rows. Everything else in the workbook is a view of that one table. The reason is arithmetic rather than tidiness - SUMIFS and FILTER can only see rows that are really there, and a subtotal row living inside your data gets counted as a sale. Convert the range to an Excel Table with Ctrl+T before you write a single formula: the table name becomes a word you can type, and rows you add next month are inside every reference automatically.",
+      "steps": [
+        {
+          "name": "Lay out seven columns and stop",
+          "text": "Date, Region, Rep, Product, Units, Unit Price, Revenue. One row per sale line, nothing else. Name the sheet tab Sales and resist adding a Notes column - commentary belongs anywhere but inside the data.",
+          "formula": "Date | Region | Rep | Product | Units | Unit Price | Revenue"
+        },
+        {
+          "name": "Make Revenue a calculated column inside the Table",
+          "text": "Select the range, press Ctrl+T, tick 'My table has headers', then type this once in the first Revenue cell. Excel fills the whole column, and every row you add later gets it too.",
+          "formula": "=[@Units]*[@[Unit Price]]"
+        },
+        {
+          "name": "Name the Table Sales",
+          "text": "On the Table Design tab, overwrite Table1 with Sales. From here on, formulas read Sales[Revenue] instead of $G$2:$G$14, so inserting a column can never silently shift your totals.",
+          "formula": "Sales[Revenue]"
+        }
+      ],
+      "example": {
+        "formula": "=SUM(Sales[Revenue])",
+        "result": "$12,370",
+        "explanation": "The grand total of the 13 sale lines used throughout this guide. Notice what is missing: a range. Because Sales is a Table, this formula keeps working when the export grows to 13,000 rows, and it is the number every reconciliation check later in this guide ties back to."
+      },
+      "tips": [
+        "Never leave a blank row inside a Table. A blank row ends the table as far as Excel is concerned, and every SUMIFS range stops one row after it.",
+        "Keep formatting - colours, column widths, number formats - on the Dashboard sheet. The data sheet should be dull enough that you could paste a fresh export straight over it without losing anything.",
+        "If your export contains subtotal rows, delete them before the data enters the Table instead of filtering them out afterwards."
+      ]
+    },
+    {
+      "title": "The Four Numbers a Sales Dashboard Actually Needs",
+      "content": "A dashboard is not a data dump; it answers four questions - how much, from where, in which period, and against what target. SUMIFS answers three of them, because it takes a sum range followed by any number of criteria pairs. Resist building a twelve-panel board on day one: total revenue, revenue by region, revenue by month and target attainment are the panels people actually open the file for. Each one below is a single formula you can read out loud.",
+      "example": {
+        "formula": "=SUMIFS(Sales[Revenue], Sales[Region], $A5)",
+        "result": "$3,665",
+        "explanation": "Criteria arguments always arrive in pairs: the range to test, then the value to match. Here Sales[Region] is tested against the region name in A5 and the matching Sales[Revenue] values are added. Filled down over the region list it produces 3,665 / 3,900 / 2,850 / 1,955 - which sums to 12,370, exactly the figure from section 1."
+      },
+      "steps": [
+        {
+          "name": "Revenue for a single month",
+          "text": "Two criteria on the same column bracket the month. Each date bound is an operator in quotes joined to a real date with an ampersand - never type the date inside the quotes, or it becomes text and matches nothing.",
+          "formula": "=SUMIFS(Sales[Revenue], Sales[Date], \">=\"&DATE(2026,3,1), Sales[Date], \"<=\"&DATE(2026,3,31))"
+        },
+        {
+          "name": "Deal count, so a big number is never misleading",
+          "text": "A $3,900 month made of two orders is a different business from one made of forty. COUNTIFS uses the same criteria syntax but has no sum range, so the pairs start immediately. North returns 4.",
+          "formula": "=COUNTIFS(Sales[Region], $A5)"
+        },
+        {
+          "name": "Two criteria on different columns",
+          "text": "Add pairs to intersect dimensions. North plus Widget returns 1,625 - the product is clearly not evenly distributed across regions, which is exactly the kind of thing a totals-only dashboard hides.",
+          "formula": "=SUMIFS(Sales[Revenue], Sales[Region], $A5, Sales[Product], $B$3)"
+        }
+      ],
+      "tips": [
+        "SUMIFS is spelled and behaves identically in Excel and Google Sheets. The only thing that does not travel is the table syntax: Sales[Revenue] has no equivalent, so in Sheets use a named range or an A1 range such as Sales!G:G.",
+        "Criteria are not case-sensitive. \"north\" and \"North\" match the same rows, which is convenient until two exports disagree about capitalisation and you never notice.",
+        "A SUMIFS criterion that returns 0 is usually a trailing space in the data, not a broken formula. Test one cell with =LEN($A5) against the same cell in the source to confirm."
+      ]
+    },
+    {
+      "title": "Slice by Rep and Product Without Rewriting a Single Formula",
+      "content": "The real test of a dashboard is what happens when someone asks for a different cut. If the answer is 'give me twenty minutes', the dashboard has failed. Write the criteria so that they read from cells, and a pair of drop-down lists gives you every combination of region, rep, product and month for free. Wildcards extend the same idea to product families, so Wid* quietly covers Widget, Widget Pro and Widget Mini without a single new formula.",
+      "example": {
+        "formula": "=SUMIFS(Sales[Revenue], Sales[Product], \"Wid*\")",
+        "result": "$7,150",
+        "explanation": "The asterisk matches any run of characters after Wid, so every Widget variant is caught in one total. That is 58% of the $12,370 quarter - the sort of concentration figure that usually decides next quarter's marketing budget. The question mark matches exactly one character, and to search for a literal asterisk you write ~*."
+      },
+      "steps": [
+        {
+          "name": "Drive the panel from one cell",
+          "text": "Put a data-validation drop-down in B1 holding the region, then let the criterion follow that cell. Changing the drop-down recalculates every panel that references it.",
+          "formula": "=SUMIFS(Sales[Revenue], Sales[Region], $B$1)"
+        },
+        {
+          "name": "Average deal size for one rep",
+          "text": "Divide the conditional sum by the conditional count. Because both formulas use the same criteria they can never drift apart, and Ben's four deals average 975 each.",
+          "formula": "=SUMIFS(Sales[Revenue], Sales[Rep], \"Ben\")/COUNTIFS(Sales[Rep], \"Ben\")"
+        },
+        {
+          "name": "Combine a drop-down with a date window",
+          "text": "Region from the drop-down, month from hard-coded bounds. North in March alone is 1,320 - a useful sanity check that the drop-down and the date logic are both alive.",
+          "formula": "=SUMIFS(Sales[Revenue], Sales[Region], $B$1, Sales[Date], \">=\"&DATE(2026,3,1), Sales[Date], \"<=\"&DATE(2026,3,31))"
+        }
+      ],
+      "tips": [
+        "Wildcards work in SUMIFS, SUMIF, COUNTIF and COUNTIFS, in both Excel and Google Sheets. They apply to text criteria only - a numeric criterion such as \">1000\" is never treated as a pattern.",
+        "Criteria pairs must all be the same height. Mixing a whole column with a 13-row range is the classic cause of a #VALUE! that appears only in some rows.",
+        "Once the criteria list passes about four pairs the formula stops being auditable. That is the point to move to a PivotTable or, on a Sheets-only team, to a single QUERY."
+      ]
+    },
+    {
+      "title": "Drill Down and Audit: XLOOKUP Targets and FILTER Detail",
+      "content": "A number nobody can trace is a number nobody trusts. Two functions close that gap. XLOOKUP pulls the comparison figure - a quota, a target, last year's number - from a small reference table, and FILTER spills the actual rows behind a KPI so a sceptical sales manager can check them without asking you. Keeping targets in their own two-column table instead of typing them into the formula means a revised quota is a one-cell edit rather than a hunt through the workbook.",
+      "example": {
+        "formula": "=FILTER(Sales, Sales[Region] = $B$1, \"No rows\")",
+        "result": "4 rows spilled: 1,000 / 720 / 625 / 1,320",
+        "explanation": "With North selected, the filter returns the four North sale lines, and they sum to 3,665 - precisely what the SUMIFS panel reports. That is your audit trail: any KPI that cannot be reproduced by its own spilled rows is hiding something. The third argument is what Excel shows when nothing matches; leave it out and Excel throws #CALC!."
+      },
+      "steps": [
+        {
+          "name": "Look up a target instead of typing it",
+          "text": "Targets lives on its own sheet with Rep in column A and the quarterly quota in column B, formatted as a Table named Targets. XLOOKUP finds the rep and returns the quota, and the fourth argument replaces the #N/A you would otherwise get for an unknown name.",
+          "formula": "=XLOOKUP($B$2, Targets[Rep], Targets[Q1 Target], 0)"
+        },
+        {
+          "name": "Attainment as a percentage",
+          "text": "The same lookup, used as a divisor. An XLOOKUP in the denominator recalculates when the quota changes; a hard-typed 4000 does not. Alice reaches 91.6% of her 4,000 target.",
+          "formula": "=SUMIFS(Sales[Revenue], Sales[Rep], $B$2)/XLOOKUP($B$2, Targets[Rep], Targets[Q1 Target], 0)"
+        },
+        {
+          "name": "Sort the drill-down so the newest lines lead",
+          "text": "Wrap FILTER in SORT. Column 1 is the date, 1 means ascending and -1 descending; point it at 2 to order by revenue instead.",
+          "formula": "=SORT(FILTER(Sales, Sales[Region] = $B$1, \"No rows\"), 1, -1)"
+        }
+      ],
+      "tips": [
+        "FILTER needs empty cells below and to the right. Anything in its path produces #SPILL! and nothing spills at all - a very common cause of a 'broken' dashboard that is really just a stray note in column H.",
+        "The two platforms disagree when nothing matches. Excel returns #CALC! unless you supply the third argument; Google Sheets has no if_empty argument at all and returns #N/A instead, so wrap it in IFERROR or IFNA there.",
+        "XLOOKUP needs Excel 2021 or Microsoft 365 - in Excel 2019 and earlier it returns #NAME?. Google Sheets does support XLOOKUP, so the Sheets version of this panel is a straight copy."
+      ]
+    },
+    {
+      "title": "Make It Self-Maintaining, Then Prove It Balances",
+      "content": "The last two jobs are the ones people skip. First, the dimension lists should generate themselves, so a new region or rep appearing in the data does not require a dashboard rebuild. Second, the dashboard must prove that it balances: the sum of every panel equals the sum of the source table, always. Neither takes more than a minute to add, and together they are the difference between a file you still trust next year and one you quietly stop opening.",
+      "example": {
+        "formula": "=SORT(HSTACK(UNIQUE(Sales[Rep]), SUMIFS(Sales[Revenue], Sales[Rep], UNIQUE(Sales[Rep]))), 2, -1)",
+        "result": "Ben 3,900 / Alice 3,665 / Cara 2,850 / Dan 1,955",
+        "explanation": "UNIQUE produces the four rep names, SUMIFS totals each one inside a single formula, HSTACK glues the two columns together and SORT orders the block by the revenue column descending. Add a rep next month and the whole block grows by itself - no filling down, no rows to remember."
+      },
+      "steps": [
+        {
+          "name": "Let the region list build itself",
+          "text": "Replace the typed region list with a spilled dynamic list. It sorts alphabetically, and picks up a new region the moment one appears in the sales table.",
+          "formula": "=SORT(UNIQUE(Sales[Region]))"
+        },
+        {
+          "name": "Reconciliation check",
+          "text": "Subtract the sum of the region panels from the sum of the source table. This cell must read 0 forever. A non-zero answer means either a subtotal row that survived the export or a region name carrying a stray space that no criterion matches.",
+          "formula": "=SUM(Sales[Revenue])-SUM($B$5:$B$8)"
+        },
+        {
+          "name": "Count the products the dashboard covers",
+          "text": "UNIQUE returns the distinct product list and COUNTA counts how many there are. If this number jumps unexpectedly, someone has started typing product names differently.",
+          "formula": "=COUNTA(UNIQUE(Sales[Product]))"
+        }
+      ],
+      "tips": [
+        "UNIQUE, SORT and HSTACK are Microsoft 365 and Excel 2021+ only. Google Sheets has UNIQUE and SORT but no HSTACK, so write the two columns as an array literal instead: {UNIQUE(...), SUMIFS(...)}.",
+        "On a Google Sheets-only team, one QUERY formula can replace most of this sheet: QUERY(Sales!A:G, \"select B, sum(G) group by B label sum(G) ''\", 1) returns the region totals in a single cell.",
+        "Open the workbook on the Dashboard sheet, or hide the data sheet, so nobody types over the source table by accident. An entire afternoon of dashboard work can be undone by one optimistic edit in column G."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "SUMIFS",
+      "slug": "sumifs",
+      "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "SUMIF",
+      "slug": "sumif",
+      "description": "SUMIF adds up all numbers in a range that meet a specified condition. It's the go-to function for conditional summing — like totaling sales for a specific region or summing expenses above a threshold."
+    },
+    {
+      "name": "XLOOKUP",
+      "slug": "xlookup",
+      "description": "XLOOKUP is the modern replacement for VLOOKUP. It searches a range or array for a value and returns the corresponding item from a second range or array. It supports exact and approximate matching, wildcards, and can search in any direction."
+    },
+    {
+      "name": "FILTER",
+      "slug": "filter",
+      "description": "FILTER extracts rows from a range that meet a condition, returning a dynamic array of matching results. It's the array-era replacement for complex IF/INDEX combinations."
+    },
+    {
+      "name": "COUNTIFS",
+      "slug": "countifs",
+      "description": "COUNTIFS counts cells that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "SORT",
+      "slug": "sort",
+      "description": "SORT returns a dynamic array of a range or array sorted by one of its columns or rows, in ascending or descending order."
+    },
+    {
+      "name": "UNIQUE",
+      "slug": "unique",
+      "description": "UNIQUE returns the distinct values from a range or array, optionally returning only values that appear exactly once, as a dynamic array."
+    },
+    {
+      "name": "COUNTA",
+      "slug": "counta",
+      "description": "COUNTA counts the number of non-empty cells within a specified range, regardless of the cell content."
+    },
+    {
+      "name": "DATE",
+      "slug": "date",
+      "description": "DATE builds a date serial number from separate year, month, and day components, and automatically rolls over out-of-range values such as month 13 into the next year or day 32 into the following month."
+    }
+  ],
+  "summary": "A sales dashboard worth keeping is one flat Table of transactions plus a Dashboard sheet where every panel is one readable formula. SUMIFS and COUNTIFS turn the table into region, product and period KPIs; XLOOKUP pulls targets from a small reference table so a revised quota is a one-cell edit; FILTER proves each number by spilling the rows behind it. Finish with SORT and UNIQUE so the dimension lists grow themselves, and a reconciliation cell that subtracts the panel totals from the source total and must read 0 forever. Excel and Google Sheets agree on all of the formulas here except the Table syntax and HSTACK - swap those for named ranges and an array literal and the same dashboard runs on either platform.",
+  "nextSteps": [
+    "Add a chart driven by the region panel and pin it to the Dashboard sheet so the shape of the quarter is visible at a glance",
+    "Build the same rep leaderboard with a PivotTable and compare the maintenance cost against the HSTACK/UNIQUE version",
+    "Extend the month KPI into a rolling twelve-month column so seasonality becomes obvious before the year is out"
+  ],
+  "relatedTutorials": [
+    "excel-expense-tracker",
+    "excel-budget-template",
+    "how-to-use-excel-formulas"
+  ]
+}

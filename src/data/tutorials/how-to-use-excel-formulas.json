@@ -1,0 +1,247 @@
+{
+  "slug": "how-to-use-excel-formulas",
+  "title": "How to Use Excel Formulas: From the First Equals Sign to a Real Report",
+  "description": "Learn how to use Excel formulas step by step: the equals sign, cell references, SUM, IF and VLOOKUP, plus the errors beginners hit and how to fix them.",
+  "category": "Concepts & Beginners",
+  "functions": [
+    "SUM",
+    "IF",
+    "VLOOKUP",
+    "AVERAGE",
+    "COUNT",
+    "IFERROR",
+    "SUMIF",
+    "ROUND"
+  ],
+  "intro": "Every spreadsheet skill you will ever need builds on one habit: typing a formula instead of a number. This walkthrough starts at the equals sign and ends with a formula that fetches a price, compares it with a threshold and says what to do about it - the same shape as the formulas people actually use at work. No prior experience is assumed, and every example is verified so you can type it in and get the same answer.",
+  "tags": [
+    "Beginner",
+    "Excel Basics",
+    "Formulas",
+    "SUM",
+    "IF",
+    "VLOOKUP"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "No previous formula experience needed",
+    "Excel 2007 or later, or any version of Google Sheets",
+    "A blank workbook to try each example as you read"
+  ],
+  "sections": [
+    {
+      "title": "A Formula Is Just an Instruction That Starts With =",
+      "content": "The equals sign is the whole trick. Anything you type into a cell that begins with = is treated as an instruction rather than text, and it is evaluated the moment you press Enter. What follows can be arithmetic (=2+3), a reference to other cells (=A2+B2), a call to a built-in function (=SUM(B2:B8)) or, more often than not, some mixture of all three. Six operators do almost all of the work: + - * / for arithmetic, ^ for powers, and the comparison operators = <> > < >= <= that return TRUE or FALSE. That last set matters far more than it looks, because every IF, SUMIF and FILTER you will ever write is built on a comparison.",
+      "steps": [
+        {
+          "name": "Type your first formula",
+          "text": "Select a cell, type the equals sign, then the instruction. The formula bar at the top of the window shows the formula; the cell shows the answer.",
+          "formula": "=2+3"
+        },
+        {
+          "name": "Reference cells instead of typing their values",
+          "text": "This is the moment a spreadsheet stops being a table. Change A2 and every dependent answer changes with it - which is the entire reason to use one.",
+          "formula": "=A2+B2"
+        },
+        {
+          "name": "Control the order with brackets",
+          "text": "Multiplication and division are evaluated before addition and subtraction. Brackets override that order, and you should use them even when they are not strictly necessary, because a formula will be edited by someone else sooner or later.",
+          "formula": "=(A2+B2)*C2"
+        }
+      ],
+      "example": {
+        "formula": "=B2*C2",
+        "result": "1,000",
+        "explanation": "40 units at 25 each. Written with cell references rather than the number 1000, so correcting either the quantity or the price updates this cell and every total that depends on it. This is the difference between a spreadsheet and a typed table."
+      },
+      "tips": [
+        "You can also start with + or - (a leftover from Lotus 1-2-3) and Excel will insert the equals sign for you. It still produces a formula, but the formula bar then reads =+A2+B2, which looks odd in a file other people have to audit.",
+        "Press Ctrl+` (the grave accent, top-left of most keyboards) to toggle the whole sheet between showing formulas and showing results. It is the fastest way to understand a workbook somebody else built.",
+        "A cell showing DATE() or SUM() as literal text rather than a result usually means the cell is formatted as Text. Format it as General, then press F2 and Enter to re-evaluate it."
+      ]
+    },
+    {
+      "title": "Anatomy of a Function: Name, Brackets, Arguments",
+      "content": "A function is a recipe the spreadsheet already knows how to cook. Its name is capitalised by convention - Excel does not care about case - it is always followed by a pair of brackets, and the inputs inside those brackets are called arguments. Some functions take one argument, some take five, and square brackets in the documentation mean an argument is optional. Both brackets must be present: Excel will warn you when one is missing and try to guess where to put the closing bracket, which is how most beginners end up with a formula that is 90% right and returns #NAME?.",
+      "example": {
+        "formula": "=SUM(B2:B8)",
+        "result": "130",
+        "explanation": "SUM takes a single argument here: the range B2:B8, which holds the unit counts 40, 12, 5, 30, 8, 20 and 15. The colon means 'everything from B2 down to B8'. Swap in D2:D8 and the same function totals the line values instead, giving 3,700."
+      },
+      "steps": [
+        {
+          "name": "Multiple arguments, separated by a comma",
+          "text": "IF takes a test first, then what to return if the test is true, then what to return if it is false. Three arguments, always in that order. D2 holds 1,000, which is greater than 500.",
+          "formula": "=IF(D2>500, \"Big\", \"Small\")"
+        },
+        {
+          "name": "Text arguments go in double quotes",
+          "text": "Without the quotes Excel looks for something named Big and returns #NAME?. Quoted text is called a string literal. D3 holds 75, so the false branch is the one that runs.",
+          "formula": "=IF(D3>500, \"Big\", \"Small\")"
+        },
+        {
+          "name": "Nesting: a function inside a function",
+          "text": "The innermost calculation runs first and its result becomes an argument of the outer function. Excel colour-codes the bracket pairs as you type, which is the only dependable way to keep them straight.",
+          "formula": "=ROUND(AVERAGE(D2:D8), 2)"
+        },
+        {
+          "name": "One argument, and what the function ignores",
+          "text": "COUNT has a single argument and counts only numeric cells. Blank cells and text in the middle of the range are simply skipped, which is why COUNT is the honest way to check that a column is fully populated.",
+          "formula": "=COUNT(D2:D8)"
+        }
+      ],
+      "tips": [
+        "The argument separator depends on your locale: a comma in the United States, a semicolon in much of Europe. It is the most common reason a formula copied from a tutorial throws an error, and it applies to Google Sheets too, which follows File > Settings > Locale.",
+        "A green triangle in the corner of a cell means Excel suspects something, not that the formula is wrong. Click the cell and read the warning before 'fixing' it.",
+        "Function names are not case-sensitive. =sum(...) and =SUM(...) are the same formula; capitals are a readability convention borrowed from Microsoft's own documentation."
+      ]
+    },
+    {
+      "title": "Entering, Editing and Copying Formulas",
+      "content": "Typing a formula is the easy third. The other two thirds are editing it and copying it without breaking it. Editing is F2, or a double-click, which puts the cursor inside the cell and colour-codes each referenced range so you can drag an outline instead of retyping. Copying is where the dollar sign earns its keep: a reference without dollars shifts when the formula is copied, and one with dollars stays put. Getting that wrong is why a formula suddenly reports the wrong number halfway down a column.",
+      "example": {
+        "formula": "=D2/SUM($D$2:$D$8)",
+        "result": "27.03%",
+        "explanation": "D2 is 1,000 out of a 3,700 total. Fill this down and D2 becomes D3, D4 and so on, while SUM($D$2:$D$8) does not move, because both the column and the row are locked. Delete the dollar signs and the denominator slides down with the formula, so the total quietly shrinks as you go - a mistake that looks fine in the first row and is wrong everywhere below it."
+      },
+      "steps": [
+        {
+          "name": "Commit a formula three ways",
+          "text": "Enter commits the formula and moves down; Ctrl+Enter commits and leaves the cursor where it is, useful when you are checking a result against a source figure; a dynamic-array formula spills into the cells beneath it when you press Enter.",
+          "formula": "=SUM(D2:D8)"
+        },
+        {
+          "name": "Edit with F2 and drag the coloured outline",
+          "text": "F2 puts you inside the cell. Each range reference is outlined in a colour that matches its text, and you can drag that outline to repoint the reference. Repointing AVERAGE(D2:D8) to D3:D8 returns 450, because the 1,000 row is excluded.",
+          "formula": "=AVERAGE(D2:D8)"
+        },
+        {
+          "name": "Fill down without breaking the references",
+          "text": "Drag the fill handle, or select the range and press Ctrl+D. The top formula is copied into each row below with relative references shifted and the locked ones held in place.",
+          "formula": "=D2/SUM($D$2:$D$8)"
+        }
+      ],
+      "tips": [
+        "Ctrl+` and the F2 colour-coding are the two fastest audit tools in Excel. Between them you can understand a stranger's workbook in a few minutes instead of an afternoon.",
+        "On Excel 2019 and earlier, array formulas must be committed with Ctrl+Shift+Enter, and the formula bar then shows them wrapped in curly braces. Typing those braces by hand does nothing at all.",
+        "Google Sheets behaves identically for the $ sign and the fill handle, and Ctrl+D works there too. Its equivalent of Excel's Ctrl+` formula toggle is View > Show > Formulas, which is worth knowing before you try to debug a shared sheet."
+      ]
+    },
+    {
+      "title": "Five Errors You Will Meet in Week One",
+      "content": "Errors are not failures; they are the spreadsheet telling you which of two things went wrong. The first family means a formula could not be evaluated - a name it does not recognise, a reference that no longer exists, text where a number should be. The second family means the formula ran but the answer is not what you asked for, most often a lookup that found nothing. Learning to read the error instead of retyping the formula is what separates people who use spreadsheets from people who fight them.",
+      "example": {
+        "formula": "=IFERROR(VLOOKUP(\"Gizmo\", Prices!$A$2:$B$4, 2, FALSE), \"Not found\")",
+        "result": "Not found",
+        "explanation": "Gizmo is not in the price list, so the plain VLOOKUP would display #N/A and make the report look broken. IFERROR catches any error thrown by the inner formula and substitutes your own text. Use it to keep output legible, never to hide a formula you have not already checked."
+      },
+      "steps": [
+        {
+          "name": "#NAME? - a name Excel does not recognise",
+          "text": "Almost always a misspelling or an unquoted string. A mistyped function fails, and so does a text argument missing its quotes, because Excel goes looking for a defined name called Big.",
+          "formula": "=SUMM(D2:D8)"
+        },
+        {
+          "name": "#VALUE! - the wrong kind of data",
+          "text": "Arithmetic applied to text. It is the classic symptom of a number that arrived from an export as text, often carrying a leading apostrophe or a thousands separator. Notice that concatenation has the opposite rule - use & rather than + to join text.",
+          "formula": "=\"Total: \"+D2"
+        },
+        {
+          "name": "#DIV/0!, #N/A and #REF!",
+          "text": "Dividing by an empty cell gives #DIV/0!; a lookup that finds nothing gives #N/A; deleting a column a formula points at gives #REF!. The last one is effectively permanent, because Undo is the only repair.",
+          "formula": "=D2/D9"
+        }
+      ],
+      "tips": [
+        "##### is not an error. It means the column is too narrow for the formatted number, so widen the column before you start debugging anything.",
+        "A formula that displays nothing at all is usually a circular reference, and Excel says so in the status bar. Formulas > Error Checking > Circular References will point you at the cell.",
+        "Do not wrap a whole workbook in IFERROR while you are still building it. You will hide the #REF! that was about to tell you a reference had broken."
+      ]
+    },
+    {
+      "title": "Your First Useful Formula: Look Something Up and Decide",
+      "content": "A formula worth writing does three things: it fetches data you did not type, compares it against a rule, and says something you can act on. VLOOKUP does the fetching, a comparison does the judging, and IF turns the verdict into words. This is the shape of an enormous number of real-world formulas - credit limits, discount tiers, reorder flags, approval routing. Build it once and the pattern transfers to whatever your own data happens to be.",
+      "example": {
+        "formula": "=IF(B2*VLOOKUP(A2, Prices!$A$2:$B$4, 2, FALSE)>500, \"Review\", \"OK\")",
+        "result": "Review",
+        "explanation": "VLOOKUP finds the unit price for the product in A2 (Widget, 25), B2 multiplies it by 40 units to get 1,000, and IF compares that with the 500 threshold. The whole formula reads as one sentence: if this line is worth more than 500, flag it. Because the price comes from a lookup rather than a typed number, updating the price list updates every flag on the sheet."
+      },
+      "steps": [
+        {
+          "name": "Fetch a value from a lookup table",
+          "text": "VLOOKUP takes four arguments: what to find, where to look, which column of that range to return, and FALSE for an exact match. The dollar signs lock the table so the range does not slide as you fill the formula down.",
+          "formula": "=VLOOKUP(A2, Prices!$A$2:$B$4, 2, FALSE)"
+        },
+        {
+          "name": "Total one product with SUMIF",
+          "text": "SUMIF is the same compare-then-calculate pattern applied to a whole column: a range to test, the criterion, then the range to add. The three Widget lines come to 2,125.",
+          "formula": "=SUMIF($A$2:$A$8, \"Widget\", $D$2:$D$8)"
+        },
+        {
+          "name": "Wrap the verdict so a person can read it",
+          "text": "Text arguments go in quotes, and the two outcomes should be words a colleague can act on without asking what they mean. The same formula returns OK for Doodad, whose five units at 15 come to 75.",
+          "formula": "=IF(B2*VLOOKUP(A2, Prices!$A$2:$B$4, 2, FALSE)>500, \"Review\", \"OK\")"
+        }
+      ],
+      "tips": [
+        "VLOOKUP can only look to the right of the key column. If your data runs the other way, use XLOOKUP in Excel 2021 or Microsoft 365, or INDEX and MATCH, which works in every version of both platforms.",
+        "Everything in this guide is valid in Google Sheets with one syntax caution: Sheets will not spill a plain range formula the way Excel 365 does, so array-style logic there usually needs ARRAYFORMULA around it.",
+        "Once a formula works, write a comment on the cell explaining what it assumes. Six weeks from now the formula will look like someone else's work, and that someone will be you."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "VLOOKUP",
+      "slug": "vlookup",
+      "description": "VLOOKUP (Vertical Lookup) is a built-in function in Excel and Google Sheets that searches for a value in the first column of a table and returns a value in the same row from a specified column."
+    },
+    {
+      "name": "AVERAGE",
+      "slug": "average",
+      "description": "AVERAGE returns the arithmetic mean of a set of numbers."
+    },
+    {
+      "name": "COUNT",
+      "slug": "count",
+      "description": "COUNT counts the number of cells that contain numbers within a specified range."
+    },
+    {
+      "name": "IFERROR",
+      "slug": "iferror",
+      "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise."
+    },
+    {
+      "name": "SUMIF",
+      "slug": "sumif",
+      "description": "SUMIF adds up all numbers in a range that meet a specified condition. It's the go-to function for conditional summing — like totaling sales for a specific region or summing expenses above a threshold."
+    },
+    {
+      "name": "ROUND",
+      "slug": "round",
+      "description": "ROUND rounds a number to a specified number of decimal places."
+    }
+  ],
+  "summary": "Using Excel formulas comes down to four habits. Start every instruction with = so the cell calculates instead of displaying text. Reference cells rather than typing their values, so one edit flows through the whole sheet. Learn the anatomy of a function - name, brackets, arguments - and put text arguments in quotes. Then understand that copying a formula shifts its relative references and holds its locked ones, which is what the dollar signs are for. Add the ability to read #NAME?, #VALUE!, #DIV/0!, #N/A and #REF! instead of retyping the formula, and you can build something genuinely useful: SUM for totals, IF for decisions, VLOOKUP or SUMIF for data you did not type, and IFERROR to keep the output readable when the data is not what you expected.",
+  "nextSteps": [
+    "Rebuild the lookup-and-decide formula against a real price list of your own, then fill it down 100 rows",
+    "Practise the $ sign by writing one formula with a locked denominator and filling it down a column",
+    "Move on to absolute vs relative references for the full explanation of why the dollar signs behave the way they do"
+  ],
+  "relatedTutorials": [
+    "what-is-a-formula-in-excel",
+    "absolute-vs-relative-reference",
+    "excel-sales-dashboard"
+  ]
+}
