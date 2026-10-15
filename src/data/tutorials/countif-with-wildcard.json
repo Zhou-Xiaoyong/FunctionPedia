@@ -1,0 +1,118 @@
+{
+  "slug": "countif-with-wildcard",
+  "title": "COUNTIF with Wildcard: Count Cells by Text Pattern",
+  "description": "COUNTIF with wildcard patterns counts cells by prefix, suffix or length. Learn the * and ? rules, how to escape a literal asterisk, and where numbers fail.",
+  "category": "SUM & COUNT",
+  "functions": ["COUNTIF", "COUNTIFS", "COUNTA", "COUNT", "COUNTBLANK", "SUMPRODUCT", "REGEXMATCH"],
+  "intro": "COUNTIF looks like a simple counter until you discover that its criteria argument understands wildcards. That single feature turns it into a pattern-matching tool: count every order code that starts with 100-, every product name that ends with Widget, every three-character SKU. This guide covers the wildcard syntax Microsoft and Google share, the escape character you need when your data contains a real asterisk, and the one rule that trips people up — wildcards match text, not numbers.",
+  "tags": ["COUNTIF", "Wildcards", "COUNTIFS", "Text Patterns", "Google Sheets"],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Comfort writing a basic COUNTIF with a plain criterion",
+    "A column of text values to experiment on",
+    "Awareness that COUNTIF is not case sensitive"
+  ],
+  "sections": [
+    {
+      "title": "The Three Wildcards, and the Text-Only Rule",
+      "content": "COUNTIF's criteria argument is not a plain string: it understands three wildcards. The asterisk (*) stands for zero or more characters, the question mark (?) for exactly one character, and the tilde (~) escapes the other two when you want to match them literally. Microsoft and Google both document the same three characters with the same meaning, so a pattern written in Excel behaves identically in Google Sheets. The rule that catches people out is the last one: wildcards match text only. A criterion such as \"*\" applied to a column of numbers counts nothing, because there is no text for the pattern to test against.",
+      "example": {
+        "formula": "=COUNTIF(A2:A11, \"*Widget*\")",
+        "result": "6",
+        "explanation": "The criterion reads 'any characters, then Widget, then any characters', so it counts 100-Widget, 200-Widget, 300-Widget, 100-Widget-EU, 400-Widget and 500-Widget — six rows of the ten in A2:A11. COUNTIF is not case sensitive, so \"*widget*\" returns the same 6. Drop the leading asterisk and the answer changes, because then the pattern insists the cell ends with Widget."
+      },
+      "tips": [
+        "Wildcards work in COUNTIF, COUNTIFS, SUMIF, SUMIFS, AVERAGEIF, AVERAGEIFS, MATCH, VLOOKUP and XLOOKUP — learn the syntax once and it transfers.",
+        "Use comparison operators such as \">100\" for numeric conditions; a wildcard pattern applied to numbers simply finds nothing.",
+        "The criteria must be a string, so enclose it in quotation marks even when it contains no letters."
+      ]
+    },
+    {
+      "title": "Counting by Prefix, Suffix and Fixed Length",
+      "content": "Anchoring the asterisk at one end turns the pattern into a prefix or a suffix test. \"100-*\" counts everything that starts with 100-, while \"*Widget\" counts everything that ends with Widget — a genuinely different set from the rows that merely contain that word. When you know the shape of a code, the question mark pins the length: each ? consumes exactly one character, so \"???-Widget\" accepts 100-Widget but rejects the longer 100-Widget-EU.",
+      "steps": [
+        { "name": "Prefix test", "text": "Place the asterisk after the fixed leading characters.", "formula": "=COUNTIF(A2:A11, \"100-*\")" },
+        { "name": "Suffix test", "text": "Place the asterisk before the fixed trailing characters.", "formula": "=COUNTIF(A2:A11, \"*Widget\")" },
+        { "name": "Fixed length", "text": "Use one ? per unknown character so longer strings are excluded.", "formula": "=COUNTIF(A2:A11, \"???-Widget\")" }
+      ],
+      "example": {
+        "formula": "=COUNTIF(A2:A11, \"100-*\")",
+        "result": "5",
+        "explanation": "Five order codes begin with 100-: 100-Widget, 100-Gadget, 100-Widget-EU, 100-Gadget-EU and 100-Sprocket. The suffix pattern \"*Widget\" also returns 5, but a different five — 100-Widget, 200-Widget, 300-Widget, 400-Widget and 500-Widget — while \"???-Widget\" returns exactly those five three-digit codes and excludes the twelve-character 100-Widget-EU. Two patterns, two different questions, the same answer by coincidence."
+      },
+      "tips": [
+        "\"*Widget*\" (6) is not the same as \"*Widget\" (5): the trailing asterisk is what lets the EU-qualified codes be counted.",
+        "A criterion with no wildcard at all is an exact match, so COUNTIF(A2:A11, \"100-Widget\") returns 1 — and would return 0 if that cell carried a trailing space.",
+        "Wildcards are more forgiving than equality in one useful way: \"*Widget*\" still matches a cell whose value is \"100-Widget \", which is often how you spot invisible trailing spaces."
+      ]
+    },
+    {
+      "title": "Matching a Literal Asterisk or Question Mark",
+      "content": "The moment your data contains a real asterisk — a footnote marker, a multiplication code, a wildcard that is part of the product name — the pattern becomes ambiguous, because the same character also means 'anything'. Prefixing it with a tilde tells COUNTIF to read it literally: ~* is a literal asterisk, ~? a literal question mark, and ~~ a literal tilde.",
+      "steps": [
+        { "name": "A cell that is just an asterisk", "text": "The escaped pattern matches the single character rather than every text cell in the range.", "formula": "=COUNTIF(C2:C6, \"~*\")" },
+        { "name": "Text that ends with an asterisk", "text": "Combine the any-characters wildcard with the escaped literal.", "formula": "=COUNTIF(C2:C6, \"*~*\")" }
+      ],
+      "example": {
+        "formula": "=COUNTIF(C2:C6, \"*~*\")",
+        "result": "3",
+        "explanation": "C2:C6 holds *, 5*, 10*, Star and *review. The pattern reads 'any characters, then a literal asterisk', so it counts the three values that end with an asterisk — *, 5* and 10* — while *review is rejected because there its asterisk sits at the front. =COUNTIF(C2:C6, \"~*\") returns 1, counting only the cell whose entire content is a single asterisk."
+      },
+      "tips": [
+        "Forget the tilde and \"*\" counts every text cell in the range instead of the one value you meant — a silent, plausible-looking mistake.",
+        "To match text that contains an asterisk anywhere, add a trailing wildcard: \"*~**\" is any characters, a literal asterisk, any characters.",
+        "Every range in COUNTIFS must be the same size, and a tilde-escaped pattern obeys that rule exactly like any other criterion."
+      ]
+    },
+    {
+      "title": "Wildcards Do Not Count Numbers",
+      "content": "This is where COUNTIF, COUNTA and COUNT part company, and the disagreement is a feature rather than a bug. COUNTIF with a wildcard criterion tests text patterns, so numbers in the range are not candidates at all. COUNTA counts every cell that is not empty, text or number alike. COUNT counts only cells holding a genuine number. Put the three side by side and you can describe a column precisely: how much of it is filled, how much is numeric, and how much is text that only looks numeric.",
+      "steps": [
+        { "name": "Text cells, whatever they contain", "text": "A column exported to CSV often carries #N/A where a number should be.", "formula": "=COUNTIF(D2:D6, \"*\")" },
+        { "name": "Every non-empty cell", "text": "COUNTA ignores type entirely and counts content.", "formula": "=COUNTA(D2:D6)" },
+        { "name": "Numeric cells only", "text": "COUNT ignores text, including text that looks like a number.", "formula": "=COUNT(D2:D6)" }
+      ],
+      "example": {
+        "formula": "=COUNTIF(D2:D6, \"*\")",
+        "result": "2",
+        "explanation": "D2:D6 holds 100, 200, N/A, 300 and N/A. Only the two N/A entries are text, so the wildcard criterion counts 2. COUNTA(D2:D6) returns 5 because every cell is occupied, and COUNT(D2:D6) returns 3 because only three cells hold a number. If you expected the asterisk to count all five, that expectation — not the formula — is the bug."
+      },
+      "tips": [
+        "To find genuinely empty cells, COUNTBLANK is the direct tool: =COUNTBLANK(D2:D6) returns 0 here, because #N/A is text rather than nothing.",
+        "Text that looks like a number is still text: \"120\" would be counted by COUNTIF(D2:D6, \"*\") and skipped by COUNT.",
+        "Choose the function that matches the question you are asking, instead of subtracting one count from another."
+      ]
+    },
+    {
+      "title": "Two Criteria at Once, and the Traps That Survive",
+      "content": "COUNTIFS takes the same wildcard syntax and adds a second condition, which is how you answer questions like 'how many Widget orders were worth more than 100?'. Two traps survive. The first is that a wildcard pattern is not an equality test: \"*Widget*\" still matches a cell whose value carries a trailing space, while the exact criterion \"100-Widget\" does not, so the two functions can disagree about what a column contains. The second is length: Microsoft documents that COUNTIF returns incorrect results when a criterion matches strings longer than 255 characters. Google Sheets supports the same three wildcards in COUNTIF and COUNTIFS, and when you need true regular expressions there, pair REGEXMATCH with SUMPRODUCT rather than bending a wildcard beyond its reach.",
+      "example": {
+        "formula": "=COUNTIFS(A2:A11, \"*Widget*\", B2:B11, \">100\")",
+        "result": "5",
+        "explanation": "Six order codes contain Widget, but 500-Widget is worth only 45, so the pattern-and-threshold pair counts five rows — the ones worth 250, 480, 900, 640 and 155. Switching the threshold to \"<100\" returns 1, the single cheap order, which is a quick sanity check that both criteria are really doing work rather than one of them matching everything."
+      },
+      "tips": [
+        "In Google Sheets the equivalent regex count is =SUMPRODUCT(--REGEXMATCH(A2:A11, \"(?i)widget\")), which returns 6 with no tilde escaping anywhere.",
+        "Every range in COUNTIFS must be the same size; a mismatch returns #VALUE! rather than a wrong number.",
+        "For strings longer than 255 characters, split the literal with the & operator as Microsoft recommends instead of feeding one long criterion to COUNTIF."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    { "name": "COUNTIF", "slug": "countif", "description": "COUNTIF counts the number of cells in a range that meet a specified condition. It's the counting counterpart of SUMIF — instead of summing matching values, it counts how many matches exist." },
+    { "name": "COUNTIFS", "slug": "countifs", "description": "COUNTIFS counts cells that satisfy multiple criteria across one or more ranges." },
+    { "name": "COUNTA", "slug": "counta", "description": "COUNTA counts the number of non-empty cells within a specified range, regardless of the cell content." },
+    { "name": "COUNT", "slug": "count", "description": "COUNT counts the number of cells that contain numbers within a specified range." },
+    { "name": "COUNTBLANK", "slug": "countblank", "description": "COUNTBLANK counts the number of empty cells within a specified range." },
+    { "name": "SUMPRODUCT", "slug": "sumproduct", "description": "SUMPRODUCT multiplies corresponding components of one or more arrays and returns the sum of those products. It is also widely used for conditional sums and counts without array-entry." },
+    { "name": "REGEXMATCH", "slug": "regexmatch", "description": "REGEXMATCH checks whether a text string matches a regular expression pattern and returns TRUE or FALSE." }
+  ],
+  "summary": "COUNTIF's criteria argument is a pattern, not just a string. The asterisk (*) matches zero or more characters, the question mark (?) matches exactly one, and the tilde (~) escapes either of them so you can match a literal asterisk — useful the moment your data contains one. Anchor an asterisk to make a prefix or suffix test, use ? to pin a fixed length, and remember that wildcards match text only: COUNTIF(\"*\") counts text cells while COUNTA counts every occupied cell and COUNT counts numbers. COUNTIFS applies the same rules to a second condition, and both Excel and Google Sheets share the identical syntax, so it is a pattern worth learning once.",
+  "nextSteps": [
+    "Take a column of untidy labels and count the same prefix with COUNTIF, SUMIF and COUNTIFS to see how far one wildcard pattern reaches.",
+    "Run =COUNTIF(range, \"*\") and =COUNTA(range) side by side on a mixed column — the gap between the two is the number of text entries hiding among your numbers.",
+    "If you are on Google Sheets and the pattern needs alternatives or anchors, rewrite it as SUMPRODUCT(--REGEXMATCH(range, pattern)) and compare the result with the wildcard version."
+  ],
+  "relatedTutorials": ["sumifs-multiple-criteria", "sum-only-visible-cells-filtered", "vlookup-not-returning-correct-value"]
+}

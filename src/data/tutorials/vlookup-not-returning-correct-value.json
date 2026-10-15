@@ -1,0 +1,114 @@
+{
+  "slug": "vlookup-not-returning-correct-value",
+  "title": "VLOOKUP Not Returning Correct Value: Five Causes and Their Fixes",
+  "description": "VLOOKUP not returning correct value? An omitted fourth argument, an unlocked table range, a wrong column index or duplicate keys explains almost every case.",
+  "category": "VLOOKUP & XLOOKUP",
+  "functions": ["VLOOKUP", "XLOOKUP", "IFERROR", "IFNA", "TRIM", "ISNUMBER", "VALUE"],
+  "intro": "A VLOOKUP that quietly returns the wrong row is far more dangerous than one that fails, because a plausible number travels into your report without anyone questioning it. Almost every case traces back to five causes, and each of them leaves a different fingerprint. This guide walks through them in the order they are usually met, with the diagnostic check that identifies each one.",
+  "tags": ["VLOOKUP", "XLOOKUP", "Troubleshooting", "Approximate Match", "Data Type"],
+  "estimatedTime": "13 min read",
+  "prerequisites": [
+    "Comfort writing a basic VLOOKUP and filling it down a column",
+    "A worksheet with a key column and a value column to experiment on",
+    "Basic understanding of relative and absolute references"
+  ],
+  "sections": [
+    {
+      "title": "Cause 1 — The Fourth Argument Is Optional, and Its Default Is Wrong",
+      "content": "VLOOKUP's fourth argument, range_lookup, chooses between approximate and exact matching, and it is optional. Leave it out and Excel behaves as though you typed TRUE, which means approximate match: it assumes the first column is sorted ascending and returns the largest key that is less than or equal to your lookup value instead of reporting that nothing matched. The formula looks finished and produces a plausible number, which is why this is the most common reason a VLOOKUP seems to work while quietly returning the wrong row. On unsorted data it is worse than wrong — the search uses a binary walk through the column, so the row you get back is effectively unpredictable. Pass FALSE every time.",
+      "example": {
+        "formula": "=VLOOKUP(2500, A2:D8, 3)",
+        "result": "18.00",
+        "explanation": "The table in A2:D8 is keyed on the IDs 1000, 2000, 3000, 4000, 4500, 5000 and 5500, so the largest ID that does not exceed 2500 is 2000, and column 3 of the table is Price. Excel returns 18.00 for an ID that does not exist. Add the fourth argument — =VLOOKUP(2500, A2:D8, 3, FALSE) — and you get #N/A instead, which is the honest answer to the question you actually asked."
+      },
+      "tips": [
+        "Write 0 instead of FALSE if you prefer; the two are interchangeable and both force an exact match.",
+        "XLOOKUP defaults to an exact match, so =XLOOKUP(2500, A2:A8, C2:C8) fails loudly with #N/A rather than borrowing a neighbouring row.",
+        "A relative table_array forces approximate match on every fill-down, so the two mistakes compound — check this cause and the next one together."
+      ]
+    },
+    {
+      "title": "Cause 2 — An Unlocked Table Range Slides Down as You Fill",
+      "content": "A VLOOKUP that is correct on the first row and then drifts is almost always a relative table_array. Fill =VLOOKUP(F2, A2:D8, 3, FALSE) down one row and Excel rewrites the table as A3:D9, which no longer contains the first row of your data; two rows down it starts at A4, and so on. Rows that fall off the top of that window can never be found, so the lookups fail down the sheet while the top rows keep working — which is exactly why the bug survives a casual glance at the first result.",
+      "steps": [
+        { "name": "Anchor the table first", "text": "Lock the table range with dollar signs on both the column and the row before you fill down.", "formula": "=VLOOKUP($F2, $A$2:$D$8, 3, FALSE)" },
+        { "name": "Confirm the shift", "text": "Click a failing cell and read the range in the formula bar — a start position like A4:D10 is the giveaway." }
+      ],
+      "example": {
+        "formula": "=VLOOKUP(1000, A4:D10, 3, FALSE)",
+        "result": "#N/A",
+        "explanation": "This is what the unlocked formula has become by the time it reaches the fourth row: the window begins at A4, so the ID 1000 in A2 sits outside the searched range even though it is plainly visible on the sheet. Point the same formula at the anchored range $A$2:$D$8 and it returns 10.00. Press F4 while editing a selected range reference to cycle through relative, absolute and mixed forms."
+      },
+      "tips": [
+        "If the data lives in an Excel Table, refer to it by name — =VLOOKUP($F2, Stock, 3, FALSE) — because a structured reference never shifts when you fill.",
+        "Lock the lookup cell as $F2 and the table as $A$2:$D$8: the row number of the lookup stays free so it moves with the fill, while the table does not."
+      ]
+    },
+    {
+      "title": "Cause 3 — The Column Index Counts From the Table, Not From Column A",
+      "content": "col_index_num is counted from the left-hand column of table_array, not from column A of the worksheet. The moment you adjust the range — dropping a leading column you did not need, or starting it at B instead of A — every index shifts by one and VLOOKUP politely returns a column you never asked for. The tell-tale sign is a result of the right shape but the wrong meaning: a stock count where you expected a price, a quantity where you expected an amount.",
+      "example": {
+        "formula": "=VLOOKUP(3000, $B$2:$D$8, 3, FALSE)",
+        "result": "8",
+        "explanation": "Because the table now starts at B, B is column 1 (Product), C is column 2 (Price) and D is column 3 (Stock), so index 3 hands back the stock level 8 instead of the 24.00 price. Changing the index to 2 returns 24.00. Counting the columns against the table's own left edge, not against the worksheet, is the whole of the fix."
+      },
+      "tips": [
+        "While you are editing the formula, Excel outlines the column the index points at — use that highlight instead of counting on your fingers.",
+        "A #REF! error from the same cell means the index is larger than the width of table_array, which is a different mistake with the same root cause."
+      ]
+    },
+    {
+      "title": "Cause 4 — Duplicate Keys: VLOOKUP Only Ever Returns the First Match",
+      "content": "VLOOKUP stops at the first row whose first column matches, and no argument lets you ask for a later one. When a key legitimately repeats — a revised price, a newer order line, a second contact at the same company — the lookup keeps returning the oldest record and looks broken rather than ambiguous. Prove the duplication first, then decide what you actually want: the first match, the last match, or a total, because each of those is a different formula.",
+      "steps": [
+        { "name": "Prove the key is ambiguous", "text": "COUNTIF tells you how many rows share it before you change anything.", "formula": "=COUNTIF($A$12:$A$14, 2000)" },
+        { "name": "Return the newest record instead", "text": "XLOOKUP searches backwards when search_mode is -1, so the last matching row wins.", "formula": "=XLOOKUP(2000, $A$12:$A$14, $C$12:$C$14, \"Not found\", 0, -1)" }
+      ],
+      "example": {
+        "formula": "=VLOOKUP(2000, $A$12:$D$14, 3, FALSE)",
+        "result": "18.00",
+        "explanation": "The ID 2000 appears twice — on rows 12 and 13, with prices of 18.00 and 22.00. VLOOKUP returns 18.00, the first match, and there is no argument that changes which one it picks. =XLOOKUP(2000, $A$12:$A$14, $C$12:$C$14, \"Not found\", 0, -1) returns 22.00, while =COUNTIF($A$12:$A$14, 2000) returns 2, which is how you discover the key was ambiguous in the first place."
+      },
+      "tips": [
+        "If you want a total rather than one row, VLOOKUP is the wrong instrument — SUMIF or SUMIFS answers that question directly.",
+        "De-duplicating the key column, or building a deliberate compound key such as A2&\"|\"&B2, is the durable fix rather than a formula that happens to pick the right duplicate."
+      ]
+    },
+    {
+      "title": "Cause 5 — Numbers Stored as Text, and Spaces You Cannot See",
+      "content": "Sometimes the value really is on the sheet and VLOOKUP still says no. Exact match compares value and type together, so the text string \"5500\" is never equal to the number 5500, and a key with a trailing space is never equal to the same key without one. Microsoft lists both cases among the causes of incorrect or unexpected VLOOKUP results and recommends keeping number and date keys stored as real numbers and cleaning text keys with TRIM or CLEAN. Diagnose before you paper over anything, because an error handler converts a fixable data problem into a silent blank.",
+      "steps": [
+        { "name": "Test the type of the key", "text": "ISNUMBER reports whether the cell holds a real number or a text string that merely looks like one.", "formula": "=ISNUMBER($A$17)" },
+        { "name": "Match the type, or convert it", "text": "Quote a text key so both sides are text, or convert the column once with VALUE or Text to Columns.", "formula": "=VLOOKUP(\"5500\", $A$16:$C$18, 3, FALSE)" },
+        { "name": "Neutralise stray spaces", "text": "Wrap the lookup value in TRIM when keys may carry leading or trailing spaces.", "formula": "=VLOOKUP(TRIM($F2), $A$2:$D$8, 3, FALSE)" }
+      ],
+      "example": {
+        "formula": "=VLOOKUP(5500, $A$16:$C$18, 3, FALSE)",
+        "result": "#N/A",
+        "explanation": "Row 17 displays 5500 with a price of 52.00, but the ID was imported as text, so ISNUMBER($A$17) returns FALSE and the numeric lookup finds nothing. =VLOOKUP(\"5500\", $A$16:$C$18, 3, FALSE) returns 52.00 because both sides are now text. Note what the tempting shortcut does: =IFERROR(VLOOKUP($F2, $A$2:$D$8, 3, FALSE), \"Not in table\") returns \"Not in table\" for the key 2500 — perfectly presentable on a dashboard, and completely silent about the reason."
+      },
+      "tips": [
+        "IFNA is the better guard when a missing key is a legitimate outcome: it catches only #N/A and leaves #REF! and #VALUE! visible so real breakage still shouts.",
+        "A key carrying a trailing space still matches a wildcard pattern such as \"*Widget C*\", which is why COUNTIF and VLOOKUP can disagree about what a column contains.",
+        "Paste Special → Values over the helper column when you are done cleaning, so the fix survives the next recalculation."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    { "name": "VLOOKUP", "slug": "vlookup", "description": "VLOOKUP (Vertical Lookup) is a built-in function in Excel and Google Sheets that searches for a value in the first column of a table and returns a value in the same row from a specified column." },
+    { "name": "XLOOKUP", "slug": "xlookup", "description": "XLOOKUP is the modern replacement for VLOOKUP. It searches a range or array for a value and returns the corresponding item from a second range or array. It supports exact and approximate matching, wildcards, and can search in any direction." },
+    { "name": "IFERROR", "slug": "iferror", "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise." },
+    { "name": "IFNA", "slug": "ifna", "description": "IFNA returns a specified value when a formula results in the #N/A error, and otherwise returns the formula's own result. It catches only #N/A, not other errors." },
+    { "name": "TRIM", "slug": "trim", "description": "TRIM removes extra spaces from text, leaving only single spaces between words." },
+    { "name": "ISNUMBER", "slug": "isnumber", "description": "ISNUMBER returns TRUE if the supplied value is a number (including numeric results of formulas and dates stored as serial numbers), and FALSE otherwise." },
+    { "name": "VALUE", "slug": "value", "description": "VALUE converts a text string that represents a number, date, or time into its underlying numeric value." }
+  ],
+  "summary": "A VLOOKUP that returns the wrong value is nearly always one of five things. An omitted fourth argument silently switches on approximate matching, so always write FALSE. A relative table_array slides down as you fill, so anchor it as $A$2:$D$8. col_index_num counts from the table's own left column, so re-count it whenever the range changes. Duplicate keys return the first match only — detect them with COUNTIF and use XLOOKUP with search_mode -1 when you want the last. And when the value plainly exists, check the data type with ISNUMBER and clean stray spaces with TRIM before wrapping anything in IFERROR.",
+  "nextSteps": [
+    "Open a workbook you rely on and add FALSE to every VLOOKUP that is missing its fourth argument — this single pass removes the most common wrong-value bug.",
+    "Press Ctrl+` (Ctrl+grave) to show all formulas at once, then scan the table_array of the filled-down column for any range that does not start with $.",
+    "Rebuild one of those lookups with XLOOKUP so exact matching, a friendly not-found message and reverse search for the newest duplicate come as defaults."
+  ],
+  "relatedTutorials": ["vlookup-approximate-match", "vlookup-with-multiple-criteria", "countif-with-wildcard"]
+}
