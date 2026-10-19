@@ -1,0 +1,165 @@
+{
+  "slug": "ifs-function-multiple-conditions",
+  "title": "IFS Function with Multiple Conditions in Excel",
+  "description": "The IFS function multiple conditions pattern replaces stacked nested IFs. Learn argument order, AND/OR tests, TRUE fallbacks and how to fix the #N/A error.",
+  "category": "IF & Logical",
+  "functions": ["IFS", "IF", "AND", "OR"],
+  "intro": "IFS turns a chain of nested IF statements into one flat list of test-and-value pairs. It evaluates each test in order and returns the value attached to the first one that comes back TRUE, which makes long grading and tiering rules far easier to read and audit. This guide uses a small score table and a sales table to cover the argument order, combining cells with AND and OR, and the #N/A error almost everyone hits on their first attempt.",
+  "tags": ["IFS", "Multiple Conditions", "Nested IF", "Logical Functions", "AND OR"],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Comfort with the basic IF function",
+    "Excel 2019, Excel 2021, Excel 2024 or Microsoft 365 (IFS does not exist in older versions)"
+  ],
+  "sections": [
+    {
+      "title": "What IFS Does and Why It Replaces Nested IF",
+      "content": "IFS takes pairs of arguments: a logical test, then the value to return when that test is TRUE. It works down the list in order and stops at the first pass. A nested IF does the same job, but every extra tier adds a layer of parentheses and another place for the logic to drift. The score table used throughout this guide sits in A2:A6 and holds 95, 82, 74, 61 and 45.",
+      "example": {
+        "formula": "=IFS(A2>89,\"A\",A2>79,\"B\",A2>69,\"C\",A2>59,\"D\",TRUE,\"F\")",
+        "result": "A",
+        "explanation": "A2 is 95, so the first test is TRUE and IFS stops there. Filled down the column the formula returns A, B, C, D and F — the same output as four nested IFs, written once and read top to bottom."
+      },
+      "tips": [
+        "Excel accepts up to 127 test/value pairs, but anything past five or six tiers is usually better moved into a lookup table.",
+        "Excel 2016 and earlier return #NAME? because IFS did not exist yet. Google Sheets has supported it since 2018."
+      ]
+    },
+    {
+      "title": "Argument Order Decides the Answer",
+      "content": "Because IFS stops at the first TRUE test, the order of the pairs is the logic itself. Put the narrowest, most specific test first. A broad test placed at the top swallows every case below it, and the formula still looks perfectly valid.",
+      "example": {
+        "formula": "=IFS(A2>60,\"Pass\",A2>90,\"Distinction\")",
+        "result": "Pass",
+        "explanation": "A2 is 95, which is also greater than 60. The >60 test comes first, so IFS returns Pass and never reaches the Distinction test. Swapping the two pairs gives the intended answer."
+      },
+      "steps": [
+        {
+          "name": "Order thresholds from strictest to loosest",
+          "text": "Highest threshold first, generic fallback last.",
+          "formula": "=IFS(A2>89,\"Distinction\",A2>59,\"Pass\",TRUE,\"Fail\")"
+        },
+        {
+          "name": "Choose > or >= deliberately",
+          "text": ">=90 means 90 and above; >90 means 91 and above. A one-character mistake shifts the whole boundary.",
+          "formula": "=IFS(A2>=90,\"A\",A2>=80,\"B\",TRUE,\"C\")"
+        }
+      ],
+      "tips": [
+        "Sort the thresholds in a single direction — high to low is the easiest to verify by eye.",
+        "Text comparisons are case-insensitive in both Excel and Google Sheets, so \"gold\" matches \"Gold\"."
+      ]
+    },
+    {
+      "title": "Combine Two Columns with AND and OR",
+      "content": "Each logical test is just a boolean expression, so AND and OR can sit inside a pair and test several cells at once. The sales table below puts revenue in B2:B6 (145000, 92000, 61000, 118000, 38000) and years of service in C2:C6 (3, 7, 2, 5, 1).",
+      "example": {
+        "formula": "=IFS(AND(B2>=100000,C2>=3),\"Gold\",AND(B2>=80000,C2>=2),\"Silver\",TRUE,\"Standard\")",
+        "result": "Gold",
+        "explanation": "Ava has 145,000 in sales and 3 years of service, so both halves of the first AND are TRUE. Ben (92,000 / 7 years) fails the Gold test on sales but clears Silver, and Cara (61,000 / 2 years) drops through to Standard."
+      },
+      "steps": [
+        {
+          "name": "Use OR when either condition is enough",
+          "text": "Any account over 120,000 in sales, or with 7 or more years, is flagged Priority.",
+          "formula": "=IFS(OR(B2>=120000,C2>=7),\"Priority\",TRUE,\"Standard\")"
+        },
+        {
+          "name": "Fill the formula down the column",
+          "text": "The same pair list classifies every row; only the row references move.",
+          "formula": "=IFS(AND(B2>=100000,C2>=3),\"Gold\",AND(B2>=80000,C2>=2),\"Silver\",TRUE,\"Standard\")"
+        }
+      ],
+      "tips": [
+        "AND needs every argument to be TRUE, OR needs only one. Nesting one inside the other works but gets unreadable quickly — split it into a helper column instead.",
+        "If a test can never fire because an earlier pair already caught those rows, delete it. Dead branches are the most common source of silent logic bugs in IFS formulas."
+      ]
+    },
+    {
+      "title": "Always Close With TRUE, or You Get #N/A",
+      "content": "IFS has no else argument. When every test comes back FALSE it returns #N/A — not a blank, not a zero. Adding TRUE as the final test is the standard catch-all, because TRUE is by definition always true, so that pair always matches and behaves like IF's value_if_false.",
+      "example": {
+        "formula": "=IFS(A2>89,\"A\",A2>79,\"B\")",
+        "result": "#N/A",
+        "explanation": "A2 is 45 and neither test passes, so there is nothing to return. This is the single most common IFS complaint, and it is a design decision rather than a defect: the function refuses to invent an answer."
+      },
+      "steps": [
+        {
+          "name": "Append a catch-all pair",
+          "text": "The literal TRUE test always matches, so it acts as the fallback.",
+          "formula": "=IFS(A2>89,\"A\",A2>79,\"B\",TRUE,\"Below B\")"
+        },
+        {
+          "name": "Return something you can act on",
+          "text": "A label, an empty string, or a flag — but pick it on purpose rather than letting #N/A decide.",
+          "formula": "=IFS(A2>89,\"A\",A2>79,\"B\",TRUE,\"Check score\")"
+        }
+      ],
+      "tips": [
+        "#VALUE! means a test did not evaluate to TRUE or FALSE at all — usually a text cell being compared with a number.",
+        "If an entire column turns into #N/A overnight, the values are probably stored as text. ISNUMBER confirms it in one cell.",
+        "\"You've entered too few arguments for this function\" means a test has no matching value; IFS requires them strictly in pairs."
+      ]
+    },
+    {
+      "title": "IFS vs Nested IF vs SWITCH, and the Google Sheets Version",
+      "content": "For two outcomes, plain IF is still the clearest choice. IFS earns its place from three tiers upwards, where nesting starts to hide the logic. SWITCH is the right tool only for exact matches such as a code or a name, because it cannot evaluate ranges like >= 120000. The commission rule below pays 8% above 120,000 in sales, 6% from 90,000, 4% from 60,000 and 2% below that.",
+      "example": {
+        "formula": "=IFS(B2>=120000,0.08,B2>=90000,0.06,B2>=60000,0.04,TRUE,0.02)",
+        "result": "0.08",
+        "explanation": "Ava's 145,000 earns the top rate, so the formula returns 8%. Multiplied by B2 that is 11,600 in commission, and the five rows total 27,400."
+      },
+      "steps": [
+        {
+          "name": "The nested IF equivalent",
+          "text": "Same result, but each new tier adds another closing parenthesis to count.",
+          "formula": "=IF(B2>=120000,0.08,IF(B2>=90000,0.06,IF(B2>=60000,0.04,0.02)))"
+        },
+        {
+          "name": "Google Sheets fills the column in one formula",
+          "text": "Sheets accepts array references inside IFS, so a single entry returns one result per row without dragging.",
+          "formula": "=IFS(B2:B6>=120000,0.08,B2:B6>=90000,0.06,B2:B6>=60000,0.04,TRUE,0.02)"
+        }
+      ],
+      "tips": [
+        "Google Sheets uses the same syntax and the same #N/A behaviour, so an IFS formula copied between the two apps usually just works.",
+        "On Excel 2016 or older, use nested IF or a lookup table with VLOOKUP — IFS is simply not available there.",
+        "Once the tiers change more than once a year, move them into a table and look them up; editing a formula in five places is how rules drift."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "IFS",
+      "slug": "ifs",
+      "description": "IFS checks multiple conditions and returns the value for the first condition that is true."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "AND",
+      "slug": "and",
+      "description": "AND returns TRUE if all arguments are TRUE, and FALSE if any argument is FALSE."
+    },
+    {
+      "name": "OR",
+      "slug": "or",
+      "description": "OR returns TRUE if any argument is TRUE, and FALSE if all arguments are FALSE."
+    }
+  ],
+  "summary": "IFS flattens a nested IF chain into one list of test-and-value pairs. Order the pairs from strictest to loosest, wrap multi-cell logic in AND or OR, and always end with a TRUE catch-all so the formula has somewhere to land. Reach for plain IF when there are only two outcomes, and SWITCH only when you are matching exact values rather than ranges.",
+  "nextSteps": [
+    "Rebuild one of your existing nested IF formulas with IFS and compare the two side by side",
+    "Add a TRUE catch-all to every IFS you already use, then check whether the #N/A errors disappear",
+    "Move a five-tier grading or commission rule into a lookup table and compare it with the IFS version"
+  ],
+  "relatedTutorials": [
+    "if-with-and-or",
+    "nested-if-alternatives",
+    "count-working-days-between-dates"
+  ]
+}

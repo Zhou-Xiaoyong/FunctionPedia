@@ -1,0 +1,191 @@
+{
+  "slug": "count-working-days-between-dates",
+  "title": "Count Working Days Between Dates in Excel",
+  "description": "Count working days between dates with NETWORKDAYS, NETWORKDAYS.INTL and WORKDAY in Excel and Google Sheets. Covers holidays, custom weekends and reverse dates.",
+  "category": "Date & Time",
+  "functions": ["NETWORKDAYS", "NETWORKDAYS.INTL", "WORKDAY", "DAYS", "TODAY"],
+  "intro": "Calendar subtraction tells you how long a period lasted; NETWORKDAYS tells you how much of it was actually worked. It skips Saturdays and Sundays, optionally skips a holiday list, and counts both endpoints. Every example below uses one project window — Monday 5 January to Friday 30 January 2026 — so the differences between the functions are easy to see.",
+  "tags": ["NETWORKDAYS", "Working Days", "Business Days", "WORKDAY", "Holidays"],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "Dates stored as real dates, not text",
+    "Familiarity with DATE() and basic cell references"
+  ],
+  "sections": [
+    {
+      "title": "What NETWORKDAYS Actually Counts",
+      "content": "NETWORKDAYS(start_date, end_date, [holidays]) returns the number of whole working days between two dates, with Monday to Friday treated as workdays. Both endpoints are included when they fall on a weekday, which is the detail that makes the result one higher than people expect. The window 5 January to 30 January 2026 spans 26 calendar days, of which 6 are weekend days.",
+      "example": {
+        "formula": "=NETWORKDAYS(A2,B2)",
+        "result": "20",
+        "explanation": "A2 is 5 Jan 2026 (Monday) and B2 is 30 Jan 2026 (Friday). Of the 26 days in the window, 20 are weekdays, so the answer is 20 — not the 25 that plain subtraction returns."
+      },
+      "steps": [
+        {
+          "name": "Build the dates with DATE",
+          "text": "Text dates such as \"5/1/2026\" are ambiguous across locales; DATE() is not.",
+          "formula": "=NETWORKDAYS(DATE(2026,1,5),DATE(2026,1,30))"
+        },
+        {
+          "name": "Compare with plain subtraction",
+          "text": "The difference excludes the start date and ignores weekends entirely.",
+          "formula": "=B2-A2"
+        }
+      ],
+      "tips": [
+        "Because both endpoints count, a task that starts and ends on the same working day returns 1, not 0.",
+        "An invalid date produces #VALUE! rather than a quietly wrong number — treat that error as a data problem."
+      ]
+    },
+    {
+      "title": "Subtracting Holidays From the Count",
+      "content": "The optional third argument takes a range or array of holiday dates. Only holidays that land on a working day reduce the total, because a Saturday holiday is already excluded as a weekend day and is not deducted a second time. Keep the list in one range so every formula on the sheet references the same calendar.",
+      "example": {
+        "formula": "=NETWORKDAYS(A2,B2,D2:D10)",
+        "result": "19",
+        "explanation": "D2:D10 holds the company holiday list, which includes 19 January 2026 — Martin Luther King Jr. Day, a Monday. One weekday drops out of the window, so 20 becomes 19."
+      },
+      "steps": [
+        {
+          "name": "Point at a named range",
+          "text": "One definition means next year's dates update every formula without editing any of them.",
+          "formula": "=NETWORKDAYS(A2,B2,Holidays)"
+        },
+        {
+          "name": "Prove a weekend holiday changes nothing",
+          "text": "10 January 2026 is a Saturday, so adding it to the list leaves the count at 10 for 5–16 January.",
+          "formula": "=NETWORKDAYS(DATE(2026,1,5),DATE(2026,1,16),DATE(2026,1,10))"
+        }
+      ],
+      "tips": [
+        "Holidays must be genuine dates. A text entry like \"Jan 19\" can be skipped silently or raise #VALUE!, depending on how it was typed.",
+        "Duplicate dates in the holiday list are harmless — each working day is only removed once.",
+        "Both Excel and Google Sheets accept a cell range here, and both accept a spilled array from UNIQUE or FILTER."
+      ]
+    },
+    {
+      "title": "Custom Weekends with NETWORKDAYS.INTL",
+      "content": "NETWORKDAYS hard-codes Saturday and Sunday. NETWORKDAYS.INTL(start_date, end_date, [weekend], [holidays]) replaces that with either a weekend code — 1 to 7 for two-day weekends, 11 to 17 for a single day off — or a seven-character string that runs Monday to Sunday, where 1 means closed and 0 means open. Everything else about the function is identical.",
+      "example": {
+        "formula": "=NETWORKDAYS.INTL(A2,B2,7)",
+        "result": "19",
+        "explanation": "Code 7 makes Friday and Saturday the weekend, as in much of the Gulf and Israel. Inside 5–30 January 2026 that leaves 19 working days instead of 20: Sunday starts counting, Friday stops."
+      },
+      "steps": [
+        {
+          "name": "Single-day weekends use 11 to 17",
+          "text": "11 = Sunday only, 12 = Monday only, and so on through 17 = Saturday only.",
+          "formula": "=NETWORKDAYS.INTL(A2,B2,11)"
+        },
+        {
+          "name": "Spell the pattern out when the code does not fit",
+          "text": "The string starts on Monday, so 0000011 is exactly the same as code 1.",
+          "formula": "=NETWORKDAYS.INTL(A2,B2,\"0000011\")"
+        }
+      ],
+      "tips": [
+        "Code 11 returns 23 for the same window, because only three Sundays fall inside it.",
+        "The weekend string must be exactly seven 0/1 characters, and all 1s is rejected.",
+        "NETWORKDAYS.INTL needs Excel 2010 or later; Google Sheets offers it with the same codes and the same string rule.",
+        "Working four days a week? A Monday-to-Thursday pattern is \"0000111\"."
+      ]
+    },
+    {
+      "title": "Turn a Count into a Due Date with WORKDAY",
+      "content": "WORKDAY is the inverse of NETWORKDAYS: give it a start date and a number of working days and it returns the date you land on. The start date itself is not counted, positive numbers move forward, negative numbers move backward, and the optional holiday list applies exactly as before. This is the formula behind SLA deadlines and payment terms.",
+      "example": {
+        "formula": "=WORKDAY(A2,20,D2:D10)",
+        "result": "3-Feb-2026",
+        "explanation": "Starting Monday 5 January 2026, the twentieth working day is Tuesday 3 February once 19 January is excluded. Without the holiday list it would be Monday 2 February."
+      },
+      "steps": [
+        {
+          "name": "Forward without holidays",
+          "text": "Ten working days after 5 January is Monday 19 January.",
+          "formula": "=WORKDAY(A2,10)"
+        },
+        {
+          "name": "Backward from a deadline",
+          "text": "Counting back five working days from 30 January gives Friday 23 January.",
+          "formula": "=WORKDAY(B2,-5)"
+        }
+      ],
+      "tips": [
+        "WORKDAY never returns a weekend date, so it is safe to use as a promised delivery date.",
+        "Need a non-Saturday/Sunday weekend? WORKDAY.INTL accepts the same codes as NETWORKDAYS.INTL.",
+        "If the cell shows a five-digit number, it is still formatted as General — apply a date format to the result."
+      ]
+    },
+    {
+      "title": "Calendar Days, Working Days, and the Reverse-Date Trap",
+      "content": "DAYS(end_date, start_date) returns elapsed calendar days and excludes the start date; NETWORKDAYS includes both working endpoints and ignores weekends. Neither is more correct — they answer different questions, and mixing them up is why a timesheet and a project plan can disagree about the same month.",
+      "example": {
+        "formula": "=DAYS(B2,A2)",
+        "result": "25",
+        "explanation": "30 January minus 5 January is 25 calendar days, while NETWORKDAYS on the same cells returns 20. The five-day gap is the six weekend days, less the extra day NETWORKDAYS adds by counting the start date."
+      },
+      "steps": [
+        {
+          "name": "Watch the argument order",
+          "text": "Put the end date before the start date and the count turns negative, which quietly corrupts any total it feeds.",
+          "formula": "=NETWORKDAYS(B2,A2)"
+        },
+        {
+          "name": "Working days elapsed so far",
+          "text": "TODAY() as the end date keeps the number current, and it recalculates on every edit.",
+          "formula": "=NETWORKDAYS(A2,TODAY())"
+        },
+        {
+          "name": "Working days in a whole month",
+          "text": "First and last day of the month avoids the 30-versus-31 drift you get from multiplying by an average.",
+          "formula": "=NETWORKDAYS(DATE(2026,1,1),DATE(2026,1,31))"
+        }
+      ],
+      "tips": [
+        "NETWORKDAYS(B2,A2) for 30 January back to 5 January returns −20; wrap it in ABS() if you only want the distance.",
+        "January 2026 has 22 working days, dropping to 20 once New Year's Day and MLK Day are excluded.",
+        "If the result appears as a date, the cell inherited a date format — set it back to General or Number.",
+        "Google Sheets provides NETWORKDAYS, NETWORKDAYS.INTL, WORKDAY and WORKDAY.INTL with identical syntax and codes."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "NETWORKDAYS",
+      "slug": "networkdays",
+      "description": "NETWORKDAYS counts the number of working days between two dates, inclusive of both endpoints, skipping Saturdays and Sundays and optionally a list of holidays."
+    },
+    {
+      "name": "WORKDAY",
+      "slug": "workday",
+      "description": "WORKDAY returns the date that is a given number of working days before or after a start date, skipping Saturdays and Sundays and optionally a list of holidays."
+    },
+    {
+      "name": "NETWORKDAYS.INTL",
+      "slug": "networkdays-intl",
+      "description": "NETWORKDAYS.INTL counts the number of working days between two dates with a customizable weekend (a weekend code or a 7-character string) and optional holidays; both endpoints are included."
+    },
+    {
+      "name": "DAYS",
+      "slug": "days",
+      "description": "DAYS returns the number of days between two dates by subtracting the start date from the end date; note that the argument order is (end_date, start_date)."
+    },
+    {
+      "name": "TODAY",
+      "slug": "today",
+      "description": "TODAY returns the current date, updated each time the worksheet recalculates."
+    }
+  ],
+  "summary": "NETWORKDAYS counts weekday workdays between two dates with both endpoints included, and its third argument removes a holiday list in one step. Switch to NETWORKDAYS.INTL when the weekend is not Saturday and Sunday, and use WORKDAY when you need the date a given number of working days away. Keep DAYS for calendar elapsed time, and watch the argument order — reversed dates return a negative count.",
+  "nextSteps": [
+    "Build a holiday range for your own country and add it to every NETWORKDAYS formula on your timesheet",
+    "Try NETWORKDAYS.INTL with code 11 or a \"0000111\" pattern if your team works a four-day or six-day week",
+    "Replace a hand-counted SLA date with WORKDAY(start, days, holidays) and compare the two"
+  ],
+  "relatedTutorials": [
+    "calculate-days-between-two-dates",
+    "last-day-of-month",
+    "ifs-function-multiple-conditions"
+  ]
+}
