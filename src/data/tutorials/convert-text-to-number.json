@@ -1,0 +1,222 @@
+{
+  "slug": "convert-text-to-number",
+  "title": "Convert Text to Number in Excel and Google Sheets",
+  "description": "Convert text to number in Excel and Google Sheets with VALUE, multiplication and Paste Special. Handles currency symbols, hidden spaces and #VALUE! errors.",
+  "category": "Text Functions",
+  "functions": [
+    "VALUE",
+    "TEXT",
+    "TRIM",
+    "SUBSTITUTE",
+    "ISNUMBER",
+    "IFERROR",
+    "COUNT",
+    "COUNTA",
+    "SUM"
+  ],
+  "intro": "Five invoice amounts, one SUM formula, and a total of zero. The cells hold text that was formatted to look like money, so every calculation in the workbook skips them. VALUE turns those strings into real numbers in a single step, and this guide covers what it handles, what it silently drops, and the two cases where it fails on data that looks clean.",
+  "tags": [
+    "VALUE",
+    "Text to Number",
+    "Data Cleaning",
+    "TEXT",
+    "Imported Data"
+  ],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Excel or Google Sheets open with a column of values stored as text",
+    "Comfort with cell references and the Fill Handle",
+    "Willingness to test one cell before converting a whole column"
+  ],
+  "sections": [
+    {
+      "title": "A Column of Money That Adds Up to Zero",
+      "content": "A bank export lands in column B and it looks correct: $1,234.50 in B2, $980.00 in B3, $2,150.75 in B4. Then =SUM(B2:B6) returns 0. Nothing is corrupted. The cells contain text that happens to read like currency, and SUM ignores text inside a range rather than guessing what it meant. COUNT reports 0 numbers in the same range, while COUNTA reports 5 because it only checks whether a cell is empty. AVERAGE throws #DIV/0! for the matching reason: no numeric inputs at all. The fastest visual check is alignment. Real numbers sit against the right edge of a cell by default, text sits against the left.",
+      "example": {
+        "formula": "=SUM(B2:B6)",
+        "result": "0",
+        "explanation": "Five currency strings, zero numbers. The amounts total 6085.50 on paper, but SUM never reads a single cell in the range as a value."
+      },
+      "steps": [
+        {
+          "name": "Test one cell",
+          "text": "ISNUMBER answers FALSE for text, including text that reads as money. Test a single cell before touching the column.",
+          "formula": "=ISNUMBER(B2)"
+        },
+        {
+          "name": "Compare COUNT with COUNTA",
+          "text": "The gap between the two counts is your number of text cells. Here COUNT sees nothing and COUNTA sees all five rows.",
+          "formula": "=COUNT(B2:B6)&\" vs \"&COUNTA(B2:B6)"
+        }
+      ],
+      "tips": [
+        "Text numbers also sort wrong: \"10\" lands before \"9\" because the sort compares characters, not values.",
+        "A VLOOKUP for 1234 against a column of text \"1234\" returns #N/A. The two cells look identical on screen.",
+        "Excel flags most of these cells with a small green triangle and offers Convert to Number. Accepting it works, one cell at a time, which is why it rarely finishes a job."
+      ]
+    },
+    {
+      "title": "VALUE: The Explicit Conversion",
+      "content": "VALUE(text) parses a single string using the number, date and time formats Excel recognizes and returns a real number. Microsoft's own example is =VALUE(\"$1,000\") with a result of 1000, so a currency symbol and a thousands separator need no cleanup first. Percent signs become decimals, and date strings become date serials. The argument can be a quoted literal or a reference to a cell holding the text.",
+      "example": {
+        "formula": "=VALUE(B2)",
+        "result": "1234.5",
+        "explanation": "B2 holds the text \"$1,234.50\". The dollar sign and the comma belong to a currency format Excel recognizes, so VALUE removes them and returns 1234.5. Apply Currency format to the result and it reads $1,234.50 again, this time as a number that SUM can use."
+      },
+      "steps": [
+        {
+          "name": "Percent signs",
+          "text": "The sign is part of a format, not something to delete. VALUE(\"12%\") returns 0.12, and the cell shows 0.12 until you format it as a percentage.",
+          "formula": "=VALUE(\"12%\")"
+        },
+        {
+          "name": "Date strings",
+          "text": "A recognizable date returns its serial number, so a General-formatted cell shows a five-digit number. Set the cell to Short Date to read 3/3/2026. DATEVALUE is the narrower function when you only ever convert dates.",
+          "formula": "=VALUE(\"3/3/2026\")"
+        }
+      ],
+      "tips": [
+        "Text VALUE cannot read produces #VALUE! rather than a quiet 0. Treat that error as information: something in the string is not part of any number format.",
+        "VALUE(1234) returns 1234. There is nothing to parse when the argument is already a number, so the function is safe to wrap around a mixed column.",
+        "Separators follow your regional settings. \"1,234.50\" parses in a US locale and fails where the comma is the decimal mark, which is the usual reason a formula that works on your machine breaks on a colleague's."
+      ]
+    },
+    {
+      "title": "Multiplying by One: Faster, Blunter",
+      "content": "Arithmetic pushes text into a number. =B2*1, =B2+0 and the double unary =--B2 apply the same parsing rules VALUE uses, with two differences: they are quicker to fill down a thousand rows, and they give you no separate error message to read. A string that fails comes back as #VALUE! either way. A blank cell comes back as 0, which is where the shortcut earns its reputation for causing trouble.",
+      "example": {
+        "formula": "=--B2",
+        "result": "1234.5",
+        "explanation": "The first minus flips the text into a negative number, the second flips it back. Enter it in C2 and drag the Fill Handle down to C6, and the whole column converts in one gesture."
+      },
+      "steps": [
+        {
+          "name": "Convert in place with Paste Special",
+          "text": "Copy an empty cell, select B2:B6, then choose Paste Special > Multiply. Excel treats the copied blank as 1 and rewrites every cell in the selection.",
+          "formula": "=B2*1"
+        },
+        {
+          "name": "Confirm the total now works",
+          "text": "Once the cells hold numbers, the original SUM returns 6085.5. The display shifts from $1,234.50 to 1234.5 on the way, because those cells were General text and never carried a currency format.",
+          "formula": "=SUM(B2:B6)"
+        }
+      ],
+      "tips": [
+        "A blank cell multiplied by 1 returns 0. In a column with gaps, that quietly adds phantom zeros to an AVERAGE and pulls the mean down.",
+        "Paste Special > Multiply overwrites the source cells. Run it on a copy if the import is your only record of what the system actually sent.",
+        "Text such as \"n/a\" or \"1,200 USD\" fails the multiplication just as it fails VALUE. Neither shortcut guesses at units."
+      ]
+    },
+    {
+      "title": "Hidden Characters That Survive Every Cleanup",
+      "content": "Some strings look perfect and still fail. Web exports and CSV files often carry a non-breaking space, character 160, which renders exactly like an ordinary space. TRIM removes ordinary padding and collapses runs of spaces, yet it leaves 160 untouched, in Excel and in Google Sheets. VALUE then meets a character no number format allows and returns #VALUE!, which sends people hunting for a formatting problem that does not exist.",
+      "example": {
+        "formula": "=VALUE(SUBSTITUTE(B2,CHAR(160),\"\"))",
+        "result": "1234.5",
+        "explanation": "SUBSTITUTE swaps the non-breaking space for an empty string before VALUE parses what is left. B2 held \"$1,234.50\" with a trailing 160, which is the only reason plain =VALUE(B2) failed."
+      },
+      "steps": [
+        {
+          "name": "Prove the character is there",
+          "text": "LEN counts characters rather than visible glyphs. If the count exceeds the characters you can see, something invisible is sitting in the cell.",
+          "formula": "=LEN(B2)"
+        },
+        {
+          "name": "Clean, then convert",
+          "text": "TRIM handles ordinary spaces, SUBSTITUTE handles 160, and IFERROR keeps one bad row from blanking a report. This is the formula worth copying across an import.",
+          "formula": "=IFERROR(VALUE(TRIM(SUBSTITUTE(B2,CHAR(160),\"\"))),\"check row\")"
+        }
+      ],
+      "tips": [
+        "CLEAN strips character codes 0 through 31, the control-character range. It does not touch 160, so it cannot replace the SUBSTITUTE step.",
+        "The same character breaks lookups. A product code with a trailing 160 makes a perfectly correct VLOOKUP return #N/A while both cells look identical.",
+        "If a column converts except for a handful of rows, sort by ISNUMBER and inspect those rows one at a time instead of rewriting the formula."
+      ]
+    },
+    {
+      "title": "What VALUE Cannot Do, and Where Google Sheets Diverges",
+      "content": "VALUE fixes values, not meaning. It strips a currency symbol without recording which currency it was, so $1,234.50 and €1,234.50 both arrive as 1234.5 and the report loses the distinction. It also cannot split a cell that holds a number plus a unit label, such as \"1200 USD\". Google Sheets ships VALUE with the same name, syntax and behavior, and its own documentation uses =VALUE(\"01/01/2012\") returning 40909 to make the same point about dates. Sheets adds TO_PURE_NUMBER, which sounds like the answer and is not: it removes formatting from a value that is already numeric, and hands back text unchanged. Sheets also has no green error triangle, so ISNUMBER is the reliable test in both apps.",
+      "example": {
+        "formula": "=TEXT(VALUE(B2),\"$#,##0.00\")",
+        "result": "$1,234.50",
+        "explanation": "A round trip: the string becomes a number, then TEXT turns that number back into a formatted string. Useful at the display layer only. SUM across a column of TEXT results returns 0 again, because TEXT always produces text."
+      },
+      "steps": [
+        {
+          "name": "Test TO_PURE_NUMBER on your own data",
+          "text": "Point it at a cell holding real text and the cell comes back as text. It cleans formatting on numbers, not imports.",
+          "formula": "=TO_PURE_NUMBER(B2)"
+        },
+        {
+          "name": "Keep formatting out of the data column",
+          "text": "With conversions in column C, SUM returns 6085.5 and every other calculation on the sheet starts working. Leave column B as received.",
+          "formula": "=SUM(C2:C6)"
+        }
+      ],
+      "tips": [
+        "Currency symbols are discarded, not stored. If the currency matters, keep the original column or add a separate currency column.",
+        "Both apps ignore text inside SUM, COUNT and AVERAGE ranges. Neither will convert a column for you, however the cells are formatted.",
+        "Formatting a cell as Currency or Number never changes what is stored. VALUE changes the stored type, which is the only fix that survives a copy, a sort or a pivot."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "VALUE",
+      "slug": "value",
+      "description": "VALUE converts a text string that represents a number, date, or time into its underlying numeric value."
+    },
+    {
+      "name": "TEXT",
+      "slug": "text",
+      "description": "TEXT converts a number or date into text using a user-supplied format code, so the displayed value can be concatenated or presented in a custom format."
+    },
+    {
+      "name": "TRIM",
+      "slug": "trim",
+      "description": "TRIM removes extra spaces from text, leaving only single spaces between words."
+    },
+    {
+      "name": "SUBSTITUTE",
+      "slug": "substitute",
+      "description": "SUBSTITUTE replaces one text string with another in a text string."
+    },
+    {
+      "name": "ISNUMBER",
+      "slug": "isnumber",
+      "description": "ISNUMBER returns TRUE if the supplied value is a number (including numeric results of formulas and dates stored as serial numbers), and FALSE otherwise."
+    },
+    {
+      "name": "IFERROR",
+      "slug": "iferror",
+      "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise."
+    },
+    {
+      "name": "COUNT",
+      "slug": "count",
+      "description": "COUNT counts the number of cells that contain numbers within a specified range."
+    },
+    {
+      "name": "COUNTA",
+      "slug": "counta",
+      "description": "COUNTA counts the number of non-empty cells within a specified range, regardless of the cell content."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    }
+  ],
+  "summary": "A SUM of zero on a column that looks like money means the cells are text. VALUE parses those strings in one step and handles currency symbols, thousands separators, percentages and dates. Multiply by 1 or use Paste Special > Multiply when you want the conversion done in place, and strip character 160 with SUBSTITUTE first, because TRIM and CLEAN both leave it behind. Convert once into a clean working column, keep the raw import on its own sheet, and let number formats live in the presentation layer. The trade-off is one extra column plus a little discipline, which is cheaper than rebuilding a report every month.",
+  "nextSteps": [
+    "Run Paste Special > Multiply on a copy of your imported column and compare SUM before and after",
+    "Add =ISNUMBER(A2) to a spare column of every new import and filter for FALSE before building anything on top",
+    "When a conversion still returns #VALUE!, check =LEN(A2) and test =VALUE(SUBSTITUTE(A2,CHAR(160),\"\")) before changing the formula"
+  ],
+  "relatedTutorials": [
+    "remove-extra-spaces",
+    "extract-text-from-string",
+    "concatenate-vs-textjoin"
+  ]
+}
