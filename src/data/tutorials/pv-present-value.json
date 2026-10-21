@@ -1,0 +1,217 @@
+{
+  "slug": "pv-present-value",
+  "title": "PV Function: Present Value of a Future Sum or a Payment Stream",
+  "description": "PV present value discounts a future lump sum or a stream of payments back to today, plus the sign rule, four traps and the Excel-to-Sheets differences.",
+  "category": "Financial",
+  "functions": [
+    "PV",
+    "FV",
+    "PMT",
+    "RATE",
+    "NPER",
+    "NPV"
+  ],
+  "intro": "$50,000 promised in five years is not a $50,000 decision today. At 6% a year that promise is worth $37,068.61 right now, and that is the number any savings plan or purchase should be measured against. PV does the discount in one function, including the messier case of a payment arriving every month for years.",
+  "tags": [
+    "PV",
+    "Present Value",
+    "Discounting",
+    "Financial Functions",
+    "Time Value of Money"
+  ],
+  "estimatedTime": "10 min read",
+  "prerequisites": [
+    "A spreadsheet with a rate, a term and an amount to work with",
+    "Comfort with cell references and the percent sign",
+    "Willingness to type a negative number for money leaving your account"
+  ],
+  "sections": [
+    {
+      "title": "The $50,000 That Is Not Worth $50,000 Today",
+      "content": "A savings goal sits in a single cell: 50000, dated five years out. The rate on the account is 6% a year, compounded monthly. Type =PV(0.005,60,0,50000) and Excel returns ($37,068.61). The parentheses are Excel's way of writing a negative, and the sign is correct here: $37,068.61 leaves your account today so that $50,000 can arrive in 2031. The $12,931.39 between the two figures is interest, not a discount you negotiated. Nothing about the formula depends on today's date. PV only knows that five years is 60 periods and that each period earns half a percent.",
+      "example": {
+        "formula": "=PV(0.005,60,0,50000)",
+        "result": "($37,068.61)",
+        "explanation": "6% a year is 0.5% a month and five years is 60 months. No money is added along the way, so pmt is 0 and the whole answer comes from discounting the 50000 in fv. Double the goal to 100000 and the result doubles exactly to ($74,137.22), a straight line that stops holding the moment a pmt enters the formula."
+      },
+      "tips": [
+        "Leave fv out and there is nothing to discount: =PV(0.005,60,0) returns 0, which is correct and rarely what the person typing it wanted.",
+        "Confirm the direction with =FV(0.005,60,0,-37068.61). It returns $50,000.00, which is the whole point of the pair.",
+        "Rate and nper have to describe the same period. 6 with 60 periods returns 83.33, a small number that looks like a result and means nothing."
+      ]
+    },
+    {
+      "title": "Syntax, the Sign Rule, and the Argument People Skip",
+      "content": "The signature is PV(rate, nper, pmt, [fv], [type]). It mirrors FV almost argument for argument, which is why the two get confused: FV asks what a balance grows into, PV asks what a future balance is worth now. Both treat money leaving your pocket as negative, so a deposit plan produces a positive PV and a loan produces a negative one. Excel accepts at most five arguments, and the last two are optional only in the sense that a missing pmt is read as 0 and a missing type as 0.",
+      "steps": [
+        {
+          "name": "Convert the annual rate to a period rate",
+          "text": "Divide by the number of compounding periods in a year. Monthly means 12, and the cell should show 0.005 rather than 0.5.",
+          "formula": "=6%/12"
+        },
+        {
+          "name": "Count periods, not years",
+          "text": "Five years of monthly periods is 60. A 30-year mortgage is 360, which is where most people first notice that nper is not a year count.",
+          "formula": "=5*12"
+        },
+        {
+          "name": "Enter outflows as negative",
+          "text": "If the money leaves your account, put a minus in front. Mixed signs are the single most common reason a PV result looks wrong.",
+          "formula": "=PV(0.005,60,0,50000)"
+        },
+        {
+          "name": "Decide on type only when a pmt exists",
+          "text": "0 pays at the end of each period and 1 at the start. With pmt at 0 the argument changes nothing, which surprises people who set it and see an identical result.",
+          "formula": "=PV(0.005,60,0,50000,1)"
+        }
+      ],
+      "example": {
+        "formula": "=PMT(0.005,60,0,50000)",
+        "result": "($716.64)",
+        "explanation": "The same goal funded monthly instead of in one lump. Sixty deposits of $716.64 total $42,998.40, which is $5,929.79 more than the $37,068.61 lump sum, because each deposit arrives later and earns less interest."
+      },
+      "tips": [
+        "fv and pmt can both be supplied at once: =PV(0.005,60,-500,-50000) returns $62,931.39, the sum of the payment stream and the lump sum discounted separately.",
+        "Text in any numeric argument returns #VALUE!, including a number pasted from a PDF as text.",
+        "PV has no lock on the rate. Drop 0.005 to 0.0025 and the same $50,000 goal costs $43,043.46 today, because less interest does the work for you along the way."
+      ]
+    },
+    {
+      "title": "Valuing a Stream of Payments",
+      "content": "Sixty deposits of $500 add up to $30,000 of your own money. At 6% a year that stream is worth $25,862.78 today, so $4,137.22 of the total is interest the lump sum would earn while the deposits trickle in. The rate is the sensitivity dial. Hold the payments fixed and move the rate: 3% a year gives $27,826.18, 12% a year gives $22,477.52. Same 60 payments, a spread of $5,348.66 between the two, and none of it comes from changing the amount you save.",
+      "example": {
+        "formula": "=PV(0.005,60,-500)",
+        "result": "$25,862.78",
+        "explanation": "pmt is negative because the $500 leaves your account each month, so PV comes back positive: the lump sum that produces the identical 60 payments. Flip pmt to positive 500 and the answer becomes ($25,862.78) with nothing else changed."
+      },
+      "steps": [
+        {
+          "name": "Pay at the start of the period",
+          "text": "Deposits made on the first of the month earn interest for that month. type=1 lifts the value to $25,992.09, a gain of $129.31 that costs nothing but a payroll date.",
+          "formula": "=PV(0.005,60,-500,0,1)"
+        },
+        {
+          "name": "Prove type does nothing without pmt",
+          "text": "With pmt at 0 the answer stays $37,068.61 whether type is 0 or 1, because type scales the payment annuity and there is no annuity. People spend an afternoon on this one.",
+          "formula": "=PV(0.005,60,0,-50000,1)"
+        },
+        {
+          "name": "Sanity-check with a zero rate",
+          "text": "At rate 0 there is no discounting, so PV returns the plain sum of the payments. If this does not equal 30000, one of the other arguments is wrong.",
+          "formula": "=PV(0,60,-500)"
+        }
+      ],
+      "tips": [
+        "Ten years of the same $500 is worth $45,036.73, well short of double $25,862.78. Later payments are discounted harder, so duration buys value at a falling rate.",
+        "A 12% discount rate is not a forecast. It is an assumption about what else the money could earn, so run 3%, 6% and 8% before signing a lease or a purchase.",
+        "The account that pays 12% is not the same account that pays 6%. Mixing a quoted rate with the wrong compounding frequency is how the inputs drift apart."
+      ]
+    },
+    {
+      "title": "Reading a Loan Backwards",
+      "content": "A $200,000 mortgage at 6% over 30 years carries a payment of $1,199.10. Feed that payment back into PV and you get $199,999.82 instead of $200,000. The missing 18 cents is rounding: PMT returned 1199.1010, the cents version is slightly low, and 360 of those tiny shortfalls add up to 18 cents. After 60 payments there are 300 left, so =PV(0.005,300,-1199.10) returns $186,108.55, the balance still owed at the five-year mark. Payments by then total $71,946, and only $13,891.45 of it touched the principal.",
+      "example": {
+        "formula": "=PV(0.005,300,-1199.10)",
+        "result": "$186,108.55",
+        "explanation": "The remaining payments are all the balance is: discount 300 of them and the answer is what you still owe. Drop nper to 1 to see the payoff figure one month before the end, which is the deposit the final payment has to clear."
+      },
+      "steps": [
+        {
+          "name": "Build the payment from the principal",
+          "text": "PMT and PV are inverses. Start with the loan amount, get the payment, then feed that payment back into PV and watch it return the amount you started with.",
+          "formula": "=PMT(0.005,360,200000)"
+        },
+        {
+          "name": "Take the balance at any point",
+          "text": "Subtract the payments already made from nper. Five years in, that is 360 minus 60, and the result is the payoff principal on that date.",
+          "formula": "=PV(0.005,360-60,-1199.10)"
+        },
+        {
+          "name": "Separate principal from interest",
+          "text": "Subtract the balance from the original loan to get the principal repaid. Everything else you paid was interest, and on a 30-year loan that is the larger half for a long time.",
+          "formula": "=200000-PV(0.005,300,-1199.10)"
+        }
+      ],
+      "tips": [
+        "This is the arithmetic behind an amortization schedule. Checking one row of the lender's table against PV is the fastest way to confirm the schedule is right.",
+        "NPER works the other way: =NPER(0.005,-1199.10,200000) returns 360.0009 rather than a clean 360, the same 18-cent rounding showing up as a fraction of a payment.",
+        "A payoff quote that is a few dollars off the PV result usually means the lender is adding per-diem interest to the date of the wire. The function is not wrong."
+      ]
+    },
+    {
+      "title": "PV vs NPV, and Where Excel and Google Sheets Split",
+      "content": "PV assumes every payment is the same size. Real projects do not pay evenly, so NPV takes a range instead: =NPV(0.06,3000,4000,5000) returns $10,588.27. The catch is timing. NPV discounts the first value by a full period, so an outlay made today belongs outside the function: =-10000+NPV(0.06,3000,4000,5000) gives $588.27. Put the -10000 inside the range and you get $1,154.31, an overstatement of $566.04 that has sunk more project approvals than any other spreadsheet mistake.",
+      "example": {
+        "formula": "=-10000+NPV(0.06,3000,4000,5000)",
+        "result": "$588.27",
+        "explanation": "Ten thousand spent now, then 3,000, 4,000 and 5,000 over the next three years. The project clears its 6% hurdle by $588.27, which is thin enough that a different discount rate flips the decision. The break-even rate for these flows, what IRR reports, is 8.90%."
+      },
+      "steps": [
+        {
+          "name": "See the timing error for yourself",
+          "text": "Moving the outlay inside the range discounts it too, as if it were spent a year from now, and inflates the answer by 600/1.06.",
+          "formula": "=NPV(0.06,-10000,3000,4000,5000)"
+        },
+        {
+          "name": "Cross-check the rate with RATE",
+          "text": "Given a PV of 25,862.78, a payment of -500 and 60 periods, RATE returns 0.5%. If your inputs disagree with the rate you assumed, one of the three is wrong.",
+          "formula": "=RATE(60,-500,25862.78)"
+        },
+        {
+          "name": "Use XNPV when the dates are uneven",
+          "text": "Quarterly or annual flows on real calendar dates need the date range passed alongside the values, because XNPV discounts by actual days rather than by period count.",
+          "formula": "=XNPV(0.06,B2:B5,A2:A5)"
+        }
+      ],
+      "tips": [
+        "Google Sheets takes the same five arguments in the same order, though its documentation names them rate, number_of_periods, payment_amount, future_value and end_or_beginning. Every formula on this page returns the same figure in both apps.",
+        "NPV in Sheets behaves identically, including the one-period shift on the first value, so the fix travels with the file.",
+        "Neither function knows about fees, tax or inflation. Fold them into the discount rate deliberately, and write the assumption into a cell so the next person can see it."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "PV",
+      "slug": "pv",
+      "description": "PV returns the current value of a future stream of cash flows discounted at a constant rate."
+    },
+    {
+      "name": "FV",
+      "slug": "fv",
+      "description": "FV returns the future value of an investment based on periodic, constant payments and a constant interest rate."
+    },
+    {
+      "name": "PMT",
+      "slug": "pmt",
+      "description": "PMT calculates the periodic payment for a loan or investment based on constant payments and a constant interest rate. It's the function you need for mortgage, car loan, and any fixed-rate payment calculations."
+    },
+    {
+      "name": "RATE",
+      "slug": "rate",
+      "description": "RATE returns the periodic interest rate for an annuity based on the number of periods, payment amount, present value, and future value."
+    },
+    {
+      "name": "NPER",
+      "slug": "nper",
+      "description": "NPER returns the total number of payment periods required to reach a target value given a fixed interest rate and payment."
+    },
+    {
+      "name": "NPV",
+      "slug": "npv",
+      "description": "NPV calculates the net present value of an investment based on a discount rate and a series of future cash flows."
+    }
+  ],
+  "summary": "PV turns a future amount into today's money: divide the annual rate by the compounding periods, count the periods, and put a minus sign on anything that leaves your account. Use fv for a single future sum, pmt for a repeating payment, and both when a plan has a lump sum and a deposit schedule. Type 1 only matters when a payment exists, and a rate of 0 is a useful check that the other arguments add up. Reach for NPV once the flows stop being equal, keeping today's outlay outside the range. The trade-off is that every one of these answers is only as good as the rate you typed, so treat the rate as an assumption on the sheet rather than a fact.",
+  "nextSteps": [
+    "Put the rate in its own cell and run the same PV at 3%, 6% and 8% before committing to a lease, a purchase or a savings target",
+    "Rebuild one row of your lender's amortization schedule with PV and compare the balance to the cent",
+    "When a project has uneven cash flows, enter the outlay outside NPV and check the sign with XNPV on the real dates"
+  ],
+  "relatedTutorials": [
+    "fv-future-value",
+    "pmt-function-loan-payment",
+    "calculate-loan-interest"
+  ]
+}
