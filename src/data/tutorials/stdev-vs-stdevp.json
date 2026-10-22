@@ -1,0 +1,197 @@
+{
+  "slug": "stdev-vs-stdevp",
+  "title": "STDEV vs STDEVP: Sample or Population Standard Deviation",
+  "description": "STDEV vs STDEVP decides whether ten cartons are a sample or a whole batch, and the 5.4% gap can flip the verdict. Divisors, blanks, and #DIV/0! included.",
+  "category": "Statistical",
+  "functions": [
+    "STDEV",
+    "STDEVP",
+    "VAR",
+    "VARP",
+    "AVERAGE"
+  ],
+  "intro": "Ten fill weights sit in a column, a control limit of 0.21 oz sits in a cell, and the verdict depends on whether those ten cartons stand for a 2,000-carton run or are the entire batch. STDEV.S returns 0.2173 and holds the batch; STDEVP returns 0.2062 and releases it. The difference is one in the divisor, and it decides more reports than anyone admits.",
+  "tags": [
+    "STDEV",
+    "STDEVP",
+    "Sample vs Population",
+    "Standard Deviation",
+    "Quality Control"
+  ],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "A column of numbers and the COUNT function",
+    "Ten minutes with a real dataset you already report on",
+    "No statistics background needed beyond knowing what an average is"
+  ],
+  "sections": [
+    {
+      "title": "Same Ten Cartons, Opposite Verdicts",
+      "content": "Ten cartons come off a filling line and get weighed: 16.1, 15.8, 16.3, 16.0, 15.9, 16.2, 16.1, 15.7, 16.4, 16.0 ounces. The control rule for the line says a batch is out of control when the fill-weight standard deviation climbs above 0.21 oz. Type =STDEV.S(A2:A11) and you get 0.2173, so the batch is held. Type =STDEVP(A2:A11) on the same ten cells and you get 0.2062, so it ships. Nothing changed except the denominator: 9 instead of 10. The 0.0112 oz between those two answers is smaller than the scale's own resolution, and it is the entire distance between a release and a hold. The mean is 16.05 oz either way, the spec window runs 15.7 to 16.3, and one carton at 16.4 is already outside it. Standard deviation never flagged that carton. It cannot. It describes how the ten readings cluster, not whether any single one complies.",
+      "example": {
+        "formula": "=STDEV.S(A2:A11)",
+        "result": "0.2173",
+        "explanation": "Square each of the ten deviations from 16.05, add them (0.425), divide by 9 because the data is a sample of ten, then take the square root. 0.425/9 = 0.047222, and SQRT(0.047222) = 0.2173. The identical arithmetic with a divisor of 10 gives 0.0425 and 0.2062."
+      },
+      "tips": [
+        "Formatting both results to two decimals hides the whole problem: 0.22 against 0.21 reads like a rounding difference and behaves like a release decision.",
+        "If your control rule is written as a variance limit rather than a standard deviation limit, compare VAR.S and VAR.P instead. The unit changes, the choice does not.",
+        "The 16.4 oz carton sits 1.61 standard deviations above the mean, which is a mild z-score. An SD check will always be the wrong tool for catching one bad unit; MIN, MAX or COUNTIF is the right one."
+      ]
+    },
+    {
+      "title": "The Divisor Is a Claim About the Data, Not a Setting",
+      "content": "STDEV.S divides by n-1 because one degree of freedom went into estimating the mean from the same data. STDEVP divides by n because nothing was estimated. That is the whole theory, and it is easier to apply backwards from the decision: does a larger group exist that these ten cartons stand for? Ten cartons pulled from a 2,000-carton run stand for the run, so the answer is 0.2173. If those ten are the whole batch, the answer is 0.2062, because there is no larger group to infer anything about. Two sentences of context settle the formula, and neither sentence lives in the spreadsheet. \"We have the whole month\" is the line that gets this wrong most often. A month of daily readings is a sample of the process, not a population, unless the question is literally about those 30 days and nothing beyond them. The same reasoning covers a year of sales, one shift of output, and a quarter of returns: time-boxed data is nearly always a sample. A complete count of a defined set is a population, such as every carton in this batch, every employee on the payroll file for that date, or all 50 states.",
+      "steps": [
+        {
+          "name": "Count the numbers the function will actually read",
+          "text": "COUNT skips text and blanks, COUNTA does not. On a clean ten-row column both return 10, which is the number that ends up in the divisor.",
+          "formula": "=COUNT(A2:A11)"
+        },
+        {
+          "name": "Name the group you want to describe",
+          "text": "Write it in a cell above the formula: \"this batch\" or \"the run\". If the phrase needs the word every, you have a population. If it needs the word typical, you have a sample.",
+          "formula": "=STDEVP(A2:A11)"
+        },
+        {
+          "name": "Pick the divisor that matches the sentence",
+          "text": "The same ten cells, two defensible answers, chosen by context rather than by preference.",
+          "formula": "=STDEV.S(A2:A11)"
+        },
+        {
+          "name": "Print the choice next to the number",
+          "text": "A concatenated label travels with the cell into any pasted report, so the next reader does not have to guess which function produced it.",
+          "formula": "=\"n=\"&COUNT(A2:A11)&\", sample SD=\"&ROUND(STDEV.S(A2:A11),4)"
+        }
+      ],
+      "example": {
+        "formula": "=STDEVP(A2:A11)",
+        "result": "0.2062",
+        "explanation": "0.425 divided by all ten readings gives a variance of 0.0425, and the square root is 0.2062. This is the exact spread of these ten cartons and simultaneously a too-small estimate of the next ten, which is the trade the population formula makes."
+      },
+      "tips": [
+        "A population figure is not the more accurate one. It answers a narrower question exactly, and a narrower question is often the wrong one for a control chart.",
+        "Never mix the two silently in one report. Two departments using different divisors on the same column will publish two capability scores for one line and spend a week arguing about it."
+      ]
+    },
+    {
+      "title": "The 5.4% Gap, and How to Prove It on Your Own Data",
+      "content": "The two functions are tied together by a fixed multiplier, SQRT(n/(n-1)), which depends on nothing but the count. At n=10 the sample figure runs 5.41% higher. At n=5 it is 11.8% higher, at n=30 1.71%, at n=100 0.50%, and at n=1,000 0.05%. At n=2 the sample figure is 41.4% higher, which is a fair warning about two-point studies. Microsoft's own documentation for STDEV.S uses ten breaking-strength readings from 1299 to 1370 and reports 27.46391572. STDEVP on that same list returns 26.05455814. Round both to whole pounds and the answers are 27 and 26, so the divisor is visible even at the precision most reports use. The decision only gets harder as n grows: on a hundred points the two figures differ by half a percent, which will not change the shape of a chart and can still cross a threshold written to two decimals.",
+      "example": {
+        "formula": "=STDEV.S(A2:A11)/STDEVP(A2:A11)",
+        "result": "1.0541",
+        "explanation": "The ratio is fixed by the count alone, so any ten numbers in A2:A11 return 1.0541. Point it at a 100-row column and it returns 1.0050, point it at two cells and it returns 1.4142. If your ratio comes out as anything other than SQRT(n/(n-1)), the two formulas are not reading the same range."
+      },
+      "tips": [
+        "Error bars built with STDEVP run about 5% narrower on a ten-point series. Nobody spots 5% on a chart, which is how the wrong divisor survives for years in a template.",
+        "The ratio formula is worth keeping in a scratch cell. It tells you in one glance whether the difference between two numbers you are comparing is the divisor or the data.",
+        "Above n=30, stop worrying about the chart and start worrying about the sentence you write under it. \"Sample SD, n=30\" is a claim a reviewer can check."
+      ]
+    },
+    {
+      "title": "Blanks, Text Labels, and the #DIV/0! Waiting for You",
+      "content": "Replace A7 with the text n/a and clear A11, and STDEV.S returns 0.2449 instead of 0.2173. The count fell from ten to eight, so the divisor moved from 9 to 7, while the mean of the eight remaining weights still lands on 16.05. COUNT reports 8 and COUNTA reports 9, which is the quickest way to see what the function is really reading. Text inside a referenced range is skipped. Text typed straight into the formula is not skipped, it is an error: =STDEV.S(16.1,\"n/a\") returns #VALUE!, and the same goes for any argument that cannot be translated into a number. Logical values follow the same split, ignored inside a range and counted as 1 or 0 when typed directly into the argument list. STDEVA and STDEVPA reverse all of this by counting text as zero. On this column that turns 0.2449 into 5.3549, a figure describing a 0 oz carton nobody produced. A single numeric value is the other trap: =STDEV.S(B2) returns #DIV/0! because the divisor is zero, while =STDEVP(B2) returns 0 and looks perfectly healthy.",
+      "example": {
+        "formula": "=STDEV.S(A2:A11)",
+        "result": "0.2449",
+        "explanation": "Eight numbers instead of ten, and the remaining spread is 0.06 of variance over 7 degrees of freedom. The mean did not move because the two missing readings happened to sit at 16.1 and 16.0, both close to 16.05. Drop a 16.9 instead and both the mean and the standard deviation shift again."
+      },
+      "steps": [
+        {
+          "name": "Guard the divisor",
+          "text": "One number or zero numbers gives #DIV/0!, which then poisons any AVERAGE or chart downstream. Return a label instead of an error.",
+          "formula": "=IF(COUNT(B2:B11)<2,\"n/a\",STDEV.S(B2:B11))"
+        },
+        {
+          "name": "Read what the range actually holds",
+          "text": "This string tells you the numeric count against the non-empty count in one cell. 8 of 9 means one text cell is being skipped.",
+          "formula": "=COUNT(B2:B11)&\" of \"&COUNTA(B2:B11)"
+        },
+        {
+          "name": "Skip hidden rows when the column is filtered",
+          "text": "STDEV.S counts filtered-out rows like any other value, and SUBTOTAL has no standard deviation code at all. AGGREGATE does: function 7 is STDEV.S and option 5 ignores hidden rows.",
+          "formula": "=AGGREGATE(7,5,B2:B11)"
+        },
+        {
+          "name": "Fix the format on date columns",
+          "text": "Dates are serial numbers, so a standard deviation across a date column comes back in days. If the result cell is formatted as a date you will see something like 1/4/1900 instead of 3.5.",
+          "formula": "=STDEV.S(D2:D11)"
+        }
+      ],
+      "tips": [
+        "A #N/A sitting in the column is a problem for the plain function. AGGREGATE with option 6 skips error values on the way to the same statistic, which is the documented route around a dirty export.",
+        "Anyone who wants STDEVA on a weight column is usually trying to make a blank count as zero. A blank carton weight is missing data, not a weightless carton, so the honest answer is to find the missing reading."
+      ]
+    },
+    {
+      "title": "Two Names for the Same Divisor",
+      "content": "STDEV.S and STDEV.P arrived with Excel 2010. Open a workbook built on them in Excel 2007, or in a viewer that only knows the older function table, and the formulas return #NAME? with an _xlfn prefix in the formula bar. That is the only real cost of the dotted names, and it is a version problem rather than a math problem. Google Sheets lists both spellings: its function list maps STDEV.S to STDEV and STDEV.P to STDEVP, so either one evaluates and both match Excel to the last digit, 0.2173 on this column from either app. STDEVA and STDEVPA have no dotted versions anywhere, so the text-as-zero variants only exist under their original names. In new work, type the dotted names. The divisor is right there in the formula, and a reviewer reading =STDEV.S(A2:A11) knows exactly what claim the number makes without opening a methods note. Keep STDEV and STDEVP where a file has to survive Excel 2007, or where an export pipeline parses formula text and only recognizes the legacy table. The trade-off is real but small: longer formulas in exchange for a self-documenting one.",
+      "example": {
+        "formula": "=STDEV.S(A2:A11)=STDEV(A2:A11)",
+        "result": "TRUE",
+        "explanation": "The equality test returns TRUE because the two names run the same code path. If it returns FALSE, one of the ranges is off by a row or a column, which is the mistake this test is actually good at catching."
+      },
+      "steps": [
+        {
+          "name": "Prove the names agree",
+          "text": "Subtract one from the other. A result of exactly 0 confirms both formulas are reading the same cells with the same divisor.",
+          "formula": "=STDEV.S(A2:A11)-STDEV(A2:A11)"
+        },
+        {
+          "name": "Check the file before it ships",
+          "text": "Any legacy install that opens the workbook shows #NAME? in every cell using the dotted pair. If the file travels to a client on old hardware, the legacy names are the safer choice.",
+          "formula": "=STDEVP(A2:A11)"
+        },
+        {
+          "name": "Label the result in the cell",
+          "text": "TEXT pins the decimals so the label does not inherit the cell's general formatting, and the count makes the divisor auditable at a glance.",
+          "formula": "=\"SD=\"&TEXT(STDEV.S(A2:A11),\"0.0000\")&\" (sample, n=\"&COUNT(A2:A11)&\")\""
+        }
+      ],
+      "tips": [
+        "The P in STDEV.P stands for population, not precision. Teams that read it as the better number end up understating uncertainty in every report they publish.",
+        "VAR.S and VAR.P mirror the split exactly, and SQRT of either returns the matching standard deviation. Keep the pair straight by remembering that the dotted suffix is the only thing that changes.",
+        "Google Sheets returns the same 0.2173 from STDEV.S, so a workbook moved between the two apps does not need a formula rewrite. Only the Excel 2007 case needs one."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "STDEV",
+      "slug": "stdev",
+      "description": "STDEV estimates the standard deviation based on a sample of a population, using the n-1 denominator (Bessel's correction). It is the legacy compatibility version of STDEV.S."
+    },
+    {
+      "name": "STDEVP",
+      "slug": "stdevp",
+      "description": "STDEVP calculates the standard deviation based on an entire population, using the n denominator. It is the legacy compatibility version of STDEV.P."
+    },
+    {
+      "name": "VAR",
+      "slug": "var",
+      "description": "VAR estimates the variance based on a sample of a population, using the n-1 denominator (Bessel's correction). It is the legacy compatibility version of VAR.S."
+    },
+    {
+      "name": "VARP",
+      "slug": "varp",
+      "description": "VARP calculates the variance based on an entire population, using the n denominator. It is the legacy compatibility version of VAR.P."
+    },
+    {
+      "name": "AVERAGE",
+      "slug": "average",
+      "description": "AVERAGE returns the arithmetic mean of a set of numbers."
+    }
+  ],
+  "summary": "Decide what the range represents before you pick a function. Ten cartons pulled from a larger run are a sample, so STDEV.S with n-1 is the honest number and 0.2173 holds the batch. Ten cartons that are the whole batch call for STDEVP at 0.2062. The multiplier SQRT(n/(n-1)) tells you how far apart the two will land before you compute anything: 5.4% at n=10, 0.5% at n=100, 41% at n=2. Then check what the range is really reading, because a text label quietly shrinks the count and a single value returns #DIV/0!. Type the dotted names in new work so the divisor is visible in the formula, and accept the one cost: Excel 2007 and a few old parsers will not recognize them.",
+  "nextSteps": [
+    "Run =STDEV.S(range)/STDEVP(range) on three columns you already report and see whether any of them sits close enough to a threshold that the divisor decides the outcome",
+    "Change one cell in your data to the text n/a and watch COUNT, COUNTA and STDEV.S disagree, then guard the formula with IF and COUNT",
+    "Pick one report where you wrote STDEVP out of habit and rewrite the sentence above the number to say which population you actually measured"
+  ],
+  "relatedTutorials": [
+    "standard-deviation-excel",
+    "median-vs-average",
+    "averageif-with-criteria"
+  ]
+}
