@@ -1,0 +1,277 @@
+{
+  "slug": "offset-function-dynamic-range",
+  "title": "OFFSET Function: Build a Dynamic Range That Grows With the Data",
+  "description": "An offset function dynamic range that ends at the last filled row, plus the one blank cell that quietly cut a $639,800 total to $545,050, and the INDEX swap.",
+  "category": "Lookup & Reference",
+  "functions": [
+    "OFFSET",
+    "INDEX",
+    "COUNTA",
+    "COUNT",
+    "SUM",
+    "AVERAGE",
+    "MAX",
+    "INDIRECT",
+    "MATCH"
+  ],
+  "intro": "A total built with =SUM($B$2:$B$10) in September 2026 returned $395,300. Five rows later the same ledger holds $639,800 and the cell still returns $395,300. OFFSET fixes that by letting the formula size its own range, and the height argument is the part worth getting right, because it is where every silent miscount hides.",
+  "tags": [
+    "OFFSET",
+    "Dynamic Range",
+    "Named Ranges",
+    "Volatile Functions",
+    "INDEX"
+  ],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "A column of numbers with a header row and cell references you can make absolute",
+    "Comfort reading a formula inside a formula, since OFFSET is almost always nested",
+    "Any Excel version from 2007 on, or Google Sheets"
+  ],
+  "sections": [
+    {
+      "title": "A Total That Stopped Counting in September",
+      "content": "Nothing in that formula looks wrong. $B$2:$B$10 is a clean absolute range, the status bar agrees with it the moment it is written, and the number it returns is real. The failure arrives as an absence: new months land below row 10 and the sum never sees them. Excel selects to the last used cell when you drag with Ctrl+Shift+Down, so the range is correct on the day it is created and starts decaying the following month. The fix is to stop naming the last row at all. OFFSET takes a starting cell, a row shift, a column shift, a height and a width, and the height can be a formula. Point the height at a count and the range sizes itself.",
+      "steps": [
+        {
+          "name": "Anchor on the first data cell, not the header",
+          "text": "B2 is January 2026. The dollar signs matter: without them the anchor walks left when the formula is filled across the sheet.",
+          "formula": "=$B$2"
+        },
+        {
+          "name": "Count the rows that actually exist",
+          "text": "On a 14-row ledger this returns 14. The range stops at row 400 so there is room for years of new months without the cost of a whole-column reference.",
+          "formula": "=COUNTA($B$2:$B$400)"
+        },
+        {
+          "name": "Hand the count to OFFSET as the height",
+          "text": "Zero rows and zero columns means the range starts on B2 itself. The fourth argument asks for that many rows, and the fifth keeps it one column wide.",
+          "formula": "=OFFSET($B$2,0,0,COUNTA($B$2:$B$400),1)"
+        },
+        {
+          "name": "Wrap it in the function that reads the range",
+          "text": "OFFSET returns a reference rather than a value, so it needs a consumer. SUM, AVERAGE, COUNT, MAX or a chart source all accept one.",
+          "formula": "=SUM(OFFSET($B$2,0,0,COUNTA($B$2:$B$400),1))"
+        }
+      ],
+      "example": {
+        "formula": "=SUM(OFFSET($B$2,0,0,COUNTA($B$2:$B$400),1))",
+        "result": "$639,800",
+        "explanation": "COUNTA returns 14, OFFSET hands SUM the range B2:B15, and the fourteen monthly figures add to $639,800. Add a fifteenth row next March and the same formula returns the new total with no edit, because row 15 never appears in the formula text."
+      },
+      "tips": [
+        "Anchoring on the header instead of the first data cell loses the last row: =SUM(OFFSET($B$1,0,0,COUNTA($B$2:$B$400),1)) returns $592,200, exactly $47,600 short, because the header is counted as one of the fourteen height units. Either anchor on $B$1 with rows set to 1, or anchor on $B$2 and leave rows at 0.",
+        "A whole-column anchor costs more than it looks. $B:$B makes each recalculation walk a million rows, and OFFSET recalculates far more often than a normal formula does. B400 or B5000 keeps the cost flat for years.",
+        "OFFSET returns a reference, not a value, so a lone =OFFSET($B$2,0,0,4,1) lands in one cell and Excel 365 displays it as =@OFFSET(...). That @ is the implicit intersection operator, the mechanism that has always forced a multi-cell reference into a single cell. Wrapped in SUM or AVERAGE, no @ appears."
+      ]
+    },
+    {
+      "title": "The Five Arguments, One at a Time",
+      "content": "The signature is OFFSET(reference, rows, cols, [height], [width]). Three arguments are required, which is why the function looks simpler than it behaves. Leave height and width out and OFFSET returns a range the same size as the anchor, so a single-cell anchor behaves exactly as you expect and a five-row anchor quietly passes all five rows into whatever surrounds it. Sign errors are the other surprise: rows counts downward from the anchor, so a negative number walks up, and cols counts rightward, so a negative number walks left.",
+      "steps": [
+        {
+          "name": "reference: where the walk starts",
+          "text": "One cell or a whole block. Everything else is measured from this corner, not from the middle of it.",
+          "formula": "=$B$2"
+        },
+        {
+          "name": "rows: how far down before the range begins",
+          "text": "0 starts on the anchor. 3 starts three rows below it. -1 starts one row above, which is how a window reaches backward into earlier months.",
+          "formula": "=OFFSET($B$2,3,0)"
+        },
+        {
+          "name": "cols: how far right",
+          "text": "0 for a single-column total. 1 would land on column C, so a typo here returns a number from the wrong column with no error to warn you.",
+          "formula": "=OFFSET($B$2,3,1)"
+        },
+        {
+          "name": "height: how many rows come back",
+          "text": "The argument that makes the range dynamic. It accepts a count, a cell, or any formula that resolves to a whole number.",
+          "formula": "=OFFSET($B$2,0,0,COUNTA($B$2:$B$400),1)"
+        },
+        {
+          "name": "width: how many columns come back",
+          "text": "1 keeps the reference a single column. 2 would return two columns per row and break any SUM that expects a vertical list.",
+          "formula": "=SUM(OFFSET($B$2,3,0,2,1))"
+        }
+      ],
+      "example": {
+        "formula": "=SUM(OFFSET($B$2,3,0,2,1))",
+        "result": "$83,350",
+        "explanation": "Three rows below B2 is B5, April 2026 at 43,900. A height of 2 pulls in B6 as well, May at 39,450, and the two add to $83,350. Raise height to 4 and the window becomes B5:B8, April through July, worth $182,800."
+      },
+      "tips": [
+        "rows and cols accept a cell or a formula, which makes MATCH a workable anchor: =SUM(OFFSET($B$2,MATCH(\"2026-11\",$A$2:$A$400,0)-1,0,4,1)) returns $198,800, the four months starting at November 2026. The -1 exists because MATCH counts the anchor row as position 1.",
+        "#REF! appears when the shifted range crosses the edge of the worksheet. It also appears when the anchor cell itself is deleted, because the reference the formula holds no longer exists. An inserted row is fine; a deleted row 2 is not.",
+        "OFFSET cannot read a workbook that is not open, so a reference pointing at a closed file returns #REF! rather than a stale number. INDIRECT fails the same way for the same reason."
+      ]
+    },
+    {
+      "title": "A Blank Cell Costs $94,750 and Raises No Error",
+      "content": "Clear cell B8. July 2026 was never invoiced, so the cell is empty rather than zero, which is the honest way to record a month with no revenue. The dashboard total immediately reads $545,050. No error triangle, no #REF!, no warning: COUNTA returns 13 instead of 14, OFFSET hands SUM a thirteen-row range ending at B14, and the February 2027 row that used to be inside the total is gone. The two rows outside the range are worth 47,150 and 47,600, so the total is $94,750 light. A wrong total that reads like a plausible slow quarter is the worst kind of wrong, because nobody opens the formula.",
+      "example": {
+        "formula": "=SUM(OFFSET($B$2,0,0,COUNTA($B$2:$B$400),1))",
+        "result": "$545,050",
+        "explanation": "Identical formula, one empty cell. COUNTA counts non-empty cells and does not care where the hole sits, so thirteen rows start at B2 and stop at B14. The $94,750 gap is made of the blank July cell plus the February row that fell off the bottom."
+      },
+      "steps": [
+        {
+          "name": "Count the column that is never empty",
+          "text": "Months are always entered, so column A gives the true row count even when a revenue cell is blank. This is the version worth keeping.",
+          "formula": "=SUM(OFFSET($B$2,0,0,COUNTA($A$2:$A$400),1))"
+        },
+        {
+          "name": "Compare the two counts in one cell",
+          "text": "A mismatch is the diagnosis. A match does not prove the column is clean, only that any holes happen to sit at the bottom.",
+          "formula": "=COUNTA($B$2:$B$400)&\" values vs \"&COUNTA($A$2:$A$400)&\" months\""
+        },
+        {
+          "name": "Find the last non-blank row when nothing is guaranteed",
+          "text": "The standard last-non-blank idiom. LOOKUP looks for 2 among a column of 1s and errors, never finds it, and settles on the final 1, which is the last filled row: 15.",
+          "formula": "=LOOKUP(2,1/($B$2:$B$400<>\"\"),ROW($B$2:$B$400))"
+        },
+        {
+          "name": "Say so instead of returning a smaller number",
+          "text": "A text flag in the total cell gets investigated. A total that is quietly $94,750 short does not.",
+          "formula": "=IF(COUNTA($A$2:$A$400)<>COUNTA($B$2:$B$400),\"gap in column B\",SUM(OFFSET($B$2,0,0,COUNTA($A$2:$A$400),1)))"
+        }
+      ],
+      "tips": [
+        "A formula that returns an empty string is not a blank cell. COUNTA counts it, so the height stays right, while COUNT and AVERAGE treat it as text and skip it. That combination produces a range of the correct size holding fewer numbers than you think.",
+        "Zeros are counted, and that is usually what you want. Recording the un-invoiced July as 0 instead of leaving it empty keeps both COUNTA and COUNT at 14, keeps the range correct, and keeps the total honest at $592,650 for July-adjusted revenue. The blank-or-zero decision is the actual bug in most of these workbooks.",
+        "Deleting a row instead of clearing it moves everything in the opposite direction: the counts drop by one, and every hardcoded row number elsewhere in the sheet now points one row too low."
+      ]
+    },
+    {
+      "title": "Trailing Windows Without a Helper Column",
+      "content": "The same five arguments build a rolling average, and here COUNT replaces COUNTA because the column holds numbers. =AVERAGE(OFFSET($B$2,COUNT($B$2:$B$400)-4,0,4,1)) returns 49,700, the mean of the last four months. COUNT returns 14, fourteen minus four is ten, so the window opens ten rows below B2 at B12 and a height of four closes it at B15: November 2026 through February 2027. Add a month and the window slides down one row by itself, because COUNT grew by one while the distance from the bottom stayed the same. That distance, the 4 in the formula, is the only number you ever edit.",
+      "example": {
+        "formula": "=AVERAGE(OFFSET($B$2,COUNT($B$2:$B$400)-4,0,4,1))",
+        "result": "49,700",
+        "explanation": "The four values are 49,300, 58,900, 43,000 and 47,600. COUNT reads numbers only, so this version survives a text label or a blank in the revenue column, unlike the COUNTA recipe above. The window is anchored to the bottom of the data rather than to the top."
+      },
+      "steps": [
+        {
+          "name": "Change one number and watch the average mislead",
+          "text": "COUNT minus 3 opens the window at B13 and a height of 4 runs it to B16, which is empty. AVERAGE skips the blank, so this is a three-month average wearing a four-month label, and it returns 49,833.33 instead of 49,700.",
+          "formula": "=AVERAGE(OFFSET($B$2,COUNT($B$2:$B$400)-3,0,4,1))"
+        },
+        {
+          "name": "Take MAX over the same window",
+          "text": "Six months back from the bottom is B10, and the highest value in B10:B15 is December 2026 at 58,900. One formula, one window, every statistic that accepts a range.",
+          "formula": "=MAX(OFFSET($B$2,COUNT($B$2:$B$400)-6,0,6,1))"
+        },
+        {
+          "name": "Name the window so a chart can point at it",
+          "text": "Formulas > Name Manager > New, name it Last4, and paste the formula into Refers to. A chart series set to =Sheet1!Last4 follows the data without anyone touching the chart again.",
+          "formula": "=OFFSET(Sheet1!$B$2,COUNT(Sheet1!$B$2:$B$400)-4,0,4,1)"
+        },
+        {
+          "name": "See what too little data does",
+          "text": "With two months entered, COUNT minus 4 is -2, and B2 shifted up two rows does not exist, so the cell shows #REF!. At three months it still works by accident, because the window reaches up into the header and AVERAGE ignores the text.",
+          "formula": "=COUNT($B$2:$B$400)-4"
+        }
+      ],
+      "tips": [
+        "Guard the short-history case rather than explaining the #REF! later: =IF(COUNT($B$2:$B$400)<4,\"need 4 months\",AVERAGE(OFFSET($B$2,COUNT($B$2:$B$400)-4,0,4,1))).",
+        "A text value in the revenue column lowers COUNT by one, so the window slips a row and includes a month that should have aged out. COUNTA would count the label as a row, which is why neither count is reliable on a messy column.",
+        "The trailing window is where OFFSET still earns its place. FILTER and TAKE both return arrays, but a chart series and a dynamic named range need a real reference, and OFFSET is the one that supplies it."
+      ]
+    },
+    {
+      "title": "Volatile, Replaceable, and Different in Google Sheets",
+      "content": "OFFSET recalculates on every change to any open workbook, not only on changes to the cells it reads. That is what volatile means, and it is the cost the previous four sections were quietly paying. One OFFSET cell is free. A column of five thousand rolling averages turns every keystroke into a full repaint, and the symptom is a workbook that feels slow in a way nobody can name. The replacement is a range ended with INDEX, which is not volatile: =SUM($B$2:INDEX($B$2:$B$400,COUNTA($A$2:$A$400))) returns the same $639,800 and recalculates only when column A or B changes. An Excel Table removes the question altogether. Convert the ledger with Insert > Table and =SUM(Table1[Revenue]) expands with every new row, needs no count, and tolerates a blank revenue cell because the Table defines the boundary.",
+      "example": {
+        "formula": "=SUM($B$2:INDEX($B$2:$B$400,COUNTA($A$2:$A$400)))",
+        "result": "$639,800",
+        "explanation": "INDEX returns the cell at position 14 inside B2:B400, which is B15, and the colon turns that into the ordinary range B2:B15. The result matches the OFFSET version exactly, with one recalc trigger instead of every keystroke in the workbook."
+      },
+      "steps": [
+        {
+          "name": "Rebuild the total without OFFSET",
+          "text": "Same number, no volatility. If a blank revenue cell is possible, this is the formula to ship rather than the COUNTA height version.",
+          "formula": "=SUM($B$2:INDEX($B$2:$B$400,COUNTA($A$2:$A$400)))"
+        },
+        {
+          "name": "Or drop the count entirely with a Table",
+          "text": "A structured reference already knows where the data ends, so the new row is inside the total the moment it is typed. No helper column, no named range, no volatile function.",
+          "formula": "=SUM(Table1[Revenue])"
+        },
+        {
+          "name": "Carry a sheet name when the source moves",
+          "text": "INDIRECT turns a sheet name typed in D2 into a reference, and OFFSET expands it. Both functions are volatile and neither can read a closed workbook, so keep this pattern for sheets inside one file.",
+          "formula": "=SUM(OFFSET(INDIRECT(\"'\"&$D$2&\"'!$B$2\"),0,0,COUNTA(INDIRECT(\"'\"&$D$2&\"'!$B$2:$B$400\")),1))"
+        },
+        {
+          "name": "Run the same formula in Google Sheets",
+          "text": "Same five arguments in the same order, same #REF! at the sheet edge, same recalculation on every edit. A workbook moved between the two apps needs no rewrite here.",
+          "formula": "=SUM(OFFSET($B$2,0,0,COUNTA($B$2:$B$400),1))"
+        }
+      ],
+      "tips": [
+        "Google Sheets has no Table1[Revenue] equivalent, and its named ranges hold a fixed A1 reference rather than a formula. The dynamic-chart recipe from the previous section therefore has no Sheets version: the chart range gets repointed by hand, or a helper column feeds it.",
+        "Find your exposure before deciding whether volatility matters. Ctrl+F, Options, Look in: Formulas, search OFFSET, and count. Under a hundred hits is cosmetic. Thousands across a data model is the difference between a workbook that opens in two seconds and one that opens in forty.",
+        "Keep OFFSET for the cases that need a moving reference, and accept the cost openly: it is the only one of the three techniques that can hand a chart or a defined name a window that slides."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "OFFSET",
+      "slug": "offset",
+      "description": "OFFSET returns a reference that is a specified number of rows and columns from a starting cell or range."
+    },
+    {
+      "name": "INDIRECT",
+      "slug": "indirect",
+      "description": "INDIRECT converts a text string into a cell reference that Excel can use in a formula."
+    },
+    {
+      "name": "INDEX",
+      "slug": "index",
+      "description": "INDEX returns the value at a specified position in a range or array."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "COUNTA",
+      "slug": "counta",
+      "description": "COUNTA counts the number of non-empty cells within a specified range, regardless of the cell content."
+    },
+    {
+      "name": "COUNT",
+      "slug": "count",
+      "description": "COUNT counts the number of cells that contain numbers within a specified range."
+    },
+    {
+      "name": "AVERAGE",
+      "slug": "average",
+      "description": "AVERAGE returns the arithmetic mean of a set of numbers."
+    },
+    {
+      "name": "MAX",
+      "slug": "max",
+      "description": "MAX returns the largest value in a range of cells."
+    },
+    {
+      "name": "MATCH",
+      "slug": "match",
+      "description": "MATCH searches for a specified item in a range and returns its relative position."
+    }
+  ],
+  "summary": "Size the range from a column that is always filled, and settle blank-versus-zero before choosing between COUNTA and COUNT. The recipe worth keeping is =SUM(OFFSET($B$2,0,0,COUNTA($A$2:$A$400),1)), because it reads its height from the months rather than from the numbers. OFFSET still owns two jobs: a trailing window of the last N periods, and a range that starts at a month you locate with MATCH. For a total that only needs to grow, swap in =SUM($B$2:INDEX($B$2:$B$400,COUNTA($A$2:$A$400))) or a Table and lose the volatility. The trade-off does not disappear: INDEX cannot hand a sliding range to a chart, so the moment the window has to move, OFFSET comes back.",
+  "nextSteps": [
+    "Replace one hardcoded sum in a live file with =SUM(OFFSET($B$2,0,0,COUNTA($A$2:$A$400),1)), then clear a cell in the middle of the summed column and watch the total drop with no error",
+    "Count the OFFSET formulas in your largest workbook with Ctrl+F, Look in: Formulas, and convert the ones that only grow a total into INDEX-ended ranges",
+    "Build the last-four-periods average once, name it Last4 in the Name Manager, and point a line chart at the name instead of at a fixed range"
+  ],
+  "relatedTutorials": [
+    "indirect-function-dynamic-reference",
+    "index-match-two-way-lookup",
+    "match-function-exact"
+  ]
+}
