@@ -1,0 +1,266 @@
+{
+  "slug": "google-sheets-regexreplace",
+  "title": "Google Sheets REGEXREPLACE: Replace Text by Pattern",
+  "description": "Google Sheets REGEXREPLACE rewrites every pattern match in one pass: strip currency, rebuild dates, and clear the non-breaking spaces TRIM leaves behind.",
+  "category": "Google Sheets",
+  "functions": [
+    "REGEXREPLACE",
+    "REGEXEXTRACT",
+    "REGEXMATCH",
+    "SUBSTITUTE",
+    "VALUE",
+    "TEXT",
+    "TRIM",
+    "ARRAYFORMULA"
+  ],
+  "intro": "Three amounts imported from a supplier PDF sit in A2:A4 as $12,480.50, $3,095.00 and $948.75, and the SUM cell beneath them reads 0. The cells look like money, sort like money, and are plain text. REGEXREPLACE rewrites them into numbers with one formula, and it does the same job on phone lists, misordered dates and the non-breaking space that TRIM will not touch.",
+  "tags": [
+    "REGEXREPLACE",
+    "Google Sheets",
+    "Regular Expressions",
+    "RE2",
+    "Data Cleaning"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "A Google account with access to Google Sheets",
+    "Comfort reading a formula with three arguments",
+    "No previous regular expression experience required"
+  ],
+  "sections": [
+    {
+      "title": "Three Amounts That Sum to Zero",
+      "content": "Each of the three cells begins with a dollar sign. Because a leading currency symbol followed by a thousands comma reads as text, SUM ignores all three values and returns 0, and AVERAGE over the same range throws #DIV/0!. The quickest repair writes the number out of the text: match everything that is not a digit or a decimal point, and replace it with an empty string. What comes back is 12480.50, which still needs VALUE, since REGEXREPLACE returns text no matter how numeric the result looks. Two functions in one cell, and the column totals 16,524.25.",
+      "steps": [
+        {
+          "name": "Check what the cell really is",
+          "text": "On the first amount ISTEXT returns TRUE. A genuine number returns FALSE, and the alignment gives it away before any formula does, because text hugs the left edge and numbers sit right.",
+          "formula": "=ISTEXT(A2)"
+        },
+        {
+          "name": "Keep digits and the decimal point",
+          "text": "Everything else is discarded: the dollar sign, the thousands comma, and any space the export left behind.",
+          "formula": "=REGEXREPLACE(A2,\"[^\\d.]\",\"\")"
+        },
+        {
+          "name": "Turn the text into a number",
+          "text": "VALUE does the conversion before any arithmetic runs. Skip it and the cell stays left-aligned text that still totals zero.",
+          "formula": "=VALUE(REGEXREPLACE(A2,\"[^\\d.]\",\"\"))"
+        },
+        {
+          "name": "Total the whole column at once",
+          "text": "ARRAYFORMULA hands the pattern the range A2:A4 in a single pass, and SUM adds what comes back.",
+          "formula": "=SUM(ARRAYFORMULA(VALUE(REGEXREPLACE(A2:A4,\"[^\\d.]\",\"\"))))"
+        }
+      ],
+      "example": {
+        "formula": "=VALUE(REGEXREPLACE(A2,\"[^\\d.]\",\"\"))",
+        "result": "12480.5",
+        "explanation": "A2 holds $12,480.50 as text. The negated class [^\\d.] keeps ten digits and one period and strips the rest, giving 12480.50, and VALUE turns that into the number 12480.5. The cell shows 12480.5 because its format is General. The three amounts now total 16,524.25 against 0 before the cleanup."
+      },
+      "tips": [
+        "Drop the period from the pattern and the cents become dollars. [^\\d] on $12,480.50 returns 1248050, one hundred times the real amount, with no error anywhere to warn you.",
+        "Numbers are refused as input. REGEXREPLACE(12480.5,\"x\",\"y\") returns #VALUE!, so convert first with TEXT(12480.5,\"0.00\"), which yields 12480.50 as text the function accepts.",
+        "A locale that writes 12.480,50 needs [^\\d,] in the pattern and a SUBSTITUTE(\",\",\".\") afterwards. One pattern that fits every locale does not exist, so decide which export you are cleaning."
+      ]
+    },
+    {
+      "title": "Three Arguments, and a Replacement That Is Not Literal",
+      "content": "REGEXREPLACE(text, regular_expression, replacement) is the entire signature. There is no fourth argument, so it rewrites every match in the string and offers no way to name a single occurrence. That design choice decides when to use it: excellent for normalizing a column, wrong for editing one comma inside a sentence. The replacement string is not literal either. A dollar sign followed by a digit points at a capture group, so $1 is the first pair of parentheses and $3 is the third.",
+      "steps": [
+        {
+          "name": "Run the official sample",
+          "text": "Google's own example starts at the capital S and stops at the only d in the word, and Bedsheets is the remainder. Reading it once is enough to see that the second argument is a pattern, not a search string.",
+          "formula": "=REGEXREPLACE(\"Spreadsheets\",\"S.*d\",\"Bed\")"
+        },
+        {
+          "name": "Watch a greedy wildcard eat too much",
+          "text": "Point the same shape at an order code and it swallows the date. The dot-star is greedy, so the match opens on the 2 and closes on the last 5 instead of stopping at the first hyphen.",
+          "formula": "=REGEXREPLACE(\"INV-2026-10-05\",\"\\d.*\\d\",\"#\")"
+        },
+        {
+          "name": "Number the groups and reuse them",
+          "text": "A5 holds 10/05/2026 as text. Three groups split it into month, day and year, and the replacement rebuilds the pieces in ISO order.",
+          "formula": "=REGEXREPLACE(A5,\"(\\d{2})/(\\d{2})/(\\d{4})\",\"$3-$1-$2\")"
+        },
+        {
+          "name": "Keep a currency sign outside the call",
+          "text": "A dollar sign inside the replacement is read as the start of a group reference, so the literal one belongs outside, joined with an ampersand.",
+          "formula": "=\"$\"&REGEXREPLACE(A5,\"(\\d{2})/(\\d{2})/(\\d{4})\",\"$3-$1-$2\")"
+        }
+      ],
+      "example": {
+        "formula": "=REGEXREPLACE(A5,\"(\\d{2})/(\\d{2})/(\\d{4})\",\"$3-$1-$2\")",
+        "result": "2026-10-05",
+        "explanation": "The slashes in the pattern are literal because / carries no special meaning. Each pair of parentheses becomes a group, so $3 is the year 2026, $1 is the month 10 and $2 is the day 05. The result is text, which is fine for a report but not yet a date that SORTBY will order correctly."
+      },
+      "tips": [
+        "The wildcards you know from VLOOKUP do not apply. Here ? makes the preceding character optional and * repeats it, so the pattern 7? matches an empty string or a single 7.",
+        "Characters that already have a job need a backslash before they can match themselves: \\( \\) \\. \\+ \\[ \\]. The period is the one people forget, and \\d. quietly means a digit followed by any character.",
+        "Test the pattern on one cell before filling anything down. An unmatched pattern returns the original text, so a typo looks like a column that needed no work."
+      ]
+    },
+    {
+      "title": "Collapsing Whitespace, and the Space That Survives",
+      "content": "A company name copied from a PDF or a web page arrives with runs of spaces, a tab where the column break used to be, and sometimes a line break in the middle of the name. The token \\s+ matches any run of them in one go, and replacing the run with a single space normalizes the string. TRIM then removes the space left at each end. On plain spaces TRIM alone returns the same nine characters, so the pattern earns its place only when the debris is mixed, which after a copy and paste it usually is.",
+      "steps": [
+        {
+          "name": "Collapse the runs",
+          "text": "A8 was pasted with two spaces in front, three in the middle and three at the end. Sixteen characters become eleven, because each run of spaces is replaced by one.",
+          "formula": "=REGEXREPLACE(A8,\"\\s+\",\" \")"
+        },
+        {
+          "name": "Trim the ends",
+          "text": "Nine characters remain, and the cell now matches the company name in the lookup table.",
+          "formula": "=TRIM(REGEXREPLACE(A8,\"\\s+\",\" \"))"
+        },
+        {
+          "name": "Prove a cell is still dirty",
+          "text": "A9 looks identical to the clean name and LEN reports 9 for both, yet EXACT says the two strings differ. A9 was copied from a web page and holds CHAR(160) where the clean cell holds an ordinary space.",
+          "formula": "=EXACT(A9,\"ACME CORP\")"
+        },
+        {
+          "name": "Swap the non-breaking space first",
+          "text": "SUBSTITUTE replaces CHAR(160) with a real space, and only then do the pattern and TRIM operate on a string made of characters they recognize.",
+          "formula": "=TRIM(REGEXREPLACE(SUBSTITUTE(A9,CHAR(160),\" \"),\"\\s+\",\" \"))"
+        }
+      ],
+      "example": {
+        "formula": "=EXACT(A9,\"ACME CORP\")",
+        "result": "FALSE",
+        "explanation": "VLOOKUP with A9 as the key returns #N/A against a table that clearly contains ACME CORP, and the natural conclusion is that VLOOKUP is broken. It is not. The two cells differ by one character that renders as a space, which is why LEN agrees at 9 and only EXACT notices."
+      },
+      "tips": [
+        "RE2 defines \\s as the ASCII set of tab, line feed, carriage return, form feed and space. A non-breaking space is not in that set, so \\s+ passes over it and TRIM does too. CLEAN plus TRIM is the older pair for the same debris, and \\s+ handles both jobs in one call.",
+        "Negated classes catch the non-breaking space for free, which is a second reason [^\\d.] in the first section is more dependable than a chain of \\s replacements.",
+        "Two checks settle whether a string is clean: LEN equals LEN of its TRIM, and EXACT against the value you expect. Anything else is a guess made by eye."
+      ]
+    },
+    {
+      "title": "Phone Numbers, Country Codes, and a Column That Fills Itself",
+      "content": "A contact list needs one format, and the source systems ship four. A pattern with groups rebuilds the shape, and a negated class reduces any variant to bare digits, which is the form a dialler or a CRM import expects. The behaviour to know before you fill this down is what happens when nothing matches: REGEXREPLACE returns the original text. No #N/A, no #VALUE!, no signal at all. A pattern that misses looks exactly like a column that was already correct.",
+      "steps": [
+        {
+          "name": "Rebuild a US format from brackets",
+          "text": "The escaped parentheses match the literal brackets, the three groups hold area code, prefix and line, and the replacement joins them with hyphens.",
+          "formula": "=REGEXREPLACE(B2,\"\\((\\d{3})\\)\\s*(\\d{3})-(\\d{4})\",\"$1-$2-$3\")"
+        },
+        {
+          "name": "Reduce to digits, then validate",
+          "text": "Ten digits between the anchors is the test. A cell with an extension or a country code fails it, which is the point of running the test at all.",
+          "formula": "=REGEXMATCH(REGEXREPLACE(B2,\"[^\\d]\",\"\"),\"^\\d{10}$\")"
+        },
+        {
+          "name": "Drop the country code before validating",
+          "text": "The inner call leaves eleven digits from +1 555.123.4567. The outer call removes a leading 1 only when it is the first character, so a number that already starts with an area code is untouched.",
+          "formula": "=REGEXREPLACE(REGEXREPLACE(B3,\"[^\\d]\",\"\"),\"^1\",\"\")"
+        },
+        {
+          "name": "Fill the column from one cell",
+          "text": "The IF keeps blank rows blank instead of turning them into empty strings that COUNT would later disagree about. Leave the cells to the right of the result empty.",
+          "formula": "=ARRAYFORMULA(IF(B2:B=\"\",\"\",REGEXREPLACE(B2:B,\"[^\\d]\",\"\")))"
+        }
+      ],
+      "example": {
+        "formula": "=REGEXREPLACE(B3,\"[^\\d]\",\"\")",
+        "result": "15551234567",
+        "explanation": "B3 holds +1 555.123.4567. Stripping non-digits keeps the country code, so the result is eleven characters rather than ten, and REGEXMATCH against ^\\d{10}$ returns FALSE. The phone number is valid. The pattern asked the wrong question, and that is the failure mode to watch for in a filled column."
+      },
+      "tips": [
+        "No match is not an error. REGEXREPLACE(\"ACME\",\"INV-(\\d+)\",\"$1\") returns ACME unchanged, while REGEXEXTRACT on the same pair returns #N/A. The two functions fail in opposite directions, which is why REGEXREPLACE needs no IFERROR wrapper.",
+        "ARRAYFORMULA needs the cells it spills into to be empty. A header typed in the neighbouring column produces #REF! rather than overwriting it.",
+        "Test the pattern on ten rows before wrapping it in ARRAYFORMULA for five thousand. A wrong pattern is one edit in a single cell and a rebuild of the whole column after it has spilled."
+      ]
+    },
+    {
+      "title": "One Occurrence, No Lookahead, and the Excel 365 Version",
+      "content": "Two limits surface in real work. Sheets has no occurrence argument, so REGEXREPLACE always rewrites every match and SUBSTITUTE stays the only way to touch one instance. RE2 also has no lookahead and no lookbehind, so a pattern cannot say only when it appears before this. Anchors cover most of what lookarounds were used for, and a two-step replace covers the rest. Microsoft 365 now ships its own REGEXREPLACE on the PCRE2 engine with two extra arguments, so a Sheets pattern copied into an Excel workbook needs the signature checked, not just the pattern.",
+      "steps": [
+        {
+          "name": "Replace one instance, not all of them",
+          "text": "The fourth argument of SUBSTITUTE is the instance number, and Sheets has no equivalent. The same string through REGEXREPLACE comes back as Contoso Ltd USA, with both commas gone.",
+          "formula": "=SUBSTITUTE(A2,\",\",\"\",1)"
+        },
+        {
+          "name": "Use an anchor instead of a lookahead",
+          "text": "The dollar anchor pins the match to the end of the string, so Contoso, Inc. loses the suffix while Contoso, Incorporated survives untouched.",
+          "formula": "=REGEXREPLACE(A2,\",\\s*Inc\\.?$\",\"\")"
+        },
+        {
+          "name": "Read the Excel 365 signature",
+          "text": "Excel adds an occurrence argument and a case-sensitivity argument, 0 for sensitive and 1 for insensitive. The trailing 1 here masks the first group only, giving ***-123-4567.",
+          "formula": "=REGEXREPLACE(A2,\"[0-9]{3}-\",\"***-\",1)"
+        },
+        {
+          "name": "Pass a flag instead of writing (?i)",
+          "text": "Sheets has no flag argument, so case-insensitivity lives inside the pattern as an inline flag. In Excel the same job is the fifth argument, and the pattern stays plain.",
+          "formula": "=REGEXREPLACE(A2,\"corp\",\"Co.\",1,1)"
+        }
+      ],
+      "example": {
+        "formula": "=REGEXREPLACE(\"Contoso, Ltd, USA\",\",\\s*\",\" \")",
+        "result": "Contoso Ltd USA",
+        "explanation": "Comma plus optional whitespace matches at both separators, so both are replaced and the legal form of the name is lost along with the punctuation. SUBSTITUTE with an instance number of 1 returns Contoso Ltd, USA instead. When the same string needs two different treatments in different places, the function without the occurrence argument is the wrong tool."
+      },
+      "tips": [
+        "Excel 2021 and earlier return #NAME? for REGEXREPLACE, as they do for REGEXTEST and REGEXEXTRACT. The function exists in Microsoft 365 subscriptions and nowhere older.",
+        "PCRE2 patterns do not travel back to Sheets. A lookahead that works in Excel raises #VALUE! here, because RE2 refuses the pattern rather than approximating it.",
+        "For a one-time cleanup, Find and Replace or Paste Special is faster than either function. Reach for REGEXREPLACE when the same cleanup has to run again next month against a fresh export."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "REGEXREPLACE",
+      "slug": "regexreplace",
+      "description": "REGEXREPLACE replaces text that matches a regular expression pattern with new text. It is more powerful than SUBSTITUTE because it can match patterns rather than fixed strings."
+    },
+    {
+      "name": "REGEXEXTRACT",
+      "slug": "regexextract",
+      "description": "REGEXEXTRACT extracts a substring from text that matches a regular expression pattern. It is useful for pulling specific pieces of text out of larger strings."
+    },
+    {
+      "name": "REGEXMATCH",
+      "slug": "regexmatch",
+      "description": "REGEXMATCH checks whether a text string matches a regular expression pattern and returns TRUE or FALSE."
+    },
+    {
+      "name": "SUBSTITUTE",
+      "slug": "substitute",
+      "description": "SUBSTITUTE replaces one text string with another in a text string."
+    },
+    {
+      "name": "VALUE",
+      "slug": "value",
+      "description": "VALUE converts a text string that represents a number, date, or time into its underlying numeric value."
+    },
+    {
+      "name": "TEXT",
+      "slug": "text",
+      "description": "TEXT converts a number or date into text using a user-supplied format code, so the displayed value can be concatenated or presented in a custom format."
+    },
+    {
+      "name": "TRIM",
+      "slug": "trim",
+      "description": "TRIM removes extra spaces from text, leaving only single spaces between words."
+    },
+    {
+      "name": "ARRAYFORMULA",
+      "slug": "arrayformula",
+      "description": "ARRAYFORMULA lets you apply a single formula to an entire range of cells automatically, expanding results into neighboring rows and columns without manually filling down or across."
+    }
+  ],
+  "summary": "Use REGEXREPLACE when the junk has a shape you can describe: a currency symbol, a bracket, a run of whitespace, a date in the wrong order. Use SUBSTITUTE when the junk is a fixed string you can name, and its instance number when only one match should change. The trade-offs are real. REGEXREPLACE always returns text, so a cleaned amount needs VALUE before it will sum, and it rewrites every match, so a targeted edit has to leave the function entirely. Two patterns carry most of the work: [^\\d.] for money and [^\\d] for phone lists. Write them once in the sheet rather than retyping them each month, and add LEN and EXACT checks beside the result so a silent non-match cannot pass as clean data.",
+  "nextSteps": [
+    "Run =VALUE(REGEXREPLACE(A2,\"[^\\d.]\",\"\")) on the next export that totals zero, then delete the decimal point from the pattern and watch 12480.50 come back as 1248050",
+    "Compare =EXACT(A9,\"ACME CORP\") against LEN for every pasted company name in a lookup table, and fix the mismatches with SUBSTITUTE(A9,CHAR(160),\" \")",
+    "Rebuild one REGEXREPLACE formula as SUBSTITUTE with an instance number, and note which of the two survives the next data refresh"
+  ],
+  "relatedTutorials": [
+    "google-sheets-regexextract",
+    "google-sheets-arrayformula",
+    "convert-text-to-number"
+  ]
+}
