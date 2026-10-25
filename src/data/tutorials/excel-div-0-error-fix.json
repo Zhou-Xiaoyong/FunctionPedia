@@ -1,0 +1,261 @@
+{
+  "slug": "excel-div-0-error-fix",
+  "title": "Excel Div 0 Error Fix: Why #DIV/0! Appears and What to Change",
+  "description": "Excel div 0 error fix that starts at the divisor: which cells return #DIV/0!, when a guard beats IFERROR, and the zeros an error wrapper leaves in your totals.",
+  "category": "Error Fixes",
+  "functions": [
+    "IFERROR",
+    "IF",
+    "SUM",
+    "AVERAGE",
+    "AVERAGEIF",
+    "ISERROR",
+    "ISBLANK",
+    "COUNTBLANK",
+    "COUNT",
+    "MOD"
+  ],
+  "intro": "A price list has four SKUs and a Price per Unit column, and SKU P-1003 was added before anyone typed its case count. That one empty cell divides 2,400 by nothing and returns #DIV/0!. The arithmetic is correct; the input is missing. Almost every decision that follows from this error depends on telling those two things apart.",
+  "tags": [
+    "#DIV/0!",
+    "Excel Errors",
+    "IFERROR",
+    "Blank Cells",
+    "Troubleshooting"
+  ],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Comfort editing a formula in the formula bar",
+    "Excel 2007 or later, or any Google Sheets account",
+    "For the LET example only: Excel 2021, Microsoft 365, or Google Sheets"
+  ],
+  "sections": [
+    {
+      "title": "What #DIV/0! Is Actually Saying",
+      "content": "Excel returns #DIV/0! when the value under the slash evaluates to zero or to nothing. Those are the same case in practice, because arithmetic reads an empty cell as 0, so =5/0 and =5/A1 with A1 empty produce identical output. =0/0 returns the same error, since Excel has no separate value for an undefined result. What the error cannot tell you is whether the zero is real. A product line with no sales carries a genuine zero; a month whose data export failed carries a missing number, and both cells look the same. In the table used here, SKU P-1003 has 2,400 of revenue and a blank Units cell, so its row errors while the other three read 40.00, 70.00 and 70.00.",
+      "example": {
+        "formula": "=B4/C4",
+        "result": "#DIV/0!",
+        "explanation": "Row 4 is SKU P-1003: 2,400 of revenue and an empty Units cell, which the division treats as 0. Excel reports the division rather than the missing input, so the message points at D4 while the gap is really in column C. ERROR.TYPE(D4) returns 2 on this cell, the code for #DIV/0!, which is how you sort it from #VALUE! (3) and #N/A (7) in a column of mixed errors."
+      },
+      "tips": [
+        "Microsoft's repair list has three entries: point the formula at a cell that holds neither zero nor a blank, type #N/A into the divisor cell so the whole result becomes #N/A, or accept that the number is not available yet and suppress the display. Only the third one is a formatting decision rather than a data one.",
+        "Three functions divide without a slash in them. MOD(10,0), QUOTIENT(10,0) and AVERAGE over a range with no numbers all return #DIV/0!, so searching your formulas for the / character will not find them.",
+        "Google Sheets reports the same error with a more specific tooltip: Function DIVIDE parameter 2 cannot be zero. Excel shows only the code, which is why clicking the cell and reading the formula bar takes less time than guessing which argument is wrong."
+      ]
+    },
+    {
+      "title": "The Divisor Is Blank, or the Divisor Is Zero",
+      "content": "A freight sheet holds cost in column B and weight in column C, and the per-pound rate is B/C. C2 is blank because the pallet was never weighed. C3 holds a typed 0 because the scale was tared wrong. Both return #DIV/0!, and the two guards that look interchangeable treat them differently. IF(C2=0,...) catches both, since a blank cell compares equal to zero. IF(C2=\"\",...) catches only the blank and lets the typed zero through to the division. Neither is wrong. The first asks whether there is a usable number. The second asks whether anything was entered at all, which is a different question and sometimes the one that matters.",
+      "steps": [
+        {
+          "name": "Guard on a usable number",
+          "text": "A zero and a blank both produce no rate, so this version returns an empty cell on either row.",
+          "formula": "=IF(C2=0,\"\",B2/C2)"
+        },
+        {
+          "name": "Guard on an entry existing",
+          "text": "This version treats a recorded zero as data and lets the error stand, which is what you want when a zero weight is a real measurement someone should chase up.",
+          "formula": "=IF(C3=\"\",\"\",B3/C3)"
+        },
+        {
+          "name": "Ask the two questions separately",
+          "text": "ISBLANK distinguishes what the arithmetic cannot: TRUE for the unweighed pallet, FALSE for the one that weighed in at zero.",
+          "formula": "=ISBLANK(C2)"
+        },
+        {
+          "name": "Watch the third state",
+          "text": "C4 holds a formula that returns an empty string. That is neither blank nor zero, so the =0 guard passes it through and the division fails as #VALUE!, a different error with a different cause.",
+          "formula": "=IF(C4=0,\"\",B4/C4)"
+        }
+      ],
+      "example": {
+        "formula": "=IF(C2=0,\"\",B2/C2)",
+        "result": "(blank cell)",
+        "explanation": "B2 is 1,450 and C2 is empty, so the guard is TRUE and the result cell stays empty instead of showing #DIV/0!. The same formula against 500 lb in C5 returns 2.90. Note that the fallback is an empty string and not 0: a 0 would render as $0.00 per pound and read like a real rate that somebody might quote to a customer."
+      },
+      "tips": [
+        "A formula that returns \"\" is not a blank cell. ISBLANK returns FALSE for it, while COUNTBLANK counts it as blank, so two built-in functions give opposite verdicts on the same cell.",
+        "The shorthand =IF(C2,B2/C2,\"\") drops the =0 comparison and tests the divisor for truthiness instead. It works on numbers and misbehaves on a divisor that holds text.",
+        "Google Sheets runs the same comparisons with the same results, blanks included. What changes there is the spill: a column guard usually needs ARRAYFORMULA(IF(B2:B=0,\"\",A2:A/B2:B))."
+      ]
+    },
+    {
+      "title": "When the Denominator Is a Total That Has Not Arrived",
+      "content": "Rates with a SUM or COUNT denominator break on the first day of a new month, because the denominator is legitimately 0. Four product rows on a November tab with nothing entered yet make =B2/SUM($B$2:$B$5) return #DIV/0! in every row, and the total row inherits it. IFERROR(...,0) clears the red and writes four 0.0% cells that add to 0.0%, which reads as a month where nothing sold rather than a month with no data. The October figures show why the difference is worth keeping. Widget 62,400 of 130,000 is 48.0%, Gadget is 32.0%, Bracket 20.0%, and an Add-on line that has not launched sits at a true 0.0% inside a populated month.",
+      "steps": [
+        {
+          "name": "A populated month",
+          "text": "The denominator is the column total, so it needs locking before the formula is filled down.",
+          "formula": "=B2/SUM($B$2:$B$5)"
+        },
+        {
+          "name": "The same formula on an empty month",
+          "text": "SUM of four empty cells is 0, and every row divides by it. This is one formula producing four errors, not four broken formulas.",
+          "formula": "=B2/SUM($B$2:$B$5)"
+        },
+        {
+          "name": "Guard the total, not the row",
+          "text": "The test belongs on the denominator. Testing B2 would blank only the rows that happen to be empty and leave the rest dividing by zero.",
+          "formula": "=IF(SUM($B$2:$B$5)=0,\"\",B2/SUM($B$2:$B$5))"
+        },
+        {
+          "name": "Compute the total once",
+          "text": "LET names the sum so the test and the division read the same value, which is also easier to audit six months later.",
+          "formula": "=LET(t,SUM($B$2:$B$5),IF(t=0,\"\",B2/t))"
+        }
+      ],
+      "example": {
+        "formula": "=B2/SUM($B$2:$B$5)",
+        "result": "48.0%",
+        "explanation": "Widget revenue of 62,400 divided by the 130,000 total is 0.48, and the cell displays 48.0% because it carries a percentage format. The three populated rows read 48.0%, 32.0% and 20.0%, and the empty Add-on row reads 0.0% with no error at all, since zero divided by 130,000 is a legitimate result. A #DIV/0! anywhere in that column would mean the whole month was empty, not that one product was slow."
+      },
+      "tips": [
+        "AVERAGEIF and AVERAGEIFS return #DIV/0! when no row matches the criteria, and a SUM-based guard never sees that cell. Handle it where it lives: =IFERROR(AVERAGEIF($A$2:$A$5,\"Add-on\",$B$2:$B$5),\"n/a\").",
+        "A column that mixes \"\" and 0.0% sorts and filters into two different groups, so decide once whether blank means no data and zero means zero sales, then hold that line across every tab.",
+        "Filling the share formula across instead of down keeps the locked range correct while the row reference shifts, which is the arrangement a share-of-row table needs."
+      ]
+    },
+    {
+      "title": "What the Wrapper Leaves Behind",
+      "content": "The wrapper decides what the cell shows, and the next formula inherits that decision. Four months of conversion rate read 4.00%, 3.50%, 4.50%, plus one broken row where both visits and orders were 0. Replace the error with 0 and AVERAGE returns 3.00% instead of 4.00%, a quarter low, with nothing on screen to suggest a problem. Replace it with an empty string and AVERAGE skips the text and returns 4.00%. The empty string costs something too. Arithmetic that adds the cells directly returns #VALUE!, and the count functions disagree about whether the row exists at all.",
+      "steps": [
+        {
+          "name": "Prove the error before replacing it",
+          "text": "ISERROR returns TRUE for #DIV/0! just as it does for every other error, which confirms you are looking at a failure rather than at odd-looking text.",
+          "formula": "=ISERROR(D6)"
+        },
+        {
+          "name": "Wrap with zero",
+          "text": "The failed row becomes a real 0, and any AVERAGE above it counts that row as a month with zero conversions.",
+          "formula": "=IFERROR(C2/B2,0)"
+        },
+        {
+          "name": "Wrap with an empty string",
+          "text": "AVERAGE ignores text, so the broken row drops out of the calculation instead of dragging it down.",
+          "formula": "=IFERROR(C2/B2,\"\")"
+        },
+        {
+          "name": "Read the three counts",
+          "text": "COUNT sees three numbers, COUNTA sees four entries, and COUNTBLANK calls the empty-string cell blank. Every one of them is correct on the same range.",
+          "formula": "=COUNTBLANK(E2:E5)"
+        }
+      ],
+      "example": {
+        "formula": "=AVERAGE(D2:D5)",
+        "result": "3.00%",
+        "explanation": "Column D holds =IFERROR(C2/B2,0) on every row, giving 4.00%, 3.50%, 0.00% and 4.50%, so the average lands on 3.00%. Build the identical column with the wrapper returning \"\" and the error row becomes text that AVERAGE skips, which puts the answer at 4.00%. Both columns look equally tidy on a slide. Only one of them reports the rate the business actually ran at."
+      },
+      "tips": [
+        "The + operator refuses text and SUM quietly skips it, so =D2+D3+D4+D5 returns #VALUE! on a column of empty strings while =SUM(D2:D5) returns the right total.",
+        "IFERROR suppresses all error types, including #REF! and #NAME?. Microsoft's own note says to confirm the formula works before wrapping it, which in practice means building the column without a wrapper for one day.",
+        "A rate column that feeds a chart should use \"\" rather than 0, because a zero plots as a data point at the axis and an empty cell plots as a gap, and the gap is the truth on a month with no data."
+      ]
+    },
+    {
+      "title": "Empty Ranges, Filtered Rows, and the Sheets Difference",
+      "content": "Four situations raise #DIV/0! with no visible slash anywhere. AVERAGE over a range with no numbers, SUBTOTAL(1,...) when a filter hides every row, AVERAGEIF when no record matches, and MOD with a divisor of 0. Each describes an empty set rather than a zero, so the guard has to test the count and not a value: =IF(COUNT(D2:D13)=0,\"\",AVERAGE(D2:D13)). The contrast with SUBTOTAL is the part worth memorizing. SUM over the same filtered range returns 0 because there is nothing to add, while AVERAGE returns #DIV/0! because there is no mean of nothing. A report that treats those as the same answer is wrong by exactly the amount nobody checked.",
+      "steps": [
+        {
+          "name": "Average a cleared month",
+          "text": "Every daily figure is empty, so there is no divisor available and no mean to report.",
+          "formula": "=AVERAGE(D2:D13)"
+        },
+        {
+          "name": "Test the count instead of a zero",
+          "text": "COUNT ignores blanks and text, so it answers how many numbers exist rather than what the largest one is.",
+          "formula": "=IF(COUNT(D2:D13)=0,\"\",AVERAGE(D2:D13))"
+        },
+        {
+          "name": "Filter every row out",
+          "text": "With no visible rows the function has nothing to average, and it returns the error rather than 0.",
+          "formula": "=SUBTOTAL(1,D2:D13)"
+        },
+        {
+          "name": "Sum the same filtered range",
+          "text": "The sum of no visible rows is 0. One filter, two aggregations, two different answers to the question of whether there is any data.",
+          "formula": "=SUBTOTAL(9,D2:D13)"
+        },
+        {
+          "name": "Divide without a slash",
+          "text": "MOD is a division, so a zero divisor produces the same error in a formula nobody would think to check.",
+          "formula": "=MOD(10,0)"
+        }
+      ],
+      "example": {
+        "formula": "=SUBTOTAL(1,D2:D13)",
+        "result": "#DIV/0!",
+        "explanation": "A Region filter set to a value that matches nothing hides every row. SUBTOTAL respects the filter, averages zero visible cells and returns #DIV/0!, which on this dashboard is the correct signal. Change the function number to 9 and the same range returns 0, which on screen is indistinguishable from a region that sold nothing."
+      },
+      "tips": [
+        "Google Sheets returns the same #DIV/0!, and its IFERROR accepts a single argument: =IFERROR(A2/B2) leaves the cell blank, while Excel complains that a function argument is missing. Sheets also has DIVIDE(dividend, divisor), which Excel does not, and it fails on a zero divisor too.",
+        "In Excel 365 and in Sheets, =C2:C13/B2:B13 spills one result per row. A single zero divisor puts #DIV/0! in that element while the rest of the spill calculates, so the column looks mostly right, which is harder to notice than a column that is broken everywhere.",
+        "FILTER with a divisor column behaves the same way: the zero rows are filtered out before the division, so =FILTER(D2:D13/B2:B13,B2:B13>0) needs no error handling at all."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "IFERROR",
+      "slug": "iferror",
+      "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "AVERAGE",
+      "slug": "average",
+      "description": "AVERAGE returns the arithmetic mean of a set of numbers."
+    },
+    {
+      "name": "AVERAGEIF",
+      "slug": "averageif",
+      "description": "AVERAGEIF calculates the average of cells that meet a single criterion."
+    },
+    {
+      "name": "ISERROR",
+      "slug": "iserror",
+      "description": "ISERROR returns TRUE if the supplied value is any Excel error (#N/A, #VALUE!, #REF!, #DIV/0!, #NUM!, #NAME?, or #NULL!), and FALSE otherwise."
+    },
+    {
+      "name": "ISBLANK",
+      "slug": "isblank",
+      "description": "ISBLANK returns TRUE only when a cell contains absolutely nothing—no value, no formula, and no space."
+    },
+    {
+      "name": "COUNTBLANK",
+      "slug": "countblank",
+      "description": "COUNTBLANK counts the number of empty cells within a specified range."
+    },
+    {
+      "name": "COUNT",
+      "slug": "count",
+      "description": "COUNT counts the number of cells that contain numbers within a specified range."
+    },
+    {
+      "name": "MOD",
+      "slug": "mod",
+      "description": "MOD returns the remainder after dividing a number by a divisor. The sign of the result always matches the sign of the divisor."
+    }
+  ],
+  "summary": "Guard the divisor, and pick the guard that matches what you mean by empty. For a rate column that feeds AVERAGE, SUM or a percentage report, =IF(denominator=0,\"\",numerator/denominator) is the right default, because an empty string drops out of aggregates and a 0 does not. Keep IFERROR for the cells where the formula is already known to work and any failure genuinely means the number cannot be computed. The trade-off cuts both ways: the guard is more typing and still lets a #VALUE! through when the divisor holds text, while IFERROR is one wrapper that also hides the #REF! you needed to see. The zero deserves a fix and the blank deserves a decision. Neither deserves a 0.00%.",
+  "nextSteps": [
+    "Open the sheet with the worst #DIV/0! and use Ctrl+G, Special, Formulas, Errors to count how many cells are affected before you change any of them",
+    "Rewrite one rate column as =IF(C2=0,\"\",B2/C2), fill it down, and compare its AVERAGE against a copy wrapped in IFERROR(...,0)",
+    "Put =ERROR.TYPE() beside a mixed error column to confirm which failures are division and which are #VALUE! or #REF!"
+  ],
+  "relatedTutorials": [
+    "excel-value-error-fix",
+    "excel-n-a-error-fix",
+    "iferror-vs-ifna"
+  ]
+}
