@@ -1,0 +1,277 @@
+{
+  "slug": "present-value-calculator",
+  "title": "Present Value Calculator: The Input That Turns the Answer Into $0.00",
+  "description": "A present value calculator is only as good as its units. Why 6 instead of 0.06 returns $0.00, how payment timing shifts the number, and how to check it.",
+  "category": "Calculators",
+  "functions": [
+    "PV",
+    "FV",
+    "PMT",
+    "RATE"
+  ],
+  "intro": "A note for $120,000 comes due in eight years and the question is what that promise is worth today with money costing 6% a year. The calculator that answers it is four input cells and one PV formula, and it returns $74,342.87. Where calculators built on this function go wrong is rarely the arithmetic. It is the units typed into the boxes.",
+  "tags": [
+    "PV",
+    "Present Value",
+    "Calculator",
+    "Discounting",
+    "Financial Functions"
+  ],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "A spreadsheet with room for four input cells",
+    "Any version of Excel or a Google Sheets account, since PV is identical in both",
+    "The discount rate you intend to test, written down before you start"
+  ],
+  "sections": [
+    {
+      "title": "Four Inputs, and the Block That Feeds Them",
+      "content": "Every present value calculator asks for the same four numbers: a rate per period, a count of periods, a payment that repeats, and an amount due at the end. Web calculators hide the period conversion behind a frequency dropdown. A spreadsheet does not, which is an advantage as long as you build the conversion once and point every formula at it. Put the rate in B2, the term in years in B3, the payments per year in B4, the recurring payment in B5 and the future amount in B6. Every formula below reads from that block and nothing else, so a single edit in B4 re-prices the whole sheet.",
+      "steps": [
+        {
+          "name": "Convert the rate once",
+          "text": "The annual rate divided by the payments per year is the rate PV wants. Six percent paid monthly is 0.005, not 0.5.",
+          "formula": "=B2/B4"
+        },
+        {
+          "name": "Count periods, not years",
+          "text": "Eight years of monthly periods is 96. Leave this as 8 and the calculator discounts the money as if it arrived next decade.",
+          "formula": "=B3*B4"
+        },
+        {
+          "name": "One formula for the whole calculator",
+          "text": "The dollar signs let the formula copy down or across without the input block drifting out from under it.",
+          "formula": "=PV($B$2/$B$4,$B$3*$B$4,$B$5,$B$6)"
+        },
+        {
+          "name": "Set the frequency to 1 for an annual answer",
+          "text": "Same block, one dropdown change. Annual compounding leaves the money invested longer between conversions, so the present value comes out higher.",
+          "formula": "=PV($B$2,$B$3,$B$5,$B$6)"
+        }
+      ],
+      "example": {
+        "formula": "=PV($B$2/$B$4,$B$3*$B$4,$B$5,$B$6)",
+        "result": "($74,342.87)",
+        "explanation": "With B2 at 6%, B3 at 8, B4 at 12, B5 empty and B6 at 120000, the formula is PV(0.005,96,0,120000). The parentheses are Excel's way of writing a negative, and the sign is right: $74,342.87 has to leave your account today for $120,000 to arrive in eight years. An empty B5 is read as zero, so no payment stream enters the calculation."
+      },
+      "tips": [
+        "Select B2:B6, then use the Name Box to call the block Inputs. A formula that reads PV(Inputs) or PV(Rate/Freq,Term*Freq,Pmt,Amount) is auditable by someone who has never opened the file.",
+        "B5 accepts a payment in either direction. Leave it at 0 for a single future amount, put a negative number there when the money leaves your account each month, and PV comes back positive.",
+        "Set B4 with Data, Data Validation, List, and the entries 1, 2, 4, 12. A dropdown stops the frequency from becoming 52 for a monthly plan, which is a typo that produces a believable number."
+      ]
+    },
+    {
+      "title": "6 and 0.06 Are Not the Same Rate",
+      "content": "The rate box is where a present value calculator fails quietly. Three variations on the same $120,000 promise produce three very different answers, and only one of them is intended. Typing the annual rate as a whole number makes PV discount at 600% a period, and the answer shrinks to 8.9078E-77, which a currency format paints as $0.00. Dividing the rate but keeping the year count as periods gives $446.50, a number a reader might accept as a rounding artifact. Converting the rate and forgetting the periods gives $115,306.22, which looks reassuring because it sits just below face value. The correct combination returns $74,342.87, and the safest test is that a monthly-discounted promise is always a little below the annually-discounted one.",
+      "steps": [
+        {
+          "name": "Annual rate typed as a whole number",
+          "text": "PV reads 6 as six hundred percent per period. The divisor becomes 7 to the 96th power and the answer collapses to scientific notation.",
+          "formula": "=PV(6,96,0,120000)"
+        },
+        {
+          "name": "Rate divided, periods left as years",
+          "text": "The monthly rate is correct, so the answer is not absurd, just wrong by a factor of 166. This is the version most likely to survive review.",
+          "formula": "=PV(0.06,96,0,120000)"
+        },
+        {
+          "name": "Periods converted, rate not divided",
+          "text": "A monthly rate applied to 8 periods prices the 2034 promise as if it came due this winter.",
+          "formula": "=PV(0.005,8,0,120000)"
+        },
+        {
+          "name": "Both conversions applied",
+          "text": "One cell for the period rate, one for the period count, and the function never sees an annual number.",
+          "formula": "=PV(0.06/12,8*12,0,120000)"
+        }
+      ],
+      "example": {
+        "formula": "=PV(6,96,0,120000)",
+        "result": "8.9078E-77",
+        "explanation": "The cell holds a positive number smaller than anything a spreadsheet will display as dollars, because 120,000 divided by 7^96 is about 10 to the minus 77. Apply Currency format and it reads $0.00. A zero from a PV calculator usually means the rate was entered on the wrong scale, not that the money is worthless."
+      },
+      "tips": [
+        "The same 6% quoted annually gives $75,289.48 with one period a year and $74,342.87 with twelve, a $946.61 gap that comes entirely from compounding frequency. Neither is an error; they are answers to different questions.",
+        "A rate formatted as a percentage in the cell still passes 0.06 to PV. Typing 6% somewhere that strips the percent sign is how the whole-number version happens in the first place.",
+        "Negative rates are legal. =PV(-0.02/12,96,0,120000) returns ($140,840.10), a present value larger than the amount due, which is what a promise is worth when the money shrinks faster than the discount rate."
+      ]
+    },
+    {
+      "title": "Two Offers, One Break-Even Rate",
+      "content": "A calculator earns its place when it compares two payment schedules instead of describing one. An offer of $84,000 today against $120,000 in six years has no obvious winner until both are moved to the same date. At a 6% cost of money the delayed payment is worth $84,595.26 today, so the wait pays $595.26 more than the cash. That margin is thin enough to flip, and the rate where it flips is 6.12%. Above 6.12% you take the money later; below it you take the cash now. The same test settles a lease buyout: 36 payments of $450 discounted at 6% a year is $14,791.96, so a $14,000 cash buyout wins by $791.96, and the lease only makes sense if your money earns more than 9.73% elsewhere.",
+      "steps": [
+        {
+          "name": "Price the delayed payment",
+          "text": "Annual periods, six of them, no recurring payment. The result is the cash-equivalent of the 2032 figure.",
+          "formula": "=PV(0.06,6,0,120000)"
+        },
+        {
+          "name": "Find the rate where the offers tie",
+          "text": "RATE takes the same arguments in the same order and returns the discount rate that makes the $84,000 the fair price of $120,000 in six years.",
+          "formula": "=RATE(6,0,-84000,120000)"
+        },
+        {
+          "name": "Price the lease at your cost of money",
+          "text": "36 payments of $450 discounted monthly at 6% a year. The result is positive because the payments are entered as outflows.",
+          "formula": "=PV(0.005,36,-450)"
+        },
+        {
+          "name": "Ask what rate the lease is really charging",
+          "text": "Solve for the rate that turns $14,000 of cash into that payment stream. The monthly answer is 0.81%, which annualizes to 9.73%.",
+          "formula": "=RATE(36,-450,14000)"
+        }
+      ],
+      "example": {
+        "formula": "=RATE(6,0,-84000,120000)",
+        "result": "6.12%",
+        "explanation": "PV, FV, PMT, RATE and NPER are five arrangements of one equation, so any four inputs produce the fifth. Feed RATE the present value of 84000, no payment, and 120000 in six periods, and it returns 0.0612. Round the rate to 6.1% and the delayed offer is still worth $118.00 more than the cash; round it to 6.2% and the cash wins by $356.12, which is why the threshold deserves a decimal."
+      },
+      "tips": [
+        "RATE may return #NUM! on a first attempt when the inputs are far apart. Supply a guess as the sixth argument, RATE(6,0,-84000,120000,0,0.1), rather than rebuilding the formula.",
+        "A lease quote is usually expressed as a money factor rather than a rate. Multiply the money factor by 2400 to get the nominal annual rate, then compare it against the 9.73% in the example.",
+        "Keep the discount rate in its own cell and the comparison becomes a sensitivity table: 4%, 6%, 8% across three rows answers the question for anyone whose cost of capital differs from yours."
+      ]
+    },
+    {
+      "title": "When the Money Moves, and a Discount Worth 37%",
+      "content": "The type argument decides whether a payment lands at the end of a period or the start, and it is the last box most people fill in. Moving 36 payments of $450 from end to start lifts the present value from $14,791.96 to $14,865.92. That is $73.96, roughly one sixth of a payment, and it is free money if the counterparty will accept it. Timing matters more once you stop treating a lump sum as fixed. An invoice for $10,000 with 2/10 net 30 terms offers $9,800 for paying twenty days early. At 8% a year, paying the full amount on day 20 costs $9,956.27 in current dollars, so the discount saves $156.27 and the twenty-day deferral is worth 2.04% of the balance, which annualizes to 37.24%.",
+      "steps": [
+        {
+          "name": "Payments at the end of the period",
+          "text": "Type 0 is the default and the one every lease quote assumes. The first $450 buys a month of use after it is paid.",
+          "formula": "=PV(0.005,36,-450)"
+        },
+        {
+          "name": "Payments at the start",
+          "text": "Type 1 discounts one fewer period on each payment, and the present value rises by the size of that difference.",
+          "formula": "=PV(0.005,36,-450,0,1)"
+        },
+        {
+          "name": "Discount twenty days of float",
+          "text": "A daily rate of 8%/365 with 20 periods prices the full invoice paid on day 20. No payment, so pmt stays at 0.",
+          "formula": "=PV(0.08/365,20,0,10000)"
+        },
+        {
+          "name": "Rate the discount itself",
+          "text": "One period, from 9,800 out to 10,000 back. Multiply by 365/20 to put the answer on an annual footing.",
+          "formula": "=RATE(1,0,-9800,10000)"
+        }
+      ],
+      "example": {
+        "formula": "=PV(8%/365,20,0,10000)",
+        "result": "($9,956.27)",
+        "explanation": "The invoice is for $10,000 due in twenty days. At an 8% cost of funds the right to pay it on day 20 is worth $9,956.27 today, so a 2% discount down to $9,800 is $156.27 cheaper than waiting. The terms only stop paying when your cost of funds passes 37.24%, which is the same number as the discount's annualized rate and the reason 2/10 net 30 is rarely turned down."
+      },
+      "tips": [
+        "Type has no effect when pmt is 0, since there is no annuity to shift. A calculator that offers a payment-timing toggle while the payment box is empty is advertising a setting that does nothing.",
+        "Discount terms scale differently. 2/10 net 30 annualizes to 37.24%, while the gentler 1/10 net 60 works out to 7.37%, because 1% saved over fifty days is not 1% saved over twenty.",
+        "Net 30 without a discount has no present-value advantage worth modeling. Terms like net 90 do: 10,000 pushed out ninety days at 8% is worth $9,804.69 today, close enough to the $9,800 discount that the two offers are nearly a coin toss."
+      ]
+    },
+    {
+      "title": "Checking the Answer Before Anyone Sees It",
+      "content": "A present value is easy to check because the function runs in both directions. Take the answer, feed it back through FV with the same rate and period count, and the future amount should return to the cent. When it does not, the error is in the units, not in the function. A second check needs no functions at all: rebuild the calculation as a single discount factor and multiply. The third check costs one keystroke and catches a category of mistake the others miss, which is a payment entered with the wrong sign. If two of the three checks disagree, trust the manual one.",
+      "steps": [
+        {
+          "name": "Run it backwards through FV",
+          "text": "The present value as a negative outflow, no payment, and the same 96 periods. The right answer is the number you started with.",
+          "formula": "=FV(0.005,96,0,-74342.87)"
+        },
+        {
+          "name": "Rebuild it with one discount factor",
+          "text": "One plus the annual rate, raised to the year count, divides the future amount. Six years at 6% gives a factor of 0.704961.",
+          "formula": "=120000/(1+0.06)^6"
+        },
+        {
+          "name": "Drop the rate to zero",
+          "text": "With no discounting, PV returns the plain sum of the payments. Sixty deposits of $500 must total $30,000, or an argument other than the rate is wrong.",
+          "formula": "=PV(0,60,-500)"
+        },
+        {
+          "name": "Hand it a text value",
+          "text": "A number stored as text produces #VALUE! rather than a wrong answer. That is the good failure mode, and it is why imported rate cells deserve a check.",
+          "formula": "=PV(\"6%\",96,0,120000)"
+        }
+      ],
+      "example": {
+        "formula": "=FV(0.005,96,0,-74342.87)",
+        "result": "$120,000.00",
+        "explanation": "The same four arguments, one function apart, and the promise comes back intact. Round the 74342.87 up to whole dollars and this check returns $120,000.21 instead, which is a rounding difference and not a mistake. A result of $120,000.00 is the strongest evidence available that the rate and the period count agree with each other."
+      },
+      "tips": [
+        "Excel shows a negative PV as ($74,342.87) under Currency and Accounting formats. Google Sheets shows -$74,342.87. Same value, different glyph, so do not screenshot one and describe it as the other.",
+        "Sheets names the arguments rate, number_of_periods, payment_amount, future_value and end_or_beginning. The order is identical and every formula on this page returns the same figure in both apps.",
+        "Excel's Data, What-If Analysis, Goal Seek can solve for the rate by setting the PV cell to a target, and Sheets has no Goal Seek at all. RATE does the same job in both, which is one more reason to build the calculator around functions rather than around a solver."
+      ]
+    }
+  ],
+  "calculator": {
+    "description": "Enter a future amount, an annual rate and a term in years. Add a monthly payment if money also arrives along the way. The present value recalculates as you type, with the rate and term both converted to months.",
+    "inputs": [
+      {
+        "key": "futureValue",
+        "label": "Amount due at the end",
+        "default": 120000,
+        "step": 1000,
+        "min": 0
+      },
+      {
+        "key": "annualRate",
+        "label": "Annual discount rate (%)",
+        "default": 6,
+        "step": 0.1,
+        "min": 0
+      },
+      {
+        "key": "years",
+        "label": "Years until the money arrives",
+        "default": 8,
+        "step": 1,
+        "min": 0
+      },
+      {
+        "key": "monthlyPayment",
+        "label": "Payment received each month",
+        "default": 0,
+        "step": 50,
+        "min": 0
+      }
+    ],
+    "resultLabel": "Present value",
+    "resultFormat": "currency",
+    "compute": "const r = annualRate/100/12; const n = years*12; const s = (r === 0) ? n : (Math.pow(1+r, n) - 1) / r; const g = (r === 0) ? 1 : Math.pow(1+r, n); result = (futureValue + monthlyPayment * s) / g;"
+  },
+  "functionsUsed": [
+    {
+      "name": "PV",
+      "slug": "pv",
+      "description": "PV returns the current value of a future stream of cash flows discounted at a constant rate."
+    },
+    {
+      "name": "FV",
+      "slug": "fv",
+      "description": "FV returns the future value of an investment based on periodic, constant payments and a constant interest rate."
+    },
+    {
+      "name": "PMT",
+      "slug": "pmt",
+      "description": "PMT calculates the periodic payment for a loan or investment based on constant payments and a constant interest rate. It's the function you need for mortgage, car loan, and any fixed-rate payment calculations."
+    },
+    {
+      "name": "RATE",
+      "slug": "rate",
+      "description": "RATE returns the periodic interest rate for an annuity based on the number of periods, payment amount, present value, and future value."
+    }
+  ],
+  "summary": "Build the calculator as an input block plus one PV formula, and convert the rate and the term in separate cells so the conversion is visible. When a result looks implausible, check the rate scale first: 6 against 96 periods returns scientific notation that displays as $0.00, and 0.06 against 96 returns $446.50. Use RATE to turn a comparison into a threshold, which is the one output a web calculator cannot give you, and confirm every answer by running it back through FV. The trade-off is that none of this makes the discount rate correct. PV will faithfully price a 6% assumption that should have been 8%, which is why the rate belongs in a labeled cell next to the assumption it represents rather than buried in the formula.",
+  "nextSteps": [
+    "Build the five-cell input block on a blank sheet and confirm that changing only B4 from 12 to 1 moves the answer from $74,342.87 to $75,289.48",
+    "Add a sensitivity column that reruns the same PV at 4%, 6% and 8%, then write down the lowest rate at which your decision would change",
+    "Run your own lease or financing quote through RATE(term, -payment, cash_price) and compare the result against the rate you assumed you were paying"
+  ],
+  "relatedTutorials": [
+    "pv-present-value",
+    "fv-future-value",
+    "compound-interest-calculator"
+  ]
+}
