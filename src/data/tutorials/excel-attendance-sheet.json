@@ -1,0 +1,272 @@
+{
+  "slug": "excel-attendance-sheet",
+  "title": "Excel Attendance Sheet: A Register That Counts Its Own Month",
+  "description": "Build an Excel attendance sheet that totals itself: four mark codes, COUNTIF rates that survive blank rows, and a NETWORKDAYS denominator from the calendar.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "COUNTIF",
+    "COUNTIFS",
+    "NETWORKDAYS",
+    "NETWORKDAYS.INTL",
+    "TODAY",
+    "WEEKDAY",
+    "IF",
+    "COUNTA",
+    "DATE"
+  ],
+  "intro": "March 2026 has 22 weekdays, one company holiday on Friday the 20th, and five people to account for. That leaves 105 cells that decide every payroll and attendance figure on the sheet. The layout below computes all of them from the marks themselves, including the two places where COUNTIF returns a believable number that is quietly wrong.",
+  "tags": [
+    "Attendance Sheet",
+    "COUNTIF",
+    "NETWORKDAYS",
+    "TODAY",
+    "HR Template"
+  ],
+  "estimatedTime": "13 min read",
+  "prerequisites": [
+    "A blank workbook and a payroll month you can date (this guide uses March 2026)",
+    "Space in H1:H5 for a holiday list and one as-of date",
+    "Comfort reading COUNTIF and COUNTIFS syntax, since the rest is written out in full"
+  ],
+  "sections": [
+    {
+      "title": "The Grid First: Dates Down Column A, People Across Row 1",
+      "content": "An attendance register is a grid because a month holds a fixed number of rows and a team holds a fixed number of columns. Dates go down A2:A32, names sit in B1:F1, and each person gets one mark per day in between. Two habits wreck that shape: merging a label across the name row, and dropping a note row under the headers. COUNTIF reads a range literally, so anything irregular inside B2:F32 is just another cell to count.",
+      "steps": [
+        {
+          "name": "Type the month, not the days",
+          "text": "Enter March 1, 2026 in A2 and drag the Fill Handle down to A32. Excel creates the weekend rows along with the rest, and leaving them blank is what produces the blank-cell problem two sections from now.",
+          "formula": "3/1/2026 → 3/31/2026"
+        },
+        {
+          "name": "Lock the alphabet down before anyone types",
+          "text": "Select B2:F32, then Data, Data Validation, List, and enter the four codes. A drop-down removes the whole typo class before it exists.",
+          "formula": "P,A,L,H"
+        },
+        {
+          "name": "Grey the weekends with a rule, not by hand",
+          "text": "Conditional Formatting, New Rule, Use a formula. Return type 2 makes Monday 1 and Sunday 7, so one test flags both weekend days.",
+          "formula": "=WEEKDAY($A2,2)>5"
+        },
+        {
+          "name": "Turn the block into a Table and use its column names",
+          "text": "Ctrl+T with B1:F32 selected, then rename Table1 to Register on the Table Design tab. A structured reference survives a column being inserted, and a new hire added at F2 joins every formula automatically.",
+          "formula": "=COUNTIF(Register[Ana],\"P\")"
+        }
+      ],
+      "example": {
+        "formula": "=COUNTIF($B$2:$B$32,\"P\")",
+        "result": "20",
+        "explanation": "Ana's column holds 31 dated rows. Nine of them are weekend rows left blank, one is the company holiday marked H, and one is paid leave on March 12, so 20 cells remain holding a P. The blank rows contribute nothing to the count, which is the first hint that a blank cell and an absence are not the same thing."
+      },
+      "tips": [
+        "Put the summary row at the top, not the bottom. Row 34 gets pushed down the moment someone inserts a row, while a header block at B4:F4 stays where every formula expects it.",
+        "A month per tab beats a year per tab. Thirty-one rows in fixed positions means the row holding a given date never moves, so hand-written ranges stay auditable when the file changes hands.",
+        "Name the Table Register and the holiday list Holidays. Named objects are the difference between a formula a colleague can read and a formula they have to reverse-engineer."
+      ]
+    },
+    {
+      "title": "One Letter per Cell, and the Ways COUNTIF Misreads It",
+      "content": "Four codes cover almost every attendance case: P for present, A for absent, L for paid leave, H for a holiday. The trouble starts when a fifth gets improvised. A cell reading P-late or Present changes the totals without changing what the sheet appears to say. COUNTIF ignores case, so a lowercase p still counts. It compares the criterion against the entire cell, so P-late does not.",
+      "steps": [
+        {
+          "name": "Count the codes exactly as typed",
+          "text": "Dan's column, with an exact criterion. Two of his presences were logged as P-late, and the exact match walks straight past both.",
+          "formula": "=COUNTIF($E$2:$E$32,\"P\")"
+        },
+        {
+          "name": "Widen the criterion to a prefix",
+          "text": "The asterisk matches any run of characters after the P, so both late cells come back into the total.",
+          "formula": "=COUNTIF($E$2:$E$32,\"P*\")"
+        },
+        {
+          "name": "Count the cells nobody filled in",
+          "text": "An empty criterion matches empty cells. Nine weekend rows are blank by design, so nine is the expected answer for a complete register.",
+          "formula": "=COUNTIF($B$2:$B$32,\"\")"
+        },
+        {
+          "name": "Prove that blank is not absent",
+          "text": "Ana has a leave day and no absences. Her A count reads zero while nine cells in the same column read empty.",
+          "formula": "=COUNTIF($B$2:$B$32,\"A\")"
+        }
+      ],
+      "example": {
+        "formula": "=COUNTIF($E$2:$E$32,\"P\")",
+        "result": "14",
+        "explanation": "Dan was late on two mornings in March and both cells read P-late. The exact criterion misses them, so his present count comes back 14 instead of 16 and his attendance rate reads 66.7% instead of 76.2%. Switching to P* recovers the total, and it would also count a cell reading Please check, which is the trade-off of every wildcard: narrow codes, wide patterns."
+      },
+      "tips": [
+        "COUNTIF(range,\"\") counts a cell whose formula returns an empty string as blank, exactly as it counts a truly empty cell. Nine blank weekend rows and one forgotten Tuesday look identical to the formula, which is why the audit row later in this guide exists.",
+        "Dates imported from a time clock often arrive as text. A criterion such as \">=\"&DATE(2026,3,1) then matches nothing and returns 0 instead of an error. Check the alignment: real dates sit right-aligned, text dates sit left.",
+        "The tilde escapes a wildcard. A code containing a literal asterisk needs ~*, otherwise the criterion matches every text cell in the range."
+      ]
+    },
+    {
+      "title": "The Attendance Rate: Take the Denominator From the Calendar",
+      "content": "The numerator is a COUNTIF. The denominator is where attendance sheets go wrong, because it is tempting to divide by the cells you can see. Ana's column holds 22 filled cells once the holiday is marked, but only 21 of them were working days, and dividing by 22 instead of 21 reports 90.9% instead of 95.2%. NETWORKDAYS is the fix: it counts Monday to Friday between two dates, includes both ends, and subtracts whatever holidays you hand it.",
+      "steps": [
+        {
+          "name": "One person, calendar denominator",
+          "text": "Count the presents, then divide by the working days in the month with the holiday list removed. 20 over 21.",
+          "formula": "=COUNTIF(B$2:B$32,\"P\")/NETWORKDAYS(DATE(2026,3,1),DATE(2026,3,31),$H$2)"
+        },
+        {
+          "name": "The wrong denominator, for comparison",
+          "text": "COUNTA counts every filled cell, including the holiday mark. The formula returns a rate that is 4.3 points low and looks perfectly reasonable.",
+          "formula": "=COUNTIF(B$2:B$32,\"P\")/COUNTA(B$2:B$32)"
+        },
+        {
+          "name": "Roll it up to the team",
+          "text": "One COUNTIF across the whole block, divided by the slots the calendar says exist. Do not sum the five individual rates, because that averages percentages rather than people.",
+          "formula": "=COUNTIF($B$2:$F$32,\"P\")/(5*NETWORKDAYS(DATE(2026,3,1),DATE(2026,3,31),$H$2))"
+        },
+        {
+          "name": "Format it once",
+          "text": "Ctrl+1, Percentage, one decimal. A rate formatted as General displays 0.952381 and gets read as a decimal by the next person who touches the sheet.",
+          "formula": "0.0%"
+        }
+      ],
+      "example": {
+        "formula": "=COUNTIF($B$2:$F$32,\"P\")/(5*NETWORKDAYS(DATE(2026,3,1),DATE(2026,3,31),$H$2))",
+        "result": "88.6%",
+        "explanation": "93 present marks across 105 working-day slots. Dan is the low end at 76.2% and Eli the high end at 100%, and Dan's four absences are half of the team's eight. The denominator never shrinks when someone forgets a mark, which is the property worth paying for: an unmarked day should drag the rate down, not hide inside a smaller total."
+      },
+      "tips": [
+        "Paid leave belongs in the denominator, not the numerator. Ana's 20 presents over 21 working days is 95.2%; counting her leave day as attendance reports a clean 100% and erases a day she was not there.",
+        "NETWORKDAYS includes both endpoints, which is why March 1 to March 31 returns 21 rather than 20. Hand it two dates and no holiday list and every rate on the sheet rises by about 5%.",
+        "A single holiday cell works as the third argument, and a range such as H2:H5 is better. The next holiday is then a new row instead of an edit to twelve formulas."
+      ]
+    },
+    {
+      "title": "Month-to-Date, and What TODAY() Costs You",
+      "content": "A rate for a finished month is a report. A rate that moves with the calendar is a management tool, and it needs one more criterion: only count rows dated on or before today. Put the as-of date in a cell instead of calling TODAY() inside the formula. With the date sitting in H5, the sheet can be printed, filed, and re-read next week without every figure moving under the reader.",
+      "steps": [
+        {
+          "name": "Count presents up to the as-of cell",
+          "text": "Two criteria ranges, one for the date and one for the mark. The operator is joined to the cell with an ampersand; typing the date inside the quotes turns it into text and matches nothing.",
+          "formula": "=COUNTIFS($A$2:$A$32,\"<=\"&$H$5,B$2:B$32,\"P\")"
+        },
+        {
+          "name": "Denominator for the same window",
+          "text": "The window runs from the first of the month to the as-of cell. Holidays after the window are ignored rather than subtracted.",
+          "formula": "=NETWORKDAYS(DATE(2026,3,1),$H$5,$H$2)"
+        },
+        {
+          "name": "Divide the two",
+          "text": "With H5 at March 13, 2026, ten working days had passed and Ana had been present on nine of them.",
+          "formula": "=COUNTIFS($A$2:$A$32,\"<=\"&$H$5,B$2:B$32,\"P\")/NETWORKDAYS(DATE(2026,3,1),$H$5,$H$2)"
+        },
+        {
+          "name": "Swap in the live clock",
+          "text": "The same formula with TODAY() in both places. Convenient for a dashboard that is opened every morning, wrong for anything that gets archived.",
+          "formula": "=COUNTIFS($A$2:$A$32,\"<=\"&TODAY(),B$2:B$32,\"P\")/NETWORKDAYS(DATE(2026,3,1),TODAY(),$H$2)"
+        }
+      ],
+      "example": {
+        "formula": "=COUNTIFS($A$2:$A$32,\"<=\"&$H$5,B$2:B$32,\"P\")/NETWORKDAYS(DATE(2026,3,1),$H$5,$H$2)",
+        "result": "90.0%",
+        "explanation": "Nine presents over the ten working days that had passed by Friday the 13th, because Ana took leave on the 12th. The completed month gives her 95.2%, so the month-to-date figure runs 5.2 points behind while the leave is still recent. That gap is the reason to keep the view: it points a manager at one date, where the full-month number only says the month was fine."
+      },
+      "tips": [
+        "TODAY() is volatile and recalculates on every edit. A workbook filed in March and reopened in April shows April's date against March's marks, so the denominator grows past the month and the rate falls with no change to the data.",
+        "Set the as-of cell to March 1, 2026 and NETWORKDAYS returns 0, because that date is a Sunday. The division shows #DIV/0! instead of a wrong number, which is the failure worth having; IFERROR handles it if the file gets mailed on the first of the month.",
+        "Reversed dates are accepted. NETWORKDAYS(DATE(2026,3,31),DATE(2026,3,1)) returns -22, so a date typed the wrong way around produces a negative percentage rather than an error message."
+      ]
+    },
+    {
+      "title": "The Audit Row, Saturday Shifts, and the Sheets Version",
+      "content": "Two checks keep the file honest and both live in one row under the register. The first reconciles the marks against the calendar: five people times 21 working days is 105 slots, and P plus A plus L must equal 105 exactly. The second counts the holiday marks, which should equal the headcount. When the first check returns 1, someone left a working day blank. No formula can tell whether that blank was a good day or a sick day, and that is the argument for making A mandatory.",
+      "steps": [
+        {
+          "name": "Reconcile marks against slots",
+          "text": "The calendar supplies the slot count, the three COUNTIFs supply the marks. Anything other than 0 means a working day with no code in it.",
+          "formula": "=5*NETWORKDAYS(DATE(2026,3,1),DATE(2026,3,31),$H$2)-COUNTIF($B$2:$F$32,\"P\")-COUNTIF($B$2:$F$32,\"A\")-COUNTIF($B$2:$F$32,\"L\")"
+        },
+        {
+          "name": "Say it in words so nobody has to interpret a zero",
+          "text": "Wrap the check in IF and the cell reads as a verdict rather than a number.",
+          "formula": "=IF($H$8=0,\"Balanced\",\"Unmarked day\")"
+        },
+        {
+          "name": "Six-day operations need their own denominator",
+          "text": "A weekend string of seven characters, Monday first, where 1 marks a day off. This one leaves only Sunday out, so March has 25 working days instead of 21.",
+          "formula": "=NETWORKDAYS.INTL(DATE(2026,3,1),DATE(2026,3,31),\"0000001\",$H$2)"
+        },
+        {
+          "name": "The Sheets equivalent of a structured reference",
+          "text": "Google Sheets has no Table object, so the column address replaces Register[Ana]. Every other function on this page copies across unchanged.",
+          "formula": "=COUNTIF(Register!B$2:B$32,\"P\")"
+        }
+      ],
+      "example": {
+        "formula": "=NETWORKDAYS.INTL(DATE(2026,3,1),DATE(2026,3,31),\"0000001\",$H$2)",
+        "result": "25",
+        "explanation": "Twenty-five working days instead of 21, because Saturday counts and only Sunday is out. A warehouse running six days and still dividing by 21 reports a rate that climbs every month. Add twelve Saturday marks to the March register and the team reads 105/105, exactly 100.0%, while the honest figure against 125 slots is 84.0%. A rate sitting on a suspiciously round 100% is usually a denominator that ignored the sixth day."
+      },
+      "tips": [
+        "COUNTIF, COUNTIFS, NETWORKDAYS, WEEKDAY and TODAY all take the same arguments in Excel and Google Sheets. Only structured references need rewriting, and a named range covers that in one step on either platform.",
+        "Google Sheets has no F9 equivalent, so a figure that must not change after filing needs Copy followed by Paste special, Values only. Excel can keep the live formula and paste a value beside it.",
+        "Date entry is locale-dependent. 3/4/2026 is March 4 in a US locale and April 3 in a UK one, and both apps accept either without complaint. Type 4-Mar-2026 or use DATE(2026,3,4) in any file another person will open."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "COUNTIF",
+      "slug": "countif",
+      "description": "COUNTIF counts the number of cells in a range that meet a specified condition. It's the counting counterpart of SUMIF — instead of summing matching values, it counts how many matches exist."
+    },
+    {
+      "name": "COUNTIFS",
+      "slug": "countifs",
+      "description": "COUNTIFS counts cells that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "NETWORKDAYS",
+      "slug": "networkdays",
+      "description": "NETWORKDAYS counts the number of working days between two dates, inclusive of both endpoints, skipping Saturdays and Sundays and optionally a list of holidays."
+    },
+    {
+      "name": "NETWORKDAYS.INTL",
+      "slug": "networkdays-intl",
+      "description": "NETWORKDAYS.INTL counts the number of working days between two dates with a customizable weekend (a weekend code or a 7-character string) and optional holidays; both endpoints are included."
+    },
+    {
+      "name": "TODAY",
+      "slug": "today",
+      "description": "TODAY returns the current date, updated each time the worksheet recalculates."
+    },
+    {
+      "name": "WEEKDAY",
+      "slug": "weekday",
+      "description": "WEEKDAY returns the day of the week as a number from a date, with the return_type argument controlling how days are numbered (for example Sun-Sat 1-7 or Mon-Sun 1-7)."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "COUNTA",
+      "slug": "counta",
+      "description": "COUNTA counts the number of non-empty cells within a specified range, regardless of the cell content."
+    },
+    {
+      "name": "DATE",
+      "slug": "date",
+      "description": "DATE builds a date serial number from separate year, month, and day components, and automatically rolls over out-of-range values such as month 13 into the next year or day 32 into the following month."
+    }
+  ],
+  "summary": "Build the register as 31 dated rows with one column per person, mark it with four codes, and derive every figure from COUNTIF plus a NETWORKDAYS denominator. The setup pays for itself in two situations: the month is half over and the rate has to mean something today, and someone forgets a cell, which the reconciliation row catches instead of letting it shrink the average. The cost is rigidity. A grid built for March holds 31 rows and five names, so a hire in April means a new column and a new reconciliation constant; a team that changes shape every month is better served by a long-format log with one row per person per day and a PivotTable on top.",
+  "nextSteps": [
+    "Fill the March 2026 block with your own team and confirm the reconciliation cell reads 0 before trusting any rate on the sheet",
+    "Move the reconciliation and holiday checks into a small Audit block below the register so a mailed copy does not invite edits to the formulas",
+    "Build the long-format version for one month as a comparison: one row per person per day, then a PivotTable with the mark in Values and the name in Rows"
+  ],
+  "relatedTutorials": [
+    "excel-expense-tracker",
+    "excel-budget-template",
+    "countif-with-wildcard"
+  ]
+}
