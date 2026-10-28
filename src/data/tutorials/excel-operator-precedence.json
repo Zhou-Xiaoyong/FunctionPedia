@@ -1,0 +1,246 @@
+{
+  "slug": "excel-operator-precedence",
+  "title": "Excel Operator Precedence: The Order That Turns 4,592 Into 62,000",
+  "description": "Excel operator precedence is why one missing bracket turns a 4,592 commission into 62,000. The full order of operations, plus the traps that hide in it.",
+  "category": "Concepts & Beginners",
+  "functions": ["SUM", "IF", "MOD", "ROUND", "INT", "AND"],
+  "intro": "A rep closes $62,400 against a plan that pays 8% of everything above the first $5,000. Someone types =B2-5000*8% into the payout cell and the sheet returns 62,000. The plan was not the problem and neither was the rep. Excel followed its order of operations exactly, and that order put the multiplication somewhere nobody expected.",
+  "tags": ["Operator Precedence", "Order of Operations", "Formula Syntax", "Formula Errors", "Excel Basics"],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "A workbook with a commission or invoice sheet, or the sample figures used here",
+    "Any Excel version, since the precedence ladder has not changed in decades; Google Sheets runs the same arithmetic",
+    "Willingness to retype a formula instead of editing it, which is usually faster than hunting for the bracket in the wrong place"
+  ],
+  "sections": [
+    {
+      "title": "The Ladder, From Reference Operators to Comparisons",
+      "content": "Microsoft publishes the order in its own help file, and it runs from reference operators down to comparisons. Nine rungs: the colon, comma and space that build ranges; then negation; then percent; then the caret; then multiply and divide; then add and subtract; then the ampersand; then the six comparison signs. Ties on the same rung resolve left to right. Parentheses are the only override available, and they override everything.",
+      "steps": [
+        {
+          "name": "Multiplication before addition",
+          "text": "The example Microsoft uses in its own article on the subject. Two times three happens first and the five waits its turn.",
+          "formula": "=5+2*3"
+        },
+        {
+          "name": "Parentheses jump the queue",
+          "text": "Same numbers, one pair of brackets, a different answer. This is the whole technique in two keystrokes.",
+          "formula": "=(5+2)*3"
+        },
+        {
+          "name": "When two operators share a rung",
+          "text": "Divide and multiply are peers, so the leftmost one runs. Twenty divided by four is five, then five times five is twenty-five. Bracket the denominator and the answer becomes 1 instead.",
+          "formula": "=20/4*5"
+        },
+        {
+          "name": "Rebuild the commission cell",
+          "text": "Subtract the threshold from revenue first, then apply the rate. The brackets carry the part the commission plan describes in words.",
+          "formula": "=(B2-5000)*8%"
+        }
+      ],
+      "example": {
+        "formula": "=B2-5000*8%",
+        "result": "62,000",
+        "explanation": "The multiplication ran first, so the formula took 8% of the $5,000 threshold, which is $400, and subtracted that from $62,400. The plan pays 8% of everything above $5,000, so the correct cell is =(B2-5000)*8% and the correct answer is 4,592. One pair of parentheses separates a 62,000 payout from a 4,592 one, and the wrong version is not flagged, underlined or otherwise marked as suspicious."
+      },
+      "tips": [
+        "The ladder in full, top to bottom: reference operators, negation, percent, caret, multiply and divide, add and subtract, ampersand, comparison. Most people remember the two middle rungs and nothing else.",
+        "Reference operators outrank arithmetic. =SUM(B5:B15,D5:D15) adds two blocks because the comma built a single reference before SUM saw a number.",
+        "Write one pair of parentheses per idea. =C2*D2*(1-E2)*(1+F2) reads as line total, less discount, plus tax. The unbracketed version needs a reader who already knows the answer."
+      ]
+    },
+    {
+      "title": "A Minus Sign in Front of a Number Is Not a Subtraction",
+      "content": "Negation sits on rung two, above percent and above the caret. A minus sign at the front of a formula is not subtracting anything, and =-2^2 returns 4 rather than -4. That reads like trivia until the formula carries a sign that ends up on an invoice, such as a penalty deduction.",
+      "steps": [
+        {
+          "name": "A leading minus is negation",
+          "text": "A leading minus is negation. A minus with something in front of it is subtraction, and subtraction is rung six, below the caret.",
+          "formula": "=-2^2"
+        },
+        {
+          "name": "The same expression written as subtraction",
+          "text": "Zero minus two squared. The caret now runs first because the minus sits on a lower rung.",
+          "formula": "=0-2^2"
+        },
+        {
+          "name": "A deduction that pays out",
+          "text": "B2 holds the shortfall in days, 4 here, and the penalty is $150 per day squared. Negation applies to B2 before the squaring, so a positive input squares into a positive and the deduction arrives as a credit.",
+          "formula": "=-B2^2*150"
+        },
+        {
+          "name": "Bracket the square and keep the sign",
+          "text": "The parentheses put the squaring inside the negation, so the result carries the minus the finance team expects.",
+          "formula": "=-(B2^2)*150"
+        }
+      ],
+      "example": {
+        "formula": "=-B2^2*150",
+        "result": "2,400",
+        "explanation": "Four days squared is 16, times $150 is $2,400, and the leading minus was consumed by the squaring because negation ran first. The cell reads +2,400 where a $2,400 deduction belongs, so an invoice built from it overstates the amount owed by $4,800. The bracketed version returns -2,400. Feed the same formula a positive input and both versions agree, which is why the fault survives until a credit note or a negative variance hits the column."
+      },
+      "tips": [
+        "With A2 holding 3, =-A2^2 returns 9 while =-(A2^2) and =0-A2^2 both return -9. Put -3 in A2 and the first formula still returns 9, though what it means has flipped.",
+        "Percent is rung three, above the caret, so =50%^2 returns 0.25. =0.5^2 returns the same number, and only the percent version looks wrong to read.",
+        "Excel walks a chain of carets left to right, so =2^3^2 returns 64. The math convention reads the same string as 2^9 and returns 512. =2^(3^2) states the intent, and so does any version a colleague might have to maintain."
+      ]
+    },
+    {
+      "title": "The Discount That Slips Past the Percent Sign",
+      "content": "A percent sign is an operator that divides by a hundred, and it applies before multiplication and before addition. That is the whole reason =100+10% returns 100.1. On an invoice the discount column stores 0.15 and displays 15%, and the common error is to subtract that cell from the line total instead of multiplying the total by one minus it.",
+      "steps": [
+        {
+          "name": "Line total, nothing to misread",
+          "text": "Four units at $249.99. No operator in this formula can be taken two ways.",
+          "formula": "=C2*D2"
+        },
+        {
+          "name": "Subtract the discount cell",
+          "text": "999.96 minus 0.15. The result sits fifteen cents under the total, close enough to look like a rounding artifact and far enough to be wrong by $149.84 against the discounted line.",
+          "formula": "=C2*D2-E2"
+        },
+        {
+          "name": "Multiply by one minus the discount",
+          "text": "The discount becomes a multiplier. Fifteen percent off is 85% of the price, and the arithmetic matches the offer.",
+          "formula": "=C2*D2*(1-E2)"
+        },
+        {
+          "name": "Add tax, then round once",
+          "text": "Tax multiplies the discounted total, and ROUND closes the tail at the outside of the expression where it belongs.",
+          "formula": "=ROUND(C2*D2*(1-E2)*(1+F2),2)"
+        }
+      ],
+      "example": {
+        "formula": "=C2*D2-E2",
+        "result": "999.81",
+        "explanation": "Fifteen cents off a $999.96 line. Anyone glancing at the discount column sees 15% applied, and anyone re-adding the arithmetic sees a total that barely moved. The multiplier version gives 849.97. Tax added the same careless way, as =C2*D2*(1-E2)+F2, returns 850.05, because 8.25% is a multiplier of 1.0825 and not a fee of eight cents."
+      },
+      "tips": [
+        "=100+10% returns 100.1. Raising a price by ten percent needs =100*(1+10%), and the bracket around the addition is what lets the percent apply to the whole.",
+        "A percent-formatted cell holds the decimal. Point a formula at it and Excel passes 0.15, never 15, so a cell displaying 15% can never be subtracted as fifteen dollars.",
+        "Round at the edge of a calculation, not in the middle. Rounding a discounted line to 849.97 and then multiplying by 1.0825 feeds a rounded number into the next operation, and across forty invoice lines the rounded column total stops matching the unrounded one."
+      ]
+    },
+    {
+      "title": "Concatenation and Comparison Share the Bottom",
+      "content": "The ampersand sits on rung eight and the comparison signs on rung nine, so every arithmetic operation in a formula finishes before text is joined and before anything is compared. Two consequences follow. Arithmetic coerces numeric text into numbers on the way in, and a comparison between two text values runs character by character rather than by size.",
+      "steps": [
+        {
+          "name": "Build a key from a number",
+          "text": "The ampersand turns the serial number into text as it joins. An integer needs no TEXT function for this.",
+          "formula": "=\"INV-\"&A2"
+        },
+        {
+          "name": "The plus coerces, the ampersand does not",
+          "text": "Two text values with a plus yields a number, which Microsoft documents in the same article. Swap the sign and the same two cells return text.",
+          "formula": "=\"1\"+\"2\""
+        },
+        {
+          "name": "Comparison runs last",
+          "text": "The addition resolves, then the equals sign compares its result to three.",
+          "formula": "=1+2=3"
+        },
+        {
+          "name": "Text against text is alphabetical, not numeric",
+          "text": "Both operands are text, so the comparison reads the first character and 1 comes before 9. The left-aligned cell is the tell that the column never got converted.",
+          "formula": "=\"10\">\"9\""
+        },
+        {
+          "name": "Two bounds need AND",
+          "text": "IF takes one test. A comma inside IF starts the next argument, not a second condition, so a range check has to go through AND.",
+          "formula": "=IF(AND(A2>10,A2<20),\"mid\",\"other\")"
+        }
+      ],
+      "example": {
+        "formula": "=\"10\">\"9\"",
+        "result": "FALSE",
+        "explanation": "Text compared with text, so the first characters decide and 1 sorts before 9. Convert either side and the answer flips to TRUE. Where this bites is an ID column imported as text: =A2>B2 on two such columns answers a question about spelling order rather than about size, and the sheet reports a negative balance that no one can reproduce."
+      },
+      "tips": [
+        "(SUM(B2:B4)>1000)*1 returns 1 or 0, because a comparison turns into a logical value and the multiplication coerces it. Useful inside SUMPRODUCT, confusing in a cell a person reads.",
+        "=MOD(ROW(),2)=0 is the entire banding rule, with the comparison at the bottom producing the TRUE or FALSE that conditional formatting wants. Apply it to A1:F40 and the rows shade themselves.",
+        "Join text with an ampersand and never with a plus. =\"Total: \"+B2 returns #VALUE! because the plus is being asked to add a word to a number, while =\"Total: \"&B2 returns the label and the value together."
+      ]
+    },
+    {
+      "title": "Auditing a Formula Someone Else Wrote",
+      "content": "An inherited formula fails quietly, so the audit is about watching the order happen. Excel steps through an expression one operation at a time and underlines the piece it is about to run. Google Sheets has no comparable tool, which changes how a Sheets model should be built: intermediate values belong in cells, not inside one long expression.",
+      "steps": [
+        {
+          "name": "Step through it",
+          "text": "Select the cell, open the Formulas tab, choose Evaluate Formula, then press Evaluate. Each click resolves one rung and shows the expression as it looks after that step.",
+          "formula": "Formulas > Evaluate Formula > Evaluate"
+        },
+        {
+          "name": "Test a fragment with F9",
+          "text": "In edit mode, select just B2-5000 and press F9. The fragment is replaced by 57400. Press Esc to put the formula back, because Enter would commit the number and delete the reference.",
+          "formula": "=B2-5000"
+        },
+        {
+          "name": "Stage it in Sheets",
+          "text": "Google Sheets has no Evaluate Formula, so the audit is a spare cell. Check the threshold subtraction, confirm 57,400, then fold it into the rate.",
+          "formula": "=B2-5000"
+        },
+        {
+          "name": "Read the @ that Excel writes for you",
+          "text": "A formula that reaches a multi-cell range where one value is expected gets an implicit intersection sign. Excel is making a silent coercion visible, and the sign usually means the range is wider than the intent.",
+          "formula": "=@A1:A10"
+        }
+      ],
+      "example": {
+        "formula": "=B2-5000",
+        "result": "57,400",
+        "explanation": "The fragment alone shows the number the rest of the formula multiplies by 8%. Read the intermediates in order and the answer is 57,400, then 4,592. When the second read shows 62,400 with the multiplication still pending, the brackets are missing and the audit has found the fault in two clicks instead of a rebuild."
+      },
+      "tips": [
+        "Show Formulas on the Formulas tab, or the Ctrl+` shortcut, widens the columns and displays every expression on the sheet at once. Sheets keeps the same view under View, Show, Formulas, with no keyboard shortcut.",
+        "A formula that opens with =+A2 is legal. The unary plus does nothing, and its presence suggests the text arrived from Lotus 1-2-3 or a CSV import rather than from someone typing at the keyboard.",
+        "Numbers stored as text look correct until a comparison or a SUM ignores them. They sit left-aligned while real numbers sit right-aligned, which is faster to scan than any error check."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "MOD",
+      "slug": "mod",
+      "description": "MOD returns the remainder after dividing a number by a divisor. The sign of the result always matches the sign of the divisor."
+    },
+    {
+      "name": "ROUND",
+      "slug": "round",
+      "description": "ROUND rounds a number to a specified number of decimal places."
+    },
+    {
+      "name": "INT",
+      "slug": "int",
+      "description": "INT rounds a number down to the nearest integer, toward negative infinity."
+    },
+    {
+      "name": "AND",
+      "slug": "and",
+      "description": "AND returns TRUE if all arguments are TRUE, and FALSE if any argument is FALSE."
+    }
+  ],
+  "summary": "Read a formula as a ladder and bracket each idea before typing the operator. Two pairs of parentheses cost nothing next to a payout cell reporting 62,000, and they make the file survivable by somebody who did not write it. The trade-off is noise: brackets multiply faster than the logic does, Excel only color-codes the pairs while the cursor is inside the formula, and a four-level nest is harder to check than four separate cells. Past three levels, split the calculation and name the parts.",
+  "nextSteps": [
+    "Run Evaluate Formula to the last step on a formula you inherited, writing down each intermediate value before deciding which operator is wrong",
+    "Rebuild the commission cell as =IF(B2>5000,(B2-5000)*8%,0) and confirm the payout drops to zero at exactly 5,000 rather than a few dollars after it",
+    "Put =2^3^2 and =2^(3^2) side by side in your own file, then decide whether your team wants written brackets or a written convention"
+  ],
+  "relatedTutorials": [
+    "what-is-a-formula-in-excel",
+    "how-to-use-excel-formulas",
+    "absolute-vs-relative-reference"
+  ]
+}
