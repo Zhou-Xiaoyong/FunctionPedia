@@ -1,0 +1,244 @@
+{
+  "slug": "countifs-multiple-ranges",
+  "title": "COUNTIFS Multiple Ranges: One Range Per Criterion, and the Two-Range Trap",
+  "description": "COUNTIFS multiple ranges means one range per criterion, not two ranges for a single test. The pairing rule, the #VALUE! case, and counting across blocks.",
+  "category": "SUM & COUNT",
+  "functions": [
+    "COUNTIFS",
+    "COUNTIF",
+    "COUNT",
+    "SUMIFS",
+    "SUMPRODUCT",
+    "COUNTA"
+  ],
+  "intro": "Twelve order lines, two criteria, and a count of 4. Write the same call with a second range and no second criterion and the cell returns #VALUE!, because COUNTIFS does not search two ranges for one value. It applies one test per range, row by row, and counts the rows that pass all of them.",
+  "tags": [
+    "COUNTIFS",
+    "Multiple Criteria",
+    "Counting Rows",
+    "SUMPRODUCT",
+    "Cross-Sheet"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "A table with at least two columns of conditions, or the 12 order lines used here in A2:F13",
+    "Any Excel version from 2019 on, or Google Sheets; COUNTIFS itself has been in Excel since 2007",
+    "A view of column alignment, since left-aligned numbers are half of section 5"
+  ],
+  "sections": [
+    {
+      "title": "One Range, One Test, Applied Row by Row",
+      "content": "COUNTIFS takes its arguments in pairs: a range, then the test that applies to it. Order the pairs any way you like and the answer does not move, because the function walks row 1 of every range, evaluates every test, and counts the row once when all of them pass. That last part is what people miss. The result is a count of rows, not a count of matching cells, so a row that clears three criteria adds 1 to the total and not 3. Every criteria_range also has to match criteria_range1 in rows and columns, though the ranges themselves can sit in columns that are nowhere near each other.",
+      "steps": [
+        {
+          "name": "Start with one pair",
+          "text": "Six of the twelve lines ship to North. One range, one criterion, and the count is 6.",
+          "formula": "=COUNTIFS(A2:A13,\"North\")"
+        },
+        {
+          "name": "Add a pair from a column two over",
+          "text": "Product sits in column C while Region sits in column A. The ranges do not need to touch. Four of the six North lines are Widgets.",
+          "formula": "=COUNTIFS(A2:A13,\"North\",C2:C13,\"Widget\")"
+        },
+        {
+          "name": "A third pair narrows it again",
+          "text": "Units above 10 leaves one line: the 12-unit Widget in row 2. Two North Gadget orders are excluded by the product test, and three of the four North Widget lines are excluded by the quantity test.",
+          "formula": "=COUNTIFS(A2:A13,\"North\",C2:C13,\"Widget\",D2:D13,\">10\")"
+        },
+        {
+          "name": "Swap the pairs around",
+          "text": "Product first, region second, same four rows. Pairing is positional, so moving a range means moving its criterion with it.",
+          "formula": "=COUNTIFS(C2:C13,\"Widget\",A2:A13,\"North\")"
+        }
+      ],
+      "example": {
+        "formula": "=COUNTIFS(A2:A13,\"North\",C2:C13,\"Widget\")",
+        "result": "4",
+        "explanation": "North appears six times in column A and Widget appears eight times in column C, and the rows where both are true are four: 1,440, 720, 480 and 840 in column F, which sums to 3,480. The formula returns rows, which gives you a free audit rule. Adding a pair can hold the count level or push it down, never up. A COUNTIFS that returns more than the single-criterion count has a criterion that is not doing work, usually a number written as text or a spelling that only looks right."
+      },
+      "tips": [
+        "Dates belong in the criterion as serials. A criterion of \">9/1/2026\" is read against the machine's regional settings, so the same formula counts one thing on a US laptop and another on a UK one. Write \">\"&DATE(2026,9,1) and the test means the same in Excel and Google Sheets.",
+        "Microsoft allows up to 127 range and criterion pairs in one call. Long before that, readability gives out. Two pairs are easy to defend in a review, four are a negotiation, and anything past that belongs in a helper column.",
+        "The same formula shape works on another worksheet: =COUNTIFS(Jan!$A$2:$A$200,\"North\",Jan!$C$2:$C$200,\"Widget\") with no extra syntax. Just keep the two ranges the same height on that sheet as well."
+      ]
+    },
+    {
+      "title": "Two Ranges, One Criterion: The Question COUNTIFS Cannot Answer",
+      "content": "A project roster keeps two names per row: Lead in column B, Backup in column C. The question \"how many projects involve Ada\" has one test and two places to look, and COUNTIFS has no argument for that. Every pair in the call is a separate condition on the same row, so the two-range version reads as \"Ada in B and Ada in C\", which is one project here, not the number you are after. Two ranges with the same criterion is the one shape that has to move to a different function.",
+      "steps": [
+        {
+          "name": "Count the cells instead of the rows",
+          "text": "One range spanning both columns. Seven cells say Ada, which is a true number and the wrong answer, because a row with Ada in both columns contributes twice.",
+          "formula": "=COUNTIF(B2:C9,\"Ada\")"
+        },
+        {
+          "name": "Add two single-range counts",
+          "text": "Four rows have Ada as Lead and three have her as Backup. Seven again, from a formula that looks like it is doing two jobs properly.",
+          "formula": "=COUNTIF(B2:B9,\"Ada\")+COUNTIF(C2:C9,\"Ada\")"
+        },
+        {
+          "name": "Test the row, not the cell",
+          "text": "Add the two TRUE/FALSE arrays, ask whether the sum is above zero, and turn the survivors into 1s. A row where she appears twice still adds 1.",
+          "formula": "=SUMPRODUCT(--(((B2:B9=\"Ada\")+(C2:C9=\"Ada\"))>0))"
+        }
+      ],
+      "example": {
+        "formula": "=SUMPRODUCT(--(((B2:B9=\"Ada\")+(C2:C9=\"Ada\"))>0))",
+        "result": "6",
+        "explanation": "Four rows carry Ada as Lead, three carry her as Backup, and row 6 carries her in both columns, so 4 + 3 double counts that one project and lands on 7. The SUMPRODUCT version adds the two arrays first and tests the result against zero, which collapses the double into a single 1. Six projects, six rows, one formula. This is the number a person asking the question expects, and 7 is the number both COUNTIF shapes produce."
+      },
+      "tips": [
+        "SUMPRODUCT takes no criteria strings, so wildcards are out. \"Ada*\" returns nothing useful; use LEFT(B2:B9,3)=\"Ada\" or ISNUMBER(SEARCH(\"Ada\",B2:B9)) instead.",
+        "Comparisons inside SUMPRODUCT ignore case, so \"ada\" counts alongside \"Ada\", and COUNTIFS does the same. An exact-case count needs EXACT inside SUMPRODUCT, which is the only place that distinction is available.",
+        "Google Sheets runs the identical formula. The size rule holds there too: unequal array lengths return #VALUE! rather than padding, in both applications."
+      ]
+    },
+    {
+      "title": "Adding Blocks: When Two COUNTIFS in One Cell Is Right",
+      "content": "Monthly tabs are a different case. January and February hold different records, so no row in one range describes the same order as a row in the other, and adding two counts is correct arithmetic rather than a workaround. Six North lines in January and four in February give ten, and each call keeps its own pairs. The failure mode arrives when the blocks overlap, which is what happens when someone points the second range at a table that already contains the first.",
+      "steps": [
+        {
+          "name": "Count January on its own",
+          "text": "Twelve lines on the Jan sheet, six of them North. Anchored to row 200 so next month's rows land inside the range.",
+          "formula": "=COUNTIFS(Jan!$A$2:$A$200,\"North\")"
+        },
+        {
+          "name": "Count February on its own",
+          "text": "Four North lines. Run each count separately first, because two numbers that look sane are easier to trust than one total that does not.",
+          "formula": "=COUNTIFS(Feb!$A$2:$A$200,\"North\")"
+        },
+        {
+          "name": "Add them, with both pairs kept",
+          "text": "Each COUNTIFS keeps its own region and product pair. There is no syntax that reaches across two sheets in one pair.",
+          "formula": "=COUNTIFS(Jan!$A$2:$A$200,\"North\",Jan!$C$2:$C$200,\"Widget\")+COUNTIFS(Feb!$A$2:$A$200,\"North\",Feb!$C$2:$C$200,\"Widget\")"
+        }
+      ],
+      "example": {
+        "formula": "=COUNTIFS(Jan!$A$2:$A$200,\"North\")+COUNTIFS(Feb!$A$2:$A$200,\"North\")",
+        "result": "10",
+        "explanation": "Six January rows plus four February rows. Adding is safe here because the two ranges describe disjoint sets of orders, which is the test to apply before writing a plus sign: do any two rows in these ranges describe the same event? When the answer is yes, the sum double counts and the roster problem from the previous section applies instead."
+      },
+      "tips": [
+        "A sheet name with a space needs apostrophes around it: =COUNTIFS('Feb 2026'!$A$2:$A$200,\"North\"). Excel inserts them while you build the formula and drops them again if you rename the tab to Feb2026.",
+        "Past four or five tabs the formula stops being readable and starts being wrong. Add a Month column to one consolidated table and the question becomes =COUNTIFS($A$2:$A$5000,\"North\",$B$2:$B$5000,\"Feb\").",
+        "Watch for total rows inside the range. If the Jan sheet ends with a quarter total, its North figure sits below the detail and is counted a second time. Nothing on screen flags it: the number is simply too large by one row's worth."
+      ]
+    },
+    {
+      "title": "When the Ranges Stop Lining Up",
+      "content": "#VALUE! from COUNTIFS means the ranges disagree in size. Every criteria_range must carry the same number of rows and columns as criteria_range1, so a 12-row range paired with an 11-row range has no row 12 to test against and the function gives up. The error is the lucky outcome. The expensive version is two ranges that both stop at the last row of last month's data while the sheet has since grown to row 26: no error, no warning, and a count short by every row added below the old boundary.",
+      "steps": [
+        {
+          "name": "Twelve rows against eleven",
+          "text": "A2:A13 has twelve cells and D2:D12 has eleven. One row of the region range has no quantity to compare, and the whole call fails.",
+          "formula": "=COUNTIFS(A2:A13,\"North\",D2:D12,\">10\")"
+        },
+        {
+          "name": "Sizes that agree",
+          "text": "Both ranges end on row 13. The formula now evaluates, and a typo in either endpoint is the difference between a count and an error.",
+          "formula": "=COUNTIFS(A2:A13,\"North\",D2:D13,\">10\")"
+        },
+        {
+          "name": "Let a table carry the sizes",
+          "text": "Two columns of the same table are always the same height, and both grow when a row is added. Type =COUNTIFS( and select a table column; Excel writes the structured reference for you.",
+          "formula": "=COUNTIFS(Table1[Region],\"North\",Table1[Product],\"Widget\")"
+        },
+        {
+          "name": "Remember what a filter does not do",
+          "text": "Hide every South row and the North count does not move. COUNTIFS reads hidden rows, which is correct behavior and the most common complaint about it. SUBTOTAL(103,D2:D13) is the function that respects a filter, and it cannot take criteria.",
+          "formula": "=SUBTOTAL(103,D2:D13)"
+        }
+      ],
+      "example": {
+        "formula": "=COUNTIFS(A2:A13,\"North\",D2:D12,\">10\")",
+        "result": "#VALUE!",
+        "explanation": "One cell short in the second range and the formula returns an error with no pointer to the argument that caused it. Excel does not say which range is the wrong height, and with four pairs the search is manual. Read the endpoints in the formula bar rather than the highlighted ranges on the sheet: the highlight shows what the range covers now, and the fault is usually a hard-coded row number that stopped matching the other ranges three edits ago."
+      },
+      "tips": [
+        "Structured references are the permanent fix, not a tidier one. Table1[Region] and Table1[Product] cannot drift apart, and both extend when the table does, so the silent short-count version never starts.",
+        "Copying a COUNTIFS between sheets of different heights usually leaves one range at the old height. That is the most common source of #VALUE! in a workbook that worked last month.",
+        "If a criteria_range points at a whole column (A:A), every other range in the call should too. Mixing A:A with B2:B200 gives 1,048,576 rows against 199 and fails on size."
+      ]
+    },
+    {
+      "title": "The Count That Comes Up Short: Text in a Number Column",
+      "content": "Units above 10 should be three rows: 12, 20 and 15. The cell says 2. Row 5 came out of a CSV export, its 20 arrived as text, and the cell sits left-aligned where every real number in that column sits right. A greater-than criterion is a numeric test, so COUNTIFS skips the text instead of converting it, and the count is short by one row that is plainly visible on screen.",
+      "steps": [
+        {
+          "name": "The count that looks wrong",
+          "text": "Three rows read above 10 to anyone scanning the column. The formula sees two numbers and one string.",
+          "formula": "=COUNTIFS(D2:D13,\">10\")"
+        },
+        {
+          "name": "How many cells hold numbers",
+          "text": "Eleven of twelve. COUNT ignores text, blanks and logical values, so a count one short of the row count is the tell.",
+          "formula": "=COUNT(D2:D13)"
+        },
+        {
+          "name": "How many cells hold anything",
+          "text": "Twelve. COUNTA against COUNT is the fastest data-type check in Excel, and it needs no helper column.",
+          "formula": "=COUNTA(D2:D13)"
+        },
+        {
+          "name": "Convert the column in place",
+          "text": "Select D2:D13, open Data > Text to Columns, and click Finish without choosing a delimiter. The column becomes numbers and the count moves to 3 without a formula changing.",
+          "formula": "Data > Text to Columns > Finish"
+        }
+      ],
+      "example": {
+        "formula": "=COUNTIFS(D2:D13,\">10\")",
+        "result": "2",
+        "explanation": "The 12 and the 15 are numbers and the 20 is text, so the numeric test matches two rows. COUNT on the same range returns 11 and COUNTA returns 12, which names the problem without opening the cell. SUMIFS pointed at the amount column inherits the same blindness on the same rows, so a revenue total built from this data is short as well, and both discrepancies trace back to one pasted cell."
+      },
+      "tips": [
+        "The same blind spot runs the other way on dates. Every 2026 date carries a serial in the 46,000s, so \">10\" applied to a date column matches every row with a date in it and looks like a working formula.",
+        "A \"<>Widget\" criterion also counts the blank cells in the range, so a count of everything else comes back larger than the rows holding other products. Add a second pair, <>\"\", to exclude the gaps.",
+        "Google Sheets skips text the same way and returns the same 11 from COUNT. Its repair differs: Data > Split text to columns wants a separator, so the fix there is a helper column with VALUE(D2) or retyping the cell."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "COUNTIFS",
+      "slug": "countifs",
+      "description": "COUNTIFS counts cells that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "COUNTIF",
+      "slug": "countif",
+      "description": "COUNTIF counts the number of cells in a range that meet a specified condition. It's the counting counterpart of SUMIF — instead of summing matching values, it counts how many matches exist."
+    },
+    {
+      "name": "COUNT",
+      "slug": "count",
+      "description": "COUNT counts the number of cells that contain numbers within a specified range."
+    },
+    {
+      "name": "SUMIFS",
+      "slug": "sumifs",
+      "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "SUMPRODUCT",
+      "slug": "sumproduct",
+      "description": "SUMPRODUCT multiplies corresponding components of one or more arrays and returns the sum of those products. It is also widely used for conditional sums and counts without array-entry."
+    },
+    {
+      "name": "COUNTA",
+      "slug": "counta",
+      "description": "COUNTA counts the number of non-empty cells within a specified range, regardless of the cell content."
+    }
+  ],
+  "summary": "Build the call one pair at a time and read the count after each pair, since the number can only fall. When the two ranges hold different facts about the same record, COUNTIFS is the right tool and the only thing to watch is that both ranges are the same height. When they hold the same fact twice, SUMPRODUCT with two boolean arrays is the one formula that counts each row once, and the price is a formula nobody on the team can read without having the double dash explained to them. A helper column, one row per person per project with a Role value, costs a column and turns both problems back into a plain COUNTIFS.",
+  "nextSteps": [
+    "Put =COUNT(D2:D13) beside =COUNTA(D2:D13) on any column you filter with a greater-than criterion; 11 against 12 means a text number is already sitting in it",
+    "Rewrite the roster as one row per person per project with a Role column, then count with =COUNTIFS($A$2:$A$200,\"Ada\") and retire the SUMPRODUCT version",
+    "Rebuild one monthly formula by typing =COUNTIFS( and clicking the table columns, so both pairs become structured references that grow together"
+  ],
+  "relatedTutorials": [
+    "sumifs-multiple-criteria",
+    "countif-with-wildcard",
+    "averageifs-multiple-criteria"
+  ]
+}
