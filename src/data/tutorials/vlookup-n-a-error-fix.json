@@ -1,0 +1,312 @@
+{
+  "slug": "vlookup-n-a-error-fix",
+  "title": "VLOOKUP #N/A Error Fix: When the Key Is in the Table and Excel Says No",
+  "description": "VLOOKUP N/A error fix: the four faults that break an exact match while the key sits in plain sight, and how to tell which one you are facing right now.",
+  "category": "VLOOKUP & XLOOKUP",
+  "functions": [
+    "VLOOKUP",
+    "XLOOKUP",
+    "IFNA",
+    "IFERROR",
+    "TRIM",
+    "SUBSTITUTE",
+    "TEXT",
+    "ISTEXT",
+    "LEN",
+    "ISNA",
+    "MID",
+    "COUNTIF",
+    "ISNUMBER",
+    "VALUE"
+  ],
+  "intro": "Five order lines, one price column. The fourth line reads #N/A while the SKU sits in the price list, four characters long, in the column VLOOKUP was told to search. Excel is comparing a key that is not quite the key on the screen, and which difference it is decides the repair.",
+  "tags": [
+    "VLOOKUP",
+    "#N/A",
+    "Error Handling",
+    "Exact Match",
+    "Data Types"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "A price list and an order sheet in the same workbook, or the five-line example used here",
+    "Any Excel version from 2013 on, since IFNA is needed in the last section; all four faults apply to every version",
+    "The difference between a number and a number stored as text, which is the whole of section 2"
+  ],
+  "sections": [
+    {
+      "title": "Read the Error Before Repairing the Key",
+      "content": "Four different faults arrive at the same conclusion in conversation, and only one of them is a miss. #REF! means col_index_num points past the last column of table_array, or a column inside it was deleted. #VALUE! means the column number arrived as text. #NAME? means the function name is misspelled or the workbook was opened in a version that does not have that function. The repairs do not overlap, so the letters in the cell decide which section below applies.",
+      "steps": [
+        {
+          "name": "Ask for a column that is not in the table",
+          "text": "table_array is A2:C9, three columns wide. Column D exists on the sheet, but not inside the range VLOOKUP was given.",
+          "formula": "=VLOOKUP(G2,$A$2:$C$9,4,FALSE)"
+        },
+        {
+          "name": "Test which error is actually there",
+          "text": "ISNA returns TRUE only when the cell holds #N/A. A #REF! or a #VALUE! in the same cell returns FALSE here, which rules out a key problem before you touch the key.",
+          "formula": "=ISNA(H2)"
+        },
+        {
+          "name": "A genuine miss, for comparison",
+          "text": "The scan finishes without a hit. Same function, same arguments, a different fault, and this is the one the rest of the page deals with.",
+          "formula": "=VLOOKUP(\"1099\",$A$2:$A$9,1,FALSE)"
+        }
+      ],
+      "example": {
+        "formula": "=VLOOKUP(G2,$A$2:$C$9,4,FALSE)",
+        "result": "#REF!",
+        "explanation": "SKU 1042 is on row 3 of the price list, and the lookup still fails, because a three-column range has no fourth column. Anyone reading #REF! as \"not found\" rewrites the lookup key and gets the identical error back, then concludes the price list is broken. A wider table_array is the whole repair for this one."
+      },
+      "tips": [
+        "A key containing * or ? is read as a wildcard even with FALSE in the fourth argument, so looking up *SAVE10 returns the first row that ends in SAVE10 along with that row's price. Put a tilde in front (~*) to match the character itself. The returned price looks reasonable, which is why the row survives review.",
+        "MATCH and XMATCH return #N/A for the same reasons, so an INDEX + MATCH pair built on a bad key fails in the same cell position. Replace the lookup function and nothing changes; the fault is in the key.",
+        "Google Sheets returns #N/A for both faults and its VLOOKUP takes the same four arguments, with is_sorted defaulting to TRUE. The functions behave alike here. The diagnostics do not, since Sheets has no Evaluate Formula to step through the arguments."
+      ]
+    },
+    {
+      "title": "Fault 1: Same Four Digits, Different Data Type",
+      "content": "The price list came out of an ERP export. Its SKU column arrived as text and every cell sits left-aligned. The order form's SKU box holds a typed number and sits right-aligned. With FALSE in the fourth argument, VLOOKUP compares value and type together, so the text \"1042\" and the number 1042 are two different keys and the scan ends with #N/A. Nothing on screen shows the gap. The digits match, the character count matches, and the column is wide enough to show all four.",
+      "steps": [
+        {
+          "name": "Compare the two cells directly",
+          "text": "The equals sign is enough. A left-aligned key and a right-aligned key are not equal, and the cell says so.",
+          "formula": "=G2=A2"
+        },
+        {
+          "name": "Ask each side what it holds",
+          "text": "TRUE / FALSE. Column A is text, the order form is a number, and no amount of retyping changes either one.",
+          "formula": "=ISTEXT(A2)&\" / \"&ISTEXT(G2)"
+        },
+        {
+          "name": "The length test cannot see this",
+          "text": "4 vs 4. This is why the LEN check that solves most #N/A cases sends people down the wrong path here.",
+          "formula": "=LEN(G2)&\" vs \"&LEN(A2)"
+        },
+        {
+          "name": "Convert the key to match the table",
+          "text": "A format of 0 writes the number as text with no decimals and no thousands separator, which is exactly what column A holds.",
+          "formula": "=VLOOKUP(TEXT(G2,\"0\"),$A$2:$C$9,3,FALSE)"
+        }
+      ],
+      "example": {
+        "formula": "=VLOOKUP(TEXT(G2,\"0\"),$A$2:$C$9,3,FALSE)",
+        "result": "42.50",
+        "explanation": "Widget Kit, the price for the first order line. Before the TEXT wrapper the same formula returned #N/A on all four lines that exist in the price list, and the four line totals were 255.00, 62.40, 159.00 and 88.40 with nothing calculating. TEXT is applied to the search key, not to the table, which is why the formula is portable: paste it down the column and each row converts its own key."
+      },
+      "tips": [
+        "The reverse direction needs VALUE. A key pasted from a web form arrives as text while the table holds real numbers, and there the formula is =VLOOKUP(VALUE(G2),$A$2:$C$9,3,FALSE). Match the wrapper to whichever side is text rather than memorizing one of them.",
+        "Repairing the column once beats wrapping forty formulas. Select the SKU column, open Data > Text to Columns, and click Finish without picking a delimiter; the whole column converts in place. For the other direction, type a 0 in an empty cell, copy it, select the column, and use Paste Special > Multiply.",
+        "A column that is part number and part text, because someone retyped a few cells by hand, produces a lookup that works on some rows and fails on others. Sorting it is not a repair: text numbers sort 1000 before 999, so the row order changes while every cell stays text."
+      ]
+    },
+    {
+      "title": "Fault 2: The Space That Is Not a Space",
+      "content": "The vendor name in H2 was copied out of a supplier's confirmation email. It reads Contoso Ltd, eleven characters, and the vendor table in A13:B17 holds the same eleven characters with NET-45 beside them. VLOOKUP returns #N/A and the usual checklist comes up clean: the lengths match, TRIM returns the string unchanged, and there is no stray character at either end. The space between the two words is not a space. It is U+00A0, the non-breaking space that email clients and web pages use to stop a line break, and it travelled with the clipboard.",
+      "steps": [
+        {
+          "name": "The lookup fails on a name you can read",
+          "text": "The vendor is on row 14 in plain sight, and the formula reports a miss.",
+          "formula": "=VLOOKUP(H2,$A$13:$B$17,2,FALSE)"
+        },
+        {
+          "name": "Both sides measure eleven",
+          "text": "11 vs 11. A non-breaking space occupies one character, exactly like a normal space, so LEN cannot separate the two strings.",
+          "formula": "=LEN(H2)&\" vs \"&LEN($A$14)"
+        },
+        {
+          "name": "TRIM changes nothing",
+          "text": "TRIM collapses runs of ordinary spaces and removes the ones at the ends. It leaves code 160 alone, so the length is still 11.",
+          "formula": "=LEN(TRIM(H2))"
+        },
+        {
+          "name": "Read the character at position 8",
+          "text": "160 is the non-breaking space. A normal space in the same position returns 32, which is the number that proves a paste went wrong.",
+          "formula": "=CODE(MID(H2,8,1))"
+        },
+        {
+          "name": "Replace it before the lookup",
+          "text": "SUBSTITUTE turns 160 into 32, the string now matches row 14 character for character, and the terms appear.",
+          "formula": "=VLOOKUP(SUBSTITUTE(TRIM(H2),CHAR(160),\" \"),$A$13:$B$17,2,FALSE)"
+        }
+      ],
+      "example": {
+        "formula": "=VLOOKUP(SUBSTITUTE(TRIM(H2),CHAR(160),\" \"),$A$13:$B$17,2,FALSE)",
+        "result": "NET-45",
+        "explanation": "The wrapper is doing two jobs. SUBSTITUTE handles the character nobody can see, and TRIM handles the ordinary leading and trailing spaces that usually arrive from the same paste. Order matters: substitute first and trim second, because a trailing non-breaking space is not something TRIM will remove at any point."
+      },
+      "tips": [
+        "CLEAN does not rescue this one. Excel's CLEAN strips codes 0 to 31, Google Sheets adds 127, and 160 survives both, so TRIM(CLEAN(H2)) misses the same vendor in both applications.",
+        "A whole column is fixed faster with Find & Replace. Paste the character into Find, put a normal space in Replace, and run it over the vendor column. Alt+0160 on the numeric keypad produces one when the clipboard is empty.",
+        "When the non-breaking space sits in the table rather than in the key, no wrapper helps: SUBSTITUTE would have to run over table_array, and VLOOKUP will not accept that on a plain range. Clean the column, then leave the formula alone."
+      ]
+    },
+    {
+      "title": "Fault 3: Approximate Match and a Range That Moved",
+      "content": "Approximate matching is the default. Leave the fourth argument out and VLOOKUP behaves as if it were TRUE: it walks the first column looking for the largest value that is not bigger than the key, which is exactly what a weight band table or a tax bracket table wants. Point the same formula at a SKU and it returns a neighbour's price. Two failures come out of that setting, and a third comes from the address of table_array rather than from its contents.",
+      "steps": [
+        {
+          "name": "Approximate, on purpose",
+          "text": "A 12 lb parcel. The largest band that is not above 12 is the 10 lb band, so the rate is 18.75.",
+          "formula": "=VLOOKUP(12,$D$2:$E$6,2,TRUE)"
+        },
+        {
+          "name": "A key under the first band",
+          "text": "0.4 lb. There is no band at or below it, and approximate match has nothing to step back to.",
+          "formula": "=VLOOKUP(0.4,$D$2:$E$6,2,TRUE)"
+        },
+        {
+          "name": "Omit the fourth argument and nothing changes",
+          "text": "Same answer, 18.75. The formula looks correct in every review until the day a key falls below the first row or the table gets resorted, which is what makes the omission survive for months.",
+          "formula": "=VLOOKUP(12,$D$2:$E$6,2)"
+        },
+        {
+          "name": "Fill down without dollar signs",
+          "text": "Copied to row 6 this reads =VLOOKUP(F6,D6:E10,2,TRUE). D6 is the 50 lb band, so a 12 lb parcel on that row now returns #N/A and a 120 lb parcel returns 44.50, both from a range that slid down with the formula.",
+          "formula": "=VLOOKUP(F2,D2:E6,2,TRUE)"
+        },
+        {
+          "name": "Anchor the table",
+          "text": "Four dollar signs make the range survive the fill handle. Press F4 with the range selected instead of typing them.",
+          "formula": "=VLOOKUP(F2,$D$2:$E$6,2,TRUE)"
+        }
+      ],
+      "example": {
+        "formula": "=VLOOKUP(0.4,$D$2:$E$6,2,TRUE)",
+        "result": "#N/A",
+        "explanation": "The table starts at 1 lb, and approximate match has nothing at or below 0.4 lb to return, so it reports a miss on a table that is complete and sorted. A padded envelope reaches this row every week. The repair is a 0 lb row at the top of the table carrying the 1 lb rate, which turns the cell into 8.95 without touching the formula."
+      },
+      "tips": [
+        "A table that grew past its range is the quiet version. Add a 100 lb band in row 7 and a 120 lb shipment still returns 44.50, because table_array stops at row 6. Excel extends an anchored range when rows are inserted inside it, but not when rows are added below it.",
+        "Sorting the first column into descending order breaks approximate match without putting an error on the screen. Excel bisects that column assuming it ascends, so the band returned depends on where the key falls in the bisection, and keys that returned a rate yesterday start returning #N/A.",
+        "Google Sheets defaults is_sorted to TRUE with the same consequence, and its help page states the range must be sorted for the sorted form. Copy a VLOOKUP between the two applications and the fourth argument carries the fault with it."
+      ]
+    },
+    {
+      "title": "When #N/A Is the Right Answer",
+      "content": "Some misses are correct. SKU 9001 was discontinued in March and the order sheet still carries it, so no amount of key repair will produce a price. That row needs a label rather than a repair. IFNA replaces #N/A and leaves every other error standing, which is the difference that matters here: IFERROR swallows the #REF! from section 1 and displays it as a missing product.",
+      "steps": [
+        {
+          "name": "Label the miss",
+          "text": "Only #N/A is replaced. If the lookup later breaks with #REF!, that error still shows and still gets fixed.",
+          "formula": "=IFNA(VLOOKUP(G2,$A$2:$C$9,3,FALSE),\"Not found\")"
+        },
+        {
+          "name": "Count the labels",
+          "text": "The label is text the sheet can count, so the number of problem rows becomes a figure on the reconciliation line instead of a blank someone has to notice.",
+          "formula": "=COUNTIF($H$2:$H$40,\"Not found\")"
+        },
+        {
+          "name": "Guard the line total",
+          "text": "A text label in the price column turns the multiplication into #VALUE!. ISNUMBER routes the label to 0 and lets the priced rows calculate.",
+          "formula": "=IF(ISNUMBER(H2),G2*H2,0)"
+        },
+        {
+          "name": "Skip the wrapper on a modern version",
+          "text": "The fourth argument is XLOOKUP's if_not_found value. No wrapper, and no dependence on the column order of table_array.",
+          "formula": "=XLOOKUP(G2,$A$2:$A$9,$C$2:$C$9,\"Not found\")"
+        },
+        {
+          "name": "The wrapper that hides too much",
+          "text": "The col_index of 4 is the #REF! fault from section 1. IFERROR reports it as a missing product, and the table that is one column too narrow never gets widened.",
+          "formula": "=IFERROR(VLOOKUP(G2,$A$2:$C$9,4,FALSE),\"Not found\")"
+        }
+      ],
+      "example": {
+        "formula": "=IFNA(VLOOKUP(G2,$A$2:$C$9,3,FALSE),\"Not found\")",
+        "result": "Not found",
+        "explanation": "Four of the five lines price and the fifth, SKU 9001, comes back labelled. With the ISNUMBER guard in the extended-total column the priced lines total 564.80 and the missing row contributes 0, so the order total is still a number finance can post. The label also gives the reconciliation row something to count: COUNTIF returns 1 here, and the same formula on a 400-line order names the lines to chase before the invoice goes out."
+      },
+      "tips": [
+        "An empty string looks tidier than a label and cannot be counted on its own. COUNTIF(range,\"\") returns empty-string cells and truly blank cells in one number, so the misses and the gaps become the same figure.",
+        "IFNA needs Excel 2013 or later and has been in Google Sheets since 2014. Its second argument is required in Excel and optional in Sheets, where leaving it out returns an empty string.",
+        "Put the wrapper on last. Wrapping on day one converts a data fault into a displayed value, and the report stays wrong for as long as nobody questions a column of Not found."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "VLOOKUP",
+      "slug": "vlookup",
+      "description": "VLOOKUP (Vertical Lookup) is a built-in function in Excel and Google Sheets that searches for a value in the first column of a table and returns a value in the same row from a specified column."
+    },
+    {
+      "name": "XLOOKUP",
+      "slug": "xlookup",
+      "description": "XLOOKUP is the modern replacement for VLOOKUP. It searches a range or array for a value and returns the corresponding item from a second range or array. It supports exact and approximate matching, wildcards, and can search in any direction."
+    },
+    {
+      "name": "IFNA",
+      "slug": "ifna",
+      "description": "IFNA returns a specified value when a formula results in the #N/A error, and otherwise returns the formula's own result. It catches only #N/A, not other errors."
+    },
+    {
+      "name": "IFERROR",
+      "slug": "iferror",
+      "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise."
+    },
+    {
+      "name": "TRIM",
+      "slug": "trim",
+      "description": "TRIM removes extra spaces from text, leaving only single spaces between words."
+    },
+    {
+      "name": "SUBSTITUTE",
+      "slug": "substitute",
+      "description": "SUBSTITUTE replaces one text string with another in a text string."
+    },
+    {
+      "name": "TEXT",
+      "slug": "text",
+      "description": "TEXT converts a number or date into text using a user-supplied format code, so the displayed value can be concatenated or presented in a custom format."
+    },
+    {
+      "name": "ISTEXT",
+      "slug": "istext",
+      "description": "ISTEXT returns TRUE if the supplied value is text, and FALSE otherwise."
+    },
+    {
+      "name": "LEN",
+      "slug": "len",
+      "description": "LEN returns the number of characters in a text string."
+    },
+    {
+      "name": "ISNA",
+      "slug": "isna",
+      "description": "ISNA returns TRUE if the supplied value is the #N/A error, and FALSE for any other value or error."
+    },
+    {
+      "name": "MID",
+      "slug": "mid",
+      "description": "MID returns a specific number of characters from a text string starting at a specified position."
+    },
+    {
+      "name": "COUNTIF",
+      "slug": "countif",
+      "description": "COUNTIF counts the number of cells in a range that meet a specified condition. It's the counting counterpart of SUMIF — instead of summing matching values, it counts how many matches exist."
+    },
+    {
+      "name": "ISNUMBER",
+      "slug": "isnumber",
+      "description": "ISNUMBER returns TRUE if the supplied value is a number (including numeric results of formulas and dates stored as serial numbers), and FALSE otherwise."
+    },
+    {
+      "name": "VALUE",
+      "slug": "value",
+      "description": "VALUE converts a text string that represents a number, date, or time into its underlying numeric value."
+    }
+  ],
+  "summary": "Diagnose in this order: read the error code, check the data type of the key, look for a character TRIM cannot see, then examine the match mode and the address of table_array. Three of those four faults live in the data rather than in the formula, which is why an IFNA wrapper added on day one keeps a report wrong for months while looking finished. Wrap last, with a countable label instead of a blank, and accept the cost: a text label forces an ISNUMBER guard into every column that multiplies by the price.",
+  "nextSteps": [
+    "Put =ISTEXT(A2)&\" / \"&ISTEXT(G2) beside the failing lookup and read the pair before you edit the formula",
+    "Run =CODE(MID(H2,8,1)) on any name pasted from an email, then keep SUBSTITUTE(TRIM(H2),CHAR(160),\" \") in the formula that looks it up",
+    "Set the fourth argument to FALSE on every SKU lookup and reserve TRUE for banded tables whose first column is sorted ascending"
+  ],
+  "relatedTutorials": [
+    "vlookup-not-returning-correct-value",
+    "vlookup-approximate-match",
+    "vlookup-with-multiple-criteria"
+  ]
+}
