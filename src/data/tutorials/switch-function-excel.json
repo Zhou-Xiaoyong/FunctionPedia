@@ -1,0 +1,272 @@
+{
+  "slug": "switch-function-excel",
+  "title": "SWITCH Function in Excel: Map Codes to Labels Without a Lookup Table",
+  "description": "Switch function Excel syntax on a 12-line order table: one expression, pairs of status codes, and a default that is a position rather than an argument name.",
+  "category": "IF & Logical",
+  "functions": [
+    "IF",
+    "IFS",
+    "CHOOSE",
+    "MATCH",
+    "XLOOKUP",
+    "COUNTIF",
+    "SUM",
+    "COUNT",
+    "IFNA"
+  ],
+  "intro": "Twelve order lines, six status codes in column B, and column D has to print a word for each row. SWITCH does that in one expression with no lookup table anywhere in the workbook. It also has an edit that leaves the column looking complete while a 1,150 order drops out of the total.",
+  "tags": [
+    "SWITCH",
+    "IFS",
+    "Status Codes",
+    "#N/A",
+    "Google Sheets"
+  ],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Excel 2019, Excel 2021, Excel 2024 or Microsoft 365, since SWITCH returns #NAME? in Excel 2016 and older, or Google Sheets, where it is native",
+    "A table with a numeric code column and an amount column, or the 12 order lines used here in A2:C13",
+    "A working knowledge of IF, because the rewrite in section 2 is the nested version"
+  ],
+  "sections": [
+    {
+      "title": "One Expression, Five Pairs, One Column of Labels",
+      "content": "SWITCH evaluates the expression once and compares it against each case in the order you wrote them. The first case that equals it wins, the cell returns the value paired with that case, and the function stops reading. For a status column that is the entire job: 12 order rows, five known codes, and a printable word in column D. The maintenance saving is smaller than the argument count suggests and more useful. A nested IF repeats the test in every branch, so pointing the formula at a different column means editing five references. Here the expression is written once.",
+      "steps": [
+        {
+          "name": "Get one row right",
+          "text": "Row 2 carries code 10. Five pairs and a default, and the cell prints the label.",
+          "formula": "=SWITCH(B2,10,\"Picked\",20,\"Packed\",30,\"Shipped\",40,\"Delivered\",90,\"Canceled\",\"Unknown\")"
+        },
+        {
+          "name": "Fill the column",
+          "text": "Select D2, double-click the Fill Handle in the bottom-right corner, and the formula lands on D13 in one action. Google Sheets fills the same way with its own fill handle.",
+          "formula": "Double-click the Fill Handle"
+        },
+        {
+          "name": "What it replaces",
+          "text": "The same mapping as a nested IF. Same answer, five copies of B2, and a sixth pair means another closing parenthesis at the end.",
+          "formula": "=IF(B2=10,\"Picked\",IF(B2=20,\"Packed\",IF(B2=30,\"Shipped\",IF(B2=40,\"Delivered\",IF(B2=90,\"Canceled\",\"Unknown\")))))"
+        },
+        {
+          "name": "Count what fell through",
+          "text": "One row lands on the default, and it is the one code the ERP added after the mapping was written.",
+          "formula": "=COUNTIF(D2:D13,\"Unknown\")"
+        }
+      ],
+      "example": {
+        "formula": "=SWITCH(B2,10,\"Picked\",20,\"Packed\",30,\"Shipped\",40,\"Delivered\",90,\"Canceled\",\"Unknown\")",
+        "result": "Picked",
+        "explanation": "Row 2 holds 10 and the first pair answers it. Filled to row 13 the column reads three Picked, two Packed, three Shipped, two Delivered, one Canceled, and one Unknown, because row 13 carries code 45 and 45 appears in no pair. Eleven rows mapped, one did not, and the audit cell in step 3 is how you find that without scrolling. Column C totals 17,250 whether or not the labels are right, which is why the label column needs its own check."
+      },
+      "tips": [
+        "Keep the code numbers in the formula and the labels beside them. Writing the labels first and the codes second is the most common way to get a column of words that all look plausible and are all shifted by one position.",
+        "SWITCH reads cell references, not text, in the case positions. A case written as \"10\" with quotes is a text comparison, and section 3 covers what that does to a numeric column.",
+        "The default sits inside the same formula as the mapping, so the mapping travels with the workbook. Send the sheet to a colleague without the lookup tab and column D still works."
+      ]
+    },
+    {
+      "title": "The Default Is the Last Unpaired Argument",
+      "content": "The default has no keyword and no name. Excel identifies it as the argument with no matching result, which means it has to be the last thing you type. That gives the formula a check you can run by eye: count the arguments, expression included. An even count means a default is present. An odd count means every case has its result and there is no safety net. Both mistakes below come from editing the tail of the formula, and both leave a column that looks finished.",
+      "steps": [
+        {
+          "name": "Insert the new pair in the middle",
+          "text": "Code 45 arrives, so it goes in as a pair ahead of the default. Fourteen arguments, one of them unpaired, and row 13 reads Returned.",
+          "formula": "=SWITCH(B2,10,\"Picked\",20,\"Packed\",30,\"Shipped\",40,\"Delivered\",90,\"Canceled\",45,\"Returned\",\"Unknown\")"
+        },
+        {
+          "name": "The same edit made at the end",
+          "text": "Appended after the default, the new pair takes its place as a case. The text Unknown is now paired with 45, and the trailing Returned becomes the default. Row 13 still reads Returned, which is why nobody catches it.",
+          "formula": "=SWITCH(B2,10,\"Picked\",20,\"Packed\",30,\"Shipped\",40,\"Delivered\",90,\"Canceled\",\"Unknown\",45,\"Returned\")"
+        },
+        {
+          "name": "The tell",
+          "text": "The audit count drops from 1 to 0 while the column shows no error at all. Every future unmapped code, every blank, every 30 typed as text now reads Returned.",
+          "formula": "=COUNTIF(D2:D13,\"Unknown\")"
+        },
+        {
+          "name": "Forgetting the result instead",
+          "text": "Add only the case value and the count stays odd, so there is no default left at all. The cells that used to say Unknown turn into #N/A, which at least announces itself.",
+          "formula": "=SWITCH(B13,10,\"Picked\",20,\"Packed\",30,\"Shipped\",40,\"Delivered\",90,\"Canceled\",\"Unknown\",45)"
+        }
+      ],
+      "example": {
+        "formula": "=SWITCH(B13,10,\"Picked\",20,\"Packed\",30,\"Shipped\",40,\"Delivered\",90,\"Canceled\",\"Unknown\",45)",
+        "result": "#N/A",
+        "explanation": "Thirteen arguments: one expression, five pairs, then the text Unknown and the number 45 sitting as a sixth pair with nothing after them. SWITCH reads Unknown as a case value, reads 45 as the result attached to that case, and finds no default. Code 45 matches none of the five real codes, so the cell returns #N/A. The formula is one argument away from working, and that argument is the result that belongs to 45."
+      },
+      "tips": [
+        "Write the default on its own line. Excel keeps line breaks inserted with Alt+Enter inside the formula bar, and a default alone at the end is harder to bury under the next pair someone appends.",
+        "SWITCH accepts up to 126 pairs, which is the 254-argument ceiling halved, so parity will not stop you. Readability will. At six pairs a reviewer starts counting arguments instead of checking the logic.",
+        "The default can be a function call, and =NA() is a legitimate one. It forces #N/A for every unmapped code rather than printing a label that looks like a real status."
+      ]
+    },
+    {
+      "title": "Equality Only: Bands, Text Numbers, and Wildcards",
+      "content": "Every case is compared for equality. That rules out comparison strings, because \">3000\" is five characters and SWITCH compares them to a number, finds no match, and returns the default without complaint. The same silence covers a text number in a numeric column, since \"10\" and 10 are different values and a code exported as text falls straight through. Bands and coercion belong in IFS or a lookup, not here.",
+      "steps": [
+        {
+          "name": "A band written as a case",
+          "text": "C5 holds 3,480. Nothing about this formula errors. It simply finds no case equal to the string \">3000\".",
+          "formula": "=SWITCH(C5,\">3000\",\"Large\",\"Standard\")"
+        },
+        {
+          "name": "The same rule in IFS",
+          "text": "Each argument is a test that evaluates to TRUE or FALSE, and the first TRUE wins. The closing TRUE pair is what an unmatched row returns.",
+          "formula": "=IFS(C5>=2000,\"Large\",C5>=1000,\"Medium\",TRUE,\"Small\")"
+        },
+        {
+          "name": "A code that arrived as text",
+          "text": "B2 is the number 10 and the case is the string \"10\". The types differ, so the label falls to the default with no error to chase.",
+          "formula": "=SWITCH(B2,\"10\",\"Picked\",\"Unknown\")"
+        },
+        {
+          "name": "Wildcards are characters here",
+          "text": "COUNTIF and VLOOKUP expand the asterisk. SWITCH compares it literally, so the pattern matches no order on the sheet.",
+          "formula": "=SWITCH(A2,\"SO-10*\",\"Batch A\",\"Other\")"
+        }
+      ],
+      "example": {
+        "formula": "=SWITCH(C5,\">3000\",\"Large\",\"Standard\")",
+        "result": "Standard",
+        "explanation": "3,480 is larger than 3,000 by any reading, and the cell says Standard. The comparison is 3,480 against the five-character string >3000, which is not equal, so the default runs. Nothing in the sheet marks the row as suspect, which is how a threshold written as a case can ship and stay wrong for a quarter. The IFS version in step 2 returns Large for the same cell."
+      },
+      "tips": [
+        "Text comparison ignores case the way the equals sign does, so a status exported as canceled matches a case written Canceled. SWITCH has no exact-case mode; when case matters, EXACT inside SUMPRODUCT is the tool.",
+        "Codes that arrive as text are the most common cause of a full column of defaults. COUNT against COUNTA on the code column shows it in one cell: 11 against 12 means one code is not a number.",
+        "Google Sheets behaves the same on all three counts: equality only, no wildcard expansion, and text kept apart from numbers. Its own documentation says the cases are matched exactly."
+      ]
+    },
+    {
+      "title": "#N/A in One Cell and What It Does to the Total",
+      "content": "A code with no pair has two possible outcomes, and which one you get depends on whether a default exists. Drop the default and the cell holds #N/A. That error is the useful one, because SUM and AVERAGE refuse to total a range that contains it, so the report breaks at the bad row instead of three rows later. COUNT is the exception. It counts numbers, an error is not a number, so it returns 11 and looks healthy.",
+      "steps": [
+        {
+          "name": "A numeric SWITCH",
+          "text": "Weights for open value: fully open at 10, nearly closed at 30, closed at 40. No default, because every code is supposed to appear in the list.",
+          "formula": "=SWITCH(B2,10,1,20,0.6,30,0.3,40,0,90,0)"
+        },
+        {
+          "name": "Total the column",
+          "text": "One #N/A anywhere in the range and the sum is #N/A. The 5.1 that the weights actually add up to never appears on screen.",
+          "formula": "=SUM(E2:E13)"
+        },
+        {
+          "name": "Count what is in there",
+          "text": "Eleven numbers in twelve rows. COUNT is the only aggregate that stays quiet, and that is why a broken total can sit beside a healthy row count.",
+          "formula": "=COUNT(E2:E13)"
+        },
+        {
+          "name": "Close the hole row by row",
+          "text": "IFNA on the row turns the unmapped code into 0, SUM then totals 5.1, and the weighted value comes to 5,793. The 1,150 order on row 13 is inside neither number.",
+          "formula": "=IFNA(SWITCH(B13,10,1,20,0.6,30,0.3,40,0,90,0),0)"
+        }
+      ],
+      "example": {
+        "formula": "=SUM(E2:E13)",
+        "result": "#N/A",
+        "explanation": "Eleven cells hold a number and the twelfth holds #N/A, and SUM will not skip it. The usual reaction is to narrow the range until the total stops failing, which is how a report ends up quietly excluding the rows it could not read. COUNT(E2:E13) returns 11 on the same range, so the size of the problem is visible even when the total is not."
+      },
+      "tips": [
+        "IFNA wrapped around the SUM returns 0 instead of #N/A. A dashboard reading $0.00 looks like a quiet month; a dashboard reading #N/A gets fixed the same day.",
+        "A blank code cell matches none of the pairs, so it lands on the default. With a numeric default of 0 that blank row contributes nothing to a SUM, which is usually right and occasionally is not.",
+        "Keep the numeric SWITCH in its own column rather than nesting it inside the amount formula. When a code goes missing, the error appears in one narrow place instead of taking the revenue column down with it."
+      ]
+    },
+    {
+      "title": "Six Codes or Six Hundred: When the Formula Should Stop Growing",
+      "content": "Microsoft caps SWITCH at 126 pairs, so the function will not run out of room before you run out of patience. The working ceiling is around six. Past that the mapping belongs in a two-column table, where someone who owns the codes can add one without opening a formula. Two fallbacks are worth knowing before that point: CHOOSE with MATCH for workbooks that have to open in Excel 2016, and XLOOKUP once the list is a table.",
+      "steps": [
+        {
+          "name": "The pre-2019 version",
+          "text": "CHOOSE picks by position and MATCH supplies the position. No SWITCH, no #NAME?, and it runs in Excel 2010.",
+          "formula": "=CHOOSE(MATCH(B2,{10,20,30,40,90},0),\"Picked\",\"Packed\",\"Shipped\",\"Delivered\",\"Canceled\")"
+        },
+        {
+          "name": "The default CHOOSE does not have",
+          "text": "MATCH returns #N/A for code 45 and CHOOSE passes the error along. There is no trailing slot to catch it, so IFNA has to do that work.",
+          "formula": "=IFNA(CHOOSE(MATCH(B13,{10,20,30,40,90},0),\"Picked\",\"Packed\",\"Shipped\",\"Delivered\",\"Canceled\"),\"Unknown\")"
+        },
+        {
+          "name": "A code table with XLOOKUP",
+          "text": "Codes in H2:H6, labels in I2:I6. Adding code 45 is a row insert and no formula changes. The fourth argument handles the code nobody mapped.",
+          "formula": "=XLOOKUP(B2,$H$2:$H$6,$I$2:$I$6,\"Unknown\")"
+        },
+        {
+          "name": "Google Sheets fills a block from one cell",
+          "text": "Google's own sample usage passes a range as the expression. Excel documents a single value, so the Fill Handle is how the column gets filled there.",
+          "formula": "=SWITCH(A2:A13,10,\"Picked\",20,\"Packed\",30,\"Shipped\",\"Unknown\")"
+        }
+      ],
+      "example": {
+        "formula": "=CHOOSE(MATCH(B2,{10,20,30,40,90},0),\"Picked\",\"Packed\",\"Shipped\",\"Delivered\",\"Canceled\")",
+        "result": "Picked",
+        "explanation": "B2 holds 10, MATCH finds it at position 1 of the constant, and CHOOSE returns the first label. Three functions doing the work of one, and the reason to keep the pattern is a workbook that also opens on a machine running Excel 2016, where SWITCH returns #NAME? because the function is not in that version. The cost is the constant: a sixth code means editing the array and adding a sixth label in the matching position, and a label in the wrong slot returns the wrong word with no error."
+      },
+      "tips": [
+        "Array constants cannot hold function calls, so {10,20,30,40,90} has to be literal numbers. Dates would have to go in as their serial numbers, typed out by hand.",
+        "A table is the only version where the person who owns the codes can edit the mapping. The trade-off is a second place to look when a label comes out wrong, and a table that drifts from the export it describes.",
+        "Excel 2016 and older return #NAME? for SWITCH and IFS both, and the cell shows _xlfn.SWITCH( in the formula bar when the file was written in a newer version. Sheets has no equivalent version problem."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "IFS",
+      "slug": "ifs",
+      "description": "IFS checks multiple conditions and returns the value for the first condition that is true."
+    },
+    {
+      "name": "CHOOSE",
+      "slug": "choose",
+      "description": "CHOOSE returns a value from a list based on a given index number, acting like a simple selector or inline lookup."
+    },
+    {
+      "name": "MATCH",
+      "slug": "match",
+      "description": "MATCH searches for a specified item in a range and returns its relative position."
+    },
+    {
+      "name": "XLOOKUP",
+      "slug": "xlookup",
+      "description": "XLOOKUP is the modern replacement for VLOOKUP. It searches a range or array for a value and returns the corresponding item from a second range or array. It supports exact and approximate matching, wildcards, and can search in any direction."
+    },
+    {
+      "name": "COUNTIF",
+      "slug": "countif",
+      "description": "COUNTIF counts the number of cells in a range that meet a specified condition. It's the counting counterpart of SUMIF — instead of summing matching values, it counts how many matches exist."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "COUNT",
+      "slug": "count",
+      "description": "COUNT counts the number of cells that contain numbers within a specified range."
+    },
+    {
+      "name": "IFNA",
+      "slug": "ifna",
+      "description": "IFNA returns a specified value when a formula results in the #N/A error, and otherwise returns the formula's own result. It catches only #N/A, not other errors."
+    }
+  ],
+  "summary": "Write SWITCH when the question is which code sits in this cell and the answer is a short list of exact values, and keep the default on its own line so the next pair lands in front of it rather than after it. Six pairs is the working ceiling. Past that, a two-column code table with XLOOKUP lets someone else add a code without opening the formula, and the price is a second sheet that can fall out of step with the export it is supposed to describe.",
+  "nextSteps": [
+    "Count the arguments in any SWITCH you inherit: an odd number means no default is present, so every unmapped code is already showing #N/A",
+    "Put =COUNTIF(range,\"Unknown\") beside the label column, so a mapping that loses its default shows up as a count of 0 instead of a column that looks complete",
+    "Move one mapping with more than six codes into a two-column table, replace it with XLOOKUP exact match, and check that the code owner can add a row without help"
+  ],
+  "relatedTutorials": [
+    "ifs-function-multiple-conditions",
+    "nested-if-alternatives",
+    "iferror-vs-ifna"
+  ]
+}
