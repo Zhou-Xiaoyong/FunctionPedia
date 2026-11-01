@@ -1,0 +1,255 @@
+{
+  "slug": "calculate-expiry-date",
+  "title": "Calculate Expiry Date in Excel: 24 Months Is 731 Days, Not 730",
+  "description": "Calculate expiry date from a production date and a shelf life in months, then check two silent errors: 24 months is 731 days, and month-end is a different date.",
+  "category": "Date & Time",
+  "functions": [
+    "EDATE",
+    "EOMONTH",
+    "TODAY",
+    "IF",
+    "COUNTIF",
+    "COUNTA",
+    "ARRAYFORMULA"
+  ],
+  "intro": "Ten batches sit in a stockroom log, and three of them stopped being sellable months ago. The expiry column is the date a label printer stamps and the date a scanner compares against, so it has to come out identical every run: production date, shelf life in months, one formula. The two places that formula goes wrong are one day and thirty days wide, and neither one throws an error.",
+  "tags": [
+    "EDATE",
+    "EOMONTH",
+    "TODAY",
+    "Expiry Dates",
+    "Batch Log"
+  ],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "A batch or lot log with a production date column and a shelf life column, or the ten rows used here in A2:C11",
+    "Production dates stored as real date values, since EDATE returns #VALUE! for a date typed and stored as text",
+    "Excel 2007 or later, or Google Sheets, where EDATE and EOMONTH are both native"
+  ],
+  "sections": [
+    {
+      "title": "From Production Date to Stamp Date in One Formula",
+      "content": "The expiry column is derived, and it is the only date on this sheet that anyone outside the building reads. Two inputs sit beside it: the production date in column B and the shelf life in months in column C. Batch B-1041 was made on 3/14/2026 with 24 months, so the label reads 3/14/2028. Keep the shelf life in its own column even when every product on the sheet shares one. Shelf lives change by product, and a formula with 24 typed into it has to be hunted down forty times when one product moves to 18 months.",
+      "steps": [
+        {
+          "name": "Point at the two inputs",
+          "text": "No lookup table, no helper column. B2 holds the production date, C2 holds the shelf life in months.",
+          "formula": "=EDATE(B2,C2)"
+        },
+        {
+          "name": "Fill the column",
+          "text": "Double-click the Fill Handle at the bottom-right corner of D2 and the formula lands on D11. The references shift because they are relative, which is what you want: every row reads its own inputs.",
+          "formula": "Double-click the Fill Handle"
+        },
+        {
+          "name": "Format before anyone sees it",
+          "text": "EDATE returns a date serial. On a General-formatted cell D2 shows 46826 instead of a date, and so does every row below it.",
+          "formula": "Ctrl+1  >  Date  >  3/14/2028"
+        }
+      ],
+      "example": {
+        "formula": "=EDATE(B2,C2)",
+        "result": "3/14/2028",
+        "explanation": "Filled to D11 the column reads 3/14/2028, 2/28/2026, 1/31/2027, 3/30/2026, 9/15/2027, 5/1/2029, 6/30/2027, 7/5/2027, 10/20/2026 and 11/30/2026. Two rows earn a second look. B-1042 was produced on 1/31/2026 with a one-month shelf life, and February 2026 has 28 days, so the expiry is 2/28/2026 rather than a date in March. B-1044 was produced on 11/30/2025 with four months, which lands on 3/30/2026 because March has 30 days to spare. EDATE clamps down to the last valid day of the target month and never rolls forward into the next one."
+      },
+      "tips": [
+        "EDATE takes negative months as well, which is how you back into a production date: =EDATE(D2,-24) returns 3/14/2026 as long as the shelf life has not changed since the batch was made.",
+        "A fractional month is truncated, so 2.9 in C2 behaves as 2. Nothing in the cell warns you, and the date comes back about three weeks before the person who typed 2.9 was expecting it.",
+        "The day number survives the shift, which is the entire reason to use EDATE instead of arithmetic. Section 2 is what happens when that day number meets a leap year."
+      ]
+    },
+    {
+      "title": "24 Months Is 731 Days, Not 730",
+      "content": "Add 730 days to 3/14/2026 and the cell reads 3/13/2028. Add 24 months with EDATE and it reads 3/14/2028. The gap is one day, and it exists because any two-year window that crosses a February 29 is 731 days long. The shortcut does not fail loudly. It produces a date that looks like a date, and the batch ships one day early for as long as nobody adds the days up.",
+      "steps": [
+        {
+          "name": "The shortcut",
+          "text": "B2 plus 730 days. Nothing in the cell suggests it is a day short of the real expiry.",
+          "formula": "=B2+730"
+        },
+        {
+          "name": "The month version",
+          "text": "Same two inputs, one day later, because EDATE counts calendar months instead of days.",
+          "formula": "=EDATE(B2,C2)"
+        },
+        {
+          "name": "Measure the difference",
+          "text": "Exactly 1 on this row. On a row whose window contains no February 29 the difference is 0, and the shortcut looks correct.",
+          "formula": "=EDATE(B2,C2)-(B2+730)"
+        },
+        {
+          "name": "Three years, same problem",
+          "text": "B-1046 in row 7 runs 36 months from 5/1/2026, which is 1,096 days. Three 365-day years come to 1,095, so the day-count version lands on 4/30/2029.",
+          "formula": "=B7+1095"
+        }
+      ],
+      "example": {
+        "formula": "=B2+730",
+        "result": "3/13/2028",
+        "explanation": "The cell shows a plausible date and D2 shows 3/14/2028, one day later. Nothing marks the difference, and the label printer will stamp the earlier one on 4,000 cartons. The same sheet holds the row that lets the mistake survive review: B-1045, produced 9/15/2026 on a 12-month shelf life, is exactly 365 days from its expiry because that window never touches a February 29, so =B6+365 agrees with EDATE to the day. One row passing the test is how a wrong formula gets signed off."
+      },
+      "tips": [
+        "Days is the correct unit when the certificate quotes days. Some coatings and reagents ship with a 730-day shelf life, and then =B2+730 is right and EDATE is the formula that drifts. Take the unit from the certificate, not from habit.",
+        "Put the two versions side by side once and look for rows where they disagree. Every disagreement is a leap day inside the window, and every one of them is a batch that ships early if the day-count version is the one in production.",
+        "The error grows when someone extends a shelf life by adding months to the expiry cell instead of the production cell. For B-1042, =EDATE(D3,6) returns 8/28/2026 and =EDATE(B3,7) returns 8/31/2026, because the first one starts from a date that was already clamped."
+      ]
+    },
+    {
+      "title": "Exact Day or End of Month: A 17-Day Decision",
+      "content": "Two formulas can both be defensible and disagree by 17 days. EDATE keeps the production day, so B-1041 expires 3/14/2028. Plenty of printed labels use the end of the month instead, and that is EOMONTH(B2,C2), which returns 3/31/2028 for the same batch. Which one belongs in the cell is a labeling decision. Having both in one column is a spreadsheet problem.",
+      "steps": [
+        {
+          "name": "End of the month",
+          "text": "EOMONTH ignores the production day and returns the last day of the month the shelf life lands in.",
+          "formula": "=EOMONTH(B2,C2)"
+        },
+        {
+          "name": "The first day it cannot be sold",
+          "text": "The month-end date is still sellable, so the number that belongs on a two-date label is the day after it.",
+          "formula": "=EOMONTH(B2,C2)+1"
+        },
+        {
+          "name": "Measure the gap",
+          "text": "17 days for B-1041. The gap depends on the production day and not at all on the shelf life.",
+          "formula": "=EOMONTH(B2,C2)-EDATE(B2,C2)"
+        },
+        {
+          "name": "Rows where the gap is zero",
+          "text": "B-1042, B-1043, B-1047 and B-1050 were produced on the last day of their month, so both conventions return one date. Those rows pass any spot check.",
+          "formula": "=EOMONTH(B3,C3)-EDATE(B3,C3)"
+        }
+      ],
+      "example": {
+        "formula": "=EOMONTH(B2,C2)",
+        "result": "3/31/2028",
+        "explanation": "Seventeen days later than the EDATE answer, and both are now on a sheet in front of a production planner who has to pick one. A carton printed BEST BY 03/2028 is honest at month-end. A system that pulls the batch on 3/14 takes it out of the channel two and a half weeks before the label says to, and the reverse mistake is worse: a scanner reading 3/31 against a 3/14 expiry keeps stock that is already out of date. Name the convention in the column header, because the formula will not tell the next person which rule it follows."
+      },
+      "tips": [
+        "EOMONTH clips the production day entirely, so a batch made on the 1st and one made on the 28th of the same month with the same shelf life get one expiry. That is the point for month-coded labels and a lost three weeks for anything counted in days.",
+        "The gap is 30 days for a batch produced on the 1st, 26 for the 5th and 17 for the 14th, because the gap is simply the days left in the production month. You can size the cost of the convention before computing anything.",
+        "Never let one column hold both conventions. A column that is 90 percent EDATE and 10 percent EOMONTH looks uniform, sorts correctly, and is wrong by up to a month on the rows nobody rechecked."
+      ]
+    },
+    {
+      "title": "Days Left, the Format Trap, and the Last Sellable Day",
+      "content": "=D2-TODAY() is the countdown, and it reads 499 for B-1041 with today at 11/1/2026. The subtraction is trivial. The display is not, because Excel applies the format already sitting on the result cell, so 45 days shows as 2/14/1900 and looks like a corrupted date rather than a count. Set the column to Number with zero decimals before you fill it, not after.",
+      "steps": [
+        {
+          "name": "Days remaining",
+          "text": "Expiry minus today. A positive number is shelf life left, a negative number is days already expired.",
+          "formula": "=D2-TODAY()"
+        },
+        {
+          "name": "Set the format first",
+          "text": "Number, zero decimals. Doing this after the fill means selecting the column and fixing it, which is fine, but the person reading it in between will think the formulas are broken.",
+          "formula": "Ctrl+1  >  Number  >  0 decimal places"
+        },
+        {
+          "name": "The test for expired",
+          "text": "On its expiry date a batch has 0 days left and can still ship that day. The comparison has to be strictly less than zero, or every batch is written off one day early.",
+          "formula": "=IF(D11<TODAY(),\"Expired\",\"Sell\")"
+        },
+        {
+          "name": "Work the negative end",
+          "text": "Sorting column E smallest to largest puts the dead stock on top: -246, -216, -12. That is the order a stockroom walks in.",
+          "formula": "Sort Smallest to Largest on column E"
+        }
+      ],
+      "example": {
+        "formula": "=D2-TODAY()",
+        "result": "499",
+        "explanation": "With TODAY() reading 11/1/2026 the cell shows 499. Tomorrow it shows 498 and the expiry in D2 has not moved, which is the whole difference between a stored date and a live count. The three expired batches read -246, -216 and -12 in the same order as their expiry dates: B-1042 died in February, B-1044 in March, and B-1049 twelve days ago. The twelve-day row is the one still sitting on a shelf somewhere, and it is the reason the sort matters more than the count."
+      },
+      "tips": [
+        "TODAY() is volatile. It recalculates on every edit, every open and every print, which is correct behavior and also why a PDF exported yesterday disagrees with the screen today.",
+        "Reach for NOW() only when hours matter. It carries a time component, so the subtraction returns a fraction and the day count needs INT wrapped around it.",
+        "An empty production date raises no error at all. Excel reads it as zero, adds the shelf life to that zero date, and returns a date in the early 1900s which sorts to the top as long expired. COUNTA against COUNT on B2:B11 finds the row: 9 against 10."
+      ]
+    },
+    {
+      "title": "Status Bands, the Audit Row, and the Google Sheets Version",
+      "content": "A status column turns days into words a stockroom can act on. The band below marks anything past its expiry as Expired, anything inside 30 days as Pull, and the rest as OK. Filled down it reads six OK, three Expired and one Pull on this dataset. Count the bands in cells of their own rather than trusting the eye, because a band formula that fails quietly fails in one row at a time.",
+      "steps": [
+        {
+          "name": "The band",
+          "text": "Nested IF. The first test catches expired rows, the second catches the 30-day window, and everything else falls through to OK.",
+          "formula": "=IF(D2<TODAY(),\"Expired\",IF(D2-TODAY()<=30,\"Pull\",\"OK\"))"
+        },
+        {
+          "name": "Count each band",
+          "text": "One cell per status, so the numbers can be compared against the visible column without scrolling.",
+          "formula": "=COUNTIF($F$2:$F$11,\"Expired\")"
+        },
+        {
+          "name": "Reconcile the rows",
+          "text": "Ten batches minus the three counts should be 0. A 1 means one row carries no status, which is exactly what a missing production date produces.",
+          "formula": "=COUNTA($A$2:$A$11)-COUNTIF($F$2:$F$11,\"Expired\")-COUNTIF($F$2:$F$11,\"Pull\")-COUNTIF($F$2:$F$11,\"OK\")"
+        },
+        {
+          "name": "Google Sheets fills from one cell",
+          "text": "ARRAYFORMULA expands EDATE down the column. The IF keeps any unused row at the bottom of the range empty instead of showing a 1900s date.",
+          "formula": "=ARRAYFORMULA(IF(A2:A11=\"\",\"\",EDATE(B2:B11,C2:C11)))"
+        }
+      ],
+      "example": {
+        "formula": "=IF(D2<TODAY(),\"Expired\",IF(D2-TODAY()<=30,\"Pull\",\"OK\"))",
+        "result": "OK",
+        "explanation": "B-1041 has 499 days left, so it falls past both tests and lands on OK. B-1050 is the single Pull: 11/30/2026 minus 11/1/2026 is 29 days, one day inside the window, and that is the row a reorder sheet has to see this week. The band is a hard 30 for every product regardless of shelf life, so a 24-month batch and a 2-month batch get the same warning. Six OK, three Expired, one Pull, and the reconciliation cell returns 0."
+      },
+      "tips": [
+        "Put the 30 in a cell and point the formula at it. Otherwise the threshold is a guess baked into a formula that gets copied into a second column six months later by someone who never saw this sheet.",
+        "A production date stored as text breaks its row three times: #VALUE! in the expiry, #VALUE! in the days left, and #VALUE! in the status, because the band compares an error to a number and passes it along. COUNT on the date column against COUNTA locates the row.",
+        "EDATE and EOMONTH behave the same in Excel and Google Sheets, end-of-month clamping included, so the formulas cross over unchanged. ARRAYFORMULA and the dynamic array spill are not the same feature: Sheets fills a column from one cell, Excel 365 spills from =EDATE(B2:B11,C2:C11), and Excel 2021 needs the Fill Handle."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "EDATE",
+      "slug": "edate",
+      "description": "EDATE returns the date that is a given number of months before or after a start date, preserving the day of the month and rolling to the last day when that day does not exist in the target month."
+    },
+    {
+      "name": "EOMONTH",
+      "slug": "eomonth",
+      "description": "EOMONTH returns the last day of the month that is a given number of months before or after a start date, useful for month-end reporting and period boundaries."
+    },
+    {
+      "name": "TODAY",
+      "slug": "today",
+      "description": "TODAY returns the current date, updated each time the worksheet recalculates."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "COUNTIF",
+      "slug": "countif",
+      "description": "COUNTIF counts the number of cells in a range that meet a specified condition. It's the counting counterpart of SUMIF — instead of summing matching values, it counts how many matches exist."
+    },
+    {
+      "name": "COUNTA",
+      "slug": "counta",
+      "description": "COUNTA counts the number of non-empty cells within a specified range, regardless of the cell content."
+    },
+    {
+      "name": "ARRAYFORMULA",
+      "slug": "arrayformula",
+      "description": "ARRAYFORMULA lets you apply a single formula to an entire range of cells automatically, expanding results into neighboring rows and columns without manually filling down or across."
+    }
+  ],
+  "summary": "Write =EDATE(B2,C2) and keep the shelf life in a column of its own, because that version survives a leap year and a product that moves from 24 months to 18. Then settle the end-of-month question in writing, since EOMONTH and EDATE disagree by as much as 30 days and the column will not tell you which rule it follows. The trade-off is a hard dependency on a real production date: one cell of text turns the expiry, the countdown and the status into #VALUE! at the same time.",
+  "nextSteps": [
+    "Compare =EDATE(B2,C2) with =B2+730 on every row of one live sheet and fix the rows where they differ, since each of those rows hides a leap day",
+    "Move the 30-day warning threshold into its own cell so a slow-moving product can use 60 days without editing a filled formula",
+    "Name the labeling convention, exact day or month-end, in the header of the expiry column where the next person to open the file will read it"
+  ],
+  "relatedTutorials": [
+    "add-months-to-a-date",
+    "last-day-of-month",
+    "calculate-days-between-two-dates"
+  ]
+}
