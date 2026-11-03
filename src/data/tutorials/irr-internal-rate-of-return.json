@@ -1,0 +1,261 @@
+{
+  "slug": "irr-internal-rate-of-return",
+  "title": "IRR Internal Rate of Return: When 14.1% Beats 11.6% and Still Loses",
+  "description": "IRR internal rate of return on a $52,000 van: the zero-NPV check cell, the monthly-row trap, two roots in one column, and MIRR at a 5% reinvestment rate.",
+  "category": "Financial",
+  "functions": [
+    "IRR",
+    "NPV",
+    "MIRR",
+    "XIRR",
+    "IFERROR",
+    "SUM",
+    "COUNTIF"
+  ],
+  "intro": "A $52,000 van that returns $14,800, $16,200, $15,400, $12,900 and $11,000 over five years earns 11.62% a year, and the check cell that proves it should read $0.00. That part is arithmetic. The rest is what the function will not tell you: which period it counted, which of two possible roots it landed on, and what it quietly assumes happens to the cash after it arrives.",
+  "tags": [
+    "IRR",
+    "Internal Rate of Return",
+    "NPV",
+    "MIRR",
+    "XIRR",
+    "Cash Flow"
+  ],
+  "estimatedTime": "13 min read",
+  "prerequisites": [
+    "A column of cash flows with the initial outlay entered as a negative number, in date order",
+    "A hurdle rate or cost of capital you can name out loud, since several decisions below depend on it",
+    "Excel 2019 or later, or Google Sheets. Every function here exists in both, and XIRR needs real date values rather than text"
+  ],
+  "sections": [
+    {
+      "title": "The Zero That Proves the Number",
+      "content": "Six cells hold one van purchase and five years of net cash. B2 is -$52,000, the day the money leaves. B3 through B7 hold $14,800, $16,200, $15,400, $12,900 and $11,000, in that order. =IRR(B2:B7) returns 0.1162, which formats as 11.62%, and that one number makes a specific claim: at 11.62% a year, this van returns exactly the $52,000 it cost and not a dollar more.",
+      "steps": [
+        {
+          "name": "Check the signs before the function",
+          "text": "IRR needs at least one negative and one positive value in the range. Two COUNTIF calls answer that in a single line, and the output also tells you whether the range is the one you meant to select.",
+          "formula": "=COUNTIF(B2:B7,\"<0\")&\" out, \"&COUNTIF(B2:B7,\">0\")&\" in\""
+        },
+        {
+          "name": "The function itself",
+          "text": "One argument is enough. Format the cell as a percentage with two decimals, because the raw value 0.1162 reads like a weighting when it sits next to dollars in the same column.",
+          "formula": "=IRR(B2:B7)"
+        },
+        {
+          "name": "Prove it against NPV",
+          "text": "Zero net present value at 11.62% is the definition of the answer, so the check cell has to read zero. Mind the offset: NPV discounts its first argument by one full period, so the outlay stays outside the range and gets added back.",
+          "formula": "=NPV(IRR(B2:B7),B3:B7)+B2"
+        },
+        {
+          "name": "The version that discounts a year too many",
+          "text": "Pass the whole column instead and the answer is $4,431.40, not the project's $4,785.91 at 8%. Nothing errors. NPV simply charges the initial $52,000 a year of discounting it never earned.",
+          "formula": "=NPV(8%,B2:B7)"
+        }
+      ],
+      "example": {
+        "formula": "=IRR(B2:B7)",
+        "result": "11.62%",
+        "explanation": "Six cells, five years of discounting, because the first cell sits at time zero and is never discounted. The column adds to $18,300 of profit on $52,000, a 35.2% undiscounted return spread across five years that becomes 11.62% a year once timing is priced in. The check cell =NPV(IRR(B2:B7),B3:B7)+B2 returns $0.00, and it returns zero for any series where IRR converged at all, which is why it is worth building once and copying everywhere."
+      },
+      "tips": [
+        "Empty cells are skipped, not read as zero. Clear B5 so the $15,400 never arrives and IRR does not lose a year of return: it drops to 2.33%, because the $12,900 and $11,000 rows each move one period closer to the outlay. A missing month in a monthly sheet does the same thing on a smaller scale.",
+        "Text and logical values are skipped too. An outlay pasted from a bank export as \"-52,000\" with quote marks intact disappears from the calculation, the range holds five positives and no negative, and IRR returns #NUM! without a word about which cell went missing.",
+        "Microsoft's own remarks state that guess defaults to 0.1, that the iteration stops at 0.00001% accuracy, and that 20 failed tries return #NUM!. That last sentence explains most IRR errors: the function gave up, it did not decide the investment was bad."
+      ]
+    },
+    {
+      "title": "What Counts as One Period",
+      "content": "IRR divides by rows, not by calendar. Nine monthly deposits and nine yearly ones produce the same shape of formula and rates twelve times apart. Take -$10,000 followed by three monthly inflows of $3,600: =IRR(B2:B5) returns 3.95%, and that is a monthly rate whether or not the header says so. Multiply by 12 and the same column reads 47.39%. Compound it and it reads 59.16%.",
+      "steps": [
+        {
+          "name": "The raw answer",
+          "text": "3.95% a month. Quoted to a lender as an annual figure, this number is wrong by a factor of twelve, and the cell looks identical either way.",
+          "formula": "=IRR(B2:B5)"
+        },
+        {
+          "name": "Nominal annual",
+          "text": "47.39%. This is the convention behind APR-style quotes: the periodic rate multiplied by the number of periods in a year.",
+          "formula": "=IRR(B2:B5)*12"
+        },
+        {
+          "name": "Effective annual",
+          "text": "59.16%. Same cash flows, same month, 11.77 points more, because each month's return compounds into the next. Pick one convention and label it.",
+          "formula": "=(1+IRR(B2:B5))^12-1"
+        },
+        {
+          "name": "When the dates are real, change function",
+          "text": "Five irregular flows need XIRR, which takes a date column as its second argument and discounts each row by its own day count instead of by row position.",
+          "formula": "=XIRR(B2:B6,A2:A6)"
+        }
+      ],
+      "example": {
+        "formula": "=XIRR(B2:B6,A2:A6)",
+        "result": "26.82%",
+        "explanation": "-$50,000 on January 15, 2026, then $12,000, $18,000, $22,000 and $15,000 on June 30, December 31, June 30 of 2027, and January 15, 2028. The gaps are 166, 184, 181 and 199 days and the schedule spans 730 days. IRR on the same five numbers returns 12.23%, because it reads five rows as four equal annual periods and stretches a two-year schedule across four years. XIRR discounts every row by (date minus first date)/365, so the annual rate it reports is the rate the dates actually describe."
+      },
+      "tips": [
+        "XIRR accepts dates in any order but demands matching counts. Five values against four dates returns #NUM!, and a date column stored as text returns #VALUE!, so the range has to hold real date values, not a sorted-looking string.",
+        "A 12-row year is the most common audit failure on a monthly sheet: the rate is monthly, the header says Annual IRR, and nobody multiplies. Put the period word in the label itself, as in Monthly IRR, 3.95%.",
+        "Google Sheets carries IRR, XIRR and MIRR under the same names and the same argument order, so every formula on this page transfers unchanged. Evaluate Formula does not transfer, which is why the NPV check cell earns its keep on both platforms."
+      ]
+    },
+    {
+      "title": "Two Sign Changes, Two Answers",
+      "content": "Put -$30,000, $80,000 and -$52,000 in three cells and ask for the rate. =IRR(B2:B4) returns 12.25%. Add a fourth argument, =IRR(B2:B4,0.4), and the same three cells return 54.42%. Both are correct. The column changes sign twice, so a second root exists, and guess decides which one the iteration walks into.",
+      "steps": [
+        {
+          "name": "Total the column first",
+          "text": "The answer is -$2,000. A series that sums below zero is not an investment earning a return, and a high IRR on it is a statement about timing rather than profit.",
+          "formula": "=SUM(B2:B4)"
+        },
+        {
+          "name": "The default guess",
+          "text": "12.25%. Excel starts at 0.1 when guess is omitted, which is why the lower root is the one most sheets show.",
+          "formula": "=IRR(B2:B4)"
+        },
+        {
+          "name": "Push it to the other root",
+          "text": "54.42%. Not one number in the range changed. Only the starting point of the iteration did.",
+          "formula": "=IRR(B2:B4,0.4)"
+        },
+        {
+          "name": "Wrap it, and learn nothing",
+          "text": "The wrapper returns a number here, so it cannot warn you that the number is one of two. IFERROR catches the failure case, never the ambiguous one.",
+          "formula": "=IFERROR(IRR(B2:B4),\"check signs\")"
+        }
+      ],
+      "example": {
+        "formula": "=IRR(B2:B4,0.4)",
+        "result": "54.42%",
+        "explanation": "NPV at 10% is -$247.93 and NPV at 20% is +$555.56, so this series is only positive inside the band between its two roots. That shape belongs to a loan, not to a purchase: you take $80,000 in the middle and hand back $52,000 afterwards. Quoting 54.42% as an investment return would be the most expensive sentence in the memo, and the same cell returns 12.25% on a colleague's machine that never touched the guess argument."
+      },
+      "tips": [
+        "The number of roots is capped by the number of sign changes. One change allows at most one root, which is the ordinary buy-and-collect shape and the reason IRR is safe on a plain project.",
+        "A range with no negative value returns #NUM!, and so does a guess the iteration cannot settle within 20 tries. Microsoft's troubleshooting advice for #NUM! is to retry with a different guess, which is a polite way of admitting the function can point at the wrong answer.",
+        "A rebuild or a tax bill in year four creates the same trouble. Either split that project into two, or use MIRR, which handles mixed signs in one column by construction."
+      ]
+    },
+    {
+      "title": "MIRR States the Reinvestment Rate Out Loud",
+      "content": "IRR carries an assumption nobody signs off on: every inflow is reinvested at the IRR itself. An 11.62% project assumes you find 11.62% for the cash as it lands, year after year. MIRR makes that rate an argument. On the van, =MIRR(B2:B7,7%,5%) returns 8.52%, which is 3.10 points below IRR and a number a board can argue with.",
+      "steps": [
+        {
+          "name": "The call",
+          "text": "7% is the cost of the money, 5% is what you can actually earn on the cash as it arrives. The exponent is 1/(n-1), so the cell count sets the term: six cells means five years.",
+          "formula": "=MIRR(B2:B7,7%,5%)"
+        },
+        {
+          "name": "The arithmetic behind it",
+          "text": "$78,266.52 is the five inflows compounded to the end at 5%, $52,000 is the outlay at time zero, and the fifth root annualizes the ratio. Same 8.52%.",
+          "formula": "=(78266.52/52000)^(1/5)-1"
+        },
+        {
+          "name": "Change only the reinvest rate",
+          "text": "7.13%. Two points off the reinvestment rate costs 1.39 points of MIRR, and that sensitivity is the argument worth having before the money is committed.",
+          "formula": "=MIRR(B2:B7,7%,2%)"
+        },
+        {
+          "name": "For the sake of a later outflow",
+          "text": "Still 8.52%. The finance rate discounts negative flows to time zero, and the only negative flow sits at time zero where discounting does nothing at all.",
+          "formula": "=MIRR(B2:B7,20%,5%)"
+        }
+      ],
+      "example": {
+        "formula": "=MIRR(B2:B7,7%,5%)",
+        "result": "8.52%",
+        "explanation": "The 3.10-point gap against IRR is the price of the reinvestment assumption, not an error. At a 6% reinvestment rate the same project reads 8.99%, and at 2% it reads 7.13%, so the spread across plausible rates is wider than most hurdle rates allow for. Watch the error code as well: a range with no positive value returns #DIV/0! from MIRR where IRR returns #NUM!, and a cell holding a genuine zero counts as a period in both functions."
+      },
+      "tips": [
+        "Zero is a cash flow; blank is not. A row holding a real 0 keeps its place in the timeline, an empty row is skipped, and the two produce different answers on what looks like the same data.",
+        "MIRR is not a better IRR. It answers a different question, and dropping it into a report without naming the two rates it was given hides the assumption instead of fixing it.",
+        "The finance rate only starts to matter once a later year spends money. Model a $6,000 overhaul in year three and MIRR moves when you change 7% to 12%, which tells you the project is being financed, not just funded."
+      ]
+    },
+    {
+      "title": "The Choice IRR Cannot Make",
+      "content": "Two vans, one budget. Van 1 costs $52,000 and returns $14,800, $16,200, $15,400, $12,900 and $11,000. Van 2 costs $26,000 and returns $15,000, $15,000 and a $2,000 resale. Van 1 returns 11.62% and earns $18,300 over its life. Van 2 returns 14.14% and earns $6,000. The higher percentage belongs to the smaller profit, and only a hurdle rate settles which one to buy.",
+      "steps": [
+        {
+          "name": "Both IRRs",
+          "text": "11.62% in B9 against 14.14% in D9. Van 2 wins the percentage by 2.52 points and returns $12,300 less profit.",
+          "formula": "=IRR(B2:B7) and =IRR(D2:D5)"
+        },
+        {
+          "name": "Both NPVs at the 8% cost of capital",
+          "text": "$4,785.91 for Van 1 and $2,336.64 for Van 2. Van 1 wins the dollars, and dollars are what buy the next van.",
+          "formula": "=NPV(8%,B3:B7)+B2"
+        },
+        {
+          "name": "The incremental project",
+          "text": "Subtract Van 2 from Van 1 row by row. Blank cells in D6 and D7 subtract as zero, so the last two rows carry Van 1's full inflows: -$26,000, -$200, $1,200, $13,400, $12,900, $11,000.",
+          "formula": "=B2-D2, filled down to row 7"
+        },
+        {
+          "name": "The incremental IRR",
+          "text": "10.57%. That is the crossover rate, and it answers the only question that matters here: is spending $26,000 more worth it at our cost of capital?",
+          "formula": "=IRR(E2:E7)"
+        }
+      ],
+      "example": {
+        "formula": "=NPV(8%,B3:B7)+B2",
+        "result": "$4,785.91",
+        "explanation": "At an 8% cost of capital Van 1 adds $4,785.91 of value and Van 2 adds $2,336.64, so Van 1 wins by $2,449.27 while losing on IRR. Raise the hurdle to 12% and the ranking flips: Van 1 returns -$469.88 and Van 2 returns +$774.33. No cash flow moved. Only the rate did. The crossover at 10.57% is the point where they tie, and the incremental IRR computed in E2:E7 lands on the same 10.57%, which is how you know the two methods agree and only the hurdle is in dispute."
+      },
+      "tips": [
+        "IRR has no sense of size. A 40% return on $1,000 and a 12% return on $500,000 are the same number to the function and very different numbers to a business.",
+        "Quote both figures in that order: IRR as the screen, NPV as the decision. Anyone asking which one is right is really asking what the hurdle rate is, so put the hurdle rate in the same paragraph.",
+        "A subtotal row inside the values range is the other way this fails: the subtotal is a number, so IRR counts it as a cash flow and doubles part of the series. Text in the range is skipped silently, which means a stray label hides rather than errors."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "IRR",
+      "slug": "irr",
+      "description": "IRR (Internal Rate of Return) calculates the annualized percentage return of an investment based on a series of regular cash flows. It's the rate at which the net present value of all cash flows equals zero."
+    },
+    {
+      "name": "NPV",
+      "slug": "npv",
+      "description": "NPV calculates the net present value of an investment based on a discount rate and a series of future cash flows."
+    },
+    {
+      "name": "MIRR",
+      "slug": "mirr",
+      "description": "MIRR is a more conservative version of IRR that assumes positive cash flows are reinvested at a specified rate and financing costs are explicit."
+    },
+    {
+      "name": "XIRR",
+      "slug": "xirr",
+      "description": "XIRR returns the annualized internal rate of return for cash flows occurring at irregular intervals."
+    },
+    {
+      "name": "IFERROR",
+      "slug": "iferror",
+      "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "COUNTIF",
+      "slug": "countif",
+      "description": "COUNTIF counts the number of cells in a range that meet a specified condition. It's the counting counterpart of SUMIF — instead of summing matching values, it counts how many matches exist."
+    }
+  ],
+  "summary": "IRR is the rate where NPV reaches zero, and it only means what you think it means when the rows are one period long, the signs change once, and someone has decided what the cash earns after it arrives. Build the zero-NPV check cell first, since it catches a wrong range faster than any review. Then quote IRR beside NPV at a stated hurdle rate, and use the incremental IRR when two options disagree about which is better. The cost of that discipline is real: NPV needs a hurdle rate you can defend and MIRR needs two, while IRR needs nothing but a column and will hand you the wrong root without blinking.",
+  "nextSteps": [
+    "Put the check cell beside every IRR on the sheet, as =NPV(IRR(range), later cells)+first cell, and expect $0.00 to two decimals before the number goes into any deck",
+    "Label the period inside the cell text, since Monthly IRR and Annual IRR differ by a factor of twelve, and settle it with *12 or (1+r)^12-1",
+    "Add the incremental column and its IRR to the next capital request, so the choice between two options arrives with a break-even rate instead of two percentages to argue about"
+  ],
+  "relatedTutorials": [
+    "fv-future-value",
+    "pv-present-value",
+    "compound-interest-calculator"
+  ]
+}
