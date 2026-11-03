@@ -1,0 +1,332 @@
+{
+  "slug": "extract-numbers-from-text",
+  "title": "Extract Numbers From Text: 12.5 kg Comes Back as 125",
+  "description": "Extract numbers from text in Excel and Google Sheets with three formulas, and see why 12.5 kg comes back as 125 and a 3,253.10 kg shipment totals 133,850.",
+  "category": "Text Functions",
+  "functions": [
+    "TEXT",
+    "VALUE",
+    "MID",
+    "FIND",
+    "LEN",
+    "SUBSTITUTE",
+    "TEXTJOIN",
+    "SEQUENCE",
+    "IFERROR",
+    "REGEXEXTRACT",
+    "SUM",
+    "SUMPRODUCT",
+    "COUNT",
+    "COUNTA",
+    "TRIM",
+    "RIGHT",
+    "REPT",
+    "ISNUMBER",
+    "IF"
+  ],
+  "intro": "Ten lines of a supplier packing list land in column A as one text string each, with the weight buried somewhere inside the label. The carrier's waybill puts the shipment at 3,253.10 kg. Rebuilding that number from text takes one formula, and two of the three obvious versions return something wrong without showing an error.",
+  "tags": [
+    "Extract Numbers",
+    "VALUE",
+    "REGEXEXTRACT",
+    "Text Functions",
+    "Google Sheets"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "A text column with the number embedded in a label, or the ten packing lines used here in A2:A11",
+    "Excel 365 for the regex section, since REGEXEXTRACT returns #NAME? in Excel 2021 and older, or Google Sheets, where RE2 handles the same job with capture groups",
+    "A cell to hold the extracted result, because every method below returns text until VALUE is wrapped around it"
+  ],
+  "sections": [
+    {
+      "title": "Five Rows Out of Ten: FIND, MID, and a Stubborn VALUE",
+      "content": "Cell A2 reads Widget 12.5 kg. Every character in it is text, so =VALUE(A2) fails on the first keystroke: VALUE accepts text like 12.5 and rejects text like 12.5 kg. The first repair most people try is to cut the string at its first space and hand the tail to VALUE. That version answers on five of the ten rows. Five is a draft, not a fix.",
+      "steps": [
+        {
+          "name": "VALUE on the raw cell",
+          "text": "Reasonable-looking, and wrong on every row. The function wants digits dressed as a string, not digits followed by a unit it cannot parse.",
+          "formula": "=VALUE(A2)"
+        },
+        {
+          "name": "Cut at the first space",
+          "text": "FIND returns 7, MID starts one character later and takes the rest of the cell. The result is the string 12.5 kg, left-aligned, and it will not add to anything.",
+          "formula": "=MID(A2,FIND(\" \",A2)+1,99)"
+        },
+        {
+          "name": "Remove the unit, then convert",
+          "text": "SUBSTITUTE drops the space and kg, VALUE converts what remains. Row 2 returns 12.5.",
+          "formula": "=VALUE(SUBSTITUTE(MID(A2,FIND(\" \",A2)+1,99),\" kg\",\"\"))"
+        },
+        {
+          "name": "Fill the column",
+          "text": "Double-click the Fill Handle at the bottom-right corner of B2 and the formula lands on B11. Five cells answer and five return #VALUE!.",
+          "formula": "Double-click the Fill Handle"
+        }
+      ],
+      "example": {
+        "formula": "=VALUE(SUBSTITUTE(MID(A2,FIND(\" \",A2)+1,99),\" kg\",\"\"))",
+        "result": "12.5",
+        "explanation": "Filled to B11 the column holds 12.5, 1,250.75, 0.75, 18 and 6.25, with #VALUE! in the other five cells. Those five failures are two different problems wearing the same error. Three rows fail because the label is longer than one word: FIND stops at the first space in Bolt pack 3 kg and hands VALUE the string \"pack 3\", and Return pallet -18.4 kg becomes \"pallet -18.4\". The other two fail because the unit is not kg, so Drum 1.5 t leaves \"1.5 t\" behind after SUBSTITUTE and Bag 250 g leaves \"250 g\". Crate 07 480 kg is the row worth staring at, since it carries both problems plus a count sitting in front of the weight."
+      },
+      "tips": [
+        "FIND is case-sensitive and SEARCH is not, which only matters when you search for letters. Searching for a space, the useful difference is that FIND returns #VALUE! when the character is absent, so a one-word entry tells you the row format changed.",
+        "SUBSTITUTE is case-sensitive too. A supplier who types 1.5 KG instead of 1.5 kg leaves the unit in place, VALUE fails, and the cell looks exactly like the five that worked.",
+        "The 99 is a character count and any number longer than the tail works. LEN(A2) is exact and reads better in a formula someone else has to audit six months from now."
+      ]
+    },
+    {
+      "title": "The Digit Strip: 133,850 kg From a 3,253.10 kg Shipment",
+      "content": "One cell can collect every digit in the string without knowing where the number starts. Hand MID an array of positions, multiply each character by 1 so digits become numbers and letters become errors, then let IFERROR discard the failures and TEXTJOIN glue the survivors together. The formula is short, it never returns an error, and on this sheet it reports a total 41 times the real one.",
+      "steps": [
+        {
+          "name": "Every character, converted",
+          "text": "LEN(A2) is 14, so SEQUENCE hands MID fourteen positions. Digits come back as numbers, and the six letters plus two spaces come back as #VALUE!.",
+          "formula": "=MID(A2,SEQUENCE(LEN(A2)),1)*1"
+        },
+        {
+          "name": "Drop the errors",
+          "text": "IFERROR turns each failure into an empty string, which leaves 1, 2 and 5 sitting in a column of blanks.",
+          "formula": "=IFERROR(MID(A2,SEQUENCE(LEN(A2)),1)*1,\"\")"
+        },
+        {
+          "name": "Glue and convert",
+          "text": "TEXTJOIN with ignore_empty set to TRUE joins what is left, VALUE returns a number, and row 2 reads 125 where the label said 12.5.",
+          "formula": "=VALUE(TEXTJOIN(\"\",TRUE,IFERROR(MID(A2,SEQUENCE(LEN(A2)),1)*1,\"\")))"
+        },
+        {
+          "name": "Total the column",
+          "text": "Ten numbers, one SUM, and the cell at the bottom reports a shipment about four hundred tons heavier than the truck that carried it.",
+          "formula": "=SUM(B2:B11)"
+        }
+      ],
+      "example": {
+        "formula": "=VALUE(TEXTJOIN(\"\",TRUE,IFERROR(MID(A2,SEQUENCE(LEN(A2)),1)*1,\"\")))",
+        "result": "125",
+        "explanation": "12.5 kg becomes 125 because the decimal point is not a digit and gets dropped like a letter. The damage scales with how much punctuation the source uses. Panel 1,250.75 kg becomes 125,075, exactly 100 times the real weight. Filter 0.75 kg comes back as 75. Crate 07 480 kg turns into 7,480, a number that exists nowhere in the string. On the credit row, Return pallet -18.4 kg loses its minus and adds 18.4 kg to a total it should reduce. The ten rows sum to 133,850 against the waybill's 3,253.10, with no error in any cell and no green triangle to click."
+      },
+      "tips": [
+        "Use this on invoice numbers, PO numbers and tracking numbers, where the digits are the value and punctuation is noise. Keep it away from measurements, prices and dates.",
+        "SEQUENCE arrived with dynamic arrays, so Excel 2019 returns #NAME? for the whole formula. The pre-2019 version is an array formula built on ROW(INDIRECT(...)), which works and is miserable to audit.",
+        "In Google Sheets the same edit is =VALUE(REGEXEXTRACT(A2,\"\\d+\")), and it gives a different wrong answer: \\d+ stops at the first non-digit, so Widget 12.5 kg returns 12 rather than 125, and Panel 1,250.75 kg returns 1. Neither formula is right. They fail in opposite directions."
+      ]
+    },
+    {
+      "title": "Stop Looking for a Number and Look for the Unit",
+      "content": "Every formula above is guessing which digits belong to the weight. The source already says it: the weight is whatever sits in front of kg. A pattern anchored on the unit stops guessing, and it also walks past the count in Crate 07 480 kg, which no amount of MID arithmetic can do.",
+      "steps": [
+        {
+          "name": "The pattern",
+          "text": "Excel 365 runs PCRE2, so a lookahead is available. Read it as: an optional minus, digits and commas, an optional decimal part, then, without consuming it, a space and kg.",
+          "formula": "=REGEXEXTRACT(A2,\"-?[\\d,]*\\.?\\d+(?=\\s*kg)\")"
+        },
+        {
+          "name": "Convert the text it returns",
+          "text": "REGEXEXTRACT always hands back text, so VALUE sits outside. Row 2 returns 12.5 and Panel 1,250.75 kg returns 1250.75, because VALUE reads that comma as a thousands separator in a US locale.",
+          "formula": "=VALUE(REGEXEXTRACT(A2,\"-?[\\d,]*\\.?\\d+(?=\\s*kg)\"))"
+        },
+        {
+          "name": "Google Sheets needs a capture group",
+          "text": "Sheets runs RE2, which has no lookarounds. Parentheses do the same job: the group is what comes back, and \\s*kg is matched but not returned.",
+          "formula": "=VALUE(REGEXEXTRACT(A2,\"(-?[\\d,]*\\.?\\d+)\\s*kg\"))"
+        },
+        {
+          "name": "Name the rows that cannot match",
+          "text": "Drum 1.5 t and Bag 250 g contain no kg, so the pattern finds nothing and the function returns #N/A. IFERROR replaces that with a label a human will act on.",
+          "formula": "=IFERROR(VALUE(REGEXEXTRACT(A2,\"-?[\\d,]*\\.?\\d+(?=\\s*kg)\")),\"check unit\")"
+        }
+      ],
+      "example": {
+        "formula": "=VALUE(REGEXEXTRACT(A2,\"-?[\\d,]*\\.?\\d+(?=\\s*kg)\"))",
+        "result": "480",
+        "explanation": "That result is the Crate row, where the pattern walks past 07. At that position the lookahead asks whether a space and kg follow, sees 480 instead, fails, and the engine moves on until it reaches the real weight. Drop the lookahead and the same row returns 7, since 07 is the first run of digits in the string. Eight rows resolve and two come back as check unit. Drum 1.5 t is the one that matters most: 1.5 t is 1,500 kg, and no text formula can know that without a unit column."
+      },
+      "tips": [
+        "REGEXEXTRACT exists in Microsoft 365 only. Excel 2021 and older return #NAME? and the formula bar shows _xlfn.REGEXEXTRACT(, which is Excel admitting it does not know the name.",
+        "The pattern keeps the minus inside the match, which is why the credit row arrives as -18.4. A line typed as - 18.4 kg, with a space after the dash, matches 18.4 and adds the weight instead of subtracting it: 36.80 kg of error on one row.",
+        "In Sheets, REGEXEXTRACT returns the first match and nothing else, and a cell holding a real number returns #VALUE! rather than being read as text. Apply it to text columns only."
+      ]
+    },
+    {
+      "title": "The Column That Sums to Zero",
+      "content": "Extraction returns text. Take the VALUE wrapper off and the column still shows 12.5, 3 and 1,250.75 in the right cells, lined up against the left edge instead of the right, and the total at the bottom reads 0. SUM ignores text inside a range and says nothing about it.",
+      "steps": [
+        {
+          "name": "The total",
+          "text": "Ten populated cells above it, and the answer is a clean zero with no error and no warning.",
+          "formula": "=SUM(B2:B11)"
+        },
+        {
+          "name": "Two counts, two answers",
+          "text": "COUNT sees numbers only, COUNTA sees anything that is not empty. A gap of ten means every value in the column is stored as text.",
+          "formula": "=COUNT(B2:B11)"
+        },
+        {
+          "name": "The type test on one cell",
+          "text": "FALSE on a cell that displays 12.5. The value looks correct and is a string.",
+          "formula": "=ISNUMBER(B2)"
+        },
+        {
+          "name": "The coercion trick that fails here",
+          "text": "A double negative converts numeric strings, so it rescues a column of digits and dies on one label. Two cells in this column say check unit, and this returns #VALUE!.",
+          "formula": "=SUMPRODUCT(--B2:B11)"
+        }
+      ],
+      "example": {
+        "formula": "=SUM(B2:B11)",
+        "result": "0",
+        "explanation": "Ten cells hold ten visible values and Excel adds none of them. The status bar is worse than useless: select B2:B11 and it reports Count 10 and Sum 0, which reads like an empty selection until you notice the Sum field. COUNT returns 0, COUNTA returns 10, and 10 is the number of strings sitting in a column that was supposed to hold weights. One VALUE wrapper in the extraction fixes all of it, which is the argument for converting inside the formula instead of patching the total afterwards."
+      },
+      "tips": [
+        "Left alignment is the tell. Excel pushes text left and numbers right by default, so a column that is flush left is a column of strings even when every cell reads like a decimal.",
+        "The green triangle does not appear when the text came from a formula, so the error indicator that normally catches this stays quiet.",
+        "A leading zero is the other casualty. A lot code of 07 extracted with any of these methods becomes 7, and the code printed on the carton no longer matches the code in the sheet. Keep codes as text; let weights be numbers."
+      ]
+    },
+    {
+      "title": "Units, the Reconciliation Cell, and Next Month's Paste",
+      "content": "Two rows have no kg in them, and that is information rather than a failure. A unit column costs one formula, a conversion factor costs one more, and the weight in kilograms then lands in a single column that can be totaled and compared against the waybill. Left as labels, those two rows carry 1,500.25 kg of the shipment.",
+      "steps": [
+        {
+          "name": "The unit is the last word",
+          "text": "SUBSTITUTE swaps every space for fifty spaces, RIGHT takes the last fifty characters, and TRIM removes the padding. The result is kg, t or g without a parsing rule of its own.",
+          "formula": "=TRIM(RIGHT(SUBSTITUTE(TRIM(A2),\" \",REPT(\" \",50)),50))"
+        },
+        {
+          "name": "One factor per unit",
+          "text": "An unknown unit falls through to 0 on purpose, so that row shows up as a zero weight in the total instead of hiding behind a factor of 0.001.",
+          "formula": "=IF(C2=\"kg\",1,IF(C2=\"t\",1000,IF(C2=\"g\",0.001,0)))"
+        },
+        {
+          "name": "Weight in kilograms",
+          "text": "Eight rows read their own value unchanged, Drum 1.5 t becomes 1500, and Bag 250 g becomes 0.25.",
+          "formula": "=B2*D2"
+        },
+        {
+          "name": "The cell that has to match the waybill",
+          "text": "SUM over the kilogram column, wrapped in TEXT so the answer carries two decimals and a unit instead of arriving as 3253.0999999999997.",
+          "formula": "=TEXT(SUM(E2:E11),\"#,##0.00\")&\" kg\""
+        }
+      ],
+      "example": {
+        "formula": "=TEXT(SUM(E2:E11),\"#,##0.00\")&\" kg\"",
+        "result": "3,253.10 kg",
+        "explanation": "The waybill says 3,253.10 kg and the cell agrees, which is the only test that settles a shipment. The eight rows that already carried kg total 1,752.85 kg on their own, so the two odd-unit rows are worth 1,500.25 kg and would have vanished if IFERROR had been allowed to blank them out. A blank is the wrong answer here. check unit sends someone back to the supplier's line, and the factor column turns 1.5 t into 1,500 kg once the unit is confirmed."
+      },
+      "tips": [
+        "Data > Text to Columns, Delimited, then Space splits the column in one pass and is destructive: the next paste overwrites the result, and the split cannot be re-run over a new month without repeating every click. Flash Fill (Ctrl+E) has the same limit and no formula to audit.",
+        "Power Query is the right tool when this paste arrives every Monday. Data > From Table/Range, split by delimiter, set the type to Decimal Number once, and the cleanup reruns on Refresh.",
+        "Google Sheets splits with Data > Split text to columns, and its ARRAYFORMULA version of the anchored pattern fills the whole column from one cell: =ARRAYFORMULA(IF(A2:A11=\"\",\"\",VALUE(REGEXEXTRACT(A2:A11,\"(-?[\\d,]*\\.?\\d+)\\s*kg\")))). Rows with no match surface as #N/A, which is the signal you want."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "TEXT",
+      "slug": "text",
+      "description": "TEXT converts a number or date into text using a user-supplied format code, so the displayed value can be concatenated or presented in a custom format."
+    },
+    {
+      "name": "VALUE",
+      "slug": "value",
+      "description": "VALUE converts a text string that represents a number, date, or time into its underlying numeric value."
+    },
+    {
+      "name": "MID",
+      "slug": "mid",
+      "description": "MID returns a specific number of characters from a text string starting at a specified position."
+    },
+    {
+      "name": "FIND",
+      "slug": "find",
+      "description": "FIND returns the position of one text string inside another. It is case-sensitive."
+    },
+    {
+      "name": "LEN",
+      "slug": "len",
+      "description": "LEN returns the number of characters in a text string."
+    },
+    {
+      "name": "SUBSTITUTE",
+      "slug": "substitute",
+      "description": "SUBSTITUTE replaces one text string with another in a text string."
+    },
+    {
+      "name": "TEXTJOIN",
+      "slug": "textjoin",
+      "description": "TEXTJOIN joins text from multiple ranges or strings using a delimiter you specify, with an option to ignore empty cells."
+    },
+    {
+      "name": "SEQUENCE",
+      "slug": "sequence",
+      "description": "SEQUENCE returns a dynamic array of sequential numbers, shaped by the number of rows and columns, starting at a given value and stepping by a given increment."
+    },
+    {
+      "name": "IFERROR",
+      "slug": "iferror",
+      "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise."
+    },
+    {
+      "name": "REGEXEXTRACT",
+      "slug": "regexextract",
+      "description": "REGEXEXTRACT extracts a substring from text that matches a regular expression pattern. It is useful for pulling specific pieces of text out of larger strings."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "SUMPRODUCT",
+      "slug": "sumproduct",
+      "description": "SUMPRODUCT multiplies corresponding components of one or more arrays and returns the sum of those products. It is also widely used for conditional sums and counts without array-entry."
+    },
+    {
+      "name": "COUNT",
+      "slug": "count",
+      "description": "COUNT counts the number of cells that contain numbers within a specified range."
+    },
+    {
+      "name": "COUNTA",
+      "slug": "counta",
+      "description": "COUNTA counts the number of non-empty cells within a specified range, regardless of the cell content."
+    },
+    {
+      "name": "TRIM",
+      "slug": "trim",
+      "description": "TRIM removes extra spaces from text, leaving only single spaces between words."
+    },
+    {
+      "name": "RIGHT",
+      "slug": "right",
+      "description": "RIGHT returns the last character(s) from the end of a text string."
+    },
+    {
+      "name": "REPT",
+      "slug": "rept",
+      "description": "REPT repeats a text string a specified number of times and returns the combined result."
+    },
+    {
+      "name": "ISNUMBER",
+      "slug": "isnumber",
+      "description": "ISNUMBER returns TRUE if the supplied value is a number (including numeric results of formulas and dates stored as serial numbers), and FALSE otherwise."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    }
+  ],
+  "summary": "Wrap VALUE around one extraction column, anchor the pattern on the unit instead of on the space, and keep a factor column for t and g. That combination reproduces the waybill to the cent on this shipment. The trade-off is version reach: the anchored pattern needs Microsoft 365 or Google Sheets, and the array fallback for older builds deletes decimals, so a 2019 or 2021 shop is better served by Text to Columns plus a typed unit column than by a formula nobody can audit.",
+  "nextSteps": [
+    "Run SUM, COUNT and COUNTA on any column you filled by formula, since a total of 0 beside a COUNT of 0 and a COUNTA of 10 means the column is text",
+    "Add the unit and factor columns before the next paste arrives, so a t or g line reports as a weight instead of a check unit label",
+    "Keep one reconciliation cell next to the total and enter the carrier's stated weight beside it, so a variance of more than a kilogram sends you back to the source lines"
+  ],
+  "relatedTutorials": [
+    "split-text-by-delimiter",
+    "convert-text-to-number",
+    "extract-text-from-string"
+  ]
+}
