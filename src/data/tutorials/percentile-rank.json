@@ -1,0 +1,279 @@
+{
+  "slug": "percentile-rank",
+  "title": "Percentile Rank in Excel: P90 Is 51.9 Minutes, Not 47",
+  "description": "Percentile rank in Excel and Google Sheets: why the p90 of ten tickets is 51.9 minutes rather than 47, what PERCENTILE.EXC changes, and how RANK converts.",
+  "category": "Statistical",
+  "functions": [
+    "PERCENTILE",
+    "PERCENTILE.INC",
+    "PERCENTILE.EXC",
+    "QUARTILE",
+    "QUARTILE.EXC",
+    "RANK",
+    "RANK.AVG",
+    "MEDIAN",
+    "IF",
+    "COUNTIF"
+  ],
+  "intro": "Ten support tickets, one p90, and three numbers on the table: 47 from the person who read off the ninth value, 51.9 from a PERCENTILE.INC cell, and 91.1 from the same formula with .EXC on the end. All three are defensible. Only one of them is a percentile, and the gap between the other two is a convention that nobody wrote down.",
+  "tags": [
+    "PERCENTILE",
+    "Percentile Rank",
+    "PERCENTRANK",
+    "QUARTILE",
+    "RANK",
+    "Statistics"
+  ],
+  "estimatedTime": "13 min read",
+  "prerequisites": [
+    "A column of numbers with a header row, so COUNT and the percentile functions can share the same range",
+    "Excel 2010 or later for the .INC and .EXC names, or Google Sheets, which carries all of them under the same spelling",
+    "A decision already made about whether the report quotes inclusive or exclusive percentiles, because the two disagree by 39 minutes on ten rows"
+  ],
+  "sections": [
+    {
+      "title": "A Percentile Rank Is a Position",
+      "content": "Ten tickets sit in B2:B11 as 12, 96, 4, 22, 31, 9, 47, 18, 7 and 15 minutes. Sorted they read 4, 7, 9, 12, 15, 18, 22, 31, 47, 96. Two different questions get asked about a column like that, and they need different functions. Which response time sits at the 90th percentile is a PERCENTILE question. Where the 47-minute ticket stands among its peers is a percent rank question. Mixing the two is how a single p90 gets argued about for a week with everyone's own formula working correctly.",
+      "steps": [
+        {
+          "name": "Count what the function counts",
+          "text": "10. Text cells and blanks are not tickets, and this number decides every position on the page.",
+          "formula": "=COUNT(B2:B11)"
+        },
+        {
+          "name": "The value at p90",
+          "text": "51.9 minutes. No ticket in the sheet took 51.9 minutes, which is the first thing to explain before someone asks.",
+          "formula": "=PERCENTILE.INC(B2:B11,0.9)"
+        },
+        {
+          "name": "p50 has to equal the median",
+          "text": "Both cells read 16.5. If your p50 and your MEDIAN disagree, the two formulas are looking at different ranges, and every percentile above them is wrong as well.",
+          "formula": "=PERCENTILE.INC(B2:B11,0.5) and =MEDIAN(B2:B11)"
+        },
+        {
+          "name": "The position of one row",
+          "text": "0.444. Four tickets were faster than 15 minutes and five were slower, so that row sits four ninths of the way up the sample.",
+          "formula": "=PERCENTRANK(B2:B11,B11)"
+        }
+      ],
+      "example": {
+        "formula": "=PERCENTILE.INC(B2:B11,0.9)",
+        "result": "51.9 minutes",
+        "explanation": "The 90th percentile of ten response times, interpolated between the 47-minute ticket and the 96-minute one. AVERAGE on the same column returns 26.1 and MEDIAN returns 16.5, so the mean already leans toward the slow tail. p90 lives out there on purpose, and it is the only one of the three that a service-level agreement usually names."
+      },
+      "tips": [
+        "k is a fraction, not a percentage. =PERCENTILE.INC(B2:B11,90) returns #NUM! because 90 sits outside 0 to 1, and =PERCENTILE.INC(B2:B11,\"90%\") returns #VALUE! because a quoted string is not numeric.",
+        "The PERCENTRANK cell needs percentage formatting or it reads as 0.444 next to numbers measured in minutes. Its optional third argument is significant digits, three by default, which is why four ninths shows as 0.444 rather than 0.4444."
+      ]
+    },
+    {
+      "title": "Why P90 Is 51.9 and Not the Ninth Value",
+      "content": "PERCENTILE.INC does not cut the sorted list into ten slices. It computes a position, 1 + k(n - 1), then reads between the two values that bracket it. Ten tickets at k = 0.9 give a position of 9.1, so the answer sits one tenth of the way from the ninth value (47) to the tenth (96). That tenth is 4.9 minutes, and it accounts for the entire distance between 47 and 51.9.",
+      "steps": [
+        {
+          "name": "The position Excel computes",
+          "text": "9.1. The fractional part is the share of the gap to the next value, and it is the only thing the function interpolates.",
+          "formula": "=(COUNT(B2:B11)-1)*0.9+1"
+        },
+        {
+          "name": "Interpolate by hand",
+          "text": "51.9. Rebuilding the answer from LARGE costs one extra cell and proves the range is the one you meant to select.",
+          "formula": "=LARGE(B2:B11,2)+0.1*(LARGE(B2:B11,1)-LARGE(B2:B11,2))"
+        },
+        {
+          "name": "The shortcut that misses",
+          "text": "47, the second-slowest ticket. It is a real value from a real row, which is exactly why it ends up in the deck with a p90 label on it.",
+          "formula": "=LARGE(B2:B11,2)"
+        },
+        {
+          "name": "When the position lands on a whole number",
+          "text": "Add a 6-minute ticket in B12 and n becomes 11, so the position is 1 + 0.9 * 10 = 10 and p90 is the tenth value exactly: 47. A faster ticket lowered the p90 by 4.9 minutes.",
+          "formula": "=PERCENTILE.INC(B2:B12,0.9)"
+        }
+      ],
+      "example": {
+        "formula": "=LARGE(B2:B11,2)",
+        "result": "47",
+        "explanation": "The second-slowest of ten tickets, and 4.9 minutes light as a p90. It also moves whenever the two slowest tickets swap order, which is a property you do not want in a monthly metric. The interpolated 51.9 moves only when the shape of the top of the distribution changes, because it is a position rather than a row."
+      },
+      "tips": [
+        "Quoting 51.9 to one decimal claims a precision ten data points cannot support. Round to 52 on the slide and keep the unrounded cell in the workbook so the next person can reproduce it.",
+        "Percentiles are positions in the sorted array, so one new value rewrites the arithmetic for the whole column. That is not a defect in the function. It is the reason the sample size belongs in the same sentence as the number."
+      ]
+    },
+    {
+      "title": "INC or EXC: 51.9 Versus 91.1",
+      "content": "Both methods return a value at p90 and disagree about how much room to leave at the ends. Inclusive uses n - 1 in the position formula above. Exclusive uses n + 1, so ten tickets put the p90 position at 0.9 * 11 = 9.9, nine tenths of the way from 47 to 96. That is 91.1 minutes from the same ten cells, 39 minutes above the inclusive figure, with no error and no warning.",
+      "steps": [
+        {
+          "name": "The exclusive value",
+          "text": "91.1 minutes. Same column, same k, different convention. Nothing on the sheet shows which one produced the cell.",
+          "formula": "=PERCENTILE.EXC(B2:B11,0.9)"
+        },
+        {
+          "name": "The band exclusive can accept",
+          "text": "On 10 rows k must sit between 1/11 and 10/11, so 0.0909 to 0.9091. Below or above that band the position falls outside the data and the function refuses.",
+          "formula": "=1/(COUNT(B2:B11)+1)"
+        },
+        {
+          "name": "p95 exclusive, on ten rows",
+          "text": "Returns #NUM!, because the position 0.95 * 11 = 10.45 lands past the last row. Nineteen rows is the smallest sample where p95 stops erroring.",
+          "formula": "=PERCENTILE.EXC(B2:B11,0.95)"
+        },
+        {
+          "name": "Quartiles are the same function",
+          "text": "28.75 inclusive against 35 exclusive, the same split as p75 in each convention. QUARTILE at 2 returns the median either way, because the middle does not care which end you excluded.",
+          "formula": "=QUARTILE(B2:B11,3) and =QUARTILE.EXC(B2:B11,3)"
+        }
+      ],
+      "example": {
+        "formula": "=PERCENTILE.EXC(B2:B11,0.9)",
+        "result": "91.1 minutes",
+        "explanation": "Nine tenths of the way from the 47-minute ticket to the 96-minute one, because the exclusive position is 9.9 instead of 9.1. Neither number is wrong. When a vendor reports 91.1 and your sheet says 51.9, the first question is which method produced each, and the answer is usually written in neither document."
+      },
+      "tips": [
+        "QUARTILE.EXC rejects 0 and 4 with #NUM!, so the exclusive method cannot return the minimum or the maximum. QUARTILE.INC accepts both and hands back 4 and 96.",
+        "PERCENTILE and QUARTILE with no suffix are the inclusive method under older names. Microsoft keeps them for compatibility and points readers to the .INC versions, while Google Sheets documents PERCENTILE as the primary name and lists PERCENTILE.INC as an alias pointing at it. The numbers transfer between platforms; the name that autocompletes does not."
+      ]
+    },
+    {
+      "title": "Turning RANK Into a Percentile Rank",
+      "content": "RANK answers a narrower question with an integer. =RANK(B8,$B$2:$B$11,0) returns 2 for the 47-minute ticket because 96 is the only one slower. A dashboard that prints 2 and divides by 10 labels that row the 20th percentile, which inverts the scale: the ticket sits at the 88.9th. The conversion counts the values below it and divides by n - 1, not by n.",
+      "steps": [
+        {
+          "name": "The rank",
+          "text": "2, descending. Order 0 or omitted ranks the largest value as 1; any nonzero order flips the direction.",
+          "formula": "=RANK(B8,$B$2:$B$11,0)"
+        },
+        {
+          "name": "The conversion",
+          "text": "88.9%. Ten positions, nine gaps between them, and eight of those gaps sit below the 47-minute ticket.",
+          "formula": "=(COUNT($B$2:$B$11)-RANK(B8,$B$2:$B$11,0))/(COUNT($B$2:$B$11)-1)"
+        },
+        {
+          "name": "The function built for it",
+          "text": "Same idea without the COUNT cells: 0.4444 with 4 as the third argument for the 15-minute ticket, or 0.444 at the default three significant digits. It also interpolates when the value you ask about is absent from the column, which is how a 40-minute target gets a percentile without being one of the ten rows.",
+          "formula": "=PERCENTRANK($B$2:$B$11,B11,4)"
+        },
+        {
+          "name": "Ties",
+          "text": "Two tickets at 31 minutes both return 3 and the next value drops to 5, since the duplicate consumes a position. RANK.AVG splits the difference at 3.5. On this column the 31-minute ticket is unique, so both functions return 3.",
+          "formula": "=RANK.AVG(B6,$B$2:$B$11,0)"
+        }
+      ],
+      "example": {
+        "formula": "=(COUNT($B$2:$B$11)-RANK(B8,$B$2:$B$11,0))/(COUNT($B$2:$B$11)-1)",
+        "result": "88.9%",
+        "explanation": "Eight of the nine comparisons place a ticket below the 47-minute one. RANK alone says 2, and 2 over 10 reads as the 20th percentile to anyone who divides without checking the scale. The largest of ten values is at the 100th percentile, not at the 10th, and that single inversion is behind most of the wrong percentile labels in shared workbooks."
+      },
+      "tips": [
+        "The denominator is n - 1 because a percentile rank measures a share of the gaps between values, not a share of the values. Dividing rank by n understates every high performer and overstates every low one.",
+        "RANK ignores text and non-numeric cells in ref, so a column with three blanks ranks seven real numbers out of seven. Nothing on screen tells the reader that the denominator moved."
+      ]
+    },
+    {
+      "title": "What Moves the Number Quietly",
+      "content": "Clear the 47-minute cell and the p90 does not error. It becomes 44, because n drops to 9, the position drops to 8.2, and the interpolation now runs from 31 to 96. Service did not improve by 7.9 minutes; a row went missing. A cell holding n/a or a dash behaves the same way, since text is skipped exactly like a blank.",
+      "steps": [
+        {
+          "name": "One cleared cell",
+          "text": "44.0 minutes. Nine values, position 8.2, and a number that will be quoted in a meeting as an improvement.",
+          "formula": "=PERCENTILE.INC(B2:B11,0.9)"
+        },
+        {
+          "name": "The only visible clue",
+          "text": "9, not 10. Put this cell beside the percentile and a dropped row stops being invisible.",
+          "formula": "=COUNT(B2:B11)"
+        },
+        {
+          "name": "A typed zero is not a blank",
+          "text": "A ticket answered in 0 minutes is a real eleventh value, so p90 falls to 47 rather than 44. Both cells look empty on a printed sheet, and only one of them counts.",
+          "formula": "=PERCENTILE.INC(B2:B11,0.9)"
+        },
+        {
+          "name": "Band the tickets for the report",
+          "text": "One row qualifies against the interpolated p90. The second branch catches everything else, including the 47-minute ticket, which sits below 51.9 and therefore is not in the top decile despite being the second-slowest.",
+          "formula": "=IF(B2>=PERCENTILE.INC($B$2:$B$11,0.9),\"Top 10%\",\"Rest\")"
+        },
+        {
+          "name": "Count the band instead of eyeballing it",
+          "text": "5, exactly half of the ten, which is what an inclusive median split looks like when no ticket sits on 16.5 itself. A count that lands anywhere else means the threshold moved or the range is clipped.",
+          "formula": "=COUNTIF(B2:B11,\">=\"&PERCENTILE.INC(B2:B11,0.5))"
+        }
+      ],
+      "example": {
+        "formula": "=PERCENTILE.INC(B2:B11,0.9)",
+        "result": "44",
+        "explanation": "The same ten-cell range with B8 cleared. Nine values, a position of 8.2, and an interpolated answer 7.9 minutes below the one from the full column. Not one ticket changed, which is why a p90 without its sample size is not a metric anyone can audit later."
+      },
+      "tips": [
+        "Dropping the slowest ticket moves p90 from 51.9 to 34.2, because the top of the interpolation disappears along with it. Comparing two reports built from the same export starts with comparing their COUNT cells, not their methods.",
+        "PERCENTILE ignores logical values in a reference as well, so TRUE or FALSE pasted into the column silently reduces n instead of raising #VALUE!. Only text typed straight into an array constant, as in {1,\"n/a\",3}, errors."
+      ]
+    }
+  ],
+  "calculator": null,
+  "functionsUsed": [
+    {
+      "name": "PERCENTILE",
+      "slug": "percentile",
+      "description": "PERCENTILE returns the k-th percentile of values in a dataset using the inclusive method. It is the legacy function, retained for compatibility."
+    },
+    {
+      "name": "PERCENTILE.INC",
+      "slug": "percentile-inc",
+      "description": "PERCENTILE.INC returns the k-th percentile of values using the inclusive method, where k is any number from 0 to 1 inclusive."
+    },
+    {
+      "name": "PERCENTILE.EXC",
+      "slug": "percentile-exc",
+      "description": "PERCENTILE.EXC returns the k-th percentile using the exclusive method, where k must be strictly between 0 and 1, so the result never equals the minimum or maximum."
+    },
+    {
+      "name": "QUARTILE",
+      "slug": "quartile",
+      "description": "QUARTILE returns the quartile (0th through 4th) of a dataset using the inclusive method. It is the legacy function, retained for compatibility."
+    },
+    {
+      "name": "QUARTILE.EXC",
+      "slug": "quartile-exc",
+      "description": "QUARTILE.EXC returns the specified quartile (1st, 2nd, or 3rd) of a dataset using the exclusive method, which never returns the minimum or maximum values."
+    },
+    {
+      "name": "RANK",
+      "slug": "rank",
+      "description": "RANK returns the rank (position) of a number within a list of numbers. It is the legacy rank function, retained for compatibility."
+    },
+    {
+      "name": "RANK.AVG",
+      "slug": "rank-avg",
+      "description": "RANK.AVG returns the rank of a number in a list and assigns tied values their average (fractional) rank, avoiding skipped ranks."
+    },
+    {
+      "name": "MEDIAN",
+      "slug": "median",
+      "description": "MEDIAN returns the middle value of a set of numbers: the value with an equal number of values above and below it after sorting."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "COUNTIF",
+      "slug": "countif",
+      "description": "COUNTIF counts the number of cells in a range that meet a specified condition. It's the counting counterpart of SUMIF — instead of summing matching values, it counts how many matches exist."
+    }
+  ],
+  "summary": "A percentile rank is a position on a sorted column, and every number above follows from two choices: inclusive or exclusive, and which rows the range includes. Use PERCENTILE.INC, or plain PERCENTILE, for reporting, since that is what p90 means in most spreadsheets and most dashboards. Use PERCENTILE.EXC when a contract or a statistical standard names it, and expect it to refuse p95 below nineteen rows. Convert RANK with (n - rank)/(n - 1) instead of dividing by n, print COUNT beside every percentile, and a dispute about which number is correct becomes a question about method, which is a question with an answer.",
+  "nextSteps": [
+    "Add =COUNT(range) beside every percentile on the sheet, because a skipped row moves p90 further than any rounding argument does",
+    "Write the method into the cell text, as P90 inclusive, 52 min, so two reports can be compared without a meeting",
+    "Replace rank-over-n columns with (n - rank)/(n - 1) and check the charts that were showing a top performer at the 20th percentile"
+  ],
+  "relatedTutorials": [
+    "median-vs-average",
+    "stdev-vs-stdevp",
+    "averageif-with-criteria"
+  ]
+}
