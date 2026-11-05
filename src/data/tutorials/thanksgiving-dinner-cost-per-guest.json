@@ -1,0 +1,268 @@
+{
+  "slug": "thanksgiving-dinner-cost-per-guest",
+  "title": "Thanksgiving Dinner Cost per Guest: $18.53 From a $194.53 Receipt",
+  "description": "Thanksgiving dinner cost per guest on a 23-row grocery receipt: SUMIFS by category, an adult-equivalent headcount, and a budget cell that ends $14.53 short.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "SUMIFS",
+    "SUM",
+    "COUNTIF",
+    "SUMPRODUCT",
+    "IF",
+    "ROUND",
+    "IFERROR"
+  ],
+  "intro": "Twenty-three receipt lines add up to $194.53, twelve people sit down, and the budget cell says $180. Divide by twelve and you get $16.21 a head, which is wrong for three of the guests: they are eight years old and eat about half a plate. Counting the kids at half weight puts the real number at $18.53, and the sheet that produces it takes twenty minutes to build and one formula to keep.",
+  "tags": [
+    "Thanksgiving",
+    "Cost per Guest",
+    "SUMIFS",
+    "Holiday Budget"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "Excel 2016 or later, or Google Sheets, since SUMIFS exists in both under the same spelling",
+    "A receipt or a stack of them, with quantity and unit price on each line so a line total can be multiplied rather than guessed",
+    "A guest list that marks each person as an adult or a child, because the per-guest number depends on that column and nothing else"
+  ],
+  "sections": [
+    {
+      "title": "Two Cells Before the Receipt",
+      "content": "Most people build the list first and ask what it cost afterward. Reverse that. Put the budget ceiling in J1 and the guest roster beside it, then every number on the sheet has something to be measured against. On this sheet J1 holds 180 and the receipt lands at 194.53, so the answer is a $14.53 overshoot before anyone argues about whether the wine was necessary. The overshoot is the useful part. A total with no ceiling is a fact nobody acts on.",
+      "steps": [
+        {
+          "name": "The number the receipt produces",
+          "text": "194.53. Column E holds one line total per receipt row, rows 2 through 24, and this cell is the only figure most people will screenshot.",
+          "formula": "=SUM($E$2:$E$24)"
+        },
+        {
+          "name": "What is left of the budget",
+          "text": "-14.53. A negative here means over, and the cell should be formatted as Currency with the red negative style so it cannot be misread as a credit.",
+          "formula": "=$J$1-SUM($E$2:$E$24)"
+        },
+        {
+          "name": "How far over, in percent",
+          "text": "1.081, which displays as 108.1% once the cell is set to Percentage. Anything above 100% on a Thanksgiving sheet is usually the drinks column, and section 4 shows why.",
+          "formula": "=SUM($E$2:$E$24)/$J$1"
+        }
+      ],
+      "example": {
+        "formula": "=SUM($E$2:$E$24)",
+        "result": "$194.53",
+        "explanation": "Twenty-three purchase lines, from a 16-pound bird at $1.99 a pound to a $3.49 roll of foil. The bird alone is $31.84, or 16.4% of the bill, which is less than most hosts assume going in."
+      },
+      "tips": [
+        "Type 180 into J1 as a plain number and format it afterward. A cell typed as \"$180\" with the dollar sign is text, left-aligned by default, and the subtraction in the next cell returns #VALUE!.",
+        "Keep the SUM range ending on the last real row rather than on row 1000. A padded range makes an empty row look accounted for, and it hides the moment when a row gets typed below the range by accident."
+      ]
+    },
+    {
+      "title": "The Ledger: Seven Columns, One Formula Each",
+      "content": "The sheet is one flat table with a header in row 1. Six of the seven columns are typed by hand. Column E is the only one with arithmetic in it, and everything downstream reads from E, so a mistake in E contaminates the category totals, the per-guest figure, and the budget check at the same time. Build E before anything else.",
+      "steps": [
+        {
+          "name": "Column A, Item",
+          "text": "One receipt line per row, named the way the receipt names it. Twenty-three lines here, so the table runs A2:G24. Do not group three store trips into one row, because the unit price stops meaning anything."
+        },
+        {
+          "name": "Column B, Category",
+          "text": "Turkey, Produce, Dairy, Pantry, Bakery, Drinks, Frozen, Disposables. Build these eight as a list and put a dropdown on the column: Data > Data Validation in Excel, Data > Data validation in Google Sheets. Typing categories by hand is the single most common way this sheet breaks."
+        },
+        {
+          "name": "Column C, Quantity",
+          "text": "The count you paid for. The turkey is 16 because it was priced per pound, the butter is 2 because two pounds went into the cart, pies are 2. This is a number, never \"16 lb\"."
+        },
+        {
+          "name": "Column D, Unit Price",
+          "text": "Per pound, per can, per pack, taken straight off the receipt. Format the column as Currency; that changes the display only and leaves the stored value as 1.99."
+        },
+        {
+          "name": "Column E, Line Total",
+          "text": "31.84 on the turkey row, and the same formula filled to E24. Drag the Fill Handle, or select E2:E24 and press Ctrl+D. Every downstream total reads this column and only this column.",
+          "formula": "=C2*D2"
+        },
+        {
+          "name": "Column F, Paid By",
+          "text": "Host, Priya, Marcus. Three names covering three cards. Log it now even if nobody plans to settle up, because reconstructing who paid what from memory on Friday morning does not work."
+        },
+        {
+          "name": "Column G, Left",
+          "text": "148.16 beside the turkey row, -14.53 on the last row. The mixed reference is the point: $J$1 stays put as the formula fills down while E2 opens into E3, E4 and so on.",
+          "formula": "=$J$1-SUM($E$2:E2)"
+        }
+      ],
+      "example": {
+        "formula": "=C2*D2",
+        "result": "31.84",
+        "explanation": "16 pounds at $1.99. The result is not formatted as Currency by default, because Excel copies the format from the leftmost cell in the multiplication, which is column C. Apply Currency to E2:E24 once and the whole column reads as money."
+      },
+      "tips": [
+        "If the Fill Handle copies =C2*D2 into E24 as =C24*D24, relative references are working. If every row shows the turkey total, the formula was written with $C$2 and $D$2 and needs the dollar signs removed.",
+        "In Excel, press Ctrl+T to turn A1:G24 into a Table, then write =SUMIFS(Table1[Line Total],Table1[Category],$I8). The ranges grow when you add a row. Google Sheets has no Tables, so there the ranges have to be extended by hand or written as whole columns."
+      ]
+    },
+    {
+      "title": "The Headcount Nobody Agrees On",
+      "content": "Twelve people, nine of them adults and three of them children. Dividing $194.53 by twelve gives $16.21, a number that flatters the host and misleads the guest who wants to bring a comparable dish. Weight the children at half a plate and the divisor becomes 10.5, which pushes the answer to $18.53. Neither figure is dishonest. Only one of them matches how the food actually gets eaten.",
+      "steps": [
+        {
+          "name": "Mark the roster",
+          "text": "Twelve rows in K3:K14, each holding Adult or Child. A dropdown again, for the same reason as the category column. The label has to be spelled one way, since COUNTIF is exact.",
+          "formula": "=COUNTIF($K$3:$K$14,\"Adult\")"
+        },
+        {
+          "name": "Count the other half",
+          "text": "3 children. Nine plus three is twelve heads, and twelve is the number that produces the too-cheap answer.",
+          "formula": "=COUNTIF($K$3:$K$14,\"Child\")"
+        },
+        {
+          "name": "Weight them in one cell",
+          "text": "10.5 adult equivalents. SUMPRODUCT adds the two weighted arrays without a helper column, and it keeps working if a fourth child shows up.",
+          "formula": "=SUMPRODUCT(($K$3:$K$14=\"Adult\")*1+($K$3:$K$14=\"Child\")*0.5)"
+        },
+        {
+          "name": "Cost per adult equivalent",
+          "text": "18.53. ROUND keeps the cell at two decimals instead of letting $18.526666 display as 18.53 while the underlying value keeps multiplying through later cells.",
+          "formula": "=ROUND(SUM($E$2:$E$24)/J4,2)"
+        },
+        {
+          "name": "Cost per plate, with the kids at half",
+          "text": "9.26 for a child against 18.53 for an adult. That halving is what a $10 contribution from a family of four is being measured against.",
+          "formula": "=ROUND(SUM($E$2:$E$24)/J4*0.5,2)"
+        }
+      ],
+      "example": {
+        "formula": "=ROUND(SUM($E$2:$E$24)/J4,2)",
+        "result": "$18.53",
+        "explanation": "J4 holds 10.5, so the division is 194.53 / 10.5. The same spend over twelve full heads reads $16.21, a difference of $2.32 per person that changes only because three guests were counted differently. The receipt is identical in both cases."
+      },
+      "tips": [
+        "Wrap the division in IFERROR if the roster can be empty, as in =IFERROR(SUM($E$2:$E$24)/J4,\"No guests yet\"). Without it, a cleared roster leaves a #DIV/0! sitting in the most-read cell on the sheet.",
+        "Hardcoding 12 into the formula is the mistake that survives the whole planning cycle. The guest list changes twice in the last week, the per-guest cell keeps dividing by 12, and nobody notices until the grocery run."
+      ]
+    },
+    {
+      "title": "Where the $180 Went, and Who Fronted It",
+      "content": "A category block under the ledger turns the receipt into an argument with numbers. List the eight categories in I8:I15 and put one SUMIFS beside each. Drinks come back at 40.95 against a turkey category of 40.33, so on this table the wine and cider outspend the bird. That is the finding worth acting on next year, and it is invisible in a single total.",
+      "steps": [
+        {
+          "name": "One category, one formula",
+          "text": "40.95 for Drinks, filled down through all eight labels. Add a ninth row for anything that appears mid-week, then extend the range.",
+          "formula": "=SUMIFS($E$2:$E$24,$B$2:$B$24,$I8)"
+        },
+        {
+          "name": "The bird, for comparison",
+          "text": "40.33, which includes the $8.49 brine kit sitting in the same category. Twenty point seven percent of the bill against the drinks column's 21.1%.",
+          "formula": "=SUMIFS($E$2:$E$24,$B$2:$B$24,\"Turkey\")"
+        },
+        {
+          "name": "Two criteria at once",
+          "text": "0. The host paid for none of the drinks, because Priya brought the cider and Marcus brought the wine. Zero is a real answer here, not a broken formula, and it is the one result people misread as an error.",
+          "formula": "=SUMIFS($E$2:$E$24,$B$2:$B$24,\"Drinks\",$F$2:$F$24,\"Host\")"
+        },
+        {
+          "name": "Who actually paid",
+          "text": "134.82 fronted by the host, 69.3% of the bill. Priya's 33.73 and Marcus's 25.98 make up the rest, which is the whole point of column F.",
+          "formula": "=SUMIFS($E$2:$E$24,$F$2:$F$24,\"Host\")"
+        },
+        {
+          "name": "A category, per guest",
+          "text": "2.52. Produce is the cheapest line per person on the table, and it is also the one most likely to be underestimated when the shopping list gets built.",
+          "formula": "=ROUND(SUMIFS($E$2:$E$24,$B$2:$B$24,\"Produce\")/J4,2)"
+        }
+      ],
+      "example": {
+        "formula": "=SUMIFS($E$2:$E$24,$B$2:$B$24,$I8)",
+        "result": "$40.95",
+        "explanation": "Three cider at $4.99 and two cabernet at $12.99. The turkey category lands at $40.33 on the same formula, so the drinks column is the largest single category on a Thanksgiving receipt, which is a fact only a category block will surface."
+      },
+      "tips": [
+        "The three ranges in SUMIFS must be the same height. Point the criteria at $B$1:$B$24 while the sum range starts at row 2 and Excel returns #VALUE!, because one range is 24 rows and the other is 23.",
+        "Keep a check cell that adds the eight category subtotals and subtracts the grand total. On a clean sheet it reads exactly 0, and it is the fastest way to catch a category that got typed with a trailing space."
+      ]
+    },
+    {
+      "title": "Three Ways This Total Lies Quietly",
+      "content": "None of the failures below throws an error. Each one produces a plausible number, which is why they survive into the group chat. The category check cell from the last section catches two of them, and a dropdown catches the third before it happens.",
+      "steps": [
+        {
+          "name": "A blank quantity",
+          "text": "Clear C10 and the cream row shows 0, the total drops to 189.74, and the only clue is a zero sitting in a column of line totals. A $4.79 item quietly left the bill.",
+          "formula": "=SUM($E$2:$E$24)"
+        },
+        {
+          "name": "A category with a trailing space",
+          "text": "31.84 for Turkey, because \"Turkey \" and \"Turkey\" are different strings to SUMIFS. The eight subtotals now add to 186.04, and the gap against the grand total is exactly 8.49.",
+          "formula": "=SUMIFS($E$2:$E$24,$B$2:$B$24,\"Turkey\")"
+        },
+        {
+          "name": "A row typed below the range",
+          "text": "194.53 unchanged after a $12 item goes in row 25, because the SUM still ends at E24. A full-column =SUM(E:E) would say 206.53. Both cells look authoritative.",
+          "formula": "=SUM($E$2:$E$24)"
+        },
+        {
+          "name": "The cell that catches most of it",
+          "text": "Category mismatch, once any subtotal stops adding up to the grand total. Swap the message for Balanced when the difference rounds to zero, and put the cell beside the per-guest number.",
+          "formula": "=IF(ROUND(SUM($J$8:$J$15)-SUM($E$2:$E$24),2)<>0,\"Category mismatch\",\"Balanced\")"
+        }
+      ],
+      "example": {
+        "formula": "=IF(ROUND(SUM($J$8:$J$15)-SUM($E$2:$E$24),2)<>0,\"Category mismatch\",\"Balanced\")",
+        "result": "Category mismatch",
+        "explanation": "The ROUND wrapper is not decoration. Subtracting one sum of decimals from another leaves residues like 1.4210854715202E-14, and a bare <>0 comparison would flag a sheet that is actually correct."
+      },
+      "tips": [
+        "=SUMIFS($E$2:$E$24,$B$2:$B$24,\"Turkey*\") tolerates the trailing space, but it also swallows a future category called TurkeyLeg. Fix the data with a dropdown rather than loosening the criteria.",
+        "In Google Sheets, a formula typed at the top of a column does not propagate down; the sheet needs the Fill Handle or an ARRAYFORMULA wrapper. In an Excel Table, the same formula fills the entire column on its own, which is a real reason to use Ctrl+T even though it looks like cosmetics."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "SUMIFS",
+      "slug": "sumifs",
+      "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "COUNTIF",
+      "slug": "countif",
+      "description": "COUNTIF counts the number of cells in a range that meet a specified condition. It's the counting counterpart of SUMIF — instead of summing matching values, it counts how many matches exist."
+    },
+    {
+      "name": "SUMPRODUCT",
+      "slug": "sumproduct",
+      "description": "SUMPRODUCT multiplies corresponding components of one or more arrays and returns the sum of those products. It is also widely used for conditional sums and counts without array-entry."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "ROUND",
+      "slug": "round",
+      "description": "ROUND rounds a number to a specified number of decimal places."
+    },
+    {
+      "name": "IFERROR",
+      "slug": "iferror",
+      "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise."
+    }
+  ],
+  "summary": "The per-guest number is a division, and the honest version of it needs a weighted headcount: adults at one, children at half. Build the ledger with one formula in column E, keep the budget and the roster in cells the formulas can point at, and use SUMIFS to turn 23 lines into eight categories that actually explain the bill. Then keep the category check cell visible, because a trailing space and a blank quantity both produce totals that look right. The trade-off is a sheet with more cells than a simple SUM, which is the price of being able to say the wine cost more than the turkey.",
+  "nextSteps": [
+    "Put the budget in a single cell and point every downstream formula at it with $J$1, so raising the ceiling by $20 updates the running balance in every row at once",
+    "Replace the typed category column with a Data Validation list before the second shopping trip, which prevents the trailing-space case rather than detecting it",
+    "Copy the same structure to a Christmas sheet and swap the category labels, since the per-guest block and the check cell do not depend on Thanksgiving at all"
+  ],
+  "relatedTutorials": [
+    "excel-budget-template",
+    "countifs-multiple-ranges",
+    "sumproduct-with-multiple-conditions"
+  ]
+}
