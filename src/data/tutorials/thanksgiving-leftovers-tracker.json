@@ -1,0 +1,294 @@
+{
+  "slug": "thanksgiving-leftovers-tracker",
+  "title": "Thanksgiving Leftovers Tracker: What to Eat, Freeze, and Toss",
+  "description": "A Thanksgiving leftovers tracker on eleven containers: 67 portions packed, 45 left by Saturday, seven inside two days of the bin, and one SUMIFS per dish.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "SUMIFS",
+    "SUM",
+    "COUNTIF",
+    "COUNTIFS",
+    "TODAY",
+    "FILTER",
+    "MINIFS",
+    "IF",
+    "ROUND"
+  ],
+  "intro": "Thanksgiving was Thursday. By Saturday night the fridge holds eleven containers and 67 portions, which works out to 11.2 servings per person for a household of six. Not one of those containers carries a date, so the sheet has to write one and then count down to it.",
+  "tags": [
+    "Thanksgiving",
+    "Leftovers",
+    "Date Math",
+    "SUMIFS"
+  ],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Excel 2019 or later, or Google Sheets, since the countdown formulas here rely on TODAY and MINIFS being available under those spellings",
+    "A food-safety reference for the days-good column, such as USDA FoodKeeper, because this sheet stores your numbers rather than supplying them",
+    "The dinner date, because every countdown in the sheet is measured from the night the containers went into the fridge"
+  ],
+  "sections": [
+    {
+      "title": "Eleven Containers, 67 Portions, Six People",
+      "content": "Fill the table in on Thursday night, while the containers are still on the counter. Eleven rows take about four minutes, and every formula later in this article reads from those rows. The dish column repeats names on purpose: turkey appears three times because it went into three containers, and the container column is what tells them apart.",
+      "steps": [
+        {
+          "name": "Columns A to C, typed by hand",
+          "text": "Dish, Container, Portions, header in row 1 and data in A2:C12. Eight distinct dish names across eleven rows: turkey three times, then stuffing, mashed potatoes, gravy, cranberry sauce, green bean casserole, pumpkin pie, dinner rolls, sweet potato casserole. Portions is a number, so 6 means six servings and never 6 qt."
+        },
+        {
+          "name": "Column D, Stored",
+          "text": "The night the food went in, as a real date. Type 11/26/2026 and Excel stores a date; type 26-Nov and it depends on your Windows locale, and on File > Settings > Locale in Google Sheets. A right-aligned cell is a date, a left-aligned one is text."
+        },
+        {
+          "name": "Column E, Days good",
+          "text": "Your number, one per container: 4 for the stuffing, 2 for the gravy, 60 for the bag headed for the freezer. This sheet does not set those numbers and neither does this article. Take them from a food-safety reference and type what it says, because the whole countdown is arithmetic on top of E."
+        },
+        {
+          "name": "Column F, Use by",
+          "text": "11/30/2026 on the first row. If the cell shows a five-digit number instead, the format is General; apply Short Date to F2:F12.",
+          "formula": "=D2+E2"
+        },
+        {
+          "name": "Column H, Location",
+          "text": "Fridge for ten rows and Freezer for the bag of carved turkey in row 11. Build both as a two-item list under Data > Data Validation in Excel or Data > Data validation in Google Sheets. A hand-typed Freezer bag is a different string from Freezer and drops that row out of every SUMIFS that filters on location."
+        },
+        {
+          "name": "Column I, Eaten",
+          "text": "Servings already finished, updated once a day. Twenty-two across the eleven rows by Saturday night, and turkey accounts for six of them. This is the only column that needs a human every day."
+        },
+        {
+          "name": "Column J, Left",
+          "text": "2 on the sliced turkey row, 5 on the stuffing row, 4 on the frozen bag. Column C minus column I and nothing else.",
+          "formula": "=C2-I2"
+        }
+      ],
+      "example": {
+        "formula": "=SUM($C$2:$C$12)",
+        "result": "67",
+        "explanation": "Eleven containers, from a 4-portion jar of gravy to a bag of 12 rolls. Divided by six people that is 11.2 servings each, which is the number worth keeping: it is the one that changes how much you cook next year."
+      },
+      "tips": [
+        "Ctrl+T turns A1:J12 into an Excel Table, and then every SUMIFS below can be written as Table1[Left] and Table1[Dish] instead of $J$2:$J$12. Google Sheets has no Tables, so the absolute ranges are the version that works on both platforms.",
+        "Leave row 13 empty. A merged title row at the top pushes the header down and puts every range reference in this article one row off, which fails quietly rather than loudly."
+      ]
+    },
+    {
+      "title": "Use By Is the Only Column Doing Arithmetic",
+      "content": "One formula in this table computes a date, and it lives in column F: stored plus days good, filled down eleven rows. Everything after it reads F, so a text date in column D breaks the countdown, the throw-out count, and the pace calculation at the same moment. Build F before you format anything.",
+      "steps": [
+        {
+          "name": "The formula itself",
+          "text": "11/30/2026 in F2. Two dates' worth of days added to a stored date gives a stored date.",
+          "formula": "=D2+E2"
+        },
+        {
+          "name": "Fill it to the bottom",
+          "text": "11/28/2026 on the gravy row, 01/26/2027 on the frozen bag, 12/01/2026 on the rolls. Select F2:F12 and press Ctrl+D, or drag the Fill Handle.",
+          "formula": "=D6+E6"
+        },
+        {
+          "name": "The check date, in one cell",
+          "text": "Below the table, in B15: =TODAY(). On Saturday, November 28, 2026 it reads 11/28/2026, and it moves forward on its own every morning. One moving cell is easier to reason about than eleven.",
+          "formula": "=TODAY()"
+        },
+        {
+          "name": "Days left",
+          "text": "2 on the first row, 0 on the gravy, 1 on the green bean casserole, 59 on the frozen bag. The dollar signs on $B$15 are what let the formula fill down without walking off the check date.",
+          "formula": "=F2-$B$15"
+        },
+        {
+          "name": "Then format, in this order",
+          "text": "Short Date on F2:F12, General on G2:G12. A date minus a date is a plain number, and formatting that number as a date turns a value of 2 into 01/02/1900."
+        }
+      ],
+      "example": {
+        "formula": "=D6+E6",
+        "result": "11/28/2026",
+        "explanation": "Gravy went in on 11/26 with a two-day window, so its use-by date is the same day the check cell holds, and G6 returns 0. That zero is the reason to build the sheet this week instead of next."
+      },
+      "tips": [
+        "If D2 is text, =D2+E2 returns #VALUE!. The cell can still look like a date because it says 11/26/2026, but it sits left-aligned where the real dates are right-aligned, and that alignment is the only warning you get.",
+        "A date pasted from a system export often carries a time with it, and 11/30/2026 2:00 PM minus 11/28/2026 is 2.58 rather than 2. Wrap the source in =INT(D2) before the arithmetic, or the days-left column grows decimals that conditional formatting cannot read."
+      ]
+    },
+    {
+      "title": "Seven Containers Inside Two Days",
+      "content": "Column G is a countdown with signs, and the signs carry the meaning. Zero means today is the last day. Negative means the date has passed, which on a sheet opened December 3 is every row, and that is the sheet working rather than failing. On Saturday the column reads 2, 2, 2, 2, 0, 8, 1, 2, 3, 59, 3 from row 2 down, so seven of eleven containers sit inside two days of their date.",
+      "steps": [
+        {
+          "name": "Count the last-day rows",
+          "text": "1, and it is the gravy. A zero criterion matches the cell holding exactly 0.",
+          "formula": "=COUNTIF($G$2:$G$12,0)"
+        },
+        {
+          "name": "Count what is already past",
+          "text": "0 on Saturday. The number only ever goes up, which makes it a decent thing to leave on the sheet.",
+          "formula": "=COUNTIF($G$2:$G$12,\"<0\")"
+        },
+        {
+          "name": "Count what is due within two days",
+          "text": "7. Two criteria on the same column, which COUNTIFS allows because each range is paired with its own criterion.",
+          "formula": "=COUNTIFS($G$2:$G$12,\"<=2\",$G$2:$G$12,\">=0\")"
+        },
+        {
+          "name": "Colour it",
+          "text": "Conditional Formatting > Highlight Cells Rules > Less Than, with 0 and a red fill. A second rule with Equal To 0 and an amber fill. Both Excel and Sheets evaluate the rule against the cell value, so the colour follows the formula rather than the typing."
+        },
+        {
+          "name": "Freeze a snapshot",
+          "text": "Copy B15, then Paste Special > Values over itself before you screenshot the sheet. TODAY is volatile: a screenshot taken from a live cell is out of date the next morning, and a frozen one still shows what you saw."
+        }
+      ],
+      "example": {
+        "formula": "=COUNTIFS($G$2:$G$12,\"<=2\",$G$2:$G$12,\">=0\")",
+        "result": "7",
+        "explanation": "The four containers outside the count are cranberry sauce at eight days, the frozen bag at fifty-nine, and the rolls and sweet potato casserole at three each. Those four are the only ones that outlive the weekend, and the sheet says so before anything smells."
+      },
+      "tips": [
+        "TODAY follows the machine clock in Excel and the file's own timezone in Google Sheets, set under File > Settings. Two copies of the same sheet, opened in two houses, can disagree about which day it is.",
+        "The reference is $B$15 with dollars on both halves. Drop them and the fill down to row 3 turns it into F3-$B$16, and row 16 is empty, so eleven rows quietly subtract zero and every container reads as due immediately."
+      ]
+    },
+    {
+      "title": "One Dish, Three Containers",
+      "content": "Turkey occupies three rows and two locations: two containers in the fridge and one bag in the freezer. Column A holds the dish, column B holds the container, and that split decides whether the answer to how much turkey is left is 8 or 4. Both are correct. Only one of them is reachable tonight.",
+      "steps": [
+        {
+          "name": "Left, by dish",
+          "text": "8 portions across three rows, which reads as a week of sandwiches.",
+          "formula": "=SUMIFS($J$2:$J$12,$A$2:$A$12,\"Turkey\")"
+        },
+        {
+          "name": "Left, by dish and location",
+          "text": "4 in the fridge. Same function, one more pair of arguments.",
+          "formula": "=SUMIFS($J$2:$J$12,$A$2:$A$12,\"Turkey\",$H$2:$H$12,\"Fridge\")"
+        },
+        {
+          "name": "Everything you can actually reach",
+          "text": "41 portions across the ten fridge containers, against 45 in the whole table. The four-portions difference is one bag in the freezer.",
+          "formula": "=SUMIFS($J$2:$J$12,$H$2:$H$12,\"Fridge\")"
+        },
+        {
+          "name": "Already eaten, by dish",
+          "text": "6, all of it out of the two fridge containers. Column I gets its own SUMIFS whenever you want to know which dish the household is actually working through.",
+          "formula": "=SUMIFS($I$2:$I$12,$A$2:$A$12,\"Turkey\")"
+        },
+        {
+          "name": "One criterion is legal",
+          "text": "5 portions of stuffing. SUMIFS with a single range-and-criterion pair works fine, and keeping one function name across the sheet is worth more than saving four characters.",
+          "formula": "=SUMIFS($J$2:$J$12,$A$2:$A$12,\"Stuffing\")"
+        }
+      ],
+      "example": {
+        "formula": "=SUMIFS($J$2:$J$12,$A$2:$A$12,\"Turkey\",$H$2:$H$12,\"Fridge\")",
+        "result": "4",
+        "explanation": "Eight portions of turkey left and half of them frozen. The single-criterion version reports 8, which reads as plenty and is really four sandwiches plus a bag nobody opens until January."
+      },
+      "tips": [
+        "Name the rows Turkey, sliced and Turkey, breast and =SUMIFS($J$2:$J$12,$A$2:$A$12,\"Turkey\") returns 0. The criterion is an exact string match and neither name equals Turkey, so the sheet reports that the turkey is gone while eight portions sit in the fridge.",
+        "=SUMIFS($J$2:$J$12,$A$2:$A$12,\"Turkey*\") pulls the split names back together, and it also swallows any future Turkey pot pie. One dish, one spelling, and the container column carries the detail, is the rule that survives the second year.",
+        "SUMIF still works for the single-criterion case, but its arguments run the other way: range, criterion, sum_range, with the sum range last. Writing SUMIF in SUMIFS order is the most common silent zero in this kind of sheet, because a range where a criterion belongs just matches nothing."
+      ]
+    },
+    {
+      "title": "What to Eat Tonight, and What to Toss",
+      "content": "Sorting eleven rows by hand takes a minute, and the answer changes overnight. Two formulas answer the two questions worth asking: which container is on its last day, and how much food is still queued behind it. A third cell answers the question underneath both, which is whether the food outlives the appetite.",
+      "steps": [
+        {
+          "name": "The container on its last day",
+          "text": "Gravy, one row. FILTER spills every match, so a second container at zero would appear on the next line down for free.",
+          "formula": "=FILTER($A$2:$A$12,$G$2:$G$12=0)"
+        },
+        {
+          "name": "The pace",
+          "text": "11 portions a day: 22 servings over the two days since dinner. B17 holds the day count as =$B$15-$D$2.",
+          "formula": "=ROUND(SUM($I$2:$I$12)/$B$17,1)"
+        },
+        {
+          "name": "How many days of food that pace implies",
+          "text": "4.1, with B18 holding the 45 portions left as =SUM($C$2:$C$12)-SUM($I$2:$I$12).",
+          "formula": "=ROUND($B$18/$B$19,1)"
+        },
+        {
+          "name": "The verdict",
+          "text": "Something goes bad. MINIFS finds the tightest window among containers that still hold food, which is 0 today because of the gravy, and 4.1 days of eating is longer than that.",
+          "formula": "=IF($B$20>MINIFS($G$2:$G$12,$J$2:$J$12,\">0\"),\"Something goes bad\",\"Clear the fridge\")"
+        },
+        {
+          "name": "A status column you can read at a glance",
+          "text": "Last day on the gravy row, OK on the row above it, Past date once B15 walks past a container's use-by date. Nested IF reads the conditions in order, so the negative test has to come first.",
+          "formula": "=IF($G2<0,\"Past date\",IF($G2=0,\"Last day\",\"OK\"))"
+        }
+      ],
+      "example": {
+        "formula": "=ROUND($B$18/$B$19,1)",
+        "result": "4.1",
+        "explanation": "45 portions at 11 a day. The figure matters because it is twice the two-day window that seven containers are working against, and that gap is exactly what a freezer and a lunch bag are for."
+      },
+      "tips": [
+        "Excel 365 returns #CALC! when FILTER finds no match and no third argument was supplied; Google Sheets returns #N/A for the same case. Add a third argument, \"Nothing at zero\", and both platforms print the message instead of an error.",
+        "The FILTER result needs empty cells below it. Put it in M2 with something already in M3 and Excel returns #SPILL!, which is a placement problem rather than a formula problem: clear the block or move the formula.",
+        "MINIFS needs Excel 2019 or Microsoft 365, and it exists in Google Sheets. On Excel 2016 the verdict cell becomes =IF($B$20>MIN($G$2:$G$12),\"Something goes bad\",\"Clear the fridge\"), which drops the portions-left condition and is close enough for a fridge."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "SUMIFS",
+      "slug": "sumifs",
+      "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "COUNTIF",
+      "slug": "countif",
+      "description": "COUNTIF counts the number of cells in a range that meet a specified condition. It's the counting counterpart of SUMIF — instead of summing matching values, it counts how many matches exist."
+    },
+    {
+      "name": "COUNTIFS",
+      "slug": "countifs",
+      "description": "COUNTIFS counts cells that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "TODAY",
+      "slug": "today",
+      "description": "TODAY returns the current date, updated each time the worksheet recalculates."
+    },
+    {
+      "name": "FILTER",
+      "slug": "filter",
+      "description": "FILTER extracts rows from a range that meet a condition, returning a dynamic array of matching results. It's the array-era replacement for complex IF/INDEX combinations."
+    },
+    {
+      "name": "MINIFS",
+      "slug": "minifs",
+      "description": "MINIFS returns the minimum value in a range that meets one or more criteria across corresponding criteria ranges."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "ROUND",
+      "slug": "round",
+      "description": "ROUND rounds a number to a specified number of decimal places."
+    }
+  ],
+  "summary": "Eleven typed rows plus two date formulas answer a question a fridge cannot: which container is on its last day, and how much food is queued behind it. Build the table on Thursday night while the containers are still on the counter, because the stored date is the one value you cannot reconstruct on Sunday. The trade-off is upkeep. Column I needs a daily number, and a tracker nobody updates reports 45 portions left in mid-December. If a daily edit will not survive the weekend, keep only the date columns and the COUNTIFS check, which need no input at all.",
+  "nextSteps": [
+    "Add a column K called Frozen on and change F2 to =IF(K2=\"\",D2+E2,K2+E2) before the first container goes into the freezer, so a bag that changes location keeps its original cook date in column D",
+    "Put a Data Validation list on the Location column, since a hand-typed Freezer bag is a different string from Freezer and disappears from every SUMIFS that filters on location",
+    "Copy the table to a Christmas sheet in December and change only the dates, because the countdown, the throw-out count, and the pace cells do not care which holiday produced the food"
+  ],
+  "relatedTutorials": [
+    "thanksgiving-dinner-cost-per-guest",
+    "calculate-expiry-date",
+    "countifs-multiple-ranges"
+  ]
+}
