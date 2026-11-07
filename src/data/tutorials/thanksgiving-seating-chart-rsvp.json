@@ -1,0 +1,293 @@
+{
+  "slug": "thanksgiving-seating-chart-rsvp",
+  "title": "Thanksgiving Seating Chart: 24 Seats, 23 Guests, One Table Over",
+  "description": "Build a Thanksgiving seating chart from eleven households: SUMIFS per table, running seat numbers for place cards, and the four seats your room does not have.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "SUMIFS",
+    "COUNTIF",
+    "COUNTIFS",
+    "SUM",
+    "TODAY",
+    "IF",
+    "TEXTJOIN",
+    "FILTER"
+  ],
+  "intro": "Eleven households are on the list this year and the dining room holds three eight-seat tables. Twenty-three people have confirmed, which fits. Then you filter by table and Table 1 comes back at nine, one more place setting than that table has, while Table 3 sits at six. The sheet that catches this before the grocery run takes eleven rows and six columns.",
+  "tags": [
+    "Thanksgiving",
+    "Seating Chart",
+    "RSVP Tracker",
+    "SUMIFS"
+  ],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Excel 2019 or later, or Google Sheets, since TEXTJOIN is used in the last section and does not exist in Excel 2016",
+    "A guest list grouped by household rather than by person, because families get seated together and a split family is the one thing a seating chart should prevent",
+    "A tape measure and the real dimensions of your tables, since the seat capacity you type into the sheet has to match the furniture and not the manufacturer's label"
+  ],
+  "sections": [
+    {
+      "title": "Eleven Rows, Not Thirty",
+      "content": "The first decision is the unit of the row. One row per household, not per person, because nobody splits a family of four across two tables to make the arithmetic easier. Column B carries the headcount for that household, so a row reads Chen, 4, Yes, None. Thirty names collapse into eleven rows, and every formula later in this article works on those eleven.",
+      "steps": [
+        {
+          "name": "Column A, Party",
+          "text": "The surname you would write on an envelope. Eleven rows, A2:A12, header in row 1. Keep one spelling per household, because SUMIFS and COUNTIF match strings exactly and Chen, chen, and Chen Family are three different parties to the sheet."
+        },
+        {
+          "name": "Column B, Guests",
+          "text": "A plain number: 4, 3, 2. Thirty across eleven rows. Type 4 and never 4 people, because a text value in this column is skipped by SUM and SUMIFS, so that household disappears from every table count while still standing in your hallway."
+        },
+        {
+          "name": "Column C, RSVP",
+          "text": "Yes, Pending, or No. Build the three as a list under Data > Data Validation in Excel, Data > Data validation in Google Sheets. Three states are enough: Pending covers everyone who has not answered and everyone who said they would check."
+        },
+        {
+          "name": "Column D, Diet",
+          "text": "None for most rows, then Vegetarian, Gluten-free, Nut allergy. Four of the eleven rows carry something other than None, and section five turns that column into a dish count."
+        },
+        {
+          "name": "Column E, Table",
+          "text": "Table 1, Table 2, or Table 3, left blank until you actually assign the household. Three people in this list have no table yet, and two of them are the pending replies. A blank here is information, not an oversight."
+        },
+        {
+          "name": "Column F, Last seat",
+          "text": "The formula in section four, filled down all eleven rows. It stays blank while column E is blank, which keeps unassigned households out of the seat numbering."
+        },
+        {
+          "name": "Cell G1, the deadline",
+          "text": "11/14/2026, typed as a real date and formatted Short Date. Right-aligned means Excel stored a date; left-aligned means you typed text and the countdown below will return #VALUE!.",
+          "formula": "=$G$1-TODAY()"
+        }
+      ],
+      "example": {
+        "formula": "=$G$1-TODAY()",
+        "result": "7",
+        "explanation": "A date minus a date is a plain number of days. On November 7, 2026 this cell reads 7, and it drops to 6 tomorrow without anyone touching it. Format it as General, because the cell inherits the date format from G1 and would otherwise display 01/07/1900."
+      },
+      "tips": [
+        "Column layouts that put a merged title in row 1 shift every range in this article by one row. Start the header at row 1 and the data at row 2, and the formulas paste in as written.",
+        "Ctrl+T turns A1:F12 into an Excel Table and gives you Table1[Guests] instead of $B$2:$B$12. The running-range formula in section four cannot be written with structured references, so keep that one on A1 ranges even if the rest of the sheet is a Table."
+      ]
+    },
+    {
+      "title": "The Headcount Moves Every Time Someone Replies",
+      "content": "Three numbers underneath the table do the bookkeeping, and they disagree with each other on purpose. Invited is 30. Confirmed is 23. Pending is 5. The number that matters for furniture is the sum of the last two, because a household that has not answered still might show up with four people and a pie.",
+      "steps": [
+        {
+          "name": "Everyone on the list",
+          "text": "30, including the household that already declined. This is the number you quote when someone asks how big Thanksgiving is getting, and it is also the number that stays constant all week.",
+          "formula": "=SUM($B$2:$B$12)"
+        },
+        {
+          "name": "Confirmed, in people",
+          "text": "23 across 8 households. Note the mismatch between the two columns: eight rows, twenty-three bodies. Any formula that counts rows instead of summing column B will undercount the meal by fifteen.",
+          "formula": "=SUMIFS($B$2:$B$12,$C$2:$C$12,\"Yes\")"
+        },
+        {
+          "name": "Confirmed, in households",
+          "text": "8. The row count is what you need for place cards and for the number of chairs you drag out of the garage, since a household shares one table.",
+          "formula": "=COUNTIF($C$2:$C$12,\"Yes\")"
+        },
+        {
+          "name": "Still deciding",
+          "text": "5 people across 2 households. This cell is the reason to build the sheet in early November rather than the Wednesday before.",
+          "formula": "=SUMIFS($B$2:$B$12,$C$2:$C$12,\"Pending\")"
+        },
+        {
+          "name": "Worst case, and the verdict beside it",
+          "text": "28 against 24 seats. B15 holds the confirmed count, B16 the pending, B17 the total seat capacity, B18 this formula. B19 reads the two against each other.",
+          "formula": "=B15+B16"
+        },
+        {
+          "name": "The cell worth leaving visible",
+          "text": "\"4 seats short\". The verdict compares worst case to capacity, not confirmed to capacity, because a sheet that only counts the replies it already has will tell you the room fits right up until the Kowalskis say yes.",
+          "formula": "=IF($B$18>$B$17,$B$18-$B$17&\" seats short\",\"Fits\")"
+        }
+      ],
+      "example": {
+        "formula": "=IF($B$18>$B$17,$B$18-$B$17&\" seats short\",\"Fits\")",
+        "result": "4 seats short",
+        "explanation": "Twenty-eight people against twenty-four seats. The ampersand prints the number inside the message, so the cell keeps working when the guest list changes instead of aging into a hardcoded string. Swap the message for \"Fits\" and you have the same formula for a smaller year."
+      },
+      "tips": [
+        "Do not write =SUMIFS($B$2:$B$12,$C$2:$C$12,\"<>No\") as a shortcut for this total. It returns 28 here, which looks correct, but the criterion treats a blank cell as a non-No, so it counts households that never replied as if they were coming. It is right by accident on this sheet and wrong on the next one.",
+        "In Google Sheets a formula typed in B15 does not propagate down the column the way it does inside an Excel Table. Fill down with the Fill Handle, or wrap the whole column in ARRAYFORMULA, or the cells below stay empty."
+      ]
+    },
+    {
+      "title": "Table 1 Sits Nine at an Eight-Seat Table",
+      "content": "This is the finding the whole sheet exists for. A capacity block under the ledger lists the three tables, the seats each one really has, and the confirmed people assigned to it. Table 1 comes back at nine. Two households and a family of three add up to nine because the families were added one at a time over three days, and nobody re-added them.",
+      "steps": [
+        {
+          "name": "I3:I5, the table names",
+          "text": "Table 1, Table 2, Table 3. These strings must match column E exactly, including the space. Table1 typed without the space is a fourth table that holds nobody."
+        },
+        {
+          "name": "J3:J5, seats you actually have",
+          "text": "8, 8, 8. Count chairs, not the table's rated capacity: an eight-seat round table with a centerpiece and a turkey platter seats seven comfortably, and the sheet should hold the number you can defend."
+        },
+        {
+          "name": "K3, people assigned",
+          "text": "9. Two criteria, one on the table column and one on the RSVP column, which keeps declined households from consuming a seat they will not use.",
+          "formula": "=SUMIFS($B$2:$B$12,$E$2:$E$12,$I3,$C$2:$C$12,\"Yes\")"
+        },
+        {
+          "name": "L3, seats left",
+          "text": "-1 on Table 1, 0 on Table 2, 2 on Table 3. A negative is the whole point of the column, so format it as a plain number and let the minus sign show.",
+          "formula": "=J3-K3"
+        },
+        {
+          "name": "M3, the flag",
+          "text": "\"Over by 1\" on the first row, \"OK\" on the other two. Conditional Formatting > Highlight Cells Rules > Text That Contains, with Over and a red fill, turns the row visible from across the room.",
+          "formula": "=IF(K3>J3,\"Over by \"&K3-J3,\"OK\")"
+        },
+        {
+          "name": "The integrity check",
+          "text": "0. Confirmed people minus everyone seated. Any number other than zero means a confirmed household has no table assigned, which is the failure a thirty-name list hides best.",
+          "formula": "=SUMIFS($B$2:$B$12,$C$2:$C$12,\"Yes\")-SUM($K$3:$K$5)"
+        }
+      ],
+      "example": {
+        "formula": "=SUMIFS($B$2:$B$12,$E$2:$E$12,$I3,$C$2:$C$12,\"Yes\")",
+        "result": "9",
+        "explanation": "Chen at four, Okafor at three, Delgado at two. The same formula returns 8 for Table 2 and 6 for Table 3, and the three answers add to 23, which is every confirmed guest exactly once. Moving the Delgados to Table 3 is a two-character edit in E4 and both cells correct themselves."
+      },
+      "tips": [
+        "The criteria range $I3 has a dollar sign on the column only, so filling the formula down moves to $I4 and $I5 while the sum range stays fixed. Writing $I$3 in all three rows gives Table 1 three times.",
+        "All three ranges in SUMIFS must be the same height. Point the sum range at $B$2:$B$12 and the criteria at $B$1:$B$12 and Excel returns #VALUE!, because one range is eleven rows and the other is twelve."
+      ]
+    },
+    {
+      "title": "Seat Numbers You Can Print on Place Cards",
+      "content": "Place cards need a number, not a household name, and the numbering has to restart at every table. The trick is a SUMIFS whose range grows as it fills: the start of the range is locked with a dollar sign, the end is not, so each row sums every household at that table from the top of the list down to itself.",
+      "steps": [
+        {
+          "name": "F2, the last seat of this household",
+          "text": "4 on Chen, then 7 on Okafor, then 9 on Delgado. Each value is the running total of guests at that table, which is exactly the number of the household's final seat.",
+          "formula": "=IF($E2=\"\",\"\",SUMIFS($B$2:$B2,$E$2:$E2,$E2))"
+        },
+        {
+          "name": "Fill it down to F12",
+          "text": "Brennan lands on 4, Patel on 8, Nakamura on 2, Ferrara on 4, Adeyemi on 6. The three rows with a blank table return an empty string rather than a zero, so the numbering skips them instead of consuming seats.",
+          "formula": "=IF($E6=\"\",\"\",SUMIFS($B$2:$B6,$E$2:$E6,$E6))"
+        },
+        {
+          "name": "The first seat, one subtraction",
+          "text": "1 on Chen, 5 on Okafor, 8 on Delgado. Last seat minus headcount plus one, which works for a party of any size without a second lookup.",
+          "formula": "=F2-B2+1"
+        },
+        {
+          "name": "The string a place card can use",
+          "text": "\"Table 1 / seats 1-4\". RIGHT($E2,1) pulls the digit off the table name, and the parenthesized subtraction has to be there or the ampersands join the pieces in the wrong order.",
+          "formula": "=IF($E2=\"\",\"\",\"Table \"&RIGHT($E2,1)&\" / seats \"&($F2-$B2+1)&\"-\"&$F2)"
+        }
+      ],
+      "example": {
+        "formula": "=IF($E4=\"\",\"\",SUMIFS($B$2:B4,$E$2:E4,$E4))",
+        "result": "9",
+        "explanation": "The Delgado row. Its expanding range covers rows 2 through 4, and all three of those households sit at Table 1, so the sum is 4 plus 3 plus 2. The place card this produces reads seats 8-9, which is the honest answer: Table 1 has eight seats and this household needs the ninth."
+      },
+      "tips": [
+        "Sort by table before you trust column F, or at least keep each table's households together in the list. Interleaved tables still produce running totals, but the seat numbers jump between blocks and the place cards come out out of order.",
+        "Inserting a row in the middle of a table breaks the arithmetic quietly. The expanding range in the inserted row still points at the rows above it, so the new household gets seat numbers that overlap the ones already printed.",
+        "Table names longer than one character after the space, such as Table A, break RIGHT($E2,1). Use RIGHT($E2,LEN($E2)-6) if you rename the tables, which strips the six characters of Table plus the space."
+      ]
+    },
+    {
+      "title": "Two Households Have Not Answered",
+      "content": "Five people have not replied, and they are the ones that decide whether the fourth table gets set up. Instead of scrolling column C, one formula lists them by name and another counts the dietary constraints that already cost you a separate dish. Both read the same eleven rows, so a reply typed into column C updates the message in the same second.",
+      "steps": [
+        {
+          "name": "Who has not replied",
+          "text": "\"Whitfield, Kowalski\". FILTER pulls the matching names, TEXTJOIN puts them on one line with commas, and the TRUE argument skips any blank rows the filter produces.",
+          "formula": "=TEXTJOIN(\", \",TRUE,FILTER($A$2:$A$12,$C$2:$C$12=\"Pending\"))"
+        },
+        {
+          "name": "How many people that is",
+          "text": "5, and it is the number that goes next to the message when you text them. Two households, five chairs, one of them a high chair.",
+          "formula": "=SUMIFS($B$2:$B$12,$C$2:$C$12,\"Pending\")"
+        },
+        {
+          "name": "Vegetarians who are actually coming",
+          "text": "7, from Okafor at three and Patel at four. Add the RSVP criterion or the sheet counts households that declined, and you cook a vegetarian main for people who are not in the building.",
+          "formula": "=SUMIFS($B$2:$B$12,$D$2:$D$12,\"Vegetarian\",$C$2:$C$12,\"Yes\")"
+        },
+        {
+          "name": "How many separate dishes",
+          "text": "4 households with a restriction attached to a Yes. Gluten-free at Brennan, nut allergy at Nakamura, vegetarian twice. That is the number of dishes to plan beyond the main menu, not the number of guests.",
+          "formula": "=COUNTIFS($D$2:$D$12,\"<>None\",$C$2:$C$12,\"Yes\")"
+        },
+        {
+          "name": "The decision, in one cell",
+          "text": "\"Book a fourth table\". Worst case against capacity, the same comparison as section two, rewritten so the answer is an instruction rather than a number.",
+          "formula": "=IF($B$18>$B$17,\"Book a fourth table\",\"Keep three tables\")"
+        }
+      ],
+      "example": {
+        "formula": "=TEXTJOIN(\", \",TRUE,FILTER($A$2:$A$12,$C$2:$C$12=\"Pending\"))",
+        "result": "Whitfield, Kowalski",
+        "explanation": "The result is a string you can paste into a group text, and it shrinks as replies arrive. When the last household answers, FILTER returns nothing and TEXTJOIN gives an empty string, which is why the cell needs no maintenance between now and the holiday."
+      },
+      "tips": [
+        "If FILTER finds no match, Excel 365 returns #CALC! and Google Sheets returns #N/A. Wrap the whole thing in IFERROR with \"Everyone replied\" as the fallback and the cell stays presentable on the morning after the last RSVP.",
+        "The formula spills, so the cells under it have to be empty. Anything sitting in the block below returns #SPILL!, which is a placement problem and not a formula problem: clear the cells or move the formula.",
+        "TEXTJOIN needs Excel 2019 or later, and Excel 2016 has no replacement that fits on one line. On that version, use =FILTER($A$2:$A$12,$C$2:$C$12=\"Pending\") alone if the file is opened in 365, or sort by column C and read the Pending block by eye."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "SUMIFS",
+      "slug": "sumifs",
+      "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "COUNTIF",
+      "slug": "countif",
+      "description": "COUNTIF counts the number of cells in a range that meet a specified condition. It's the counting counterpart of SUMIF — instead of summing matching values, it counts how many matches exist."
+    },
+    {
+      "name": "COUNTIFS",
+      "slug": "countifs",
+      "description": "COUNTIFS counts cells that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "TODAY",
+      "slug": "today",
+      "description": "TODAY returns the current date, updated each time the worksheet recalculates."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "TEXTJOIN",
+      "slug": "textjoin",
+      "description": "TEXTJOIN joins text from multiple ranges or strings using a delimiter you specify, with an option to ignore empty cells."
+    },
+    {
+      "name": "FILTER",
+      "slug": "filter",
+      "description": "FILTER extracts rows from a range that meet a condition, returning a dynamic array of matching results. It's the array-era replacement for complex IF/INDEX combinations."
+    }
+  ],
+  "summary": "Eleven rows, one running seat number, and three SUMIFS per table turn a guest list into a seating plan you can defend. Build it in early November, because the two cells that matter most are the pending count and the worst-case total, and both stop being useful once the replies are in. The trade-off is upkeep: column E has to be edited whenever a household moves, and every move renumbers the place cards below it. If you print cards early, keep the seat numbers in a separate copy and update the live sheet without them.",
+  "nextSteps": [
+    "Add a column G for a high chair or a booster, then count them with =COUNTIF($G$2:$G$12,\"Yes\"), because four extra chairs are easy to forget and one high chair is impossible to improvise",
+    "Put a Data Validation list on column E as well as column C, so a table name typed with a trailing space cannot quietly remove a household from its table total",
+    "Copy the same six columns to a Christmas sheet in December and change only the deadline in G1, since the capacity block, the seat numbering, and the dietary counts do not depend on which holiday is being served"
+  ],
+  "relatedTutorials": [
+    "thanksgiving-dinner-cost-per-guest",
+    "thanksgiving-leftovers-tracker",
+    "countifs-multiple-ranges"
+  ]
+}
