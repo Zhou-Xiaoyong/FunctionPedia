@@ -1,0 +1,238 @@
+{
+  "slug": "thanksgiving-shopping-list-formulas",
+  "title": "Thanksgiving Shopping List: Turn Five Recipes Into 14 Ingredients",
+  "description": "A Thanksgiving shopping list that adds itself up: 21 recipe lines become 14 ingredients through SUMIFS, then ROUNDUP turns cups and tablespoons into packs.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "SUMIFS",
+    "ROUNDUP",
+    "ROUND",
+    "SUMPRODUCT",
+    "COUNTIF",
+    "COUNTA",
+    "IF"
+  ],
+  "intro": "Butter shows up four times on this menu: 8 tablespoons for the turkey, 8 for the potatoes, 6 in the stuffing, 4 in the gravy. That is 26 tablespoons across four recipe cards, and a one-pound box holds 32, so the whole dinner needs one box with 6 tablespoons spare. Five dishes and 21 ingredient lines collapse into 14 things to put in a cart, and nobody does that collapsing in their head at 7 a.m. on Thanksgiving morning.",
+  "tags": [
+    "Thanksgiving",
+    "Shopping List",
+    "SUMIFS",
+    "Meal Planning"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "Excel 2019 or later, or Google Sheets, since SUMIFS and SUMPRODUCT are used throughout and both behave the same in either app",
+    "The five recipes you are actually cooking, written out with quantities, because the sheet only knows what you type into it",
+    "One workbook and two tabs, since the whole build is a Requirements sheet and a List sheet"
+  ],
+  "sections": [
+    {
+      "title": "Twenty-One Lines, Fourteen Ingredients",
+      "content": "The unit of the row is one dish and one ingredient, never one ingredient overall. Twenty-one rows go into the Requirements sheet, and seven of them are repeats: butter appears four times, fresh thyme twice, salt twice, whole milk twice, chicken stock twice. Fourteen distinct ingredients sit behind those 21 lines, and the repeats are exactly why a hand-written list goes wrong. You buy butter once, but three recipe cards ask for different amounts, and the card you forget is the one that ruins the gravy.",
+      "steps": [
+        {
+          "name": "Columns A and B, Dish and Ingredient",
+          "text": "Headers in row 1, data in rows 2 through 22. Column A repeats the dish name on every line that dish owns: four rows of Roast Turkey, then four of Mashed Potatoes, four of Green Bean Casserole, six of Herb Stuffing, three of Gravy. That looks redundant and is not. Column B carries the ingredient spelled exactly as it will appear on the List sheet, because that string is the match key for every formula that follows."
+        },
+        {
+          "name": "Column C, Unit",
+          "text": "lb, tbsp, tsp, cup, can. One unit per ingredient across all of its rows. SUMIFS adds the numbers in column F and never reads this column, so 3 cups of stock and 24 fluid ounces of stock both count as 1 and you get a nonsense total with no warning. Section four is what happens when this rule breaks."
+        },
+        {
+          "name": "Columns D and E, Qty per batch and Batches",
+          "text": "12 and 1 on the turkey, 8 and 1 on the butter, 6 and 1 on the thyme. The batches column exists for the year you make two pans of stuffing or roast a second bird, and leaving it at 1 costs nothing today."
+        },
+        {
+          "name": "Column F, Total",
+          "text": "12 on the turkey row, and 26 once the four butter rows are summed. Nothing in this column is typed by hand, which is the whole point of splitting quantity from batch count.",
+          "formula": "=D2*E2"
+        }
+      ],
+      "example": {
+        "formula": "=D2*E2",
+        "result": "12",
+        "explanation": "Twelve pounds of bird at one batch. Change E2 to 2 for a second turkey and this cell reads 24 while the List sheet picks the change up in the same second. The multiplication by 1 is free, and it is the difference between resizing the menu in one cell or in six."
+      },
+      "tips": [
+        "Set E15 to 1.5 and the stuffing butter line goes from 6 to 9, which moves the menu total from 26 to 29 tablespoons while bread cubes go from 8 cups to 12. Nothing else on either sheet needs editing.",
+        "Type 12 in column D, not 12 lb. A text value multiplied in F2 returns #VALUE!, and the error travels down the whole column."
+      ]
+    },
+    {
+      "title": "SUMIFS Collapses 21 Rows Into 14",
+      "content": "The second sheet is short on purpose. List holds the 14 ingredient names in A2:A15 and a single formula in C2 that asks each name what it earned on the other tab. Butter queries every row in Requirements where column B reads Butter, collects 8, 8, 6 and 4, and returns 26. Chicken stock returns 6. Whole milk returns 2.5, from 1.5 cups in the potatoes and 1 cup in the casserole. Fourteen cells, fourteen answers, one formula filled down.",
+      "steps": [
+        {
+          "name": "A2:A15, the fourteen names",
+          "text": "Type them once, spelled the way they appear in column B of Requirements. SUMIFS ignores case, so butter and Butter are the same key, but Butter followed by a space is a different key and sums to zero. When a cell shows 0, suspect a stray space before you suspect the formula."
+        },
+        {
+          "name": "C2, the needed quantity",
+          "text": "26 on the butter row. The sum range comes first, then the criteria range, then the criterion. Swapping those two ranges is the most common SUMIFS mistake, and Excel returns 0 instead of complaining.",
+          "formula": "=SUMIFS(Requirements!$F$2:$F$22,Requirements!$B$2:$B$22,$A2)"
+        },
+        {
+          "name": "Fill to C15",
+          "text": "Chicken stock 6, russet potatoes 5, fresh thyme 8, salt 16, whole milk 2.5, green beans 2, cream of mushroom soup 2, fried onions 2, bread cubes 8, celery 2, onion 1.5, flour 4, turkey 12. Every one of those numbers traces back to a row in column D of the first sheet."
+        },
+        {
+          "name": "The dollar signs",
+          "text": "The ranges are locked and the criterion is not. Dragged from C2 to C15, each row queries the same 21 rows while pointing at its own name in column A. Without the dollar signs the criteria range walks down with the fill and half the list returns 0."
+        }
+      ],
+      "example": {
+        "formula": "=SUMIFS(Requirements!$F$2:$F$22,Requirements!$B$2:$B$22,$A2)",
+        "result": "26",
+        "explanation": "Four rows qualified: 8 tablespoons on the turkey, 8 on the potatoes, 6 in the stuffing, 4 in the gravy. The 32 tablespoons that fit in a pound box never enter the arithmetic, which is why the next section needs a column of its own. This cell answers how much, not how many to buy."
+      },
+      "tips": [
+        "Typing =SUMIFS($F$2:$F$22,$B$2:$B$22,\"Butter\") works today and breaks the day you rename the row in A2. Point the criterion at the cell and the rename follows through.",
+        "SUMIFS reads wildcards in text criteria. A row named Butter, unsalted plus a criterion of Butter* would sum both lines; a criterion typed as Butter sums only the exact string, and that asterisk is the difference between 26 and 26 plus whatever the salted box holds.",
+        "The sum range and the criteria range must be the same height. F2:F22 against B2:B21 returns #VALUE!, and it is the only time this pair of formulas tells you something is wrong."
+      ]
+    },
+    {
+      "title": "Add Ten Percent, Then Round to Whole Packs",
+      "content": "A list that says 26 tablespoons is not a list you can shop from. Butter comes in one-pound boxes of four sticks, 8 tablespoons each, so a box holds 32 and 26 fits inside one. Potatoes run the other way: 5 pounds needed, sold in 5-pound bags, and 5.5 after the buffer does not fit in one bag. Two columns turn quantities into packages, and the second one is where the money gets spent wrong.",
+      "steps": [
+        {
+          "name": "K1 and K2, the buffer",
+          "text": "K1 holds the label Buffer, K2 holds 0.1. Ten percent covers the tablespoon you drop and the potato with a bad spot. Set K2 to 0.15 the week of the holiday and every row recalculates; set it to 0 and you are back to bare recipe quantities."
+        },
+        {
+          "name": "D2, need plus buffer",
+          "text": "28.6 for butter, 5.5 for potatoes, 6.6 for stock. The ROUND is not decoration: 1.5 times 1.1 does not land exactly on 1.65 inside the machine, and the extra digits surface three columns later as a pack count that is one too high.",
+          "formula": "=ROUND($C2*(1+$K$2),2)"
+        },
+        {
+          "name": "E2, the pack size",
+          "text": "One number per ingredient, in the same unit as column B. 32 tablespoons for a pound of butter, 14 pounds for the bird you order, 5 pounds for a potato bag, 8 cups for a half gallon of milk, 2 pounds for green beans, 1 per can, 6 cups for bread cubes and for a bunch of celery, 3 cups for a pound of onion, 4 cups for a 32-ounce stock carton."
+        },
+        {
+          "name": "F2, packs to buy",
+          "text": "1 box of butter. 28.6 divided by 32 is 0.89, and ROUNDUP takes any fraction to the next whole pack. Filled down, the column reads 1 turkey, 1 butter, 2 potatoes, 1 milk, 2 green beans, 3 soup, 3 fried onions, 2 bread cubes, 1 celery, 1 onion, 2 stock.",
+          "formula": "=IF($G2=\"Yes\",ROUNDUP($D2/$E2,0),\"\")"
+        },
+        {
+          "name": "G, Buy",
+          "text": "Yes or No. Thyme, salt and flour are No, because they already sit in the cabinet, and a list that tells you to buy a third jar of thyme is a list you stop reading. The IF in F hands those rows an empty string, so no #DIV/0! appears beside a blank pack size."
+        }
+      ],
+      "example": {
+        "formula": "=ROUNDUP($D6/$E6,0)",
+        "result": "2",
+        "explanation": "Russet potatoes: 5.5 pounds against a 5-pound bag divides to 1.1, and ROUNDUP makes it two bags. ROUND would return 1, which is 5 pounds for a menu that needs 5.5, and the shortfall shows up while the potatoes are already boiling. ROUNDUP cannot under-buy; that is its whole job."
+      },
+      "tips": [
+        "Two cans of soup against 2.2 needed returns 3, and the third can is the buffer's fault, not yours. Where the store sells singles, drop K2 to 0 for the canned aisle and the column reads 2 and 2.",
+        "ROUNDUP(1.1) also returns 2, because the omitted digits argument defaults to 0, but ROUNDUP(1.1,-1) returns 10. Keep the digit in the formula so the next reader knows which rounding you meant."
+      ]
+    },
+    {
+      "title": "The Trap: SUMIFS Adds Numbers, Not Units",
+      "content": "Every number so far assumes one unit per ingredient, and nothing in the sheet enforces that. Say the gravy line got typed as 24 fluid ounces because the stock carton is labeled in ounces, while the stuffing line is in cups. SUMIFS on chicken stock now returns 27: 3 cups plus 24 ounces, added as though they were the same thing. The list says buy 27 cups of stock for a dinner that needs 6.",
+      "steps": [
+        {
+          "name": "Add column G on Requirements, Factor",
+          "text": "1 on every cup row and 0.125 on the fluid-ounce row, since one fluid ounce is one eighth of a cup. The factor converts each row into the unit you want the total in, which here is cups."
+        },
+        {
+          "name": "Replace SUMIFS with SUMPRODUCT",
+          "text": "6. The comparison builds a column of TRUE and FALSE, the multiplication coerces it to 1 and 0, and the third factor converts as it sums. Case does not matter here either, so Chicken Stock and chicken stock land in the same total.",
+          "formula": "=SUMPRODUCT((Requirements!$B$2:$B$22=\"Chicken stock\")*Requirements!$F$2:$F$22*Requirements!$G$2:$G$22)"
+        },
+        {
+          "name": "The cheaper fix",
+          "text": "Enter every line in the unit you buy in, and convert inside the recipe instead. A stock carton is 4 cups, so the gravy line reads 3 cups, the factor column never gets built, and the SUMIFS from section two keeps working untouched."
+        }
+      ],
+      "example": {
+        "formula": "=SUMPRODUCT((Requirements!$B$2:$B$22=\"Chicken stock\")*Requirements!$F$2:$F$22*Requirements!$G$2:$G$22)",
+        "result": "6",
+        "explanation": "Three cups from the stuffing at a factor of 1, plus 24 fluid ounces from the gravy at 0.125, which is another 3 cups. Plain SUMIFS over the same rows returns 27, and 27 cups is seven cartons of stock for a dinner that needs two. The factor column earns its place the week you cook from someone else's recipe card."
+      },
+      "tips": [
+        "Google Sheets has no structured references, so this SUMPRODUCT is written identically there. What changes is the fill: one ARRAYFORMULA in C2, =ARRAYFORMULA(IF($A$2:$A$15=\"\",\"\",SUMIF(Requirements!$B$2:$B$22,$A$2:$A$15,Requirements!$F$2:$F$22))), fills the whole column without dragging.",
+        "An empty row inside the SUMPRODUCT range multiplies to zero and vanishes from the total, which is usually what you want. SUMIFS behaves the same way, and neither one tells you a line went missing."
+      ]
+    },
+    {
+      "title": "Two Checks Before You Leave the House",
+      "content": "Two cells decide whether the list is finished. The first counts requirement ingredients that never made it onto the List sheet. The second splits 21 lines into 14 ingredients, which is the number of separate things that go in the cart. Both are cheap to read and neither needs maintenance between now and Thursday.",
+      "steps": [
+        {
+          "name": "Coverage",
+          "text": "0 is the only answer worth accepting. Each requirement row asks whether the List contains that name; a 1 means one line has no home and its quantity is missing from the cart entirely.",
+          "formula": "=SUMPRODUCT(--(COUNTIF($A$2:$A$15,Requirements!$B$2:$B$22)=0))"
+        },
+        {
+          "name": "Twenty-one lines, fourteen ingredients",
+          "text": "Twenty-one minus fourteen is seven, exactly the repeat count: butter three extra, thyme one, salt one, milk one, stock one. A distinct count of 15 means an ingredient got typed two ways, and the fix belongs in column B, not in the formula.",
+          "formula": "=SUMPRODUCT(1/COUNTIF(Requirements!$B$2:$B$22,Requirements!$B$2:$B$22))"
+        },
+        {
+          "name": "How many packs, how many items",
+          "text": "11. Fourteen names minus the three No rows on thyme, salt and flour. The pack total beside it reads 19, because potatoes, green beans, bread cubes and stock all need a second container, and a total that moves between Tuesday and Wednesday means someone edited a quantity without mentioning it.",
+          "formula": "=COUNTIF($G$2:$G$15,\"Yes\")"
+        }
+      ],
+      "example": {
+        "formula": "=SUM($F$2:$F$15)",
+        "result": "19",
+        "explanation": "1 turkey, 1 butter, 2 potatoes, 1 milk, 2 green beans, 3 cream of mushroom soup, 3 fried onions, 2 bread cubes, 1 celery, 1 onion, 2 stock. Add the three No rows and the sheet holds 14 names, 11 of which you are actually buying. A total of 20 means one pack size in column E is smaller than the package you pick up in the store."
+      },
+      "tips": [
+        "Twelve pounds of turkey against twelve guests is 1 pound per person, the ratio most planning charts use. Put the guest count in a cell and divide, so the check updates when the count does instead of aging into a typed number.",
+        "The distinct count breaks on a trailing space, because Butter and Butter end up as two strings to COUNTIF. Fix the cell rather than wrapping the formula in TRIM, since the trailing space also breaks the SUMIFS on the other sheet."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "SUMIFS",
+      "slug": "sumifs",
+      "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "ROUNDUP",
+      "slug": "roundup",
+      "description": "ROUNDUP rounds a number up to a specified number of decimal places, always away from zero."
+    },
+    {
+      "name": "ROUND",
+      "slug": "round",
+      "description": "ROUND rounds a number to a specified number of decimal places."
+    },
+    {
+      "name": "SUMPRODUCT",
+      "slug": "sumproduct",
+      "description": "SUMPRODUCT multiplies corresponding components of one or more arrays and returns the sum of those products. It is also widely used for conditional sums and counts without array-entry."
+    },
+    {
+      "name": "COUNTIF",
+      "slug": "countif",
+      "description": "COUNTIF counts the number of cells in a range that meet a specified condition. It's the counting counterpart of SUMIF — instead of summing matching values, it counts how many matches exist."
+    },
+    {
+      "name": "COUNTA",
+      "slug": "counta",
+      "description": "COUNTA counts the number of non-empty cells within a specified range, regardless of the cell content."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    }
+  ],
+  "summary": "Two sheets, four formulas and 21 typed lines replace the paper list that gets rewritten three times before Thursday. The quantities come out in the unit the recipe speaks, the packs come out in the unit the store sells, and one check catches the ingredient that fell off between the recipe card and the cart. The trade-off is the Requirements sheet: it is only as good as the recipes typed into it, and a dish added on Wednesday means new rows, an extended SUMIFS range and a re-filled column. If the menu is still moving, convert that block to an Excel Table first and let the structured references absorb the new rows.",
+  "nextSteps": [
+    "Select Requirements and press Ctrl+T to make it a real Table, then rewrite the List formula as =SUMIFS(Table1[Total],Table1[Ingredient],$A2). Rows added for a late dish are picked up without editing the range, which is the one thing fixed A1 references cannot do for you.",
+    "Add a column H for the aisle (Produce, Dairy, Canned, Meat, Frozen) and sort by it before you leave. The quantities can all be right and the trip still fails, because the list is ordered by recipe instead of by store.",
+    "Copy both tabs for Christmas, clear columns A through E on Requirements, delete the extra rows, and leave every formula alone. The List sheet reads ingredient names, not row numbers, so it keeps working against a completely different menu."
+  ],
+  "relatedTutorials": [
+    "thanksgiving-dinner-cost-per-guest",
+    "thanksgiving-leftovers-tracker",
+    "sumifs-multiple-criteria"
+  ]
+}
