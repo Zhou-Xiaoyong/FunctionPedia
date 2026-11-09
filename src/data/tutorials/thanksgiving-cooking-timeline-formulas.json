@@ -1,0 +1,290 @@
+{
+  "slug": "thanksgiving-cooking-timeline-formulas",
+  "title": "Thanksgiving Cooking Timeline: Back-Plan Eight Dishes From One Serve Time",
+  "description": "A Thanksgiving cooking timeline built backward from one serve time: 1,440-minute arithmetic, the MOD trap past midnight, and the 3:45 PM oven collision.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "TIME",
+    "MOD",
+    "TEXT",
+    "SUMPRODUCT",
+    "SUMIFS",
+    "SUM",
+    "IF"
+  ],
+  "intro": "A 12-pound unstuffed turkey needs 235 minutes at 325 degrees and another 30 minutes of rest before anyone carves it. Put dinner at 4:00 PM and that bird owns the oven from noon to 3:30, which leaves one oven, two racks, and three other baked dishes fighting over the last 50 minutes of the afternoon. Eight rows and one serve time in cell B1 will show you that collision before it happens, in the same way a calendar shows you a double booking.",
+  "tags": [
+    "Thanksgiving",
+    "Cooking Timeline",
+    "Time Formulas",
+    "SUMPRODUCT"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "Excel 2019 or later, or Google Sheets, since nothing here needs a function newer than SUMPRODUCT and every formula is compatible with both",
+    "A serve time you are willing to commit to, because the whole sheet is subtraction from that one cell and a vague target produces a vague schedule",
+    "The cook times from the packaging or the recipe you are actually using, since the sheet has no opinion about how long your bird takes and will plan around whatever number you type"
+  ],
+  "sections": [
+    {
+      "title": "Eight Rows, One Cell That Everything Hangs On",
+      "content": "The sheet is a ledger, not a calendar. One row per dish, no time grid, no colored blocks. B1 holds the serve time, every other time in the sheet is B1 minus some number of minutes, and the columns on the left are the only things you type. That is the whole design, and it is why the sheet survives a change of plans: type 1:00 PM into B1 for an early dinner and all eight rows re-plan themselves in one recalculation.",
+      "steps": [
+        {
+          "name": "Cell B1, the serve time",
+          "text": "Type 4:00 PM. Excel stores it as 0.666667, the fraction of a day that has passed at four in the afternoon. If the text sits on the left edge of the cell instead of the right, you typed a string, and every row below returns #VALUE! until you retype it."
+        },
+        {
+          "name": "Columns A, B, C, the dish and its two clocks",
+          "text": "A2:A9 holds the dish name. B is hands-on minutes, the time you physically touch it, and C is unattended minutes on a burner or in the oven. The turkey is 25 and 210. Mashed potatoes are 40 and 25, because peeling and mashing takes longer than boiling. Keep those two numbers separate or section three cannot work."
+        },
+        {
+          "name": "Column D, total minutes",
+          "text": "235 on the turkey row, 65 on the potatoes. This is the column the timeline is actually built from.",
+          "formula": "=B2+C2"
+        },
+        {
+          "name": "Column E, stand before serving",
+          "text": "30 for the turkey, 10 for mashed potatoes, 5 for stuffing, 0 for rolls, gravy, and cranberry sauce. A bird carved straight out of the oven loses its juice to the cutting board, so the 30 minutes is part of the plan and not slack."
+        },
+        {
+          "name": "Column F, off heat by",
+          "text": "3:30 PM on the turkey, 3:55 PM on stuffing, 4:00 PM on rolls. Format this column as h:mm AM/PM, because the raw value is a decimal and General format will show 0.64583.",
+          "formula": "=$B$1-E2/1440"
+        },
+        {
+          "name": "Column G, start time",
+          "text": "11:35 AM on the turkey. Column F minus the total minutes, and this is the number you actually put on the refrigerator door.",
+          "formula": "=F2-D2/1440"
+        },
+        {
+          "name": "Column H, start time as a clock",
+          "text": "11:35 AM again, but produced by wrapping the value in MOD. Keep G as well as H, because G holds the honest serial that can go negative and H holds the version that always displays. Section four is the reason both exist.",
+          "formula": "=MOD(G2,1)"
+        },
+        {
+          "name": "Columns I and J, oven temperature and day",
+          "text": "325, 350, or left blank for a stovetop dish. Column J carries Thu or Wed, and it exists because two rows belong to the day before: a 24-hour dry brine and a pot of cranberry sauce that is better cold."
+        },
+        {
+          "name": "The row to check first",
+          "text": "If the turkey row reads 11:35 AM, every formula is wired correctly and the rest of the sheet is arithmetic."
+        }
+      ],
+      "example": {
+        "formula": "=$B$1-E2/1440",
+        "result": "3:30 PM",
+        "explanation": "4:00 PM minus 30 minutes of rest. The cell displays 3:30 PM once you format it as h:mm AM/PM; unformatted, it reads 0.645833, which is the same instant expressed as a fraction of a day. The dollar signs matter: B1 is the one input and stays fixed, so filling the formula down column F adjusts E2 to E3 and leaves the serve time alone."
+      },
+      "tips": [
+        "Build the header in row 1 and the data in rows 2 through 9. A merged title row above the headers shifts every range in this article by one row and the formulas paste in one row off.",
+        "Column J is not decoration. Every concurrency formula in section three has to filter on it, or a cranberry sauce made on Wednesday counts as a dish competing for your hands on Thursday."
+      ]
+    },
+    {
+      "title": "11:35 AM Is 0.48264 to Excel",
+      "content": "Time in a spreadsheet is a fraction of a day, so one minute is 1/1440, and that divisor is the only arithmetic you need. It is also the reason not to reach for TIME. TIME builds a clock value, and a clock value folds at 24 hours: TIME(27,0,0) returns 3:00 AM, and TIME(0,1470,0), which reads as a 24.5-hour brine, comes back as 12:30 AM. Divide the minutes instead and you keep the duration intact.",
+      "steps": [
+        {
+          "name": "The plain division",
+          "text": "0.163194 in General format. That is 235 minutes as a share of a day, and subtracting it from a time value gives you the earlier instant with no function involved.",
+          "formula": "=D2/1440"
+        },
+        {
+          "name": "The same number as a duration",
+          "text": "\"3:55\" for the stuffing row. The brackets around the h are what let the display pass 24 hours instead of folding back to zero.",
+          "formula": "=TEXT(D2/1440,\"[h]:mm\")"
+        },
+        {
+          "name": "The folding problem, in one cell",
+          "text": "\"24:30\" with the brackets, \"0:30\" without them. Same value, and the second one is a lie about a brine that runs longer than a day.",
+          "formula": "=TEXT($D$9/1440,\"h:mm\")"
+        },
+        {
+          "name": "Why TIME loses that brine entirely",
+          "text": "\"12:30 AM\". The hour component rolls past 24 and is divided by 24, so a 24-hour-plus item silently becomes a half-hour one. Use TIME(h,m,0) for a clock time you are typing by hand, and minutes divided by 1440 for anything you add or subtract."
+        },
+        {
+          "name": "The ##### row",
+          "text": "A negative serial in an h:mm format displays as a row of hashes. Nothing is broken and no error exists in the cell, which is exactly why this one is easy to misread as a formula failure."
+        }
+      ],
+      "example": {
+        "formula": "=TEXT($D$9/1440,\"[h]:mm\")",
+        "result": "24:30",
+        "explanation": "Row 9 is the dry brine: 30 minutes of hands-on work plus 24 hours of sitting. Without the brackets the same formula returns 0:30, which is the value modulo 24 hours and looks like a plausible half-hour task. Google Sheets runs identical 1/1440 arithmetic and its TIME folds at 24 hours the same way, so the fix carries over; what differs is format inheritance, since subtracting two clock cells in Sheets yields a duration like 4:25:00 while Excel keeps the h:mm AM/PM format of the cell above."
+      },
+      "tips": [
+        "Format column F as h:mm AM/PM, not as a number. If you copy the format down from B1 you get the serve time's format on every row, which happens to be right here and turns into a date once any row picks up a full date-time value.",
+        "Type the serve time with AM or PM spelled out. Enter 4:00 on its own and Excel reads it as 4:00 AM, then every back-planned time inherits the twelve-hour error and the timetable looks perfectly reasonable at breakfast."
+      ]
+    },
+    {
+      "title": "Four Dishes, One Oven, 3:45 PM",
+      "content": "The turkey holds the oven from noon until 3:30. Stuffing, green bean casserole, and rolls all want that same box within forty minutes of each other, and one oven cannot run three dishes at 350 degrees without turning into a shuffle of racks and foil. A SUMPRODUCT over the oven window counts how many dishes are inside at any moment you name, and it takes about ten seconds to point at a different time.",
+      "steps": [
+        {
+          "name": "L2, the probe time",
+          "text": "Type 3:45 PM and format it h:mm AM/PM. This is the only cell you edit while hunting for the collision."
+        },
+        {
+          "name": "The oven load at that instant",
+          "text": "3. Stuffing, green bean casserole, and rolls are all inside at 3:45 PM, and all three want 350 degrees.",
+          "formula": "=SUMPRODUCT(($I$2:$I$9<>\"\")*($F$2:$F$9-$C$2:$C$9/1440<=$L$2)*($F$2:$F$9>$L$2))"
+        },
+        {
+          "name": "Change L2 to 3:20 PM",
+          "text": "2. The turkey is still in and the stuffing has joined it, which is two racks and no crisis."
+        },
+        {
+          "name": "The hands-on load, same idea",
+          "text": "2 at 3:40 PM. Gravy and rolls overlap for five minutes; without the Thu filter the answer is 3, because a cranberry sauce scheduled for Wednesday shares the same clock time.",
+          "formula": "=SUMPRODUCT(($H$2:$H$9<=$L$2)*($H$2:$H$9+$B$2:$B$9/1440>$L$2)*($J$2:$J$9=\"Thu\"))"
+        },
+        {
+          "name": "Confirmed hands-on time on Thursday",
+          "text": "125 minutes. Sixty of them land in one unbroken hour from 2:45 to 3:45 PM, with no minute in that stretch where both hands are free.",
+          "formula": "=SUMIFS($B$2:$B$9,$J$2:$J$9,\"Thu\")"
+        },
+        {
+          "name": "The verdict cell",
+          "text": "\"Move a dish to Wednesday\". One comparison, printed as an instruction instead of a number, and it changes itself the moment you move a row.",
+          "formula": "=IF($L$2>2,\"Move a dish to Wednesday\",\"Two racks hold\")"
+        }
+      ],
+      "example": {
+        "formula": "=SUMPRODUCT(($I$2:$I$9<>\"\")*($F$2:$F$9-$C$2:$C$9/1440<=$L$2)*($F$2:$F$9>$L$2))",
+        "result": "3",
+        "explanation": "Read it as four tests multiplied together. Column I filters out stovetop dishes, the third term asks whether the dish entered the oven by 3:45, and the fourth asks whether it is still in there. Stuffing ends at 3:55, green beans at 4:00, rolls at 4:00, so all three survive every test and the turkey fails the fourth because it left at 3:30. The <= on the start and the > on the finish is what keeps a dish from counting on the minute it leaves."
+      },
+      "tips": [
+        "All four ranges have to be eight rows. Point one at $C$2:$C$10 and Excel returns #VALUE!, because SUMPRODUCT multiplies arrays of different shapes and refuses rather than guessing.",
+        "Blank cells in column I matter. A stovetop row with a 0 typed into the temperature column passes the <>\"\" test and gets counted as an oven dish at zero degrees, which inflates the peak by one every time.",
+        "Column H here is the MOD version, so the comparison works only within one day. That is fine for Thursday rows and wrong for the brine, which is the next section's problem."
+      ]
+    },
+    {
+      "title": "The Row That Starts Before Midnight",
+      "content": "The dry brine is 30 minutes of work and 24 hours of sitting, so its start time is 3:30 PM on Wednesday. Cell G9 holds a negative serial, negative 0.354167, and the h:mm format turns it into hashes. Wrap it in MOD and the cell reads 3:30 PM, which is a real time and the wrong day, and that is worse than the hashes because nothing on screen looks broken.",
+      "steps": [
+        {
+          "name": "The raw start",
+          "text": "Negative 0.354167 in General format, hashes in h:mm. That is 16 hours behind midnight, correctly stored and unreadable."
+        },
+        {
+          "name": "MOD makes it presentable",
+          "text": "3:30 PM. MOD returns the remainder after dividing by 1, so the negative serial wraps forward into the same day.",
+          "formula": "=MOD($G$9,1)"
+        },
+        {
+          "name": "The lie, stated plainly",
+          "text": "3:30 PM. Thursday, according to the cell. Wednesday, according to the plan. No clock format can recover a day it was never given."
+        },
+        {
+          "name": "The fix, in B1",
+          "text": "Type 11/26/2026 4:00 PM so the serial carries a date, then format column G as ddd h:mm AM/PM. The brine row reads Wed 3:30 PM and the Thursday rows read Thu 11:35 AM, from the same subtraction.",
+          "formula": "=$B$1-D9/1440"
+        },
+        {
+          "name": "Why MOD disappears after that",
+          "text": "With a real date in the serial there is no wrap to hide, so column H becomes redundant. Keep it only if B1 holds a bare clock time."
+        }
+      ],
+      "example": {
+        "formula": "=MOD($G$9,1)",
+        "result": "3:30 PM",
+        "explanation": "Correct arithmetic, wrong answer, which is the failure mode worth remembering. The brine has to go on Wednesday afternoon and the cell says 3:30 PM as if it were Thursday. Once B1 is a date-time and the format is ddd h:mm AM/PM, the same row reads Wed 3:30 PM and the ambiguity is gone."
+      },
+      "tips": [
+        "MOD with a negative number is defined to return a result with the sign of the divisor, so MOD(-0.354167,1) is 0.645833 and not -0.354167. That behavior is what makes it useful for timesheets and unhelpful for schedules with more than one day in them.",
+        "If B1 is a date-time, the display of B1 must be h:mm AM/PM and not a full date. You want to read 4:00 PM at the top of the sheet, not 11/26/2026."
+      ]
+    },
+    {
+      "title": "Three Edits That Drop Thursday to 80 Minutes",
+      "content": "The timeline is correct and the afternoon is still overloaded, because five dishes land between 2:45 and 4:00 PM and one pair of hands serves all of them. Three moves fix it without changing the menu. Bake the stuffing 30 minutes earlier and let it hold, assemble the green bean casserole on Wednesday so Thursday only bakes it, and peel and boil the potatoes on Wednesday so Thursday mashes and reheats. Thursday hands-on time drops from 125 minutes to 80, and the oven peak falls from three dishes to two.",
+      "steps": [
+        {
+          "name": "Stuffing, 30 minutes earlier",
+          "text": "Off heat at 3:25 PM instead of 3:55 PM, so the oven window becomes 2:40 to 3:25 and the dish is out before the green beans go in. Stuffing holds covered for half an hour without suffering; that is a property of bread and stock, not of your oven."
+        },
+        {
+          "name": "Green bean casserole, assembled Wednesday",
+          "text": "Hands-on drops to 0 on Thursday and the row becomes 30 minutes of baking from 3:30 to 4:00. Assembling a casserole a day ahead costs nothing except refrigerator space."
+        },
+        {
+          "name": "Potatoes, peeled and boiled Wednesday",
+          "text": "Thursday keeps 15 minutes for mashing and reheating instead of 40. This is the only move with a real quality cost, and the next paragraph is honest about it."
+        },
+        {
+          "name": "The new oven peak",
+          "text": "2 at 3:45 PM, from green beans and rolls. The verdict cell flips from \"Move a dish to Wednesday\" to \"Two racks hold\" on its own.",
+          "formula": "=IF($L$2>2,\"Move a dish to Wednesday\",\"Two racks hold\")"
+        },
+        {
+          "name": "The new hands-on total",
+          "text": "80 minutes on Thursday, down from 125, with no two tasks on your hands at the same minute.",
+          "formula": "=SUMIFS($B$2:$B$9,$J$2:$J$9,\"Thu\")"
+        }
+      ],
+      "example": {
+        "formula": "=SUMIFS($B$2:$B$9,$J$2:$J$9,\"Wed\")",
+        "result": "40",
+        "explanation": "Forty minutes of work move to Wednesday before any of the three edits: 30 for the brine and 10 for the cranberry sauce. After the edits the same cell reads 85, and the difference between the two totals is exactly what left Thursday. That is the number to look at when someone offers to help, because it describes a job you can hand over in one sentence."
+      },
+      "tips": [
+        "Reheated mashed potatoes are the weakest link in this plan. If the potatoes are the part of the meal people compliment, keep them on Thursday, accept the 125-minute total, and take the oven fix alone, which is free.",
+        "Do not add a second oven temperature column. A 325-degree oven bakes a 350-degree casserole roughly five minutes slower, so a single temperature field plus a note is enough and two fields will disagree with each other.",
+        "Print column G and column A on one page and tape it to a cabinet door. The sheet is only useful if it is readable with butter on your hands, and a phone on the counter goes dark at the wrong moment."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "TIME",
+      "slug": "time",
+      "description": "TIME builds a time-of-day serial as a decimal fraction of a 24-hour day from hour, minute, and second components, rolling over values that exceed their normal ranges."
+    },
+    {
+      "name": "MOD",
+      "slug": "mod",
+      "description": "MOD returns the remainder after dividing a number by a divisor, and the sign of the result always matches the sign of the divisor."
+    },
+    {
+      "name": "TEXT",
+      "slug": "text",
+      "description": "TEXT converts a number or date into text using a format code, which is how you display a duration longer than 24 hours with [h]:mm."
+    },
+    {
+      "name": "SUMPRODUCT",
+      "slug": "sumproduct",
+      "description": "SUMPRODUCT multiplies corresponding components of arrays and returns the sum, which makes it the standard way to count rows that satisfy several conditions without array entry."
+    },
+    {
+      "name": "SUMIFS",
+      "slug": "sumifs",
+      "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    }
+  ],
+  "summary": "One serve time in B1, eight rows of minutes, and two SUMPRODUCTs turn a stack of recipe cards into a schedule you can post on the refrigerator. The turkey at 235 minutes plus 30 of rest sets the earliest start, the oven count at 3:45 PM exposes the three-dish collision, and the brine row teaches the one thing clock arithmetic cannot do: tell you which day. Do the oven fix, which costs nothing, and decide separately whether cold-storage potatoes are a trade you are willing to make. A timeline that promises a calm kitchen and delivers reheated mash is worse than an honest 125-minute afternoon with fresh potatoes.",
+  "nextSteps": [
+    "Set B1 to 1:00 PM for an early dinner and watch the whole sheet shift, then check whether the new 8:35 AM turkey start is realistic for your morning",
+    "Add a row for the dish you always forget, usually the one someone else is bringing, with 30 minutes of hands-on time and a 3:45 PM off-heat target",
+    "Rebuild the same eight columns for Christmas dinner in December, since the only thing that changes is which bird is in the oven and how long it takes"
+  ],
+  "relatedTutorials": [
+    "thanksgiving-shopping-list-formulas",
+    "thanksgiving-seating-chart-rsvp",
+    "thanksgiving-dinner-cost-per-guest"
+  ]
+}
