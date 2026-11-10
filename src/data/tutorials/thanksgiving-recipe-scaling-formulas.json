@@ -1,0 +1,272 @@
+{
+  "slug": "thanksgiving-recipe-scaling-formulas",
+  "title": "Thanksgiving Recipe Scaling: Cut a 12-Serving Recipe to 9 Without Guesswork",
+  "description": "Thanksgiving recipe scaling for a smaller table: one factor cell, MROUND by unit, and SQRT pan geometry that turns a 9x13 pan into a 9x9 without guessing.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "MROUND",
+    "ROUND",
+    "ROUNDUP",
+    "SQRT",
+    "SUMIFS",
+    "SUM",
+    "IF"
+  ],
+  "intro": "Seven people at the table and a stuffing recipe that serves 12 leaves you with five servings nobody will eat by Sunday. The fix is not a calculator and a notepad, because the numbers that come out of that method are 3.375 cups of stock and 1.167 tablespoons of thyme, and no measuring cup has a mark for either. Two input cells and eight rows turn the card into a batch you can actually measure, and one square root keeps the pan from ruining the texture.",
+  "tags": [
+    "Thanksgiving",
+    "Recipe Scaling",
+    "MROUND",
+    "Pan Size"
+  ],
+  "estimatedTime": "13 min read",
+  "prerequisites": [
+    "Excel 2019 or later, or Google Sheets, since MROUND, SUMIFS and SQRT all exist in both apps with the same argument order",
+    "The recipe card you are actually cooking from, with its stated yield, because the whole sheet divides by that number and a guessed yield scales every ingredient wrong by the same amount",
+    "A ruler or a tape measure, because section five needs the real inside dimensions of your pan and a 9x13 that measures 8.5x12.75 will shift the answer"
+  ],
+  "sections": [
+    {
+      "title": "Two Input Cells, Eight Rows, One Factor",
+      "content": "B1 holds the servings you want to end up with. B2 holds the yield printed at the top of the card. B3 divides one by the other, and every ingredient row multiplies by B3. That is the entire engine, and it is why the sheet survives a change in plans: type 7 into B1 and all eight rows re-measure themselves in one recalculation.",
+      "steps": [
+        {
+          "name": "B1, servings you want to end up with",
+          "text": "Type 9, not 7. Seven people at the table plus two containers for Friday. Typing 7 gets you a batch that feeds the room and nothing else, and the leftover sandwich is the reason half of this meal gets cooked in the first place."
+        },
+        {
+          "name": "B2, the yield on the card",
+          "text": "Type 12. This is the number the recipe author wrote, usually in the line above the ingredient list. If the card says serves 10 to 12, use 12 and accept that the batch runs slightly generous."
+        },
+        {
+          "name": "B3, the factor",
+          "text": "0.75. Nine servings out of a twelve-serving card. Format this cell as General, not Percentage, because section two is entirely about what happens when someone types 58 into a percent-formatted cell and gets 5800%.",
+          "formula": "=$B$1/$B$2"
+        },
+        {
+          "name": "Row 5, the headers",
+          "text": "Ingredient, Qty on card, Unit, Scaled, Step, Measure. Six columns, and only the first three are typed. Keep the headers in row 5 with data starting at row 6, so the ranges in sections three and five are eight rows tall."
+        },
+        {
+          "name": "Column B and C, the card's numbers",
+          "text": "12 cups bread cubes, 12 tbsp butter, 3 cups diced onion, 3 cups diced celery, 4.5 cups chicken stock, 4 eggs, 2 tbsp fresh thyme, 4 tsp kosher salt. Type 4.5 and 12 as numbers. A card that prints a half cup as 1 1/2 takes a line and a half to explain, and that explanation is in section two."
+        },
+        {
+          "name": "Column D, scaled",
+          "text": "9, 9, 2.25, 2.25, 3.375, 3, 1.5, 3 down rows 6 through 13. The ROUND to three decimals is not cosmetic: 4.5 times 0.75 lands on 3.375 in exact arithmetic and on 3.3749999999 in the floating-point engine, and the leftover digits surface in column F as a measurement that is a quarter cup off.",
+          "formula": "=ROUND(B6*$B$3,3)"
+        }
+      ],
+      "example": {
+        "formula": "=$B$1/$B$2",
+        "result": "0.75",
+        "explanation": "Nine divided by twelve. Cell B3 displays 0.75 because it is formatted as General; format it as Percentage and the same cell reads 75%, which is the same number with a friendlier face. Every row in column D multiplies by this one cell, so the dollar signs carry the whole design: B1 and B2 stay fixed while the fill handle walks B6 down to B13."
+      },
+      "tips": [
+        "Select D6 and drag the fill handle to D13 rather than typing eight formulas. Copying D6 down is safe here because the only relative reference in it is B6, and B6 is exactly what should move.",
+        "If you build this in Excel 365, one dynamic array formula in D6 fills the whole column and spills: =ROUND(B6:B13*$B$3,3). In Google Sheets the same thing needs =ARRAYFORMULA(ROUND(B6:B13*$B$3,3)), and pasting the Excel version there returns a single value with no warning."
+      ]
+    },
+    {
+      "title": "Type 9, Not 7, and Mind the Cell Format",
+      "content": "The most common failure in a scaled recipe is not arithmetic. It is the number in B1. A host counting chairs types 7, gets a factor of 0.583333, and discovers on Friday that there is no second helping of anything. The second most common failure is a cell formatted as Percentage that receives a whole number, and that one produces a result so absurd it is almost useful as a check.",
+      "steps": [
+        {
+          "name": "The 7-serving version, for comparison",
+          "text": "Put 7 in B1 and the factor becomes 0.583333. Bread cubes land on 7.0 cups, stock on 2.625, thyme on 1.16667. Those are correct numbers for seven servings and the wrong batch for a holiday, which is why the leftovers belong in B1 instead of in a note."
+        },
+        {
+          "name": "B3 formatted as Percentage, with 58 typed in",
+          "text": "The cell reads 5800%, and D6 reads 696. This is the trap in its natural habitat: a percent-formatted cell divides what you type by 100, so 58 becomes 58.0, not 0.58. Type 58% with the sign, or type 0.58 into a General cell, and the row comes back to 6.96 cups."
+        },
+        {
+          "name": "The 0.58 shortcut, priced out",
+          "text": "13.05 cups against a true 13.125 across the four cup-measured ingredients. Seven hundredths of a cup is invisible. The shortcut is fine at this scale and stops being fine the day someone scales a brine or a cake where the factor multiplies a rising agent, so write the division and let the cell do it."
+        },
+        {
+          "name": "Typing 1/2 into a General cell",
+          "text": "Excel stores January 2 of the current year. Column D then multiplies a date serial by 0.75 and returns a five-digit number that looks like a quantity and is not one. Enter 0.5, or format the cell as a fraction before typing, and the row behaves."
+        },
+        {
+          "name": "The text version of a fraction",
+          "text": "#VALUE!. A card copied as 1 1/2 with a space lands in column B as text, and text times 0.75 is an error, not a number. Cleaning it up means retyping as 1.5 rather than wrapping the formula in VALUE, because the error will also break the SUMIFS totals in section three."
+        }
+      ],
+      "example": {
+        "formula": "=ROUND(B6*$B$3,3)",
+        "result": "696",
+        "explanation": "Twelve cups of bread cubes times a B3 that holds 58.0 instead of 0.58. Nothing about the formula is wrong; the input cell was formatted to expect a fraction and received a whole number. The tell is the cell at the top: any factor above 1.5 on a scaled-down batch means B3 is the problem, not the rows below it."
+      },
+      "tips": [
+        "Add a guard cell that costs nothing: =IF($B$3>1,\"Batch is larger than the card\",\"Batch is smaller\"). It catches a reversed division before you shop.",
+        "If you reverse B1 and B2 by accident, the factor becomes 1.3333 and every row grows. The guard cell says so, and so does the bread cubes row at 16 cups, which is more stuffing than a 9x13 pan will hold."
+      ]
+    },
+    {
+      "title": "MROUND Turns 3.375 Cups Into 3 1/2",
+      "content": "3.375 cups is a real quantity and an unusable instruction. A quarter-cup step puts it on 3.5, which is 3 cups plus a half, and that is a thing you can measure with equipment you own. The step differs by unit, though: cups go in quarters, tablespoons in halves, teaspoons in quarters, and eggs go in whole numbers. A step column holds that difference so a single formula can serve all eight rows.",
+      "steps": [
+        {
+          "name": "Column E, the step",
+          "text": "0.25 on every cup row, 0.5 on the two tablespoon rows, 0.25 on the salt row, 1 on the egg row. These are measuring increments, not decoration, and they are the only place the sheet admits that a cup and a teaspoon are different kinds of unit."
+        },
+        {
+          "name": "Column F, the measurement",
+          "text": "9, 9, 2.25, 2.25, 3.5, 3, 1.5, 3. The stock row is the only one that moves: 3.375 rounds up to 3.5 because 3.375 sits exactly halfway between 3.25 and 3.5, and MROUND breaks a tie away from zero.",
+          "formula": "=MROUND(D6,E6)"
+        },
+        {
+          "name": "Why not ROUND(D6,2)",
+          "text": "3.38 cups. Two decimal places is a spreadsheet convention, not a kitchen one, and 3.38 cups is 3 cups plus 6 tablespoons of a thing your recipe wanted measured in quarter cups. ROUND answers a formatting question; MROUND answers a measuring one."
+        },
+        {
+          "name": "The cups total, before and after",
+          "text": "16.875 in column D, 17.0 in column F. The rounding added an eighth of a cup across four ingredients, which is 0.74% and well inside the noise of how much stuffing actually fits in a pan.",
+          "formula": "=SUMIFS($D$6:$D$13,$C$6:$C$13,\"cup\")"
+        },
+        {
+          "name": "The same total after measuring",
+          "text": "17. Bread cubes 9, onion 2.25, celery 2.25, stock 3.5. The two totals should never differ by more than one step per row, and if they differ by more than a cup, one row has a step of 1 sitting on a cup unit.",
+          "formula": "=SUMIFS($F$6:$F$13,$C$6:$C$13,\"cup\")"
+        }
+      ],
+      "example": {
+        "formula": "=MROUND(D10,E10)",
+        "result": "3.5",
+        "explanation": "Row 10 is the chicken stock: 4.5 cups on the card, 3.375 after the factor, and 0.25 as the step. 3.375 divided by 0.25 is 13.5, an exact tie, and MROUND takes the tie to 14 steps. Round down to 3.25 and the stuffing is dry at the edges; round up and the extra two tablespoons disappear into bread that was going to absorb them anyway. Slight over-measure is the safe direction on any liquid in a stuffing."
+      },
+      "tips": [
+        "Leave no step cell blank. A zero multiple makes MROUND return an error for every row that points at it, and the column goes dark with #NUM! in one fill.",
+        "The salt row is 4 teaspoons on the card, 3 after scaling, and 3 teaspoons is one tablespoon. Worth knowing before you reach for the quarter-teaspoon four times.",
+        "MROUND exists in both apps and rounds ties away from zero in both, so this column transfers without edits. What does not transfer is the spill: Excel 365 fills F6:F13 from one array formula, Sheets needs ARRAYFORMULA around the same expression."
+      ]
+    },
+    {
+      "title": "What Does Not Scale: Eggs, Salt, and the Clock",
+      "content": "Change B1 to 7 and watch which rows misbehave. Bread cubes go to 7 cups without complaint. Eggs go to 2.3333, and that number has no measuring instruction attached to it. Salt goes to 2.25 teaspoons, which is measurable and slightly under-seasoned, because salt perception does not fall in a straight line with volume. The oven clock is worse: scaling 45 minutes by 0.583 gives 26 minutes, and a shallower pan of the same mixture does not lose 42% of its bake time.",
+      "steps": [
+        {
+          "name": "Drop B1 to 7",
+          "text": "Factor 0.583333. Bread cubes 7, stock 2.625 to 2.75, thyme 1.16667 to 1.0, salt 2.3333 to 2.25, eggs 2.3333."
+        },
+        {
+          "name": "Eggs, rounded to the nearest whole",
+          "text": "2. MROUND with a step of 1 does exactly what it was told, and 2 eggs for a batch that wants 2.33 leaves the stuffing short on binder, which shows up as a crumbly texture rather than a wet one.",
+          "formula": "=MROUND(D11,E11)"
+        },
+        {
+          "name": "Eggs, rounded up instead",
+          "text": "3. One extra egg against 0.33 needed, so the batch carries 1.29 times the binder the card intended. The stuffing holds together and turns slightly custardy in the middle, which some people prefer and no one complains about.",
+          "formula": "=ROUNDUP(D11,0)"
+        },
+        {
+          "name": "The honest fix",
+          "text": "Crack the third egg into a cup, beat it, and add a little over half. Half an egg is 1.5 tablespoons, and no recipe will notice. If you would rather not, take the ROUNDUP answer of 3 and add 2 tablespoons of stock to loosen it back."
+        },
+        {
+          "name": "The clock, which is not an ingredient",
+          "text": "\"Do not scale column D into your oven timer.\" Browning is a surface process and the factor describes volume. Put the pan in at the temperature the card gives and start checking when the top looks like the photo, which for a scaled batch is earlier than the card's number, not later.",
+          "formula": "=IF($B$3<1,\"Do not scale the oven time\",\"Time is the card's time\")"
+        }
+      ],
+      "example": {
+        "formula": "=ROUNDUP(D11,0)",
+        "result": "3",
+        "explanation": "Four eggs on the card, 2.3333 after a 7-serving factor, and ROUNDUP takes any fraction to the next whole egg. Compare with =MROUND(D11,E11), which returns 2. Neither is the card's intent, which was 2.33 eggs. The choice between them is a texture decision, not a math one, and a stuffing that is slightly too bound is easier to rescue with stock than one that will not hold a scoop."
+      },
+      "tips": [
+        "Do not put the turkey on this sheet. You cannot buy 0.75 of a bird, the next size down overshoots the factor anyway, and roasting time comes from weight and stuffing status, not from a percentage of the original recipe.",
+        "Salt is the row to taste rather than trust. 3 teaspoons on the 9-serving batch is right if the butter is salted and the stock is salted, and light if both are unsalted. The formula cannot see your pantry."
+      ]
+    },
+    {
+      "title": "The Pan Does Not Get 25% Smaller on Each Side",
+      "content": "A 9x13 pan is 117 square inches. Scale the batch by 0.75 and the mixture needs 87.75 square inches of surface, not a 6.75x9.75 pan. Shrink both sides by the factor and the area falls to 65.8 square inches, which is 56% of the original, so the same scaled batch sits a third deeper than the card intended and the center lags the edges. Sides scale by the square root of the factor. Area scales by the factor.",
+      "steps": [
+        {
+          "name": "The area you need",
+          "text": "87.75. Original area times the factor, and the factor is still the one cell at the top, so this number moves when B1 moves.",
+          "formula": "=117*$B$3"
+        },
+        {
+          "name": "The square pan that fits it",
+          "text": "9.3675 inches on a side. No pan is 9.37 inches, and the number exists to tell you which real pan is closest rather than to be used literally.",
+          "formula": "=SQRT(117*$B$3)"
+        },
+        {
+          "name": "Compare against a 9x9",
+          "text": "0.9231, or 92.3% of the area you need. The batch is 8.3% deeper than the card's pan, which is close enough that the bake time barely moves and far enough that you should look at the center ten minutes before the card says.",
+          "formula": "=(9*9)/(117*$B$3)"
+        },
+        {
+          "name": "The depth ratio, stated the useful way",
+          "text": "1.0833. Above 1 means deeper than the card, below 1 means shallower. This is the number that answers the only question that matters at the oven door.",
+          "formula": "=(117*$B$3)/(9*9)"
+        },
+        {
+          "name": "A verdict cell with the tolerance you choose",
+          "text": "\"Deeper than the card: check the center early\". B15 holds 0.05, and the message flips to \"Depth is close enough\" the moment the ratio lands inside it. The tolerance is yours to set, because 5% depth is nothing in a casserole and a lot in a custard.",
+          "formula": "=IF(ABS($B$14-1)>$B$15,\"Deeper than the card: check the center early\",\"Depth is close enough\")"
+        }
+      ],
+      "example": {
+        "formula": "=SQRT(117*$B$3)",
+        "result": "9.3675",
+        "explanation": "The square root of 87.75. A square pan with a 9.37-inch side holds exactly the scaled batch at the card's depth; a 9x9 holds 81 square inches, so the mixture runs 8.3% deeper and a 10x10 at 100 square inches runs it 12% shallower. Between the two, 9x9 is the better error, because a deeper casserole dries at the rim less than a shallow one scorches at the base."
+      },
+      "tips": [
+        "Measure the pan you own instead of trusting the label. A 9x13 that measures 8.5x12.75 inside is 108.4 square inches, so the area you need drops to 81.3 and the depth ratio to about 1.0, which is a different answer from the same batch.",
+        "Google Sheets handles SQRT identically, and both apps return #NUM! for a negative argument, which is what you get if B3 ever goes negative through a reversed input.",
+        "Two pans are worse than one here. A pair of 8x8 pans gives 128 square inches for an 87.75 need, so each holds a shallow layer that dries at the edges before the center sets. One pan, accept the extra depth."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "MROUND",
+      "slug": "mround",
+      "description": "MROUND returns a number rounded to the nearest specified multiple."
+    },
+    {
+      "name": "ROUND",
+      "slug": "round",
+      "description": "ROUND rounds a number to a specified number of decimal places."
+    },
+    {
+      "name": "ROUNDUP",
+      "slug": "roundup",
+      "description": "ROUNDUP rounds a number up to a specified number of decimal places, always away from zero."
+    },
+    {
+      "name": "SQRT",
+      "slug": "sqrt",
+      "description": "SQRT returns the square root of a positive number."
+    },
+    {
+      "name": "SUMIFS",
+      "slug": "sumifs",
+      "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    }
+  ],
+  "summary": "Two cells at the top and eight rows below replace the notepad arithmetic that produces unmeasurable fractions. B1 holds the servings you want to end up with, which is guests plus the containers you plan to fill, and B3 divides it by the card's yield. A step column lets one MROUND formula land cups on quarters and eggs on whole numbers, and it is honest about the two rows that do not scale: eggs become a texture decision, and the oven clock is not an ingredient. The square root in the last section is the part most scaling advice skips, and it is the part that decides whether the stuffing comes out crisp at the rim or wet in the middle. The trade-off is that this sheet describes one card. Three dishes means three of these, or one sheet with a dish column and a SUMIFS per unit if you would rather keep the menu in one place.",
+  "nextSteps": [
+    "Copy the eight rows and paste them three times below with a Dish column in A, then run =SUMIFS($F$6:$F$29,$A$6:$A$29,\"Stuffing\") style totals per dish so one sheet covers the whole menu",
+    "Set B1 to 7 and read the egg row before Thanksgiving morning, so you have already decided between two eggs and three instead of deciding with a bowl in one hand",
+    "Measure your actual pans with a ruler and put the inside dimensions in two cells, then replace the hard-coded 117 with a multiplication so the pan math follows the pan you really own"
+  ],
+  "relatedTutorials": [
+    "thanksgiving-shopping-list-formulas",
+    "thanksgiving-cooking-timeline-formulas",
+    "thanksgiving-dinner-cost-per-guest"
+  ]
+}
