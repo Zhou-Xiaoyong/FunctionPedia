@@ -1,0 +1,266 @@
+{
+  "slug": "thanksgiving-potluck-sign-up-sheet",
+  "title": "Thanksgiving Potluck Sign Up Sheet: 16 Servings Short and Nobody Noticed",
+  "description": "A Thanksgiving potluck sign up sheet that totals servings by course, flags the duplicate dish, and finds the 16 servings nobody has actually agreed to bring.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "SUMIFS",
+    "COUNTIF",
+    "COUNTIFS",
+    "SUMPRODUCT",
+    "ROUNDUP",
+    "IF",
+    "SUM"
+  ],
+  "intro": "Sixteen sign-up rows, twenty-six confirmed guests, and every course looks covered until you add the servings up. Appetizers are fine, sides are six short, dessert is seven short, and the appetizer total is only fine because one guest counted egg halves instead of people. A sign up sheet with a coverage block catches all three in a single glance, and it takes four formulas to build.",
+  "tags": [
+    "Thanksgiving",
+    "Potluck",
+    "SUMIFS",
+    "Coverage Check"
+  ],
+  "estimatedTime": "13 min read",
+  "prerequisites": [
+    "Excel 2016 or later, or Google Sheets, since SUMIFS, COUNTIFS and SUMPRODUCT all exist in both apps with the same argument order",
+    "A shared sheet that guests can edit, because a potluck list that lives in a text thread cannot be counted",
+    "A servings number per dish, which is the one field guests routinely skip and the one field the whole sheet depends on"
+  ],
+  "sections": [
+    {
+      "title": "One Guest Cell, Four Targets, Four Rounded Numbers",
+      "content": "Put the confirmed guest count in B1 and the course targets beside it, and every gap on the sheet derives from those five cells. Twenty-six people is not a round number of servings, though, which is why the needs column rounds up instead of rounding. Two sides per plate is the assumption the rest of this page rests on, and it is worth arguing about before anyone cooks rather than after.",
+      "steps": [
+        {
+          "name": "B1, confirmed guests",
+          "text": "26. Count replies, not invitations. Eleven households were invited; five said yes and between them they account for 26 people, so the cell is a sum of household sizes rather than a headcount off the top of your head."
+        },
+        {
+          "name": "Column B, targets per guest",
+          "text": "1.5 appetizer, 2 side, 1.25 dessert, 1 main, in B24:B27. These are the only numbers on the sheet that are opinions, and writing them into cells is what makes them arguable. A host who thinks 1.5 sides is generous can change one cell and watch every gap move."
+        },
+        {
+          "name": "Column C, servings needed",
+          "text": "39, 52, 33, 26 down C24:C27. Dessert is the interesting row: 26 times 1.25 is 32.5, and ROUNDUP takes it to 33 because half a serving is not something you can put on a plate.",
+          "formula": "=ROUNDUP($B$1*B24,0)"
+        },
+        {
+          "name": "Why ROUNDUP and not ROUND",
+          "text": "On 26 guests the two agree, since 32.5 rounds to 33 either way. At 29 guests the dessert need becomes 36.25, ROUND says 36 and ROUNDUP says 37, and the sheet that plans for 36 comes up one serving short on the night. Round up on a plan, round normally on a bill."
+        },
+        {
+          "name": "The one cell that breaks the block",
+          "text": "#VALUE! across all four rows. Typing 2 sides as \"2 sides\" into B25 makes it text, and text times 26 is an error rather than a number. Keep the target column as bare numbers and put the unit in the header."
+        }
+      ],
+      "example": {
+        "formula": "=ROUNDUP($B$1*B25,0)",
+        "result": "52",
+        "explanation": "Twenty-six guests at two side servings each. The absolute reference on B1 is what lets this one formula fill down through all four courses while the target column advances from appetizer to main. Strip the dollar signs, fill down, and C26 reads =ROUNDUP(B2*B26,0), which returns 0 because B2 is empty. A zero need makes every dessert look covered."
+      },
+      "tips": [
+        "Format B1 as a plain number, not as text with a leading apostrophe. A guest count stored as text makes every multiplication below it return #VALUE!, and the error looks like a formula problem instead of a data problem.",
+        "If a sixth household confirms while the sheet is open, type 32 into B1 and read the gap column again before replying. The answer changes from short to long in one recalculation, which is the whole reason for keeping the count in a cell."
+      ]
+    },
+    {
+      "title": "Sixteen Rows, Five Columns, and a Servings Column That Means People",
+      "content": "The sign-up table runs A5:F20 with a header in row 5. Guests type four things and the sheet does the rest. The column that decides whether the coverage block tells the truth is D, and it only works if everyone agrees on what a serving is before the first dish is entered.",
+      "steps": [
+        {
+          "name": "Column A, Household",
+          "text": "Host, Alvarez, Chen, Okafor, Whitfield, Patel, Rossi, Brooks, Delgado. Households rather than names, because one row per person turns a six-person family into six rows and the servings count stops matching the dish."
+        },
+        {
+          "name": "Column B, Dish",
+          "text": "Named plainly, the way someone would say it out loud. Green bean casserole, not GBC. Section five runs a duplicate check on this column, and a duplicate check cannot see that GBC and Green bean casserole are the same dish."
+        },
+        {
+          "name": "Column C, Course",
+          "text": "Appetizer, Side, Dessert, Main, all spelled one way through a dropdown: Data > Data Validation in Excel, Data > Data validation in Google Sheets. Course is the criteria every formula on the sheet sorts by, so a stray \"Sides\" becomes a fourth course with four servings in it."
+        },
+        {
+          "name": "Column D, Servings",
+          "text": "People fed, not pieces on the platter. Chen's deviled eggs row says 24 because she counted halves, and 24 halves is 12 servings at two per person. That single row inflates the appetizer total by 12 and is the reason section three prints a number that looks comfortable."
+        },
+        {
+          "name": "Column E, Reply",
+          "text": "Yes or Pending, nothing else. Four of the sixteen rows are Pending, and every formula that reports what is covered filters on this column. Leave it blank on a row and the servings sit in the sheet without counting as a commitment."
+        },
+        {
+          "name": "Column F, Note",
+          "text": "Free text for the things a servings column cannot hold: no nuts, arrives at 3:15, needs the oven for 20 minutes. Keep it last so the numeric columns stay together and a filter on Course still lines up."
+        }
+      ],
+      "example": {
+        "formula": "=SUMIFS($D$5:$D$20,$C$5:$C$20,\"Appetizer\",$E$5:$E$20,\"Yes\")",
+        "result": "48",
+        "explanation": "Twelve servings of spinach-artichoke dip, twelve of antipasto, and twenty-four on the deviled eggs row. The true figure is 36, because the eggs row counted halves. Both numbers clear the 39-serving target in opposite directions: 48 says covered with room to spare, 36 says three servings short."
+      },
+      "tips": [
+        "Ask for servings in the same message that shares the sheet. A guest who is asked for a dish usually knows how many people it feeds; a guest who is asked later guesses, and the guess is always larger than the pan.",
+        "A text value in column D is skipped by SUMIFS rather than flagged, so \"a dozen\" contributes zero and the total quietly drops. Section five has a one-cell check for it."
+      ]
+    },
+    {
+      "title": "The Coverage Block: 46 Against 52",
+      "content": "Four rows under the table turn the sign-ups into an answer. Row 24 through 27, one course each, with the committed servings in D and the shortfall in E. Sides land at 46 against a need of 52, dessert at 26 against 33, and main at 26 against 26, which is the one row that reads as a broken formula and is not.",
+      "steps": [
+        {
+          "name": "D24, committed servings for the course",
+          "text": "48, 46, 26, 26 down D24:D27. Two criteria: the course in A24, and a yes in column E. Fill this down and the row for Side comes back at 46, which is where the trouble starts.",
+          "formula": "=SUMIFS($D$5:$D$20,$C$5:$C$20,$A24,$E$5:$E$20,\"Yes\")"
+        },
+        {
+          "name": "E24, the gap",
+          "text": "9, -6, -7, 0 down E24:E27. Negative means short. The main course at exactly 0 means the turkey covers the room and nothing else, which is fine for a holiday and would be a warning at a catered event.",
+          "formula": "=D24-C24"
+        },
+        {
+          "name": "F24, the verdict as words",
+          "text": "Covered, Short 6 servings, Short 7 servings, Covered. ABS strips the minus so the message reads as a quantity rather than a negative, and the cell is what people actually look at when they open the sheet on their phone.",
+          "formula": "=IF(E24<0,\"Short \"&ABS(E24)&\" servings\",\"Covered\")"
+        },
+        {
+          "name": "The filter everyone drops",
+          "text": "74 for sides. Remove the Reply criterion and the three pending rows count as food that is coming, which flips a six-serving shortfall into a twenty-two-serving surplus. The unfiltered total is the single most misleading number a potluck sheet can produce.",
+          "formula": "=SUMIFS($D$5:$D$20,$C$5:$C$20,\"Side\")"
+        },
+        {
+          "name": "Where the errors hide",
+          "text": "#VALUE!. The three ranges in SUMIFS have to be the same size, and pointing the course range at $C$5:$C$21 while the servings range ends at row 20 produces an error rather than a wrong number, which at least fails loudly."
+        }
+      ],
+      "example": {
+        "formula": "=SUMIFS($D$5:$D$20,$C$5:$C$20,$A25,$E$5:$E$20,\"Yes\")-ROUNDUP($B$1*B25,0)",
+        "result": "-6",
+        "explanation": "Forty-six committed side servings against fifty-two needed. Mashed potatoes 12, stuffing 10, cranberry sauce 6, green bean casserole 10, sweet potato casserole 8. Six servings is roughly one more tray of a side dish, and it is invisible in a list where the sides column has eight entries."
+      },
+      "tips": [
+        "Put the verdict column where a phone screen lands without scrolling, because the sheet gets read at the grocery store more often than at a desk.",
+        "Keep the gap formula reading C and D in the same row. Retyping the need as a hard number inside the gap formula is the fastest way to make the block disagree with itself after a guest count changes."
+      ]
+    },
+    {
+      "title": "Four Households Owe You an Answer, and They Hold 28 Side Servings",
+      "content": "The gap says six short. The pending rows say twenty-eight side servings are sitting with people who have not replied. Those two facts point at completely different actions, and the sheet needs to separate them before anyone sends a group text asking for more food.",
+      "steps": [
+        {
+          "name": "How many have not answered",
+          "text": "4. Four of sixteen rows, which is a quarter of the sheet and enough to change every total on it.",
+          "formula": "=COUNTIF($E$5:$E$20,\"Pending\")"
+        },
+        {
+          "name": "What the pending rows are worth",
+          "text": "28 side servings, spread across brussels sprouts 8, dinner rolls 12 and a second green bean casserole 8. Compare that with the 6-serving gap and the right move is obvious: chase two people, do not cook.",
+          "formula": "=SUMIFS($D$5:$D$20,$C$5:$C$20,\"Side\",$E$5:$E$20,\"Pending\")"
+        },
+        {
+          "name": "Pending, per course",
+          "text": "3 for Side, 1 for Dessert, 0 for Appetizer and Main. COUNTIFS takes the course and the reply together, and the zero rows are as useful as the others: nobody owes you an appetizer, so the appetizer fix has to be a purchase or a reassignment.",
+          "formula": "=COUNTIFS($C$5:$C$20,$A24,$E$5:$E$20,\"Pending\")"
+        },
+        {
+          "name": "The line you paste into the group chat",
+          "text": "\"Need 6 more sides; 28 servings sit with people who have not answered.\" Built from cells rather than typed, so it stays true after the next three replies.",
+          "formula": "=\"Need \"&ABS(E25)&\" more sides; \"&SUMIFS($D$5:$D$20,$C$5:$C$20,\"Side\",$E$5:$E$20,\"Pending\")&\" servings sit with people who have not answered\""
+        },
+        {
+          "name": "What happens if all four confirm",
+          "text": "74 side servings against a need of 52, and 38 desserts against 33. The sheet swings from short to bloated in one afternoon, which is why the ask should name a dish and a household instead of asking the group for more sides."
+        }
+      ],
+      "example": {
+        "formula": "=SUMIFS($D$5:$D$20,$C$5:$C$20,\"Side\",$E$5:$E$20,\"Pending\")",
+        "result": "28",
+        "explanation": "Three pending side rows, only two of which are needed. Patel's brussels sprouts at 8 and Brooks' ice cream at 12 close both gaps exactly; Rossi's rolls and Delgado's second green bean casserole would add twenty servings nobody has room for. The pending total is a menu, not a plan."
+      },
+      "tips": [
+        "Text the two households who own the gap rather than the whole group. A group message asking for sides produces four volunteers and three more trays of the same casserole.",
+        "Leave Pending rows in the table. Deleting them makes the sheet look settled and hides the fact that a quarter of the food is still theoretical."
+      ]
+    },
+    {
+      "title": "The Duplicate Dish Is Already Sitting in Row 20",
+      "content": "Two rows list green bean casserole: Chen's ten servings and Delgado's eight, one confirmed and one pending. Neither guest can see the other's row on a phone, and the sheet never complains, because a list with two identical dishes is still a valid list. Three cells fix that.",
+      "steps": [
+        {
+          "name": "Flag the dish",
+          "text": "Duplicate dish, on both rows. Counting the dish name against the whole column returns 2 for each copy, and the flag on the confirmed row is the one that matters, since it is the dish you would tell Delgado to swap.",
+          "formula": "=IF(COUNTIF($B$5:$B$20,$B12)>1,\"Duplicate dish\",\"Unique\")"
+        },
+        {
+          "name": "Count what is actually distinct",
+          "text": "15. Sixteen rows, fifteen dishes, one collision. On a bigger sheet this number is the fastest way to see that the potluck is really four kinds of potatoes. Point the same formula at column D and it counts distinct servings values instead, which is 6 and tells you nothing useful.",
+          "formula": "=SUMPRODUCT(1/COUNTIF($B$5:$B$20,$B$5:$B$20))"
+        },
+        {
+          "name": "Catch a servings cell that is text",
+          "text": "1, once someone types \"a dozen\" instead of 12. SUMIFS skips that row without an error, so the pending side total falls from 28 to 16 and the sheet starts telling you to cook.",
+          "formula": "=SUMPRODUCT(--ISTEXT($D$5:$D$20))"
+        },
+        {
+          "name": "The total that flatters the menu",
+          "text": "146 committed servings against a need of 150, which reads like a rounding problem. Correct the eggs row to 12 and the same total becomes 134: sixteen servings short, spread over three courses, with mains exactly on target.",
+          "formula": "=SUM($D$24:$D$27)"
+        }
+      ],
+      "example": {
+        "formula": "=SUMPRODUCT(1/COUNTIF($B$5:$B$20,$B$5:$B$20))",
+        "result": "15",
+        "explanation": "Sixteen rows, one dish listed twice. Each unique dish contributes 1, and the duplicated pair contributes 0.5 twice, so the total lands on 15. Point the same formula at column A instead and it returns 9, the number of households that signed up, which is a useful cross-check against the invite list."
+      },
+      "tips": [
+        "Build the sheet in Excel with Ctrl+T and the ranges in every formula become Table1[Servings] style names that grow with the table. Google Sheets has no Tables, so new rows typed below row 20 fall outside every SUMIFS until the ranges are extended by hand.",
+        "The distinct count formula returns #DIV/0! if any cell in the range is blank, because it divides by a count of zero. Keep the range tight to the filled rows, or wrap it in IFERROR with a message that says the range is wrong."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "SUMIFS",
+      "slug": "sumifs",
+      "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "COUNTIF",
+      "slug": "countif",
+      "description": "COUNTIF counts the number of cells in a range that meet a specified condition. It's the counting counterpart of SUMIF — instead of summing matching values, it counts how many matches exist."
+    },
+    {
+      "name": "COUNTIFS",
+      "slug": "countifs",
+      "description": "COUNTIFS counts cells that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "SUMPRODUCT",
+      "slug": "sumproduct",
+      "description": "SUMPRODUCT multiplies corresponding components of one or more arrays and returns the sum of those products. It is also widely used for conditional sums and counts without array-entry."
+    },
+    {
+      "name": "ROUNDUP",
+      "slug": "roundup",
+      "description": "ROUNDUP rounds a number up to a specified number of decimal places, always away from zero."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    }
+  ],
+  "summary": "The sign-up table is the easy half. Five columns, one dropdown each for course and reply, and a servings number that means people rather than pieces. The coverage block is what makes the list useful: a SUMIFS per course, a gap cell that reads negative when you are short, and a verdict in words that survives being read on a phone. On this sheet that block finds six missing sides and seven missing desserts while the grand total of 146 against 150 looks almost fine. The trade-off is that the whole thing depends on guests entering a servings number, and people are bad at that, so the text-entry check in the last section is not optional. Correct the one row that counted halves and the honest figure is 134, sixteen servings short, with two households already holding enough food to close it.",
+  "nextSteps": [
+    "Add a second SUMIFS per course filtered on Pending, so the sheet shows what is committed and what is still promised in adjacent columns rather than one blended total",
+    "Put a Data Validation dropdown on the Dish column fed from a short list of the dishes you actually want, which prevents the duplicate casserole before it is typed instead of flagging it afterward",
+    "Copy the coverage block to a Christmas sheet and change only the four targets, since the SUMIFS, the duplicate check and the distinct count do not mention Thanksgiving anywhere"
+  ],
+  "relatedTutorials": [
+    "thanksgiving-shopping-list-formulas",
+    "thanksgiving-seating-chart-rsvp",
+    "thanksgiving-dinner-cost-per-guest"
+  ]
+}
