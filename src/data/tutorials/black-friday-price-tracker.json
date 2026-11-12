@@ -1,0 +1,318 @@
+{
+  "slug": "black-friday-price-tracker",
+  "title": "Black Friday Price Tracker: $950 in Advertised Savings, $290 in Real Ones",
+  "description": "A Black Friday price tracker that scores every deal against the price you wrote down in October, not the compare-at tag a seller controls, then holds a budget.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "SUMPRODUCT",
+    "IF",
+    "ROUND",
+    "RANK",
+    "AVERAGE",
+    "SUM",
+    "IFERROR"
+  ],
+  "intro": "The stand mixer on the page shows $449 crossed out and $279 in bold, which the tag calls 37.86% off. In early October the same listing sat at $329, so the markdown you can actually verify is 15.20%. Across eight items the pattern holds: $950 in advertised savings, $290 in savings your own notes can back up, and a $900 budget that five Buy verdicts push $59 past the line.",
+  "tags": [
+    "Black Friday",
+    "Price Tracker",
+    "Discount",
+    "SUMPRODUCT"
+  ],
+  "estimatedTime": "13 min read",
+  "prerequisites": [
+    "Excel 2016 or later, or Google Sheets, since IFERROR, ROUND, RANK and SUMPRODUCT all exist in both apps with the same argument order",
+    "A price per item recorded four to six weeks before the sale, because the whole sheet divides by that number and a baseline rebuilt from memory in November drifts toward the tag",
+    "A budget figure you are willing to defend, typed into a cell rather than held in your head, since every verdict on the sheet is measured against it"
+  ],
+  "sections": [
+    {
+      "title": "The Tag Price and the Price You Wrote Down",
+      "content": "A compare-at price is a number the seller picks, and it is usually the highest price the item ever carried, sometimes for one week in July. The price you wrote down on October 5 is a number nobody else can edit. Both discount columns below use the same numerator, which is the gap between the deal price and a reference point. Only the reference point changes.",
+      "steps": [
+        {
+          "name": "B1, the money you will actually spend",
+          "text": "Type 900. Not a credit limit and not a checking balance. A figure you would defend out loud if someone asked why the running shoes were necessary."
+        },
+        {
+          "name": "B2, the bar a deal has to clear",
+          "text": "Type 0.15 and format the cell as Percentage, which displays 15%. Type 15 into a cell that is already formatted as Percentage and Excel stores 1500%, so no row can ever clear the bar and the verdict column reads Wait eight times. Google Sheets does the same thing, and both apps put the tell in the same place: the cell shows 1500%."
+        },
+        {
+          "name": "B6:B13, the prices you saw in October",
+          "text": "179, 329, 89, 299, 148, 219, 64, 120. The number you saw in the weeks before the sale, captured then. A baseline rebuilt in November drifts toward the tag, because the tag is the only figure still visible on the page."
+        },
+        {
+          "name": "C6:C13, the compare-at on the tag",
+          "text": "249, 449, 129, 399, 220, 349, 80, 160. Copy the struck-through figure exactly, including the ones that look wrong. A $220 coat that sat at $148 all autumn is the most useful row in the column."
+        },
+        {
+          "name": "D6:D13, the sale price",
+          "text": "149, 279, 79, 249, 99, 199, 68, 84. The price the cart charges before tax and shipping, both of which land after the discount and neither of which the tag mentions."
+        },
+        {
+          "name": "E6:E13, quantity",
+          "text": "Seven 1s and one 2, on the coat row. Two people in the house need one, which turns a $99 decision into a $198 commitment. Quantity is the column that makes a budget cell mean anything."
+        },
+        {
+          "name": "Where the two denominators split",
+          "text": "The stand mixer is $449 on the tag and was $329 in October, and the deal is $279. Against the tag that is 37.86% off. Against your own note it is 15.20% off. One price, one day, two answers, and the pair leads to opposite decisions."
+        }
+      ],
+      "example": {
+        "formula": "=1-D7/B7",
+        "result": "15.20%",
+        "explanation": "Two hundred seventy-nine dollars against the $329 the listing showed in October. The same row with =1-D7/C7 returns 37.86%, which is the figure printed on the tag. Format both columns as Percentage with two decimals; left as General they read 0.151976 and 0.378619, which is arithmetically right and useless at a glance. The 22.66-point gap between those two cells is the entire argument for keeping a baseline."
+      },
+      "tips": [
+        "A price pasted from a product page can arrive as text, usually because of a trailing space or a non-breaking space (CHAR(160)) that TRIM will not remove. Subtraction then returns #VALUE!. Clean a cell with =VALUE(SUBSTITUTE(C6,CHAR(160),\"\")) and count the damage across the column with =SUMPRODUCT(--ISTEXT($B$6:$B$13)), which reads 0 on clean data.",
+        "Leave a compare-at cell blank and column F returns #DIV/0!, because the formula divides by zero. That is the honest error for a listing with no stated was-price, but wrap the column in =IFERROR(1-D6/C6,\"\") if you would rather see a gap than an error sitting in the middle of eight rows."
+      ]
+    },
+    {
+      "title": "The Layout: Eleven Columns, Five of Them Typed",
+      "content": "Header in row 5, data in rows 6 through 13, eleven columns from A to K. Five columns get typed and six are formulas, a split that keeps a tracker usable on the day of the sale, because the only thing you enter then is the price in column D. The eight rows here are a sample list with generic item names, so nothing on this page depends on a particular retailer's price. Replace them with your own and every column keeps working.",
+      "steps": [
+        {
+          "name": "Row 5, headers",
+          "text": "Item, Observed, Compare-at, Deal, Qty, Advertised, True, Target, Verdict, Spend, Running across A5:K5. Data starts in row 6, so every range in every formula on this sheet is $6:$13 until you add a row."
+        },
+        {
+          "name": "Column A, Item",
+          "text": "Headphones, Stand mixer, Air fryer, 4K monitor, Winter coat, Robot vacuum, Building blocks, Running shoes. Plain names, no model numbers. A sheet you can read at a glance beats one that identifies the exact SKU of a thing you will not buy."
+        },
+        {
+          "name": "Column B, Observed",
+          "text": "The October number. This is the only column that has to be captured before the sale, and it is the one people skip."
+        },
+        {
+          "name": "Column C, Compare-at",
+          "text": "The tag's crossed-out figure, typed even when it looks inflated. The size of the inflation is a finding, not noise."
+        },
+        {
+          "name": "Column D, Deal",
+          "text": "The price in the cart. Update it as the weekend moves, because a price that changes at midnight is exactly what a tracker is for."
+        },
+        {
+          "name": "Column E, Qty",
+          "text": "1 on most rows, 2 on the coat. Leave it blank on a single item and the Spend column multiplies by zero, which quietly deletes that row from the budget."
+        },
+        {
+          "name": "Column F, Advertised %",
+          "text": "40.16% on row 6. IFERROR keeps a listing with no compare-at price from throwing an error into the middle of the column.",
+          "formula": "=IFERROR(1-D6/C6,\"\")"
+        },
+        {
+          "name": "Column G, True %",
+          "text": "16.76% on the same row. Every verdict and every ranking downstream reads this column, not the one above it.",
+          "formula": "=IFERROR(1-D6/B6,\"\")"
+        },
+        {
+          "name": "Column H, Target",
+          "text": "152.15, which is the price the headphones have to hit before they clear a 15% bar. A dollar target is easier to carry into a store than a percentage.",
+          "formula": "=ROUND(B6*(1-$B$2),2)"
+        },
+        {
+          "name": "Column I, Verdict",
+          "text": "Buy. Comparing the deal price to the target, rather than comparing two percentages, means the cell answers the question you actually have while standing in an aisle.",
+          "formula": "=IF(D6<=H6,\"Buy\",\"Wait\")"
+        },
+        {
+          "name": "Column J, Spend",
+          "text": "149 on a Buy row and 0 on a Wait row. The zero matters more than it looks, and the next section shows what happens without it.",
+          "formula": "=IF($I6=\"Buy\",$D6*$E6,0)"
+        },
+        {
+          "name": "Column K, Running",
+          "text": "149, 428, 428, 677, 875, 875, 875, 959 down the column. The fixed $J$6 and the free J6 in one reference is the whole trick.",
+          "formula": "=SUM($J$6:J6)"
+        }
+      ],
+      "example": {
+        "formula": "=ROUND(B6*(1-$B$2),2)",
+        "result": "152.15",
+        "explanation": "One hundred seventy-nine dollars less fifteen percent, rounded to cents. The dollar signs on $B$2 are load-bearing: fill this down and every row reads the same bar while B6 walks to B13. Change B2 from 15% to 20% and the headphone target drops to 143.20, the deal price at 149 stops clearing it, and that verdict flips to Wait without another edit anywhere on the sheet."
+      },
+      "tips": [
+        "Ctrl+T in Excel turns A5:K13 into a Table, and any formula you write afterward can use names like Table1[[#This Row],[Observed]] that grow when you add a row. Google Sheets has no Tables, so a row typed below row 13 sits outside every SUM and SUMPRODUCT until you extend the ranges by hand. That structural difference bites before the weekend is over.",
+        "Freeze row 5 and column A before you add rows, under View > Freeze Panes in Excel and View > Freeze in Sheets. With eleven columns the item name scrolls off screen at exactly the moment you are reading the verdict."
+      ]
+    },
+    {
+      "title": "Five Buy Verdicts, a $900 Budget, and Row 13",
+      "content": "With the bar at 15%, five rows come back Buy: headphones, stand mixer, 4K monitor, winter coat, running shoes. The spend column totals 959 against a budget of 900, which leaves the sheet 59 over. The row that crosses the line is the last one on the list, and it carries the second-best discount on the page.",
+      "steps": [
+        {
+          "name": "B22, committed spend",
+          "text": "959. Not the total of every row, which is 1,305 once quantity is applied and includes three items you already decided against. Rows 17 through 21 hold the savings totals the next section builds, so the budget pair sits below them and the check block reads top to bottom.",
+          "formula": "=SUM($J$6:$J$13)"
+        },
+        {
+          "name": "B23, what is left",
+          "text": "-59. A negative remainder is the only cell on the sheet that needs a decision attached to it.",
+          "formula": "=$B$1-B22"
+        },
+        {
+          "name": "Column K, the running total",
+          "text": "Rises on five rows and stays flat on three. The flat rows are the Wait items, and they stay in the table because deleting a row renumbers everything below it and breaks the ranges in columns F through K."
+        },
+        {
+          "name": "The crossing flag",
+          "text": "Crosses budget appears once, on row 13, where the cumulative total passes 900 between the coat row and the shoes row. Comparing the current cumulative to the budget alone flags every row after the break as well, which is why this formula also looks one row up.",
+          "formula": "=IF(AND(SUM($J$6:J6)>$B$1,SUM($J$5:J5)<=$B$1),\"Crosses budget\",IF(SUM($J$6:J6)>$B$1,\"Over\",\"Within\"))"
+        },
+        {
+          "name": "The version that lies",
+          "text": "1,305. Leave the deal price in column J on Wait rows instead of forcing a zero and the running total ends at 1,305, with the budget broken at the coat row instead of the shoes. That is 346 dollars of declined items counted as spending."
+        },
+        {
+          "name": "One cell, one answer",
+          "text": "Type 1000 into B1 and B23 becomes 41, with nothing else on the sheet touched. That is the reason a budget belongs in a cell and not in your head."
+        }
+      ],
+      "example": {
+        "formula": "=$B$1-SUM($J$6:$J$13)",
+        "result": "-59",
+        "explanation": "Nine hundred minus five buys. The coat row contributes 198 because quantity is 2, and the running shoes at 84 are what push the total past the line. Fifty-nine dollars over is not a rounding problem, it is one item, and the sheet has already ranked all eight rows so the choice of which item is not arbitrary."
+      },
+      "tips": [
+        "Format the remainder with a red negative style, under Format Cells > Number in Excel and Format > Number > Custom number format in Sheets. A minus sign at the end of a row of dollars is easy to skim past on a phone.",
+        "Keep the budget in a cell even when you are sure of it. A budget typed into the formula is why a tracker stops being a tracker after the first item changes price."
+      ]
+    },
+    {
+      "title": "$950 in Advertised Savings, $290 in Real Ones",
+      "content": "Add up the gaps the tags are selling and the eight rows claim 950 in savings. Add up the same gaps against the October column and the figure is 290. That 660 appears in no footnote anywhere, and it is the number that decides whether the weekend was worth the tab-hopping.",
+      "steps": [
+        {
+          "name": "B17, advertised savings",
+          "text": "950. The compare-at gap times quantity, over all eight rows rather than the five you buy, because the claim belongs to the list and not to your cart.",
+          "formula": "=SUMPRODUCT(($C$6:$C$13-$D$6:$D$13)*$E$6:$E$13)"
+        },
+        {
+          "name": "B18, real savings",
+          "text": "290. Same shape, column B instead of column C. The building blocks row contributes -4, since the sale price sits above what the set sold for in October.",
+          "formula": "=SUMPRODUCT(($B$6:$B$13-$D$6:$D$13)*$E$6:$E$13)"
+        },
+        {
+          "name": "B19, advertised percentage, dollar-weighted",
+          "text": "42.13%. Total deal dollars over total compare-at dollars, which is not the same number as averaging column F.",
+          "formula": "=1-SUMPRODUCT($D$6:$D$13,$E$6:$E$13)/SUMPRODUCT($C$6:$C$13,$E$6:$E$13)"
+        },
+        {
+          "name": "B20, real percentage, dollar-weighted",
+          "text": "18.18%. The 42.13% the tags imply becomes 18.18% once the reference price is one you recorded yourself.",
+          "formula": "=1-SUMPRODUCT($D$6:$D$13,$E$6:$E$13)/SUMPRODUCT($B$6:$B$13,$E$6:$E$13)"
+        },
+        {
+          "name": "B21, the plain average",
+          "text": "15.74% in column G against 39.36% in column F. Both averages are honest, and both sit below their dollar-weighted counterparts, because the coat at 55% off carries two units and pulls the weighted figure up while counting once in a plain mean.",
+          "formula": "=AVERAGE($G$6:$G$13)"
+        },
+        {
+          "name": "The share that survives",
+          "text": "30.5%. Just under a third of the advertised savings is money you would actually keep, which is a different sentence from the one the tags are selling.",
+          "formula": "=B18/B17"
+        }
+      ],
+      "example": {
+        "formula": "=SUMPRODUCT(($B$6:$B$13-$D$6:$D$13)*$E$6:$E$13)",
+        "result": "290",
+        "explanation": "Thirty dollars on the headphones, fifty on the mixer, ten on the air fryer, fifty on the monitor, ninety-eight on two coats, twenty on the vacuum, minus four on the blocks, thirty-six on the shoes. The tag version of the same formula returns 950, so the eight price tags overstate the total by 660."
+      },
+      "tips": [
+        "SUMPRODUCT returns #VALUE! if any cell inside the multiplied ranges holds text, including a cell that looks blank but contains a space. Unlike SUM, which skips text, it fails outright, so run the ISTEXT count from section one before you trust either total.",
+        "Dollar-weighted and plain averages answer different questions. The plain average describes how the deals look; the weighted one describes what your card statement does. Use the weighted figure to decide and the plain one only to compare two retailers' own claims."
+      ]
+    },
+    {
+      "title": "Sort by True Discount, Not by Page Order",
+      "content": "Nothing on this sheet has been ranked yet, and page order is the retailer's ranking. One RANK column and a cumulative sum answer the question the budget actually asks: with 900 to spend, which five rows become four?",
+      "steps": [
+        {
+          "name": "Rank by true discount",
+          "text": "1 for the coat, 2 for the running shoes, 3 for the headphones, 4 for the monitor, 5 for the mixer, 6 for the air fryer, 7 for the vacuum, 8 for the blocks. A negative discount ranks last with no special handling.",
+          "formula": "=RANK(G6,$G$6:$G$13)"
+        },
+        {
+          "name": "Spend down the ranking",
+          "text": "198 + 84 + 149 + 249 = 680 for the top four. The fifth, the mixer at 279, would take the total to 959, which is the same overrun from the last section reached by a different route."
+        },
+        {
+          "name": "What the fifth item costs",
+          "text": "220 left in the budget instead of 59 over. The mixer and the monitor both save $50 against their October prices, and the mixer costs $30 more to get there. Buy the mixer and skip the monitor instead and you spend 710 with 190 left, which is the version to pick if the mixer is the reason you opened the page."
+        },
+        {
+          "name": "The coupon that changes the order",
+          "text": "104.30 on the headphones after a 30% coupon, which lifts that row from 16.76% to 41.73% and moves it from third place to first. Put the coupon in the formula, not in your head, or the ranking is stale before you reach the payment screen.",
+          "formula": "=D6*(1-0.3)"
+        },
+        {
+          "name": "Two coupons do not add",
+          "text": "30% off then 15% off is 40.5%, not 45%. The second discount applies to the reduced price: 200 becomes 140, then 119, and 81 off 200 is 40.5%. On the headphones that same stack takes 149 to 88.66, which is 50.47% off the October price. Stack them as =1-(1-0.3)*(1-0.15) and the cell will never say 45%."
+        },
+        {
+          "name": "Sorting the table",
+          "text": "=SORT(A6:K13,7,-1) orders the whole block by column G in Excel 365 and spills into whatever sits below. Give it twelve empty rows or you get #SPILL!, and in Sheets =FILTER(A6:K13,G6:G13>=$B$2) returns #N/A rather than #CALC! when nothing clears the bar."
+        }
+      ],
+      "example": {
+        "formula": "=D6*(1-0.3)",
+        "result": "104.30",
+        "explanation": "One hundred forty-nine dollars less thirty percent. Measured against the October price of 179 that is a 41.73% discount, up from 16.76% before the coupon, and it moves the headphones from third place to first, ahead of the running shoes at 30%. The coupon advertises 30% and the row reports 41.73%, because a percentage coupon multiplies a price that was already marked down."
+      },
+      "tips": [
+        "Shipping is missing from this sheet and it should not be. Add a shipping column beside Spend, roll it into column J, and the cheap rows lose their advantage first, which is usually the correct order of pain.",
+        "RANK gives ties the same number and skips the next one, so two rows at exactly 20% both rank 3 and nothing ranks 4. For a budget decision that behavior is right, since both items are equally worth buying and the tie is telling you the choice does not matter."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "SUMPRODUCT",
+      "slug": "sumproduct",
+      "description": "SUMPRODUCT multiplies corresponding components of one or more arrays and returns the sum of those products. It is also widely used for conditional sums and counts without array-entry."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "ROUND",
+      "slug": "round",
+      "description": "ROUND rounds a number to a specified number of decimal places."
+    },
+    {
+      "name": "RANK",
+      "slug": "rank",
+      "description": "RANK returns the rank (position) of a number within a list of numbers. It is the legacy rank function, retained for compatibility."
+    },
+    {
+      "name": "AVERAGE",
+      "slug": "average",
+      "description": "AVERAGE returns the arithmetic mean of a set of numbers."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "IFERROR",
+      "slug": "iferror",
+      "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise."
+    }
+  ],
+  "summary": "The sheet does one thing a product page cannot: it holds a price you wrote down before the sale started. Five typed columns, six formulas and a budget cell turn eight listings into a verdict per row plus a running total that shows where the money runs out. On this sample list the tags claim 950 in savings, the October prices support 290, and the dollar-weighted discount is 18.18% rather than the 42.13% the tags imply. The trade-off is column B. A tracker built on Black Friday morning has no baseline, so column G just repeats column F with extra steps.",
+  "nextSteps": [
+    "Fill column B this week, while the sale banners are still absent, and leave column D empty until the morning the prices actually drop",
+    "Add a Wait-until column with a date for a Cyber Monday check, then filter on Verdict = Wait so the three rows you passed on come back into view",
+    "Copy the sheet for a December gift list and change only B2, since nothing in columns A through K mentions this particular sale by name"
+  ],
+  "relatedTutorials": [
+    "excel-budget-template",
+    "sumproduct-with-multiple-conditions",
+    "thanksgiving-shopping-list-formulas"
+  ]
+}
