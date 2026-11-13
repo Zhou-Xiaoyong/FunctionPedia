@@ -1,0 +1,298 @@
+{
+  "slug": "thanksgiving-grocery-price-comparison",
+  "title": "Thanksgiving Grocery Price Comparison: One Store at $66.14, a Split Trip at $56.64",
+  "description": "A Thanksgiving grocery price comparison of one 10-item basket at three stores, plus the coverage check for blank cells that make a store look $12.56 cheaper.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "MIN",
+    "INDEX",
+    "MATCH",
+    "SUMPRODUCT",
+    "SUMIF",
+    "COUNT",
+    "IF"
+  ],
+  "intro": "The same ten items come to 66.14 at Northside Market and 44.78 at the warehouse club, a 21.36 gap that argues for one more drive across town. Then you look at the warehouse column and two cells are empty, because that store carries neither bread cubes nor cranberries. Price those two items where they are actually sold and the warehouse basket is 57.34, not 44.78, and the gap worth driving for shrinks to 9.50.",
+  "tags": [
+    "Thanksgiving",
+    "Price Comparison",
+    "Grocery Budget",
+    "SUMPRODUCT"
+  ],
+  "estimatedTime": "14 min read",
+  "prerequisites": [
+    "Excel 2016 or later, or Google Sheets, since MIN, INDEX, MATCH, SUMIF and SUMPRODUCT all take the same arguments in both apps",
+    "Unit prices from three stores for the same ten items, collected within a few days of each other, because a flyer that started Wednesday and one that starts Friday are not comparable",
+    "A decision about what an empty cell means before you type anything, since the whole sheet treats a blank as this store does not carry it"
+  ],
+  "sections": [
+    {
+      "title": "Ten Items, Three Stores, and a $21 Gap That Shrinks",
+      "content": "The list is a real Thanksgiving basket: a 16-pound bird, five pounds of russet potatoes, a one-pound box of butter, a pint of heavy cream, three pounds of onions, a bunch of celery, two bags of bread cubes, three cartons of broth, two cans of pumpkin, two bags of cranberries. Three stores quote all ten items except one, and that exception is the entire lesson. Store names here are placeholders and the prices are sample values with no retailer behind them, so replace both with your own and every formula below keeps returning the right answer.",
+      "steps": [
+        {
+          "name": "Rows 6 through 15, one line per item",
+          "text": "Ten rows, ten items, no grouping by aisle. A row per item is what lets the cheapest-price column compare three numbers on the same line instead of asking you to remember which store had the cheap butter."
+        },
+        {
+          "name": "Column B, the quantity in the unit on the shelf tag",
+          "text": "16 for the turkey because the tag is per pound, 5 for potatoes, 1 for the butter box, 3 for onions, 2 for bread cubes, 3 for broth, 2 for pumpkin, 2 for cranberries. Quantity is what turns a unit price into money, and it is the column people leave blank because it feels obvious."
+        },
+        {
+          "name": "Columns D, E and F, the three stores",
+          "text": "Price per that unit, not per package. A warehouse club that sells broth in an 8-carton case has to be divided down to the 32-ounce carton first, or its column is comparing a case to a carton and will look unbeatable."
+        },
+        {
+          "name": "The two empty cells",
+          "text": "The warehouse club has no bread cubes and no cranberries. Those cells stay empty rather than getting a zero, and the difference between empty and zero is the subject of section four."
+        },
+        {
+          "name": "What the sheet has to answer before you leave the house",
+          "text": "The cheapest price for each item, which store that price belongs to, what a full basket costs at each store, what a two-store trip costs, and how far you can drive before the two-store trip stops being worth it."
+        }
+      ],
+      "example": {
+        "formula": "=SUMPRODUCT($B$6:$B$15,F6:F15)",
+        "result": "44.78",
+        "explanation": "Sixteen pounds of turkey at 1.19 is 19.04, five pounds of potatoes at 0.89 is 4.45, butter 3.49, cream 2.49, onions 3.57, celery 1.79, broth 5.97, pumpkin 3.98. The two blank cells multiply by quantity and return zero, so they contribute nothing at all. The same formula on column D returns 66.14 and on column E returns 63.54, which makes the warehouse look 21.36 cheaper than the store down the street. It is not, and the missing 12.56 is two items that live in another column."
+      },
+      "tips": [
+        "Type the store names into D5, E5 and F5 rather than into a separate legend. Those three cells are read by the formula that names the winning store, so a rename in the header propagates to every row.",
+        "Collect all three price columns on the same day. Thanksgiving week is when grocers rotate loss leaders on Wednesday and again on Friday, and a sheet built from a Tuesday flyer and a Thursday flyer measures the calendar, not the stores."
+      ]
+    },
+    {
+      "title": "The Layout: Nine Columns, Six of Them Typed",
+      "content": "Header in row 5, data in rows 6 through 15, nine columns across A to I. Six columns are typed and three are formulas. That ratio is what keeps the sheet usable in a parking lot: when a price changes you overwrite one cell, and the cheapest-price, store-name and line-total columns catch up on their own.",
+      "steps": [
+        {
+          "name": "A5, Item",
+          "text": "Turkey, Russet potatoes, Butter, Heavy cream, Yellow onions, Celery, Bread cubes, Chicken broth, Pumpkin puree, Cranberries. Plain names in aisle order beats brand names, because the store brand and the national brand are the same bag of cranberries."
+        },
+        {
+          "name": "B5, Qty",
+          "text": "The count in the unit each store prices in. Leave one blank and the line total becomes zero, which quietly removes that item from every basket total on the sheet."
+        },
+        {
+          "name": "C5, Unit",
+          "text": "lb, lb, box, pint, lb, bunch, bag, carton, can, bag. Text only, and it exists to stop you from comparing a price per pound against a price per can three weeks later when the sheet is stale and you have forgotten which column was which."
+        },
+        {
+          "name": "D5:F5, the store names",
+          "text": "Northside Market, Budget Grocer, Warehouse Club. These are labels, not decoration: the formula in column H returns one of these three strings by position."
+        },
+        {
+          "name": "G5, Cheapest",
+          "text": "1.19 on the turkey row, which is the warehouse price. Blank cells are skipped rather than counted as zero, and that behavior is correct for this column.",
+          "formula": "=MIN(D6:F6)"
+        },
+        {
+          "name": "H5, Store",
+          "text": "Warehouse Club. MATCH finds where the minimum sits in the three prices, INDEX reads the header in that same position. No lookup table, no helper column, no sorted data.",
+          "formula": "=INDEX($D$5:$F$5,MATCH($G6,D6:F6,0))"
+        },
+        {
+          "name": "I5, Line total",
+          "text": "19.04 for the bird. Note the mixed reference: $B6 locks the quantity column for a fill to the right, G6 stays free for a fill down.",
+          "formula": "=$B6*$G6"
+        }
+      ],
+      "example": {
+        "formula": "=INDEX($D$5:$F$5,MATCH($G6,D6:F6,0))",
+        "result": "Warehouse Club",
+        "explanation": "The minimum of 1.29, 1.49 and 1.19 is 1.19, which sits in the third position of D6:F6. INDEX then returns the third cell of D5:F5. Fill that formula down and every row names its own winner: Budget Grocer takes potatoes, bread cubes, pumpkin and cranberries, Warehouse Club takes butter, cream, onions, celery, broth and the turkey, and Northside Market takes nothing at all. That last result is the one to read twice."
+      },
+      "tips": [
+        "Ctrl+T in Excel converts A5:I15 into a Table and lets you write =MIN(Table1[@[Northside Market]:[Warehouse Club]]), which grows when a row is added. Google Sheets has no Table object, so a row typed below row 15 sits outside every range on the sheet until you stretch the references by hand.",
+        "Freeze row 5 with View > Freeze Panes in Excel or View > Freeze > 1 row in Sheets. With nine columns the store header scrolls away right when the price column needs a name."
+      ]
+    },
+    {
+      "title": "MIN Skips Blanks, and MATCH Hands Back a Position",
+      "content": "Two behaviors in this pair of formulas are worth knowing before you trust them. MIN ignores empty cells and ignores text, which is what you want in a column where a blank means the store does not stock the item. MATCH with a zero as its third argument returns a position, so the store name has to come from a parallel range of the same width.",
+      "steps": [
+        {
+          "name": "The row where two cells are empty",
+          "text": "3.79 on the bread cubes row. The warehouse price is blank, so MIN compares 4.29 and 3.79 and picks 3.79. No error, no warning, and the store name comes back Budget Grocer without a special case anywhere."
+        },
+        {
+          "name": "Ties go to the left",
+          "text": "If two stores both price butter at 3.49, MATCH returns the first position it finds, so the earlier column wins. For a decision this is fine, because a tie means the choice does not change the total. For a report it is worth a note, since the name is then a little arbitrary."
+        },
+        {
+          "name": "A row nobody priced",
+          "text": "MIN of three empty cells is 0, not an error. The row then reads 0.00, names Northside Market as the winner, and looks like the cheapest item on the list.",
+          "formula": "=IF(COUNT(D6:F6)=0,\"\",MIN(D6:F6))"
+        },
+        {
+          "name": "The whole split plan in one cell",
+          "text": "56.64. Every item bought at its own cheapest store, quantity applied. This is the floor for the basket, and no single-store column can beat it because the formula is allowed to shop three times.",
+          "formula": "=SUMPRODUCT($B$6:$B$15,$G$6:$G$15)"
+        },
+        {
+          "name": "A price pasted from a website",
+          "text": "\"$1.19\" with the dollar sign pasted in is text. MIN quietly skips it and compares the other two prices, so the row returns a real number that is simply the wrong answer. SUMPRODUCT in the next section returns #VALUE! on the same cell. The loud failure is the friendlier one."
+        },
+        {
+          "name": "The modern alternative",
+          "text": "XLOOKUP replaces the pair in one call and needs no position argument. It ships in Microsoft 365 and in Google Sheets; Excel 2021 and earlier return #NAME?.",
+          "formula": "=XLOOKUP(MIN(D6:F6),D6:F6,$D$5:$F$5)"
+        }
+      ],
+      "example": {
+        "formula": "=SUMPRODUCT($B$6:$B$15,$G$6:$G$15)",
+        "result": "56.64",
+        "explanation": "Nineteen dollars and four cents of turkey, 3.95 of potatoes, 3.49 of butter, 2.49 of cream, 3.57 of onions, 1.79 of celery, 7.58 of bread cubes, 5.97 of broth, 3.78 of pumpkin, 4.98 of cranberries. Against 66.14 for the same list at one store, the split saves 9.50. Against 57.34, which is what the warehouse basket actually costs once the two missing items are priced, it saves 0.70, and that difference decides the last section."
+      },
+      "tips": [
+        "MATCH needs that trailing 0. Drop it or use 1 and Excel switches to approximate matching on unsorted data, which returns a plausible position instead of an error.",
+        "Keep the three price ranges the same width as the header range. INDEX($D$5:$F$5, ...) can only return three things, so a fourth store added in column G would need the header range widened and the whole column re-filled."
+      ]
+    },
+    {
+      "title": "What Each Store's Basket Really Costs",
+      "content": "Three SUMPRODUCT formulas give three basket totals, and the warehouse total is a lie until you count how many cells it was built from. COUNT does that count per column: numbers only, blanks and text excluded. One store comes back 8 out of 10, and the two missing rows are worth 12.56.",
+      "steps": [
+        {
+          "name": "B19, the one-stop basket",
+          "text": "66.14 at Northside Market. Every item priced, so the raw total is also the complete total.",
+          "formula": "=SUMPRODUCT($B$6:$B$15,D6:D15)"
+        },
+        {
+          "name": "B20, the second store",
+          "text": "63.54 at Budget Grocer. Three dollars and forty cents of potatoes, onions and bread cubes do not make up for the turkey at 1.49 a pound.",
+          "formula": "=SUMPRODUCT($B$6:$B$15,E6:E15)"
+        },
+        {
+          "name": "C19:C21, items priced",
+          "text": "10, 10, 8. COUNT counts cells holding numbers. COUNTA would return 10 for the warehouse column only if the blanks held something, which is why swapping one for the other hides the problem instead of finding it.",
+          "formula": "=COUNT(D$6:D$15)"
+        },
+        {
+          "name": "B21, the complete basket at the warehouse",
+          "text": "57.34. The first SUMPRODUCT totals the eight priced rows, the second prices the two blanks at the cheapest price available anywhere on the sheet, which is 7.58 for bread cubes and 4.98 for cranberries.",
+          "formula": "=SUMPRODUCT($B$6:$B$15,F6:F15)+SUMPRODUCT(($F$6:$F$15=\"\")*$B$6:$B$15*$G$6:$G$15)"
+        },
+        {
+          "name": "D19:D21, how much of the split plan that store carries",
+          "text": "0.00, 20.29, 36.35. Sum the column and you get 56.64, the split total from the section above. A store that wins no item still returns a row here, zeros included, and that is the row that tells you not to drive there.",
+          "formula": "=SUMIF($H$6:$H$15,A19,$I$6:$I$15)"
+        },
+        {
+          "name": "The version with zeros instead of blanks",
+          "text": "If the two missing cells held 0, the warehouse basket would read 44.78 and win by 21.36. Zero means free. A blank means not sold here, and only one of those two facts belongs in a price column."
+        }
+      ],
+      "example": {
+        "formula": "=SUMPRODUCT($B$6:$B$15,F6:F15)+SUMPRODUCT(($F$6:$F$15=\"\")*$B$6:$B$15*$G$6:$G$15)",
+        "result": "57.34",
+        "explanation": "The first term returns 44.78 from eight priced rows. The second term builds a TRUE/FALSE test on each of the ten price cells, multiplies it by quantity and by the cheapest available price, and adds 12.56. Written as =SUMPRODUCT($B$6:$B$15,IF(F6:F15=\"\",$G$6:$G$15,F6:F15)) it also works in Microsoft 365 and Sheets, but in Excel 2019 and earlier that version needs Ctrl+Shift+Enter or it returns the raw 44.78."
+      },
+      "tips": [
+        "SUMIF treats * and ? in its criteria as wildcards. A store name containing an asterisk needs a tilde in front of it in A19, or the criterion stops matching itself.",
+        "SUMPRODUCT fails on any text anywhere in the multiplied ranges, which makes it the best detector on the sheet. Sort the price columns by color after a paste and every non-numeric cell shows up as one #VALUE! at the bottom instead of ten wrong totals."
+      ]
+    },
+    {
+      "title": "One Stop or Two: the Break-Even Mile",
+      "content": "Two baskets are now comparable: 66.14 for one stop, 56.64 for two. The 9.50 difference is the entire budget for an extra trip, and a trip has a price. Divide the saving by the cost of a mile and the sheet stops arguing about money and starts arguing about distance.",
+      "steps": [
+        {
+          "name": "B26, what the extra stop is worth",
+          "text": "9.50. One basket minus the split plan, no percentage, no weighting.",
+          "formula": "=B19-B22"
+        },
+        {
+          "name": "B27, the break-even distance",
+          "text": "13.6 round-trip miles at 0.70 a mile. Under that, the two stores win. Over it, the single store does, and the sheet says so without another formula.",
+          "formula": "=ROUND(B26/B24,1)"
+        },
+        {
+          "name": "B28, the verdict in one cell",
+          "text": "Two stops pay off, on 12 miles typed into B25. Change B25 to 20 and the same cell reads One stop. Nothing else on the sheet moves.",
+          "formula": "=IF(B25<=B27,\"Two stops pay off\",\"One stop\")"
+        },
+        {
+          "name": "Where the 9.50 actually sits",
+          "text": "The largest single row is the turkey at 1.60, and the next largest is broth at 1.50. Ten small gaps add up to a distance worth driving, which is the opposite of how a loss leader works: one dramatic price on the bird does not carry the trip when the other nine rows are a dime apart."
+        },
+        {
+          "name": "The row that can flip the answer",
+          "text": "Price the turkey at 1.19 on both sheets and the gap drops to 7.90, which is 11.3 miles of driving instead of 13.6. One row sets 17 percent of the decision, so that is the price worth checking twice before you commit."
+        },
+        {
+          "name": "The trade-off nobody puts in the formula",
+          "text": "The second stop is 40 minutes on the Wednesday before Thanksgiving. The sheet prices the miles and cannot price the parking lot, so treat 13.6 as a floor rather than a green light."
+        }
+      ],
+      "example": {
+        "formula": "=ROUND((B19-B22)/B24,1)",
+        "result": "13.6",
+        "explanation": "9.50 divided by 0.70. The 0.70 in B24 is an input, not a fact about this year: the IRS republishes its standard mileage rate every January, and your own fuel-and-wear number is usually lower. Type whichever one you actually believe and the break-even moves with it. At 0.50 a mile the same 9.50 buys 19 miles, which changes the answer for most people."
+      },
+      "tips": [
+        "Do not round the basket totals to whole dollars before dividing. At 66 and 57 the saving reads 9.00 instead of 9.50, which moves the break-even from 13.6 miles to 12.9 and can flip a verdict that sits between them.",
+        "A price you cannot buy at is a blank, never a zero. A store that is out of cranberries on Tuesday still sells them on Wednesday, and a zero in that cell quietly makes it the cheapest store for an item it does not have."
+      ]
+    }
+  ],
+  "calculator": {
+    "description": "Compare what one store costs against a two-store split, then see how many round-trip miles the saving is worth. The defaults are the sample basket from this page.",
+    "inputs": [
+      { "key": "one", "label": "Basket at one store ($)", "default": 66.14, "step": 0.01, "min": 0 },
+      { "key": "split", "label": "Two-store split total ($)", "default": 56.64, "step": 0.01, "min": 0 },
+      { "key": "rate", "label": "Cost per mile ($)", "default": 0.7, "step": 0.01, "min": 0 }
+    ],
+    "resultLabel": "Break-even round-trip miles",
+    "resultFormat": "number",
+    "compute": "const save = one - split; result = (save <= 0 || rate <= 0) ? 0 : save / rate;"
+  },
+  "functionsUsed": [
+    {
+      "name": "MIN",
+      "slug": "min",
+      "description": "MIN returns the smallest value in a range of cells."
+    },
+    {
+      "name": "INDEX",
+      "slug": "index",
+      "description": "INDEX returns the value at a specified position in a range or array."
+    },
+    {
+      "name": "MATCH",
+      "slug": "match",
+      "description": "MATCH searches for a specified item in a range and returns its relative position."
+    },
+    {
+      "name": "SUMPRODUCT",
+      "slug": "sumproduct",
+      "description": "SUMPRODUCT multiplies corresponding components of one or more arrays and returns the sum of those products. It is also widely used for conditional sums and counts without array-entry."
+    },
+    {
+      "name": "SUMIF",
+      "slug": "sumif",
+      "description": "SUMIF adds up all numbers in a range that meet a specified condition. It is the go-to function for conditional summing, like totaling sales for a specific region or summing expenses above a threshold."
+    },
+    {
+      "name": "COUNT",
+      "slug": "count",
+      "description": "COUNT counts the number of cells that contain numbers within a specified range."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    }
+  ],
+  "summary": "Six typed columns and three formulas turn ten shelf prices into one decision. Column G finds the cheapest price per item, column H names the store that owns it, and a coverage count plus a completeness formula stop a store from winning on items it does not sell. On this basket the split plan is 56.64 against 66.14 for the nearest single store, and the 9.50 difference is worth 13.6 round-trip miles at 0.70 a mile. The cost is upkeep: three price columns go stale within a week, and a blank you fill with a guess is worse than the blank itself.",
+  "nextSteps": [
+    "Price the same ten items at your three closest stores this week, then leave the two empty cells empty instead of typing a zero",
+    "Add a column for unit price per ounce so a 32-ounce carton and a 48-ounce carton can be compared on the same row",
+    "Copy the sheet for Christmas week and change only the quantities, since the three store headers and every formula carry over untouched"
+  ],
+  "relatedTutorials": [
+    "thanksgiving-shopping-list-formulas",
+    "thanksgiving-dinner-cost-per-guest",
+    "black-friday-price-tracker"
+  ]
+}
