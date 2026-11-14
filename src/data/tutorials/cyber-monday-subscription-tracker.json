@@ -1,0 +1,324 @@
+{
+  "slug": "cyber-monday-subscription-tracker",
+  "title": "Cyber Monday Subscription Tracker: $738.75 Mixed, $939.46 All-Monthly",
+  "description": "A Cyber Monday subscription tracker that computes each annual plan's break-even month, catches the renewal that erases it, and prices the mix at $738.75.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "ROUNDUP",
+    "EDATE",
+    "IF",
+    "IFERROR",
+    "SUM",
+    "SUMIF",
+    "COUNTIF",
+    "DATEDIF"
+  ],
+  "intro": "The design suite wants 179.88 for a year. Billed monthly at 24.99 it would run 299.88, so the annual plan pays for itself in month eight and hands back 120.00 if you keep it twelve. The cloud storage offer is the same shape and the opposite answer: 79.99 against 9.99 a month breaks even in month nine, and you plan to keep it six. Two sale pages, one arithmetic, and neither page prints the month that decides it.",
+  "tags": [
+    "Cyber Monday",
+    "Subscriptions",
+    "Break-Even",
+    "ROUNDUP"
+  ],
+  "estimatedTime": "15 min read",
+  "prerequisites": [
+    "Excel 2016 or later, or Google Sheets, since ROUNDUP, EDATE, SUMIF and DATEDIF all take the same arguments in both apps",
+    "The monthly price of each tool as it is billed today, not the price you remember paying before the last increase",
+    "An honest number for months you will keep each one, because a subscription you cancel in March has no business in a twelve-month column"
+  ],
+  "sections": [
+    {
+      "title": "The Sale Page Never Prints the Month It Pays Off",
+      "content": "Every annual offer is a loan you make to the vendor: you pay twelve months today, they give you a rate. The rate is worth something only if you stay long enough for the monthly price to catch up to the up-front one. That catch-up month is a division, and it is the only number on the sheet a sale page cannot print, because it depends on the monthly price they would rather you forget. The eight rows here are tool categories and the prices are sample values with no vendor behind them, so replace both and every formula below keeps working.",
+      "steps": [
+        {
+          "name": "Rows 6 through 13, one line per subscription",
+          "text": "Eight rows, eight tools, no grouping by what they do. A row per subscription is what lets the payback column compare two prices on the same line instead of asking you to remember which renewal was the expensive one."
+        },
+        {
+          "name": "Column B, the month-to-month price",
+          "text": "24.99 for the design suite, 9.99 for cloud storage, 3.99 for the password manager, and one row left empty because that tool quotes an annual price and no monthly one at all. That empty cell causes more trouble than the other seven numbers combined, and section three is about it."
+        },
+        {
+          "name": "Column C, the Cyber Monday annual price",
+          "text": "Charged once, today. Most annual plans are not prorated when you stop using them in March, so treat this cell as money already spent. Read the terms of the row you are about to buy, because every formula here assumes no refund."
+        },
+        {
+          "name": "Column D, next November's renewal",
+          "text": "249.88 for the design suite against the 179.88 you pay now. The sale price is a first-year number and the renewal is the price the tool returns to. Both belong on the sheet, on the same row, before you click anything."
+        },
+        {
+          "name": "Column E, months you will actually keep it",
+          "text": "Twelve for the design suite, six for cloud storage, four for the video editor. This is the only column that has nothing to do with the vendor, and it is the column that flips verdicts. Four months is one project, and one project does not justify a year of anything."
+        },
+        {
+          "name": "What the sheet answers before you check out",
+          "text": "The month each annual plan pays off, what the same plan costs monthly for the months you actually want, whether year two keeps the discount, and the single total for a plan that takes the good offers and leaves the rest."
+        }
+      ],
+      "example": {
+        "formula": "=ROUNDUP($C6/$B6,0)",
+        "result": "8",
+        "explanation": "One hundred seventy-nine dollars and eighty-eight cents divided by 24.99 is 7.198, and ROUNDUP pushes it to 8 because month seven is not enough. Seven months of monthly billing is 174.93, still 4.95 short of the annual price, so the annual plan is behind until month eight, when 199.92 clears it. Plain ROUND returns 7 on this row and would tell you to buy annual at seven months, which loses 4.95. Cloud storage shows the same trap in smaller change: 79.99 divided by 9.99 is 8.007, so the break-even is month nine, and eight months of monthly billing comes to 79.92, seven cents short."
+      },
+      "tips": [
+        "A price pasted with a dollar sign in it is text, and ROUNDUP answers #VALUE! on a text cell. SUM would skip that cell and quietly total seven subscriptions instead of eight, which is why a total and a payback column can disagree without either one looking wrong.",
+        "Ctrl+T in Excel turns A5:I13 into a Table and lets you write =ROUNDUP(Table1[[#This Row],[Annual]]/Table1[[#This Row],[Monthly]],0), which grows when a row is added. Google Sheets has no Table object, so a row typed below row 13 sits outside every range on the sheet until you stretch the references by hand."
+      ]
+    },
+    {
+      "title": "The Layout: Nine Columns, Five of Them Typed",
+      "content": "Header in row 5, data in rows 6 through 13, nine columns from A to I. Five columns get typed and four are formulas, which is the ratio that keeps this usable on the day of the sale, because the only thing you enter then is the annual price in column C. A verdict column that reads a percentage instead of a dollar figure is the mistake to avoid here, and the last step in this section shows why.",
+      "steps": [
+        {
+          "name": "A5, Tool",
+          "text": "Design suite, Cloud storage, Note app, Password manager, Website builder, Language app, Video editor, Music app. Category names rather than brand names, so the sheet survives the next rebrand and so nothing on this page claims a real vendor's price."
+        },
+        {
+          "name": "B5, Monthly",
+          "text": "The price on the month-to-month plan. Leave it empty only when no monthly plan exists, never as shorthand for free, because a zero in this column makes a paid annual plan look infinitely expensive."
+        },
+        {
+          "name": "C5, Annual",
+          "text": "The Cyber Monday number, before tax. Type it exactly as quoted, including the .88 endings that make the division messy, since rounding these to whole dollars moves break-even months."
+        },
+        {
+          "name": "D5, Renewal",
+          "text": "The list annual price the tool charges next year. If the sale page does not state it, the pricing page usually does, and if neither does, leave it empty rather than guessing."
+        },
+        {
+          "name": "E5, Months kept",
+          "text": "Twelve, six, twelve, twelve, twelve, twelve, four, twelve. Nothing here is a fact about the vendor. It is a fact about you, which is why it is the one column no deal page will ever fill in."
+        },
+        {
+          "name": "F5, Break-even",
+          "text": "8 on the design suite row. A blank here means the row has no monthly plan to divide by, and that blank is a finding rather than missing data.",
+          "formula": "=IFERROR(ROUNDUP($C6/$B6,0),\"\")"
+        },
+        {
+          "name": "G5, Monthly cost",
+          "text": "299.88 for twelve months of the design suite. Quantity times rate, no discount, no annual commitment.",
+          "formula": "=IF($B6=\"\",\"\",$B6*$E6)"
+        },
+        {
+          "name": "H5, Year-2 delta",
+          "text": "-50.00 on the design suite row, which means the annual plan still beats twelve monthly payments in its second year. Positive would mean the opposite, and section four deals with the rows that land there.",
+          "formula": "=IF($B6=\"\",\"\",$D6-$B6*12)"
+        },
+        {
+          "name": "I5, Verdict",
+          "text": "Annual. The comparison is between two dollar amounts for the same number of months, so no percentage is involved anywhere in this column.",
+          "formula": "=IF($B6=\"\",\"Annual\",IF($G6<$C6,\"Monthly\",\"Annual\"))"
+        }
+      ],
+      "example": {
+        "formula": "=IF($G6<$C6,\"Monthly\",\"Annual\")",
+        "result": "Annual",
+        "explanation": "299.88 against 179.88 puts the design suite on the annual side. Cloud storage returns Monthly, because 59.94 for six months beats 79.99 for a year you will not use. Video editor also returns Monthly at 76.00 against 129.00, and that is 53.00 of a one-project tool bought by the year. A percentage comparison would call the video editor a 43.4% discount and send you to the checkout page; the dollar comparison is the one attached to a number of months you actually typed."
+      },
+      "tips": [
+        "Freeze row 5 and column A before adding rows, under View > Freeze Panes in Excel and View > Freeze in Sheets. With nine columns the tool name scrolls off at exactly the moment you are reading its verdict.",
+        "Write the verdict as two words rather than TRUE and FALSE. A TRUE/FALSE column cannot be summed by SUMIF later, and the total in section five depends on the words being spelled the same on every row."
+      ]
+    },
+    {
+      "title": "One Empty Monthly Price Breaks Four Columns",
+      "content": "The website builder sells an annual plan and nothing else, so B10 stays empty. That single empty cell produces four different wrong answers, and only one of them announces itself. Division by an empty cell throws #DIV/0!, which is the loud one. Multiplication treats the blank as zero, which is the quiet one, and the quiet ones travel further because nothing on the sheet turns red.",
+      "steps": [
+        {
+          "name": "F10, the loud failure",
+          "text": "#DIV/0!. ROUNDUP has nothing to divide by. Not an error in the data, an error in the sheet's assumption that every row has a monthly plan.",
+          "formula": "=ROUNDUP($C10/$B10,0)"
+        },
+        {
+          "name": "G10, the quiet zero",
+          "text": "0.00. An empty cell times anything is zero, so the row claims twelve months of a website builder cost nothing. Section five totals column G, and that zero silently donates 144.00 to the wrong side of the ledger."
+        },
+        {
+          "name": "H10, the wrong number that looks precise",
+          "text": "192.00. The renewal minus twelve months of monthly billing, except the monthly billing is blank and therefore zero, so the delta is the full renewal price. Nothing about 192.00 looks like an error. It has cents, it has a minus-free format, and it is meaningless."
+        },
+        {
+          "name": "I10, the wrong verdict",
+          "text": "Monthly, on a plan that has no monthly option. 0.00 is less than 144.00, so the comparison says the cheap plan wins, and the cheap plan does not exist."
+        },
+        {
+          "name": "The guard, in all four columns",
+          "text": "Each formula tests the monthly cell first and returns a blank or the only plan that exists. Copy the guarded versions down and the row reads: no break-even, no monthly cost, no delta, Annual. That is the truth about a plan with one price.",
+          "formula": "=IF($B6=\"\",\"Annual\",IF($G6<$C6,\"Monthly\",\"Annual\"))"
+        },
+        {
+          "name": "Why IFERROR alone is not a fix",
+          "text": "Wrapping column F in IFERROR hides #DIV/0! and leaves the other three columns broken. It also hides a #VALUE! from a text price two rows up, which is the error you actually need to see. Guard the empty cell, not the symptom."
+        }
+      ],
+      "example": {
+        "formula": "=$D10-$B10*12",
+        "result": "192.00",
+        "explanation": "The renewal price of 192.00 minus twelve times an empty cell, which Excel reads as twelve times zero. The row has no monthly plan, so there is nothing to subtract and the cell should be blank. Write it as =IF($B10=\"\",\"\",$D10-$B10*12) and the cell empties out. Google Sheets behaves the same way, and so does LibreOffice, because an empty cell in an arithmetic operation has been zero since the first spreadsheet."
+      },
+      "tips": [
+        "A zero is not the fix for this row. Type 0 into B10 and F10 returns #DIV/0! still, G10 returns 0.00 again, and any average of the column now includes a subscription priced at nothing. Leave it empty and guard the four formulas.",
+        "Filter column F for blanks when the sheet is finished. Every blank is a row where the annual plan is the only option, which is a different decision from the one the rest of the page is making."
+      ]
+    },
+    {
+      "title": "Year Two Is Where the Discount Goes",
+      "content": "A Cyber Monday annual price is a first-year price. The renewal column is what the subscription costs for every year after that, and the gap between the two is where most of the advertised saving lives. Subtract twelve monthly payments from the renewal and the answer sorts the eight rows into three groups: plans that stay cheaper annually, plans whose promo was the entire benefit, and plans that get worse.",
+      "steps": [
+        {
+          "name": "The design suite at -50.00",
+          "text": "Renewal 249.88 against 299.88 for twelve monthly payments. The annual plan still wins 50.00 in year two, against the 120.00 it won in year one. The rate holds; the size of the win shrinks once the promo year is gone."
+        },
+        {
+          "name": "Cloud storage at 0.00",
+          "text": "Renewal 119.88 is exactly twelve times 9.99. From year two onward the annual plan and the monthly plan cost the same, and the annual one takes the money twelve months early. The 39.89 the row saves across twelve months is the entire discount, and it is a one-time payment for committing."
+        },
+        {
+          "name": "The language app at -59.89",
+          "text": "Year one saves 119.89, year two saves 59.89. The discount halves at the first renewal, and the row is still worth keeping annually, which is the useful kind of answer."
+        },
+        {
+          "name": "What a positive number means",
+          "text": "Renewal above twelve monthly payments. No row here lands there, because vendors rarely price renewal above the monthly rate, but a row will appear the first time you compare a plan that auto-renews at list against one you can cancel monthly."
+        },
+        {
+          "name": "The three-year view, in one cell",
+          "text": "679.64 for the design suite on the annual plan over three years, against 899.64 monthly. The promo year carries 120.00 of that gap and the two renewal years carry the rest.",
+          "formula": "=$C6+2*$D6"
+        },
+        {
+          "name": "Why the promo percentage is useless here",
+          "text": "The design suite advertises 40% off, which is 179.88 against 299.88. The renewal is 16.7% below the monthly rate. One number was true for twelve months, the other runs for as long as you keep the tool."
+        }
+      ],
+      "example": {
+        "formula": "=$D6-$B6*12",
+        "result": "-50.00",
+        "explanation": "249.88 minus 299.88. A negative result means the annual plan still wins in year two by that many dollars, a zero means the promo was the only benefit, and a positive result means the monthly plan wins after the first renewal. Design suite -50.00, note app -15.00, password manager -6.00, cloud storage 0.00, video editor 0.00, music app -12.00, language app -59.89, website builder blank. Sort that column and the tools worth a long commitment separate from the ones worth exactly one year."
+      },
+      "tips": [
+        "Copy the renewal price the day you buy, into column D, even if the sale page buries it. Vendors move renewal prices between the sale and the renewal date, and a cell you filled in November is evidence.",
+        "Do not divide the renewal by twelve and call it the monthly cost. 249.88 over twelve months is 20.82 a month, but you cannot pay 20.82 a month without a monthly plan, and the sheet already has a column for the number you can actually pay."
+      ]
+    },
+    {
+      "title": "Six Annual Plans, Two Monthly, and the Date to Write Down",
+      "content": "Six rows come back Annual and two come back Monthly. Taking all eight annual offers costs 811.80. Staying monthly for the months you typed costs 939.46. Taking the six and leaving the two costs 738.75, which is 200.71 less than the monthly column and 73.05 less than buying every annual offer on the page. The last piece is a date, because an annual plan that renews itself is a decision you make once and then forget.",
+      "steps": [
+        {
+          "name": "B16, the monthly column total",
+          "text": "939.46. Seven rows of monthly billing for the months in column E, and the website builder contributes nothing because it has no monthly plan.",
+          "formula": "=SUM($G$6:$G$13)"
+        },
+        {
+          "name": "B17, all eight annual offers",
+          "text": "811.80. Every annual price on the sheet, including the two that are worse than paying monthly.",
+          "formula": "=SUM($C$6:$C$13)"
+        },
+        {
+          "name": "B18, the mixed plan",
+          "text": "738.75. The 144.00 website builder counts on the annual side even though it has no monthly price, because its verdict reads Annual and the SUMIF matches on the word.",
+          "formula": "=SUMIF($I$6:$I$13,\"Annual\",$C$6:$C$13)+SUMIF($I$6:$I$13,\"Monthly\",$G$6:$G$13)"
+        },
+        {
+          "name": "B19 and B20, what the mix is worth",
+          "text": "200.71 against staying monthly, 73.05 against buying all eight annual plans. The second number is the price of not reading your own verdict column.",
+          "formula": "=B16-B18"
+        },
+        {
+          "name": "B21, how many rows go annual",
+          "text": "6 annual rows and 2 monthly ones. The count matters more than the name of any single row, because six annual renewals means six calendar entries and two rows you can cancel without thinking about it. Change one verdict word on the sheet and this cell moves, which is the check that the words are spelled the same everywhere.",
+          "formula": "=COUNTIF($I$6:$I$13,\"Annual\")"
+        },
+        {
+          "name": "B24, the renewal date",
+          "text": "11/30/2027, one year after a Cyber Monday purchase on 11/30/2026. EDATE keeps the day of the month, which matters more than it sounds: a purchase on the 31st renews on the last day of a shorter month, not on the 3rd of the next one.",
+          "formula": "=EDATE($B$23,12)"
+        },
+        {
+          "name": "B26, the day to act",
+          "text": "10/31/2027 with 30 days of notice typed into B25. The notice window is your input, not the vendor's rule, and 30 days is enough buffer for a support queue that answers in a week.",
+          "formula": "=$B$24-$B$25"
+        },
+        {
+          "name": "B27, how long you have",
+          "text": "11 months from the 11/14/2026 as-of date in B22. Only the annual rows need this date in a calendar, which is six entries a year, and that is the real cost of annual billing.",
+          "formula": "=DATEDIF($B$22,$B$26,\"m\")"
+        }
+      ],
+      "example": {
+        "formula": "=EDATE($B$23,12)",
+        "result": "11/30/2027",
+        "explanation": "Twelve months after 11/30/2026, keeping the day. If the cell was already formatted as a number, EDATE returns a serial that looks like 46000-something, so apply Format Cells > Date. Subtract the 30 days of notice in B25 and the deadline is 10/31/2027, which is the cell worth a calendar entry rather than the renewal date, because the renewal date is already too late."
+      },
+      "tips": [
+        "DATEDIF works in both apps and appears in neither function list. Excel keeps it for compatibility, gives no autocomplete and no argument tooltip, and Google Sheets documents it openly. It returns #NUM! when the start date is later than the end date, so a deadline that has already passed reads as an error rather than a negative month count.",
+        "TODAY() instead of a typed as-of date makes the countdown live and the sheet impossible to check. Excel reads TODAY() from the machine clock, Google Sheets from the spreadsheet's own time zone setting, so two people looking at the same shared file can see different month counts on the same afternoon."
+      ]
+    }
+  ],
+  "calculator": {
+    "description": "Enter an annual price and its monthly alternative to see the month the annual plan stops being a loss. The defaults are the design suite from this page.",
+    "inputs": [
+      { "key": "annual", "label": "Annual price ($)", "default": 179.88, "step": 0.01, "min": 0 },
+      { "key": "monthly", "label": "Monthly price ($)", "default": 24.99, "step": 0.01, "min": 0 }
+    ],
+    "resultLabel": "Break-even month",
+    "resultFormat": "number",
+    "compute": "result = (monthly > 0 && annual > 0) ? Math.ceil(annual / monthly) : 0;"
+  },
+  "functionsUsed": [
+    {
+      "name": "ROUNDUP",
+      "slug": "roundup",
+      "description": "ROUNDUP rounds a number up to a specified number of decimal places, always away from zero."
+    },
+    {
+      "name": "EDATE",
+      "slug": "edate",
+      "description": "EDATE returns the date that is a given number of months before or after a start date, preserving the day of the month and rolling to the last day when that day does not exist in the target month."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "IFERROR",
+      "slug": "iferror",
+      "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "SUMIF",
+      "slug": "sumif",
+      "description": "SUMIF adds up all numbers in a range that meet a specified condition. It's the go-to function for conditional summing, as in totaling sales for one region or summing expenses above a threshold."
+    },
+    {
+      "name": "COUNTIF",
+      "slug": "countif",
+      "description": "COUNTIF counts the number of cells in a range that meet a specified condition. It's the counting counterpart of SUMIF: instead of summing matching values, it counts how many matches exist."
+    },
+    {
+      "name": "DATEDIF",
+      "slug": "datedif",
+      "description": "DATEDIF calculates the difference between two dates in a chosen unit: full years (Y), full months (M), days (D), or the remaining days/months after removing the larger units (MD, YM, YD). It is a legacy function still supported but not shown in the formula autocomplete."
+    }
+  ],
+  "summary": "Five typed columns and four formulas turn eight Cyber Monday offers into a payback month, a verdict, and a total. ROUNDUP on the annual price divided by the monthly one gives the month the commitment stops losing money, and plain ROUND gets it wrong by cents on four of these seven rows. On this basket the mixed plan is 738.75 against 939.46 for staying monthly and 811.80 for taking every annual offer, and six of the eight rows need a renewal date in a calendar. The cost is that last part: an annual plan saves money only for as long as you remember it renews.",
+  "nextSteps": [
+    "Fill columns B, C and D for the tools you already pay for, then type 12 into column E and watch the verdict column disagree with the last three bills",
+    "Add the renewal date for each Annual row to a calendar on the deadline cell rather than the renewal cell, and set the reminder two weeks earlier than the deadline",
+    "Copy the sheet in March and replace column E with the months you have actually used, which turns a buying sheet into a renew-or-cancel sheet for the rest of the year"
+  ],
+  "relatedTutorials": [
+    "black-friday-price-tracker",
+    "excel-budget-template",
+    "add-months-to-a-date"
+  ]
+}
