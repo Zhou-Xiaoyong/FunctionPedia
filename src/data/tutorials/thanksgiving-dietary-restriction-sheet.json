@@ -1,0 +1,288 @@
+{
+  "slug": "thanksgiving-dietary-restriction-sheet",
+  "title": "Thanksgiving Dietary Restriction Sheet: Two Guests, Two Safe Dishes Out of 14",
+  "description": "A Thanksgiving dietary restriction sheet that tests 26 guests against 14 dishes, counts the safe dishes on every plate, and finds the two guests left with two.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "SUMPRODUCT",
+    "COUNTIFS",
+    "COUNTIF",
+    "SUM",
+    "MIN",
+    "INDEX",
+    "MATCH",
+    "IF"
+  ],
+  "intro": "Ada Fischer's row in the guest list has four boxes checked: vegetarian, vegan, gluten-free, dairy-free. Fourteen dishes are going on the table and two of them are safe for her plate, which leaves cranberry sauce and roasted root vegetables. Nobody else comes close to that number, so the menu looks fine right up until the plates get filled.",
+  "tags": [
+    "Thanksgiving",
+    "Dietary Restrictions",
+    "SUMPRODUCT",
+    "Guest List"
+  ],
+  "estimatedTime": "14 min read",
+  "prerequisites": [
+    "Excel 2016 or later, or Google Sheets, since SUMPRODUCT, COUNTIFS, COUNTIF and INDEX/MATCH take the same arguments in both apps",
+    "A guest list with one row per person and the restrictions typed as 1 or left empty, not as notes in a comments column",
+    "The dish list before the shopping list, because the flags decide which ingredients are worth buying"
+  ],
+  "sections": [
+    {
+      "title": "Three Vegan Guests, Three Vegan Dishes, and the Plate That Fails",
+      "content": "The guest list is the easy half. Twenty-six names, six households, a column per restriction, and you can type it in twelve minutes from the replies you already have. What the list will not tell you is whether the table can actually feed the people on it, because a restriction is not a preference you can average out. A dish is safe for a guest only when it clears every box that guest checked, and the boxes stack.\n\nThree guests are vegan and the menu has three vegan dishes: cranberry sauce, dinner rolls, roasted root vegetables. That symmetry is how this sheet gets built wrong. Three dishes for three people sounds like coverage until you notice that two of the three vegans are also gluten-free, and dinner rolls are made of flour. Their plate drops to two sides with no main, and the arithmetic that said everything was fine never asked about gluten.",
+      "steps": [
+        {
+          "name": "A5:I31, one row per person",
+          "text": "Six households, but restrictions belong to people. The Fischer house sends a vegan who avoids dairy and a vegan who does not, and a household row would have to pick one of them."
+        },
+        {
+          "name": "C5:G5, five restriction columns",
+          "text": "Vegetarian, Vegan, Gluten-free, Nut allergy, Dairy-free. Type 1 where the restriction applies, leave the cell empty where it does not. The nut allergy gets its own column rather than a note, because it is the one on this list that a mistake can put someone in an ambulance for."
+        },
+        {
+          "name": "C and D both carry a 1 on the vegan rows",
+          "text": "A vegan is a vegetarian who also skips eggs and dairy, so those three rows are flagged in both columns. The vegetarian total of 9 includes the 3 vegans. That is not double counting, it is what makes the vegetarian count reusable for the shopping list."
+        },
+        {
+          "name": "K5:Q19, the dish block",
+          "text": "Fourteen rows, one dish each, and five flags that read the opposite way: a 1 means the dish is free of the thing, not that it contains it. Roast turkey carries a 1 under Gluten-free and a blank under Vegetarian."
+        },
+        {
+          "name": "Column J stays empty",
+          "text": "A gutter between the two blocks. It stops the guest table from inheriting the dish table's column widths, and it gives the print area a clean edge at I and K instead of running one table into the next."
+        }
+      ],
+      "example": {
+        "formula": "=COUNTIFS($C$6:$C$31,1,$D$6:$D$31,1)",
+        "result": "3",
+        "explanation": "Three guests are flagged in both the vegetarian and vegan columns: Ada, Iris and Theo. Point the same structure at the dish block, =COUNTIFS($L$6:$L$19,1,$M$6:$M$19,1), and you get 3 again. Three vegan people, three vegan dishes. The matching numbers are the reason this sheet gets signed off early, and the reason it fails: one of those three people cannot eat the rolls, so the real plate is two dishes, and nothing in either COUNTIFS was asking about gluten."
+      },
+      "tips": [
+        "COUNTIFS with a criterion of 1 counts cells equal to the number 1. A column pasted in as text, where every flag is the letter Y, returns 0 for the same formula, and a zero on a summary row reads as good news.",
+        "Freeze row 5 and column A before you type anything. At twenty-six rows the name scrolls off the top right when you are fixing that person's flags."
+      ]
+    },
+    {
+      "title": "The Layout: Two Blocks, Nine Columns, Five Flags Each",
+      "content": "Fourteen dish rows and twenty-six guest rows share one sheet because the formula that decides a plate has to see both at once. A second tab works and cross-sheet references work, but every check then turns into a tab switch to look at a flag, and the tab you are not looking at is the one that was wrong. One sheet, two blocks, a gutter at column J.\n\nThe guest block runs A5:I31 and the dish block K5:Q19. The summary sits at A33:D38 and the checks at A40:B45, below the guest rows rather than beside them, so the block that gets longer over the years is the only thing that pushes anything down.",
+      "steps": [
+        {
+          "name": "A5, Name and B5, Household",
+          "text": "Household is not decoration. It is the fastest way to notice that one family accounts for both vegans and the dairy-free guest, which changes what you cook rather than what you buy."
+        },
+        {
+          "name": "C5:G5, the guest flags",
+          "text": "1 or empty. Never Y, never TRUE, never a checkmark character. Section four is about what happens when one of those gets typed anyway."
+        },
+        {
+          "name": "H5, Safe dishes",
+          "text": "The number of dishes this guest can eat, computed by the formula in the next section. Ada reads 2, Ruth reads 5, the twelve guests with no boxes read 14."
+        },
+        {
+          "name": "I5, Flag",
+          "text": "A word, not a boolean, so COUNTIF can count it later without a helper column.",
+          "formula": "=IF($H6<=2,\"Thin\",\"OK\")"
+        },
+        {
+          "name": "K5, Dish and L5:P5, the five dish flags",
+          "text": "Dish name, then the same five columns in the same order as the guest block. Keeping the order identical is what lets the formula in section three line up C with L, D with M, and so on down the list."
+        },
+        {
+          "name": "Q5, Guests covered",
+          "text": "How many of the 26 can eat this dish, which is the same test with the columns swapped. Typed in Q6 it returns 17, the turkey. Cranberry sauce and roasted root vegetables read 26, gravy and pecan pie read 13.",
+          "formula": "=SUMPRODUCT(--(($C$6:$C$31*($L6=0)+$D$6:$D$31*($M6=0)+$E$6:$E$31*($N6=0)+$F$6:$F$31*($O6=0)+$G$6:$G$31*($P6=0))=0))"
+        },
+        {
+          "name": "B34:D38, the ratio row",
+          "text": "Guests and dishes per restriction, then dishes divided by guests. Vegetarian 11 over 9, vegan 3 over 3, gluten-free 6 over 5, nut allergy 12 over 4, dairy-free 5 over 6.",
+          "formula": "=IFERROR($C34/$B34,0)"
+        },
+        {
+          "name": "B40 and B41, the two numbers that matter",
+          "text": "Two plates are thin, and no plate is empty. The second number is the one you want at zero, and it stays at zero here only because the menu has cranberry sauce on it.",
+          "formula": "=COUNTIF($H$6:$H$31,\"<=2\")"
+        }
+      ],
+      "example": {
+        "formula": "=IF($H6<=2,\"Thin\",\"OK\")",
+        "result": "Thin",
+        "explanation": "In Ada's row the safe-dish count is 2, so the flag reads Thin. Twenty-four rows read OK, and the count of the word Thin in B40 is 2. Written as =IF($H26<=2,TRUE,FALSE) the column would still be correct and B40 would return 0, because COUNTIF for the word Thin finds nothing to count. The word is what makes the column summarizable."
+      },
+      "tips": [
+        "Type the header row before any data, then select A5:Q45 and set the column widths once. A sheet built header-last ends up with four different widths and a formula bar you cannot read.",
+        "Ctrl+T on K5:Q19 names the block Table1 and lets you rewrite the five terms as Table1[[#This Row],[Vegan]], which is worth the typing only if you add dishes often. The formulas already in column H keep their A1 ranges and do not grow when the table does, so a dish added at the bottom still needs the ranges stretched by hand."
+      ]
+    },
+    {
+      "title": "Count Violations Instead of Matches",
+      "content": "COUNTIFS ANDs criteria down columns, so it answers one question per call: how many dishes are both vegetarian and gluten-free. For Ada that is 5. She is also vegan and dairy-free, so the honest number is 2, and the three extra dishes are mashed potatoes, roasted Brussels sprouts and the winter salad, all of which fail on the same box, dairy, which the formula never asked about.\n\nYou can write the correct COUNTIFS with four criteria pairs, and it returns 2. The trouble is that it is correct only for as long as four is the number of boxes she checked. Insert a shellfish column next year, flag Ada, and the four-pair formula still returns 2, because a formula only tests the criteria someone typed into it.\n\nSUMPRODUCT inverts the question. Instead of asking how many dishes match, ask how many rules each dish breaks. Multiply the guest's flag by whether the dish lacks that thing, add the five products across one dish, and a dish with a total of zero breaks nothing.",
+      "steps": [
+        {
+          "name": "One term per restriction, C against L",
+          "text": "$C26 is 1 for Ada. ($L$6:$L$19=0) is a fourteen-cell array that is TRUE wherever the dish is not vegetarian. Multiply them and you get 1 for every dish that violates her vegetarian flag, 0 for the ones that respect it."
+        },
+        {
+          "name": "A guest without the restriction contributes nothing",
+          "text": "If $C6 is empty, the term is 0 times whatever the dish is, so the restriction drops out of that guest's row entirely. This is why the same formula works on all 26 rows without a single IF."
+        },
+        {
+          "name": "Five terms added, fourteen totals",
+          "text": "Each dish ends up with a violation count. Mashed potatoes score 1 for Ada because of the butter and milk, roasted root vegetables score 0, and the outer test asks whether the total is zero."
+        },
+        {
+          "name": "The test is =0, not >0",
+          "text": "A dish is safe or it is not. There is no partial credit at the table, so any violation at all disqualifies the dish."
+        },
+        {
+          "name": "The double minus in front",
+          "text": "SUMPRODUCT with a single array does not coerce booleans, so TRUE and FALSE would sum to zero and every guest would read 0. The -- turns the comparison into 1s and 0s first. Drop it by accident and the sheet claims nobody can eat anything."
+        },
+        {
+          "name": "Copy H6 down with the Fill Handle",
+          "text": "$C6 is row-relative so it walks down the guest list, and $L$6:$L$19 is locked so it keeps pointing at the dish block. One formula, twenty-six rows, no helper columns."
+        }
+      ],
+      "example": {
+        "formula": "=SUMPRODUCT(--(($C26*($L$6:$L$19=0)+$D26*($M$6:$M$19=0)+$E26*($N$6:$N$19=0)+$F26*($O$6:$O$19=0)+$G26*($P$6:$P$19=0))=0))",
+        "result": "2",
+        "explanation": "Ada's row scores 2 on mashed potatoes (not vegan, not dairy-free), 2 on the Brussels sprouts, 2 on the winter salad, 3 on pecan pie (not vegan, not gluten-free, not dairy-free), and 0 on cranberry sauce and roasted root vegetables. Twelve dishes carry at least one violation, two carry none, and the answer is 2. How large each violation count is does not change the verdict, which is why the next step reduces the total to a single =0 test. Sofia, who is only vegetarian and gluten-free, reads 5 with the same formula. The gap between 5 and 2 is entirely the vegan and dairy-free columns."
+      },
+      "tips": [
+        "Keep the violation count in a spare column while you are building the sheet. Replacing =0 with nothing gives you how badly each dish fails, 2 versus 1, which is how you notice that one substitution on the Brussels sprouts would feed three more people.",
+        "Sheets computes this formula identically, and both apps share one trap: a range that runs past the data. Point the dish terms at L6:L1000 and every empty row counts as a dish that fails every restriction for Ada and passes for a guest with no boxes, so the twelve unrestricted guests read 995 safe dishes instead of 14 while Ada still reads 2. The ranges start at row 6 and stop at row 19 for a reason."
+      ]
+    },
+    {
+      "title": "Blank, Zero, and the Text Flag That Reports Success",
+      "content": "Sixty-four flags get typed across the two blocks, some of them at the table and some on a phone in a grocery aisle. Two of the ways to get them wrong announce themselves. One does not, and the quiet one runs through the whole sheet without turning a cell red.\n\nThe rule that keeps all five columns straight is that a 1 always marks the favorable case. In the guest block that means the restriction is present. In the dish block it means the dish is free of the thing. The two blocks use the same digit for opposite meanings on purpose, because the formula multiplies one by the other and needs them to be complements.",
+      "steps": [
+        {
+          "name": "Text in the dish block, and the sheet reports a perfect menu",
+          "text": "Paste Y into L6:P19 and ($L$6:$L$19=0) is FALSE for every cell, so every dish contributes zero violations. Ada's safe count jumps from 2 to 14. No error, no color, no warning, and the conclusion is that the menu is perfect."
+        },
+        {
+          "name": "Text in the guest block is at least loud",
+          "text": "Put Y in C6:G31 and the term becomes text times a boolean, which is #VALUE! on every row that holds one. Unpleasant, but it points at the rows that broke instead of hiding them."
+        },
+        {
+          "name": "Blank means opposite things in the two blocks",
+          "text": "An empty guest flag says nothing to avoid. An empty dish flag says the dish contains it. Fill the dish row for a new dessert, leave the flags blank, and the dish counts as unsafe for all fourteen restricted guests and safe for the twelve with no boxes."
+        },
+        {
+          "name": "A sixth restriction column changes nothing",
+          "text": "Insert a shellfish column at H and flag two guests, and every count on the sheet stays exactly where it was. The formula tests five terms, and the sixth column sits inside the block but outside the formula. Deleting a column the formula does reference is the loud version of the same problem: #REF! in all twenty-six rows."
+        },
+        {
+          "name": "The audit cell that catches both",
+          "text": "Counts any filled cell that is not a numeric 1. Zero means the flags are clean, 37 means the 37 filled cells in the dish block were typed as text.",
+          "formula": "=SUMPRODUCT(($L$6:$P$19<>1)*($L$6:$P$19<>\"\"))"
+        },
+        {
+          "name": "Set data validation before the family starts editing",
+          "text": "Data > Data Validation, whole number between 0 and 1, on C6:G31 and L6:P19. It rejects Y at the door instead of after the audit."
+        }
+      ],
+      "example": {
+        "formula": "=SUMPRODUCT(($L$6:$P$19<>1)*($L$6:$P$19<>\"\"))",
+        "result": "0",
+        "explanation": "Every filled cell in the dish block holds a numeric 1, so both comparisons are FALSE and the total is 0. Type Y into all 37 of them and the same cell returns 37, which is the number of flags someone typed as letters. The formula lives in a single cell and takes one second to read, which is the only reason it gets checked on the morning of."
+      },
+      "tips": [
+        "A flag pasted from a phone note often arrives as text with a leading apostrophe. The apostrophe does not show in the cell and does show in the formula bar, so select one cell and look up before you trust a column.",
+        "Do not type 0 into a dish flag to mean not applicable. Inside the formula a blank and a 0 do the same thing, both read as contains it, so a dish that is perfectly fine quietly becomes unusable for everyone with that restriction. The audit cell flags the 0 as well, because a 0 is not a 1."
+      ]
+    },
+    {
+      "title": "Coverage per Dish, and the One Pan Worth Adding",
+      "content": "Transpose the test and every dish reports how many of the 26 it can feed. Cranberry sauce and roasted root vegetables read 26 because they clear all five flags. Dinner rolls read 21, mashed potatoes and Brussels sprouts 19 each, turkey 17, five dishes at 16, the salad 15, gravy and pecan pie 13 each.\n\nPecan pie is the interesting one. Four guests have the nut allergy, so a count of that single restriction would predict 22. The real number is 13, because five guests are gluten-free and six are dairy-free, and 4 plus 5 plus 6 is 15 with two guests carrying two of those three. Thirteen guests are excluded, thirteen can eat the pie, and only one of those numbers came from the restriction the dessert was chosen for.",
+      "steps": [
+        {
+          "name": "Q6, the same five terms with the columns swapped",
+          "text": "Guest flags become the locked arrays, dish flags become the relative cell, and the count moves from dishes per guest to guests per dish."
+        },
+        {
+          "name": "Turkey at 17 of 26",
+          "text": "26 minus the nine vegetarians. The main course feeds two thirds of the room, which is normal, and is also why the vegetarian main is the dish that decides the dinner."
+        },
+        {
+          "name": "The ratio row ranks restrictions, not plates",
+          "text": "Dairy-free is the tightest at 0.83 dishes per guest, vegan at 1.00, gluten-free 1.20, vegetarian 1.22, nut allergy 3.00. Read that row alone and you would expect a dairy-free guest to be the problem. No dairy-free-only guest drops below 5 dishes, and the two thinnest plates belong to guests with three and four restrictions checked."
+        },
+        {
+          "name": "B42 and B40, the two numbers to report",
+          "text": "The lowest plate is 2 dishes, and two guests are at or below that line. Nobody is at zero, which is the difference between a menu that needs a tweak and a menu that needs a phone call."
+        },
+        {
+          "name": "Add wild rice stuffed squash as row 20",
+          "text": "Five 1s, then stretch the dish ranges from row 19 to row 20. Ada goes to 3, Theo to 3, Iris and Priya to 4, the thin count drops to 0, and the lowest plate becomes 3. The squash covers all 26 guests."
+        },
+        {
+          "name": "The cheaper fix, and what it costs",
+          "text": "Olive oil on the salad with the walnuts in a bowl on the side also brings Ada and Theo to 3, with no extra pan. It also makes the salad safe on paper and unsafe in practice, because the serving spoon does not check a flag before it goes back for a second scoop."
+        }
+      ],
+      "example": {
+        "formula": "=SUMPRODUCT(--(($C$6:$C$31*($L15=0)+$D$6:$D$31*($M15=0)+$E$6:$E$31*($N15=0)+$F$6:$F$31*($O15=0)+$G$6:$G$31*($P15=0))=0))",
+        "result": "13",
+        "explanation": "Pecan pie's row, which is row 15. Thirteen of the 26 guests have none of the three restrictions that rule it out, so 13 can eat it. Ruth is excluded by dairy, Marcus by nuts, Elena by gluten, and Ada by gluten and dairy both. The 4 nut allergies, 5 gluten-free and 6 dairy-free guests add to 15, and the two guests who appear in two of those counts bring the union down to 13."
+      },
+      "tips": [
+        "For the headline, =INDEX($K$6:$K$19,MATCH(MAX($Q$6:$Q$19),$Q$6:$Q$19,0)) returns Cranberry sauce. Roasted root vegetables ties it at 26 and never appears, because MATCH stops at the first hit. If you need every winner, that is a FILTER job, not an INDEX job.",
+        "Sort column H ascending the night before. The two guests who need their plates built separately are then at the top of the list instead of buried in row 26 while someone is carving."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "SUMPRODUCT",
+      "slug": "sumproduct",
+      "description": "SUMPRODUCT multiplies corresponding components of one or more arrays and returns the sum of those products. It is also widely used for conditional sums and counts without array-entry."
+    },
+    {
+      "name": "COUNTIFS",
+      "slug": "countifs",
+      "description": "COUNTIFS counts cells that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "COUNTIF",
+      "slug": "countif",
+      "description": "COUNTIF counts the number of cells in a range that meet a specified condition. It's the counting counterpart of SUMIF — instead of summing matching values, it counts how many matches exist."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "MIN",
+      "slug": "min",
+      "description": "MIN returns the smallest value in a range of cells."
+    },
+    {
+      "name": "INDEX",
+      "slug": "index",
+      "description": "INDEX returns the value at a specified position in a range or array."
+    },
+    {
+      "name": "MATCH",
+      "slug": "match",
+      "description": "MATCH searches for a specified item in a range and returns its relative position."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    }
+  ],
+  "summary": "Two blocks, ten typed columns and three formulas turn a guest list into a plate count. SUMPRODUCT adds up violations rather than matches, which is the only version that survives a guest with four boxes checked: COUNTIFS says Ada has 5 dishes, the violation count says 2, and the two she keeps are cranberry sauce and roasted root vegetables. Across the table, 24 guests are fine, two are down to two sides, and nobody is at zero. One dish that clears all five flags fixes both plates, at the cost of one more pan in an oven that is already full.",
+  "nextSteps": [
+    "Replace the 26 sample rows with your own guest list, type 1 only where a restriction applies, and check that the audit cell at the top of the sheet reads 0 before you trust any count",
+    "Enter the dish you are still deciding on as row 20 with all five flags filled, then watch B40 and B42 move before you commit to cooking it",
+    "Sort column H ascending and print that column for whoever plates the food, so the two plates that need building separately are not the last two served"
+  ],
+  "relatedTutorials": [
+    "thanksgiving-potluck-sign-up-sheet",
+    "thanksgiving-seating-chart-rsvp",
+    "thanksgiving-dinner-cost-per-guest"
+  ]
+}
