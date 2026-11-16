@@ -1,0 +1,299 @@
+{
+  "slug": "black-friday-return-window-tracker",
+  "title": "Black Friday Return Deadline Tracker: $362 of $1,563 Is Already Past the Window",
+  "description": "A holiday return deadline tracker that gives every purchase a hard date, splits each store's own window from the holiday cutoff, and totals what is recoverable.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "IF",
+    "AND",
+    "TODAY",
+    "SUMIFS",
+    "COUNTIF",
+    "TEXT",
+    "WORKDAY",
+    "MIN"
+  ],
+  "intro": "The wool coat cost 189.00 on October 14 with a thirty-day window, which made November 13 the last day to return it. It is November 16. Three rows on this sheet are past that line already, and 362.00 out of the 1,563.00 spent since late September is sitting in a closet with no way back. Two more rows, 253.00 between them, close within five days.",
+  "tags": [
+    "Black Friday",
+    "Returns",
+    "Return Window",
+    "Deadline"
+  ],
+  "estimatedTime": "13 min read",
+  "prerequisites": [
+    "Excel 2016 or later, or Google Sheets, since IF, AND, SUMIFS, MIN and WORKDAY all exist in both with the same argument order",
+    "A store window in calendar days for each purchase, read off the posted policy rather than assumed, because 30 days is common and 90 is not rare",
+    "A decision about which clock governs your particular store, since one sheet cannot hold two readings of the same policy without a column for each"
+  ],
+  "sections": [
+    {
+      "title": "Two Clocks Run at Once and Neither Is on the Receipt",
+      "content": "A store's own window starts on the purchase date and runs a set number of calendar days. From early November most stores replace that with a fixed end date, so a jacket bought on November 12 and a board game bought on November 4 both come due on the same day in January. Take either clock alone and the deadline column is wrong on part of the list.\n\nThat is how 362.00 goes missing without anyone making a mistake with a receipt. The coat at 189.00 cleared its window on November 13, the desk lamp at 44.00 on November 14, the kids' tablet at 129.00 back on October 28. All three sat in the sheet looking like purchases rather than deadlines, which is the failure mode this page is built to remove.",
+      "steps": [
+        {
+          "name": "B1, the first day the holiday rule applies",
+          "text": "Type 11/1/2026. This is the earliest purchase date the store's fixed deadline covers. A date typed without a year inherits the current one, so 11/1 in a hurry stores November 1 of this year and looks right in every case except the year it is not."
+        },
+        {
+          "name": "B2, the last purchase date covered",
+          "text": "Type 12/24/2026. Purchases after this date fall back to their own window. Leave this cell empty and the upper condition in the deadline formula reads as zero, every row fails the test, and the sheet quietly ignores the holiday rule altogether."
+        },
+        {
+          "name": "B3, the fixed end date",
+          "text": "Type 1/15/2027. Copy it from the posted policy and read the year twice. Typing 1/15 during a November shopping session stores January 15, 2026, which is ten months in the past, and then every row on the sheet reports Missed with no error anywhere."
+        },
+        {
+          "name": "Column A, ten items",
+          "text": "Wool coat, Espresso machine, Kids' tablet, Running shoes, Desk lamp, Noise-canceling headphones, Winter boots, Blender, Board game, Hiking jacket. Plain names in rows 6 through 15, no model numbers, so the sheet reads at a glance when you are standing in a return line."
+        },
+        {
+          "name": "Column B, purchase date",
+          "text": "10/14/2026, 10/20/2026, 9/28/2026, 10/30/2026, 10/24/2026, 11/1/2026, 10/20/2026, 10/22/2026, 11/4/2026, 11/12/2026. Seven of the ten were bought before the holiday rule started, which is what makes the two clocks worth separating."
+        },
+        {
+          "name": "Column C, store type",
+          "text": "Department store, Appliance store, Electronics, Shoe store, Home goods, Electronics, Shoe store, Appliance store, Toy store, Outdoor. Store type is enough to look up the policy again later. The exact name of the shop adds nothing the sheet can calculate with."
+        },
+        {
+          "name": "Column D, window in calendar days",
+          "text": "30, 45, 30, 90, 21, 30, 30, 30, 30, 60. Calendar days, not business days. This column is where the sheet earns its keep, because the number differs by store and almost nobody writes it down at the till."
+        },
+        {
+          "name": "Column E, what you paid",
+          "text": "189, 249, 129, 148, 44, 279, 164, 89, 54, 218. The amount that comes back if the return happens, which is the only reason a deadline matters. Total across the ten rows is 1,563.00."
+        }
+      ],
+      "example": {
+        "formula": "=B6+D6",
+        "result": "11/13/2026",
+        "explanation": "October 14 plus thirty calendar days, on the wool coat row. Against a check date of November 16, 2026 that is minus 3, which is the number that turns the coat into 189.00 of loss. The same formula on row 8 returns 10/28/2026 for the tablet, nineteen days gone. Both are correct and both are useless on their own, because they only hold for purchases made before the holiday rule started."
+      },
+      "tips": [
+        "A date pasted from a card statement often arrives as text, and adding days to a text date returns #VALUE! rather than a wrong date. =COUNT($B$6:$B$15) reads 10 when all ten are real dates and drops to 7 when three came in as text. On a single cell, =ISNUMBER($B6) is the fastest tell.",
+        "Typing 11/2 with no year stores November 2 of the current year, with no prompt and no warning. In a November list that is usually what you meant. In a January list built from December receipts it quietly backdates a purchase by a year, and the deadline column follows it."
+      ]
+    },
+    {
+      "title": "The Layout: Eight Columns, Five Typed, Three Calculated",
+      "content": "Header in row 5, data in rows 6 through 15, eight columns from A to H. Five columns get typed and three are formulas, a split that keeps the sheet usable inside a store, because the only cells you touch while standing at a counter are the purchase date in B and the window in D.",
+      "steps": [
+        {
+          "name": "Row 5, headers",
+          "text": "Item, Purchased, Store, Window, Price, Deadline, Days left, Status across A5:H5. Data starts in row 6, so every range in every formula below runs $6:$15 until you add a row at the bottom."
+        },
+        {
+          "name": "Column F, the deadline",
+          "text": "1/15/2027 on eight of the ten rows and 11/13/2026 on the coat, because the coat predates the holiday rule and keeps its own window. The next section takes this formula apart.",
+          "formula": "=IF(AND($B6>=$B$1,$B6<=$B$2),$B$3,$B6+$D6)"
+        },
+        {
+          "name": "Column G, days left",
+          "text": "Minus 3 on the coat, plus 3 on the boots. One subtraction against the check date, and it is the only volatile cell on the sheet.",
+          "formula": "=$F6-TODAY()"
+        },
+        {
+          "name": "Column H, status",
+          "text": "Missed, Return now, Two weeks, Open. Bands instead of a raw countdown, because a number tells you how long and a word tells you what to do with the afternoon.",
+          "formula": "=IF($B6=\"\",\"\",IF($G6<0,\"Missed\",IF($G6<=7,\"Return now\",IF($G6<=21,\"Two weeks\",\"Open\"))))"
+        }
+      ],
+      "example": {
+        "formula": "=AND($B11>=$B$1,$B11<=$B$2)",
+        "result": "TRUE",
+        "explanation": "Row 11 is the headphones, bought November 1, 2026, which is the first day the holiday rule covers. TRUE means column F takes the fixed date instead of the thirty-day window: 1/15/2027 rather than 12/1/2026. The same two conditions on row 6 return FALSE, so the coat keeps its own deadline. This is the whole formula, minus the branch."
+      },
+      "tips": [
+        "Freeze row 5 and column A before you add rows, under View > Freeze Panes in Excel and View > Freeze in Sheets. Eight columns is not wide, but the item name scrolls off screen at exactly the moment you are reading the status.",
+        "Ctrl+T turns A5:H15 into a Table and any formula written afterward can use names like Table1[[#This Row],[Window]] that grow with the table. Google Sheets has no Tables, so a row typed below row 15 sits outside every SUMIFS until you extend the ranges by hand, which is the difference that bites in the second week of January."
+      ]
+    },
+    {
+      "title": "The Switch: Two Conditions and Two Boundary Dates",
+      "content": "The deadline is one formula with two branches and two conditions, and each condition sits on a date where being one day off changes the answer by weeks. Both boundaries are real dates from the policy, not round numbers chosen for convenience, which is why the greater-than and greater-than-or-equal distinction has to be settled deliberately.",
+      "steps": [
+        {
+          "name": "The two branches",
+          "text": "If the purchase date falls inside the covered range, the deadline is the fixed date in B3. If it falls outside, the deadline is the purchase date plus its own window. There is no third case, and no purchase is covered by both."
+        },
+        {
+          "name": "The first covered day",
+          "text": "November 1 is inside the range and October 31 is not. Change >= to > in the formula and the headphones, bought on November 1, lose the fixed date: the deadline moves from 1/15/2027 to 12/1/2026, and 45 days disappear on a 279.00 item."
+        },
+        {
+          "name": "The last covered day",
+          "text": "December 24 is inside and December 25 is not. A store's fixed date is not automatically an extension, either: a purchase on December 26 with a thirty-day window runs to 1/25/2027, which lands ten days past the 1/15/2027 the holiday rule would have given it."
+        },
+        {
+          "name": "The version that lies",
+          "text": "Drop the lower condition and the formula still runs, still returns dates, and is wrong on seven rows. Every purchase before December 24 picks up 1/15/2027 with 60 days left, the 362.00 already lost disappears from the sheet, and the 253.00 due within five days reads as Open. Nothing errors, and the report it produces is the opposite of the truth.",
+          "formula": "=IF($B6<=$B$2,$B$3,$B6+$D6)"
+        },
+        {
+          "name": "Two purchases, one store, 13 days",
+          "text": "The running shoes were bought October 30 at a 90-day store, so their deadline is 1/28/2027. Buy the same kind of item at the same store on November 2 and the fixed date takes over at 1/15/2027. The later purchase has the earlier deadline, by thirteen days. A 90-day window is worse than useless on a store whose holiday rule cuts it to 76."
+        },
+        {
+          "name": "MIN, when the posted wording is unclear",
+          "text": "Some policies extend the window, and some replace it. If you cannot tell which, act on the earlier date. On a covered row with a 90-day window the store's own date would be 2/10/2027 and the fixed date 1/15/2027; MIN returns 1/15/2027, which is the version that cannot cost you the item. Going 26 days early costs a second trip to the mall. Going 26 days late costs 218.00 on the jacket row.",
+          "formula": "=MIN($F6,$B6+$D6)"
+        },
+        {
+          "name": "WORKDAY is the wrong function here",
+          "text": "Return windows count calendar days, holidays included. =WORKDAY($B11,$D11) on the headphones returns 12/11/2026 instead of 12/1/2026, because it skips the eight weekend days that the store still counts. That is ten days of slack that does not exist, on the row worth the most money. WORKDAY earns its place when a deadline really is a business-day count, such as a shipping cutoff or a filing date.",
+          "formula": "=WORKDAY($B11,$D11)"
+        }
+      ],
+      "example": {
+        "formula": "=IF(AND($B11>=$B$1,$B11<=$B$2),$B$3,$B11+$D11)",
+        "result": "1/15/2027",
+        "explanation": "November 1 plus thirty days is 12/1/2026, which is what the right-hand branch returns. The left branch wins and hands back the fixed date, buying 45 days on a 279.00 purchase. Those 45 days exist only because November 1 clears the lower boundary, which is why the >= in that condition is load-bearing rather than stylistic."
+      },
+      "tips": [
+        "Both condition cells need dollar signs. Fill the formula down without them and $B$1 walks to B2 on row 7, B3 on row 8, and the sheet starts comparing purchase dates against other purchase dates.",
+        "WORKDAY accepts a fourth argument for a list of holidays. It is useful for shipping cutoffs and actively harmful for return windows, since a store does not care that December 25 was closed."
+      ]
+    },
+    {
+      "title": "Days Left, and the Formatting That Makes It Unreadable",
+      "content": "One subtraction produces the countdown, and the cell it lands in inherits whatever format the column above it had. When that format is a date, plus 3 renders as January 3, 1900 and minus 3 renders as a row of hash marks, because Excel has no way to display a negative date. The numbers are right in both cases and neither tells you anything.",
+      "steps": [
+        {
+          "name": "G6, one subtraction",
+          "text": "Minus 3 on the coat, plus 3 on the boots, plus 60 on the jacket, plus 73 on the running shoes. Set the column to Number with zero decimals, or General, before you fill it down. TODAY() returns a serial number, and the difference between two serials is a plain count of days."
+        },
+        {
+          "name": "The format trap",
+          "text": "Select G6:G15, open Format Cells, choose Date, and the boots read 1/3/1900 while the coat reads ######. The positive value is being shown as January 3, 1900 because serial 3 is that day in the 1900 date system. The negative value cannot be shown at all. Neither is an error, and both look like one."
+        },
+        {
+          "name": "H6, four bands",
+          "text": "Three rows Missed, two Return now, one Two weeks, four Open. The order of the IF statements matters: test for negative first, or a missed return reports Open and climbs back into the safe pile."
+        },
+        {
+          "name": "Why bands instead of a countdown",
+          "text": "A cell reading 3 tells you a number. A cell reading Return now tells you to put the boots in the car. Bands also drive conditional formatting cleanly: one rule per status, red for Missed, amber for Return now, no formula written twice."
+        },
+        {
+          "name": "The blank row",
+          "text": "Clear B6 and the deadline reads 1/30/1900 instead of erroring, because an empty cell is zero and zero plus thirty is serial 30. The status then reports Missed, which is technically consistent and completely wrong. The $B6=\"\" guard at the front of the IF is what keeps an empty row from joining the loss column."
+        },
+        {
+          "name": "A text column for the box stack",
+          "text": "Returns happen in batches once the gifts are opened, and a printed column beats a screen. =TEXT($F6,\"ddd, mmm d\") renders Fri, Jan 15, which survives being taped to a box. TEXT output is text, so nothing downstream can subtract it, which is why it belongs in its own column and not in F.",
+          "formula": "=TEXT($F6,\"ddd, mmm d\")"
+        }
+      ],
+      "example": {
+        "formula": "=$F12-TODAY()",
+        "result": "3",
+        "explanation": "The winter boots come due November 19, 2026, and the check date is November 16. Three days, on a 164.00 purchase. On the wool coat row the identical formula returns minus 3, and that single sign is the entire difference between money you can still recover and money you cannot."
+      },
+      "tips": [
+        "TODAY() recalculates on every edit, so the countdown is live in both apps. Excel reads the operating system clock; Google Sheets reads the spreadsheet's own time zone, set under File > Settings. A sheet built in one time zone and opened in another can disagree by a day at the boundary, which matters only on the last day of a window.",
+        "Conditional formatting on column H beats a manual color fill. A fill you applied by hand stops matching the moment the status changes, and the row you flagged in November is the row you trust in January."
+      ]
+    },
+    {
+      "title": "The Money Block, and the Typo That Survives Every Check",
+      "content": "Four SUMIFS formulas turn the status column into dollars, and a fifth cell adds the four back together. That audit cell is the part worth keeping: it catches a status string that no longer matches anything, which is the one error in this sheet that produces a total instead of an error message.",
+      "steps": [
+        {
+          "name": "B17, everything spent",
+          "text": "1,563.00. The sum of column E, used as the reference figure the four buckets have to reconcile against.",
+          "formula": "=SUM($E$6:$E$15)"
+        },
+        {
+          "name": "B18, already gone",
+          "text": "362.00 across three rows. The coat at 189.00, the tablet at 129.00, the lamp at 44.00. This is the number that does not move again no matter what you do this week.",
+          "formula": "=SUMIFS($E$6:$E$15,$H$6:$H$15,\"Missed\")"
+        },
+        {
+          "name": "B19, recoverable in seven days",
+          "text": "253.00 across the boots and the blender. The only figure on the sheet that responds to effort, which makes it the one to read first.",
+          "formula": "=SUMIFS($E$6:$E$15,$H$6:$H$15,\"Return now\")"
+        },
+        {
+          "name": "B20, due in eight to twenty-one days",
+          "text": "249.00, the espresso machine alone, deadline 12/4/2026. Money with a plan rather than an afternoon attached to it.",
+          "formula": "=SUMIFS($E$6:$E$15,$H$6:$H$15,\"Two weeks\")"
+        },
+        {
+          "name": "B21, still open",
+          "text": "699.00 across four rows, all of which carry the fixed 1/15/2027 date. Comfortable, and the reason this block needs a deadline column rather than a countdown: comfortable today is not the same as comfortable on January 16."
+        },
+        {
+          "name": "B22, the audit",
+          "text": "0.00. =$B$17-SUM($B$18:$B$21) is the difference between everything spent and everything bucketed. Any status string that no longer matches its formula falls out of all four buckets at once, and this cell reports the exact dollars that vanished. Do not format it away: a zero here is the proof that the other four numbers are real.",
+          "formula": "=$B$17-SUM($B$18:$B$21)"
+        },
+        {
+          "name": "The typo that survives",
+          "text": "Edit the formula in H6 to return \"Return now \" with a trailing space, fill it down onto the boots row, and B19 drops to 89.00 while B22 reads 164.00. No error, no warning, a total that looks like a total. SUMIFS ignores case, so RETURN NOW matches the criteria fine; it does not ignore spaces, and it does not trim them."
+        }
+      ],
+      "example": {
+        "formula": "=SUMIFS($E$6:$E$15,$H$6:$H$15,\"Return now\")",
+        "result": "253.00",
+        "explanation": "The winter boots at 164.00 and the blender at 89.00, both due in five days or less. Flip one of those rows to Two weeks and this cell drops to 89.00 while B20 climbs by the same amount, so the four buckets stay in balance and the audit cell stays at zero. A total that moves between buckets is a status change. A total that disappears entirely is a typo."
+      },
+      "tips": [
+        "SUMIFS criteria support wildcards, so =COUNTIF($H$6:$H$15,\"Return*\") returns 2 and survives any rewording of the band as long as it still starts with Return. That is a sturdier formula for a count than an exact string, at the cost of matching a status you did not intend.",
+        "The audit cell only proves the buckets add up, not that the deadlines are right. The deadlines come from column D, and column D is the one input on this sheet nobody can look up for you."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "AND",
+      "slug": "and",
+      "description": "AND returns TRUE if all arguments are TRUE, and FALSE if any argument is FALSE."
+    },
+    {
+      "name": "TODAY",
+      "slug": "today",
+      "description": "TODAY returns the current date, updated each time the worksheet recalculates."
+    },
+    {
+      "name": "SUMIFS",
+      "slug": "sumifs",
+      "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "COUNTIF",
+      "slug": "countif",
+      "description": "COUNTIF counts the number of cells in a range that meet a specified condition. It's the counting counterpart of SUMIF — instead of summing matching values, it counts how many matches exist."
+    },
+    {
+      "name": "TEXT",
+      "slug": "text",
+      "description": "TEXT converts a number or date into text using a user-supplied format code, so the displayed value can be concatenated or presented in a custom format."
+    },
+    {
+      "name": "WORKDAY",
+      "slug": "workday",
+      "description": "WORKDAY returns the date that is a given number of working days before or after a start date, skipping Saturdays and Sundays and optionally a list of holidays."
+    },
+    {
+      "name": "MIN",
+      "slug": "min",
+      "description": "MIN returns the smallest value in a range of cells."
+    }
+  ],
+  "summary": "Eight columns, ten typed dates and three formulas turn a pile of receipts into a deadline per purchase plus a dollar figure for each band. The switch in column F is the part that decides the answer: purchases inside the holiday range take the fixed date, purchases outside it keep their own window, and dropping either condition makes seven rows report the wrong deadline without a single error. On this sample list 1,563.00 of spending splits into 362.00 already lost, 253.00 recoverable this week, 249.00 due within three weeks and 699.00 still open. The trade-off is column D. Return windows are not one number, so the sheet is only as good as ten policy lookups, and a tracker built without them radiates false comfort in a very tidy format.",
+  "nextSteps": [
+    "Fill column D from each store's posted policy before the next purchase, not after, and type the fixed date in B3 only once you have read it on a page rather than remembered it",
+    "Add the TEXT column to a second sheet, filter it to Return now, and print it for the box you keep by the door so the return run happens once instead of four times",
+    "When January arrives, swap the TODAY() references for a fixed date cell so the sheet becomes a record of what actually got returned, including the 362.00 that did not"
+  ],
+  "relatedTutorials": [
+    "black-friday-price-tracker",
+    "cyber-monday-subscription-tracker",
+    "calculate-expiry-date"
+  ]
+}
