@@ -1,0 +1,346 @@
+{
+  "slug": "holiday-gift-budget-tracker",
+  "title": "Holiday Gift Budget Tracker: 700 in the Budget, 85 You Can Actually Spend",
+  "description": "A holiday gift budget tracker with one running balance and a cash envelope per recipient, plus the formula that shows the 85.00 you can really still spend.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "SUM",
+    "SUMIFS",
+    "IF",
+    "COUNT",
+    "COUNTA",
+    "COUNTIF"
+  ],
+  "intro": "Seven hundred dollars of budget, twelve gifts, ten of them already bought for 500.00. The sheet will report 200.00 left without complaint, and that figure is 115.00 more than the money you can still commit. The gap is two gifts on the list at 55.00 that nobody has paid for yet, plus 60.00 that never landed in a recipient's envelope.",
+  "tags": [
+    "Holiday Budget",
+    "Gift Budget",
+    "Running Balance",
+    "SUMIFS"
+  ],
+  "estimatedTime": "13 min read",
+  "prerequisites": [
+    "Excel 2016 or later, or Google Sheets, since SUM, SUMIFS, IF, COUNT, COUNTA and COUNTIF all exist in both with the same argument order",
+    "A total you are willing to spend, written down as a number rather than kept in your head, because every formula below divides against it",
+    "A list of recipients before a list of gifts, since the envelope block is keyed on the recipient column and a gift added later without a name is invisible to it"
+  ],
+  "sections": [
+    {
+      "title": "Three Numbers Answer the Same Question and Only One Is Spendable",
+      "content": "Seven hundred in B3, five hundred spent, two hundred left. That subtraction is correct and it is the wrong number.\n\nFifty-five of the two hundred belongs to two gifts already priced and not yet bought: the ceramic mug set at 30.00 and the art supplies at 25.00. Another sixty was never assigned to anybody, because the six envelopes total 640.00 against a 700.00 budget. Subtract both and 85.00 remains, which is the only figure you can hand across a counter without breaking a promise you made on paper.\n\nAll three numbers are real. They answer three different questions, and a budget sheet that only prints the first one is how a $700 December becomes a January statement.",
+      "steps": [
+        {
+          "name": "B3, the one number everything divides against",
+          "text": "Type 700. Format it as Currency with two decimals, because every result downstream inherits this cell and a bare 700 next to a column of $58.00 rows reads like a quantity."
+        },
+        {
+          "name": "B31, the naive remainder",
+          "text": "200.00. This is what a bank balance would say and it is what most gift sheets stop at. Useful as a headline, dangerous as a spending limit.",
+          "formula": "=$B$3-$B$29"
+        },
+        {
+          "name": "B32, projected headroom",
+          "text": "145.00. The same subtraction, minus the two gifts you have already committed to at their planned prices. This is the number to quote when someone asks what is left for the list.",
+          "formula": "=$B$3-$B$29-$B$30"
+        },
+        {
+          "name": "B33, free to spend",
+          "text": "85.00. Envelope money minus what is spent minus what is promised. The 60.00 difference from B32 is the reserve you deliberately left unassigned, which is not the same as money you forgot about.",
+          "formula": "=($B$4-$B$29)-$B$30"
+        },
+        {
+          "name": "The one-line proof",
+          "text": "B33 and B32 minus B5 have to agree. 145.00 minus 60.00 is 85.00. If those two cells ever disagree, an envelope total and the gift list have drifted apart and one of the SUMIFS ranges is short."
+        },
+        {
+          "name": "Expect 0.00 for the first ten minutes",
+          "text": "All three cells read 0.00 until rows 7 through 18 and the envelope block at row 21 exist. Build them in the order of this page: budget at the top, gift list in the middle, envelopes below, remainders last. Typing the three formulas first and watching them sit at zero is the fastest way to learn which range feeds which number."
+        }
+      ],
+      "example": {
+        "formula": "=($B$4-$B$29)-$B$30",
+        "result": "85.00",
+        "explanation": "Envelopes total 640.00 and 500.00 is spent, leaving 140.00 of envelope money, and 55.00 of that is already promised to the mugs and the art supplies. The 60.00 the budget holds beyond the envelopes never enters this formula at all, which is exactly why the answer is lower than the 200.00 everyone quotes. Change one envelope from 140 to 150 and this cell rises to 95.00 without a cent arriving."
+      },
+      "tips": [
+        "Give the three cells labels in column A, not comments. A comment hides behind a red triangle and gets deleted the first time someone tidies the sheet, and then a bare 85.00 in B33 is indistinguishable from a total.",
+        "A budget entered as text with a dollar sign typed in front behaves like a number in Excel because the format is applied on entry. A budget pasted from a note-taking app often is not a number, and then B32 and B33 both return #VALUE! while B31 returns a plausible figure, because only the cells touching B3 break."
+      ]
+    },
+    {
+      "title": "The Layout: Eight Columns, Five Typed, Four Calculated",
+      "content": "Headers in row 6, twelve gifts in rows 7 through 18, columns A to H. Five columns get typed and four are formulas, and the split is deliberate: the only cells you touch while shopping are the two money columns and the recipient, so the sheet stays usable on a phone in a store.\n\nThe typed columns are A through E. Column D is what you expected to pay and column E is what the card was charged. Keeping both is the entire point, since the difference between them is the only early warning this sheet produces.",
+      "steps": [
+        {
+          "name": "Row 6, headers",
+          "text": "Gift, Recipient, Category, Planned, Spent, vs Plan, Running, Left across A6:H6. Data starts at row 7, so every range below runs $7:$18 until you add a row at the bottom."
+        },
+        {
+          "name": "Column A, twelve gifts",
+          "text": "Wool throw, Cast iron skillet, Hiking boots, Book set, Noise-canceling headphones, Ceramic mug set, Building blocks, Art supplies, Board game, Coffee sampler, Desk calendar, Treat tin. Plain names, no model numbers. A gift you cannot identify in four words will not get bought."
+        },
+        {
+          "name": "Column B, six recipients",
+          "text": "Mom, Dad, Sister, Nephew, Brother-in-law, Office swap, repeated across the twelve rows. These strings are keys. The envelope block looks them up by exact text, so a trailing space here creates a gift that no envelope will ever claim, and the audit cell is the only thing that notices."
+        },
+        {
+          "name": "Column C, category",
+          "text": "Home, Kitchen, Outdoor, Books, Electronics, Toys, Crafts, Games, Food, Office. Optional for the arithmetic and useful in January, when you want to know whether the food gifts were worth 76.00 or whether the kitchen habit is the one to cut."
+        },
+        {
+          "name": "Column D, planned spend",
+          "text": "65, 55, 110, 35, 95, 30, 55, 25, 40, 28, 18, 22. Total 578.00. This column is the honest one, filled in before you opened a single tab, and it is also the column that makes the envelope allocation possible."
+        },
+        {
+          "name": "Column E, spent",
+          "text": "58, 49, 118, 31, 88, blank, 58, blank, 36, 26, 14, 22. Total 500.00 across ten rows. The two blanks are gifts not bought yet, and they must stay genuinely empty rather than being filled with 0, because 0 is a purchase."
+        },
+        {
+          "name": "Column F, versus plan",
+          "text": "Minus 7.00 on the throw, plus 8.00 on the boots, plus 3.00 on the blocks, and a blank on the two rows with no price. Blank rather than zero, because a zero here reads as a gift that came in exactly on budget when nothing has been bought.",
+          "formula": "=IF($E7=\"\",\"\",$E7-$D7)"
+        },
+        {
+          "name": "Column G, running spend",
+          "text": "58.00, then 107.00, then 225.00, climbing to 500.00 on the last row. A growing range, not a fixed one. The next section takes it apart.",
+          "formula": "=SUM($E$7:E7)"
+        },
+        {
+          "name": "Column H, left of budget",
+          "text": "642.00 on the first row, 200.00 on the last. The same growing range subtracted from B3, which is why the column ends on exactly the same figure as the check block.",
+          "formula": "=$B$3-SUM($E$7:E7)"
+        },
+        {
+          "name": "B29, everything spent",
+          "text": "500.00. One SUM over the whole column, and the figure all four remainder cells lean on.",
+          "formula": "=SUM($E$7:$E$18)"
+        },
+        {
+          "name": "B30, committed but not bought",
+          "text": "55.00. Sums the planned prices of rows where the Spent cell is empty, which is 30.00 plus 25.00. This cell is what turns a bank balance into a budget.",
+          "formula": "=SUMIFS($D$7:$D$18,$E$7:$E$18,\"\")"
+        },
+        {
+          "name": "The shortcut that gets this wrong",
+          "text": "=SUM($D$7:$D$18)-SUM($E$7:$E$18) returns 78.00, and 78.00 is not the commitment. It is 55.00 still owed plus 23.00 you came in under plan on the ten rows already bought. The two amounts happen to add up on this list and nothing distinguishes them in the result, so a plan change of a few dollars silently moves money between a debt and a saving."
+        },
+        {
+          "name": "Freeze row 6 and column A",
+          "text": "View > Freeze Panes in Excel, View > Freeze in Sheets, after selecting B7. Eight columns is narrow until the gift name scrolls off and you are reading a row of numbers with no idea which gift they belong to."
+        },
+        {
+          "name": "Table or no table",
+          "text": "Ctrl+T turns A6:H18 into a Table, and any formula written afterward can use Structured References like Table1[[#This Row],[Spent]]. Google Sheets has no Tables, so a thirteenth gift typed below row 18 sits outside every range on this sheet until you extend $7:$18 to $7:$19 by hand. That edit is the one people forget in week three."
+        }
+      ],
+      "example": {
+        "formula": "=SUMIFS($D$7:$D$18,$E$7:$E$18,\"\")",
+        "result": "55.00",
+        "explanation": "The criteria is an empty string, so it matches the two rows where Spent is blank: the ceramic mug set at 30.00 and the art supplies at 25.00. Fill one of those cells with 0 because a gift card covered it and the commitment drops to 25.00, correctly, since a gift card is not cash out of the budget. Fill it with 30 and B30 goes to 25.00 as well, and the budget quietly forgets a purchase it should have recorded."
+      },
+      "tips": [
+        "Sort the sheet and the running column follows the rows, because the formula moves with its row. Row 7 then holds whatever gift now sits seventh, so the running column stays internally consistent and stops meaning what it meant. Sort after the last purchase, not during.",
+        "Format column F with a custom code of $#,##0.00;[Red]-$#,##0.00 so the overruns show red. On a printed sheet the minus sign is easy to miss at arm's length and the color is not."
+      ]
+    },
+    {
+      "title": "The Running Balance, and the Column You Must Never Total",
+      "content": "Column H answers one question per row: if the shopping stopped here, what is left. It does that with a range that grows down the column, anchored at the top with an Absolute Reference and left relative at the bottom.\n\nThe failure mode is not in the formula. It is in what people do to the column afterward. Sum a running balance and you get a number with no meaning at all, and the sheet will not warn you.",
+      "steps": [
+        {
+          "name": "The anchor",
+          "text": "$E$7:E7 is the whole trick. The first reference is locked so every row starts counting from row 7. The second is relative so it stretches to the current row when you fill down. Write it as E7:E7 and the running column reports the row's own spend on every row, which looks like a column of prices rather than a running total."
+        },
+        {
+          "name": "Fill Handle on the pair",
+          "text": "Select G7:H7, then double-click the Fill Handle on the corner of the selection. Excel fills to the last row of the adjacent column, which is row 18 here, and stops. In Sheets, drag the handle or use Ctrl+D over a selected range."
+        },
+        {
+          "name": "The two rows that do not move",
+          "text": "Row 11 holds the headphones and lands on 356.00. Row 12 is the mug set with an empty Spent cell and also reads 356.00, because adding a blank adds nothing. Two identical values in a balance column are not a bug, they are the visual proof that no money moved."
+        },
+        {
+          "name": "Never total this column",
+          "text": "=SUM($H$7:$H$18) returns 4,382.00 against a 700.00 budget. Nothing errors. A running balance is a stack of cumulative figures, so summing it adds the same dollars again on every row below the purchase that spent them."
+        },
+        {
+          "name": "Clear a spent cell and watch two blocks react",
+          "text": "Empty E16, the coffee sampler at 26.00, and three things happen at once: the running column drops by 26.00 from that row down, B29 falls to 474.00, and B30 rises to 81.00 because that row now counts as committed and unbought. One Backspace, four changed cells, no warning."
+        },
+        {
+          "name": "The price that arrives as text",
+          "text": "A price pasted from a confirmation email can land as text. SUM ignores text in a range rather than failing, so E18 holding a text 22.00 makes B29 read 478.00 with no error. =COUNT($E$7:$E$18) returns 9 while =COUNTA($E$7:$E$18) returns 10, and that one-cell mismatch is the only sign. Excel also paints a green triangle with Number Stored as Text. Google Sheets shows nothing.",
+          "formula": "=COUNTA($E$7:$E$18)"
+        },
+        {
+          "name": "The same trap through SUMIFS",
+          "text": "The envelope block reads column E through SUMIFS, which skips text for the same reason SUM does. So the Office swap envelope drops from 36.00 to 14.00 and the audit cell still reads 0.00, because both blocks skipped the same cell and agreed on the wrong answer. Two totals matching is not proof that either is complete."
+        }
+      ],
+      "example": {
+        "formula": "=$B$3-SUM($E$7:E7)",
+        "result": "356.00",
+        "explanation": "Entered on row 12, the mug set. The range runs from the locked $E$7 down to E12, and E12 is empty, so the sum is still 344.00 and the balance is unchanged from row 11. On row 18 the same formula returns 200.00, which matches B31 exactly, and that coincidence is a useful check: the bottom of the running column and the naive remainder are supposed to be the same number."
+      },
+      "tips": [
+        "Column G exists so column H does not have to be trusted alone. G is what left the account; H is what the budget can still absorb. When G and H disagree with the envelope block, believe G, because it is one SUM over one range.",
+        "If you add a row in the middle, the ranges in F, G and H adjust themselves and B29's range grows to include the new row. B30 grows too, since it is a full-range SUMIFS. What does not adjust is any hand-typed total you wrote in a text cell, which is why every total here is a formula."
+      ]
+    },
+    {
+      "title": "Envelopes: One Recipient, One Cap, and the Cell That Catches a Blank Name",
+      "content": "The gift list answers what each present costs. The envelope block answers what each person is allowed, and those are different constraints. Six envelopes, rows 21 to 26, keyed on the recipient names typed in column B.\n\nThis is the block that turns a budget into a decision, because 640.00 of the 700.00 is assigned and the remaining 60.00 is a reserve rather than a rounding error.",
+      "steps": [
+        {
+          "name": "Row 20, headers",
+          "text": "Recipient, Envelope, Spent, Left, Status across A20:E20. Keep it narrow. Five columns that fit on one screen beat nine that need scrolling to compare."
+        },
+        {
+          "name": "A21:A26, the six names",
+          "text": "Mom, Dad, Sister, Nephew, Brother-in-law, Office swap. Type them here and copy the cells into column B of the gift list rather than typing them twice. A hyphen against a space in Brother-in-law is worth 62.00 in the audit cell."
+        },
+        {
+          "name": "B21:B26, the caps",
+          "text": "130, 140, 145, 100, 80, 45. Total 640.00. Set these from the planned column, not from round numbers, because a cap chosen for tidiness is the one that gets breached."
+        },
+        {
+          "name": "C21, spent per recipient",
+          "text": "107.00 for Mom, 149.00 for Dad, 88.00 for Sister, 58.00 for Nephew, 62.00 for Brother-in-law, 36.00 for Office swap. Six SUMIFS down the block, each one keyed on its own name cell.",
+          "formula": "=SUMIFS($E$7:$E$18,$B$7:$B$18,$A21)"
+        },
+        {
+          "name": "D21, what is left in the envelope",
+          "text": "23.00, then minus 9.00 for Dad, then 57.00, 42.00, 18.00, 9.00. A negative in this column is information, not an error, so do not wrap it in MAX(0,...).",
+          "formula": "=$B21-$C21"
+        },
+        {
+          "name": "E21, three bands",
+          "text": "Watch, Over, Room left, Room left, Watch, Watch. Twenty-five dollars is the threshold because that is roughly one small gift, so an envelope under it cannot absorb a substitution.",
+          "formula": "=IF($C21>$B21,\"Over\",IF($B21-$C21<=25,\"Watch\",\"Room left\"))"
+        },
+        {
+          "name": "Row 27, envelope totals",
+          "text": "640.00 in B27 and 500.00 in C27. The two figures the whole page is built to reconcile.",
+          "formula": "=SUM($C$21:$C$26)"
+        },
+        {
+          "name": "B4 and B5",
+          "text": "B4 becomes 640.00 once the envelopes exist, and B5 immediately shows 60.00 as the unassigned reserve. That 60.00 is not spare cash sitting in a drawer. It is permission you have not handed out yet."
+        },
+        {
+          "name": "B34, the audit",
+          "text": "0.00. Total spent minus the sum of every envelope. This is the cell that catches a gift whose recipient name matches nothing.",
+          "formula": "=$B$29-SUM($C$21:$C$26)"
+        },
+        {
+          "name": "Break it on purpose",
+          "text": "Select B18, the Treat tin recipient, and press Delete. C26 drops from 36.00 to 14.00 and B34 reads 22.00. Nothing else changes and no cell errors, because a blank recipient is not an error to SUMIFS, it is simply a row that matches no criteria."
+        },
+        {
+          "name": "The spelling version costs more",
+          "text": "Retype B14 as Brother in law with spaces. C25 falls from 62.00 to 0.00, C26 stays put, and B34 reports 62.00. The gifts are all still there and the envelope block insists two of them were never bought."
+        },
+        {
+          "name": "What the audit does not prove",
+          "text": "A zero here says the envelope block and the gift list agree on totals. It says nothing about whether the caps are right, and it will not catch a price stored as text, since both blocks skip that cell and agree on the same understated figure."
+        }
+      ],
+      "example": {
+        "formula": "=SUMIFS($E$7:$E$18,$B$7:$B$18,$A21)",
+        "result": "107.00",
+        "explanation": "Mom's envelope on row 21. The wool throw at 58.00 and the cast iron skillet at 49.00 both match the name in A21. Change A21 to read Mom (2) and this cell drops to 0.00 while the two gifts stay in the list, which is the cleanest way to see that the envelope block is a lookup and the real data lives in rows 7 through 18."
+      },
+      "tips": [
+        "SUMIFS ignores case, so mom matches Mom, and it does not trim spaces, so Mom with a trailing space matches nothing. That asymmetry is why the audit cell is worth keeping even on a list of six names.",
+        "Put the audit cell somewhere visible rather than beside the totals. A number that reads 0.00 on a normal day is only useful if you see it enough times to notice 22.00."
+      ]
+    },
+    {
+      "title": "One Envelope Is Over by 9.00. Decide Where It Comes From",
+      "content": "Dad's envelope holds 140.00 and his two gifts were planned at 145.00. Five dollars of the overrun existed before a single item went in the cart, which is the part a budget can prevent and a receipt cannot.\n\nThe register added the other four. The boots came in at 118.00 against 110.00 planned, the book set at 31.00 against 35.00, and the two net out to 4.00 over. Total: 149.00 against a 140.00 cap. Nine dollars, on a sheet holding 85.00 of free money.",
+      "steps": [
+        {
+          "name": "Name the size of the problem",
+          "text": "9.00. Against 500.00 already spent, that is not a cash shortage. It is an allocation error, and the fix belongs in the envelope block rather than in the gift list."
+        },
+        {
+          "name": "Count the breaches before you shop again",
+          "text": "1. One envelope over, three within 25.00 of their cap, two comfortable. That distribution matters more than the count: three envelopes about to go over means the next trip produces three more conversations rather than one.",
+          "formula": "=COUNTIF($E$21:$E$26,\"Over\")"
+        },
+        {
+          "name": "Option one, take it from the reserve",
+          "text": "Raise Dad to 150.00. B4 becomes 650.00, B5 falls to 50.00, and B33 rises from 85.00 to 95.00. No money arrived. The envelope pulled 10.00 out of a reserve that was already yours, and free-to-spend went up because the permission did."
+        },
+        {
+          "name": "Option two, raid another envelope",
+          "text": "Move 9.00 from Sister, who has 57.00 left. B33 stays at 85.00, B4 stays at 640.00, and Sister's left column falls to 48.00. Every total is unchanged and one person's cap just got quietly reassigned. This is the option that feels free and is not."
+        },
+        {
+          "name": "Option three, trim a gift",
+          "text": "Cut the mug set from 30.00 to 21.00. B30 falls to 46.00 and B33 rises to 94.00, and Dad is still 9.00 over. Trimming does not fund an overrun. It only enlarges the pot the overrun sits in, which is why a trimming session without a target envelope ends in the same place every year."
+        },
+        {
+          "name": "The status bands exist to stop this",
+          "text": "Dad should have read Watch the moment his envelope went in, since 145.00 planned against 140.00 is a five-dollar overrun visible in November. A cap set from a round number rather than from the planned column is how a nine-dollar gap hides for three weeks."
+        },
+        {
+          "name": "Re-check the three numbers after the fix",
+          "text": "Raise Dad to 150.00 and B31 stays 200.00, B32 stays 145.00, B33 becomes 95.00. Only the free-to-spend figure moves, and 200.00 minus 55.00 minus 50.00 still lands on 95.00. When the chain stops reconciling, an envelope is over its cap and the reserve went negative without being noticed."
+        }
+      ],
+      "example": {
+        "formula": "=COUNTIF($E$21:$E$26,\"Over\")",
+        "result": "1",
+        "explanation": "Dad is the only envelope above its cap, at 149.00 against 140.00. The criteria matches the exact word Over, so rewriting a band to say Over budget would drop this cell to 0 without touching any spend, which is why the status strings need to stay fixed once formulas point at them. Wrapping it as \"Over*\" with a wildcard makes the count survive a reword, at the cost of also matching Overdrawn."
+      },
+      "tips": [
+        "The 5.00 that was visible on paper is the useful number. A cap set below the plan is a decision to overspend made in advance, and it trains everyone reading the sheet to treat the cap column as decorative.",
+        "If two people share an expensive gift, do not split one row across two envelopes. Either add a joint envelope and key the row to it, or the 9.00 turns into 4.50 in two places and neither SUMIFS can see the other half."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "SUMIFS",
+      "slug": "sumifs",
+      "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "COUNT",
+      "slug": "count",
+      "description": "COUNT counts the number of cells that contain numbers within a specified range."
+    },
+    {
+      "name": "COUNTA",
+      "slug": "counta",
+      "description": "COUNTA counts the number of non-empty cells within a specified range, regardless of the cell content."
+    },
+    {
+      "name": "COUNTIF",
+      "slug": "countif",
+      "description": "COUNTIF counts the number of cells in a range that meet a specified condition. It's the counting counterpart of SUMIF — instead of summing matching values, it counts how many matches exist."
+    }
+  ],
+  "summary": "Twelve gifts, eight columns and two blocks of formulas turn a 700.00 budget into three answers that reconcile: 200.00 of cash, 145.00 of headroom once the two unbought gifts are counted, and 85.00 you can actually commit. The running column is the part that has to be written carefully, with $E$7:E7 rather than a fixed range, and the part that must never be summed, since totaling it produces 4,382.00 against a 700.00 budget without a single error. The envelope block is what catches the mistakes the totals hide: a blank or misspelled recipient leaves 22.00 or 62.00 stranded in the audit cell, while a price stored as text slips past both blocks and is caught only by COUNT disagreeing with COUNTA. The trade-off is maintenance. This sheet is only as honest as the two columns you keep filling in, and a budget that stops being updated reads exactly like a budget that is being followed.",
+  "nextSteps": [
+    "Fill the Planned column for all twelve gifts before the next shopping trip, then set each envelope from that column instead of a round number, so the caps describe the list rather than an aspiration",
+    "Add a COUNT check beside B29 that compares COUNT against COUNTA on column E, and leave it visible, since it is the only cell on the sheet that notices a price that arrived as text",
+    "Copy the envelope block to a second sheet, sort it by Left ascending, and buy in that order next year, which puts the tight caps first instead of last"
+  ],
+  "relatedTutorials": [
+    "black-friday-price-tracker",
+    "cyber-monday-subscription-tracker",
+    "thanksgiving-shopping-list-formulas"
+  ]
+}
