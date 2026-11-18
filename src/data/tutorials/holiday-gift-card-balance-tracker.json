@@ -1,0 +1,339 @@
+{
+  "slug": "holiday-gift-card-balance-tracker",
+  "title": "Holiday Gift Card Balance Tracker: Which Card to Spend First",
+  "description": "A holiday gift card balance tracker that reports what each card still holds, which balances have expired, and a formula that names the card to spend first.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "SUM",
+    "SUMIFS",
+    "COUNTIFS",
+    "IF",
+    "TODAY",
+    "MINIFS",
+    "INDEX",
+    "MATCH"
+  ],
+  "intro": "Ten gift cards in a drawer add up to 540.00 of face value. The ledger says 202.50 has been spent, which leaves 337.50, and that is the number most gift card sheets print. It is also 45.00 too high, because a 60.00 toy store card expired three days ago with 45.00 still on it. This page builds a sheet that reports the money you can actually use, then names the card to spend first.",
+  "tags": [
+    "Gift Cards",
+    "Holiday Budget",
+    "Expiry Dates",
+    "SUMIFS"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "Excel 2019 or later, or Google Sheets, because the single-cell answer below uses MINIFS, which Excel 2016 does not have",
+    "One row per card and one row per purchase, entered as they happen, since the card list only holds face values and expiry dates while the ledger holds every swipe",
+    "Expiry dates typed as dates rather than text, which the ISNUMBER check in the last section explains how to confirm"
+  ],
+  "sections": [
+    {
+      "title": "540.00 of Gift Cards, 45.00 of It Already Dead",
+      "content": "Ten cards, 540.00 of face value, 202.50 spent. The subtraction leaves 337.50, and 337.50 is the figure a bank statement would show if gift cards lived in a bank account. They do not. A toy store card that held 60.00 expired on November 15 with 45.00 untouched, and the sheet still counts that 45.00 as yours because nothing on the page compares a date to today unless you write a formula that does.\n\nSo the honest number is 292.50. A further 41.50 of that dies inside twelve days, on a hardware card with 25.00 and a coffee card with 16.50.\n\nThree numbers, one question: what can I still spend? The rest of this page is the wiring that keeps the third one correct as cards get used up.\n\nThe card names and amounts here are a sample ledger built to exercise the formulas. Replace them with your own; the ranges and the logic stay put.",
+      "steps": [
+        {
+          "name": "Rows 5 to 14, one card per row",
+          "text": "Bookshop, Home Goods, Coffee Roaster, Outdoor Supply, Cinema, Grocery, Toy Store, Spa, Hardware, Pet Supply. Column A only. These names are join keys in the same way a product code is, so a card listed twice under two spellings behaves like two cards."
+        },
+        {
+          "name": "B5:B14, face value",
+          "text": "50, 75, 25, 100, 30, 40, 60, 80, 45, 35. That is 540.00, and it is the only column you never revisit after the card arrives."
+        },
+        {
+          "name": "A17:C17, the ledger headers",
+          "text": "Date, Card, Amount. Rows 18 through 30 hold 13 purchases totaling 202.50. A ledger row is a fact about the past, which is why nothing in this block is a formula."
+        },
+        {
+          "name": "B34, remaining on cards",
+          "text": "337.50. One SUM over the calculated balance column.",
+          "formula": "=SUM($E$5:$E$14)"
+        },
+        {
+          "name": "B35, already expired",
+          "text": "45.00. Sums only the rows whose status reads Expired, which is the one card that died with money on it. The cinema card is also expired and contributes nothing, because its balance is zero.",
+          "formula": "=SUMIF($G$5:$G$14,\"Expired\",$E$5:$E$14)"
+        },
+        {
+          "name": "B36, spendable today",
+          "text": "292.50. The number to act on.",
+          "formula": "=$B$34-$B$35"
+        },
+        {
+          "name": "B37, the audit",
+          "text": "0.00. Ledger total minus the summed redeemed column. It is the only cell that notices when a card name in the ledger does not match a card name in the list.",
+          "formula": "=$B$33-SUM($D$5:$D$14)"
+        },
+        {
+          "name": "The count that tells a different story",
+          "text": "2. Two cards are expired and only one of them holds money, so a count of expired cards says nothing about the dollars. Read B35 for the dollars and this cell for the paperwork.",
+          "formula": "=COUNTIF($G$5:$G$14,\"Expired\")"
+        }
+      ],
+      "example": {
+        "formula": "=$B$34-$B$35",
+        "result": "292.50",
+        "explanation": "337.50 minus the 45.00 sitting on a card that can no longer be used. Change the toy store expiry in C11 from November 15 to December 15 and the same formula returns 337.50, because the card moves from Expired to Use first and B35 falls to 0.00. One date edit moves 45.00 from dead to alive, and the total in B34 never moved at all."
+      },
+      "tips": [
+        "Keep the four headline numbers in one block at the bottom, labeled. A 292.50 alone in a cell is trivia; sitting under 337.50 it becomes an argument about 45.00 you lost by not looking.",
+        "Format column C as a date and column E as currency before typing anything. A date dropped into a General cell shows a five-digit serial, and the first instinct is to retype it by hand, which is how a date becomes text."
+      ]
+    },
+    {
+      "title": "The Layout: Eight Columns Above, One Growing Ledger Below",
+      "content": "Two blocks, two jobs. The card list holds what each card is worth and when it stops working. The ledger holds what was spent and when. Only the ledger grows during the holidays.\n\nEight columns across A to H, and exactly three of them are typed: card name, face value, expiry date. Everything else is computed from those three plus the ledger, which matters because a hand-typed balance goes stale the first time the same card is used twice in a week.",
+      "steps": [
+        {
+          "name": "Row 4, the headers",
+          "text": "Card, Face, Expires, Redeemed, Remaining, Days left, Status, Rank across A4:H4. Data starts at row 5, so every range below runs 5 to 14 and gets extended by hand when an eleventh card arrives."
+        },
+        {
+          "name": "Column C, expiry dates, three of them blank",
+          "text": "Outdoor Supply, Grocery and Pet Supply carry no expiration date. Leave those cells genuinely empty rather than typing N/A, and the next section shows why the difference matters more than it looks."
+        },
+        {
+          "name": "D5, redeemed per card",
+          "text": "20.00 for Bookshop, from a 12.40 purchase in October and a 7.60 purchase in November. One formula, filled down, keyed on the name in column A.",
+          "formula": "=SUMIFS($C$18:$C$30,$B$18:$B$30,$A5)"
+        },
+        {
+          "name": "E5, remaining",
+          "text": "30.00. Face minus redeemed. Negative results are legitimate here, and the last section shows a case where a negative means you logged the wrong amount.",
+          "formula": "=$B5-$D5"
+        },
+        {
+          "name": "F5, days left",
+          "text": "133 for Bookshop. The guard on the front keeps blank dates from producing a large negative number.",
+          "formula": "=IF($C5=\"\",\"\",$C5-TODAY())"
+        },
+        {
+          "name": "G5, status",
+          "text": "Open. Four bands, tested in this order: no date, past, within 30 days, everything else.",
+          "formula": "=IF($C5=\"\",\"No expiry\",IF($C5<TODAY(),\"Expired\",IF($C5-TODAY()<=30,\"Use first\",\"Open\")))"
+        },
+        {
+          "name": "H5, rank",
+          "text": "7 for Bookshop, 1 for Cinema. Counts how many cards expire earlier, which makes the earliest date rank 1.",
+          "formula": "=IF($C5=\"\",\"\",COUNTIFS($C$5:$C$14,\"<\"&$C5,$C$5:$C$14,\"<>\")+1)"
+        },
+        {
+          "name": "Rows 18 to 30, the ledger",
+          "text": "2026-10-04 Bookshop 12.40, 2026-10-11 Home Goods 22.75, 2026-10-18 Coffee Roaster 8.50, 2026-10-25 Outdoor Supply 40.00, 2026-11-01 Toy Store 15.00, 2026-11-03 Cinema 11.00, 2026-11-07 Grocery 18.35, 2026-11-08 Cinema 19.00, 2026-11-09 Hardware 20.00, 2026-11-12 Bookshop 7.60, 2026-11-14 Pet Supply 9.25, 2026-11-16 Home Goods 12.25, 2026-11-17 Grocery 6.40. The cinema card expired on November 10, four days after its last purchase, which is why both its rows carry earlier dates."
+        },
+        {
+          "name": "The fixed range that will bite you",
+          "text": "$C$18:$C$30 is a fixed range, not a whole column. Type a new purchase in row 31 and every card still reports its old balance, because ten formulas are looking at rows 18 to 30 and won't notice. Extend all of them, or write the ranges as $C$18:$C$200 now and stop thinking about it."
+        },
+        {
+          "name": "Table or no table",
+          "text": "Ctrl+T over A4:H14 makes the card list a Table and lets new formulas use Structured References such as Table1[[#This Row],[Face]]. Google Sheets has no Tables, so a formula copied between the two apps keeps the A1 style. The ledger block stays plain cells either way."
+        },
+        {
+          "name": "Freeze the header row",
+          "text": "Select A5 and use View > Freeze Panes in Excel or View > Freeze in Sheets. Fourteen rows is enough that the header scrolls away exactly when you stop remembering which column is which."
+        }
+      ],
+      "example": {
+        "formula": "=SUMIFS($C$18:$C$30,$B$18:$B$30,$A5)",
+        "result": "20.00",
+        "explanation": "Two ledger rows match the string in A5: 12.40 on October 4 and 7.60 on November 12. The criteria cell is $A5 with the column locked and the row free, so dragging the formula down walks the card names while the ledger stays fixed. Sorting the ledger by date changes nothing here, unlike a VLOOKUP, which would return the first match it finds in whatever order the rows happen to be."
+      },
+      "tips": [
+        "Type the card name in a ledger row by pointing at the card list and pressing Enter, not by typing it again. The string has to match exactly, and the fastest way to guarantee that is to never type it twice.",
+        "Put the ledger below the card list rather than on a second sheet. A second sheet is tidier and gets forgotten, and the whole value of this page is that the remaining balance is visible in the same glance as the shelf it describes."
+      ]
+    },
+    {
+      "title": "The Empty Expiry Cell That Declares Three Cards Dead",
+      "content": "An empty cell is zero, and zero read as a date is January 0, 1900. Any comparison against TODAY() therefore treats a blank expiry as older than everything, so a status formula that tests the date before testing for emptiness marks all three no-expiry cards as expired.\n\nOn this sheet that misclassification costs 101.00. Outdoor Supply holds 60.00, Grocery 15.25 and Pet Supply 25.75, and all three would fall out of the spendable total while the physical cards sit in a drawer, perfectly valid.",
+      "steps": [
+        {
+          "name": "Write the formula the obvious way",
+          "text": "Expired, Use first, Open, tested top to bottom. It reads correctly and it is wrong on three rows.",
+          "formula": "=IF($C5<TODAY(),\"Expired\",IF($C5-TODAY()<=30,\"Use first\",\"Open\"))"
+        },
+        {
+          "name": "Count the damage",
+          "text": "5 instead of 2. The three extra rows are the cards with no expiry date at all.",
+          "formula": "=COUNTIF($G$5:$G$14,\"Expired\")"
+        },
+        {
+          "name": "Watch the money move",
+          "text": "B35 climbs from 45.00 to 146.00 and B36 falls from 292.50 to 191.50. Nothing errors. The sheet simply reports that a third of the gift cards in the house are worthless."
+        },
+        {
+          "name": "Test emptiness first",
+          "text": "No expiry, and the other three bands behave as before. The blank test has to be the first thing evaluated.",
+          "formula": "=IF($C5=\"\",\"No expiry\",IF($C5<TODAY(),\"Expired\",IF($C5-TODAY()<=30,\"Use first\",\"Open\")))"
+        },
+        {
+          "name": "Why the order cannot be shuffled",
+          "text": "Move the blank test to the end and it never runs. By the time evaluation reaches it, C5<TODAY() has already returned TRUE for a blank cell, because 0 is smaller than today's date serial. The IF function stops at the first TRUE it meets."
+        },
+        {
+          "name": "The 30 is a setting, not a law",
+          "text": "Change it to 45 and Home Goods joins the flagged list at 40.00, taking the use-first money from 41.50 to 81.50. Change it to 14 and nothing moves on today's dates, since the two urgent cards are at 7 and 12 days. Pick the window by how often you shop, not by what sounds tidy."
+        },
+        {
+          "name": "Same guard on the days column",
+          "text": "F5 needs its own blank test, otherwise those three rows show a number around minus 46,000, which looks like a formula problem rather than a missing date.",
+          "formula": "=IF($C5=\"\",\"\",$C5-TODAY())"
+        }
+      ],
+      "example": {
+        "formula": "=IF($C5<TODAY(),\"Expired\",IF($C5-TODAY()<=30,\"Use first\",\"Open\"))",
+        "result": "Expired",
+        "explanation": "Entered on row 8, the Outdoor Supply card, which has no expiry date and 60.00 left. The comparison reads its empty date cell as 0 and finds it older than today, so the first branch wins. Adding the $C5=\"\" test in front returns No expiry and puts 60.00 back into B36."
+      },
+      "tips": [
+        "Keep the band names short and fixed: Expired, Use first, Open, No expiry. B35 reads them as exact strings, so renaming one to Expired 2026 silently removes that card's balance from the expired total.",
+        "Confirm a date is really a date by typing =ISNUMBER(C8) in a spare cell. TRUE means Excel or Sheets holds a date serial; FALSE means you are looking at text or a blank, and no date arithmetic on that cell will behave."
+      ]
+    },
+    {
+      "title": "Which Card to Spend First, and Why Rank 1 Is Wrong",
+      "content": "The Rank column counts the cards that expire before each row, which sounds like a to-do order until you read the top of it. Rank 1 belongs to the cinema card, which has 0.00 left and died eight days ago. Rank 2 belongs to the toy store card that expired three days ago with 45.00 on it.\n\nThe first card that is both alive and funded is rank 3: Hardware, 25.00, seven days. Behind it sits Coffee Roaster with 16.50 and twelve days. That 41.50 is the entire actionable content of the sheet, and the rank column points at the two cards that cannot help.\n\nThe reason is simple enough. Rank orders dates. Money and death are separate facts.",
+      "steps": [
+        {
+          "name": "H5, the rank",
+          "text": "7 for Bookshop, 1 for Cinema, 4 for Coffee Roaster, 3 for Hardware. The blanks stay blank.",
+          "formula": "=IF($C5=\"\",\"\",COUNTIFS($C$5:$C$14,\"<\"&$C5,$C$5:$C$14,\"<>\")+1)"
+        },
+        {
+          "name": "The \"<>\" pair is doing real work",
+          "text": "It excludes empty cells from the count. Drop it and every blank row sees zero earlier dates, returns 1, and ties with the cinema card for first place. Three no-expiry cards all claiming to expire first is a clue that the criterion is measuring the wrong thing."
+        },
+        {
+          "name": "Rank 1, the empty card",
+          "text": "Cinema, expired November 10, 0.00 remaining. A rank column built only on dates will always surface a card you have already emptied, because using a card up does not change its date."
+        },
+        {
+          "name": "Rank 2, the dead one",
+          "text": "Toy Store, expired November 15, 45.00 still on it. This is the card the page opened with, and the rank column ranks it second out of ten."
+        },
+        {
+          "name": "Rank 3, the answer",
+          "text": "Hardware, expires November 25, 25.00 remaining. Seven days. Fourteen dollars of that balance is not enough for the 39.00 item you were going to buy, which is the point of spending it now rather than in December."
+        },
+        {
+          "name": "One cell that names the card",
+          "text": "Hardware. MINIFS finds the earliest expiry that is still in the future and still funded, MATCH finds that date in column C, INDEX returns the name beside it.",
+          "formula": "=INDEX($A$5:$A$14,MATCH(MINIFS($C$5:$C$14,$E$5:$E$14,\">0\",$C$5:$C$14,\">=\"&TODAY()),$C$5:$C$14,0))"
+        },
+        {
+          "name": "Why both criteria are there",
+          "text": "The \">0\" pair removes the cinema card, whose 0.00 balance is not worth a trip. The \">=\"&TODAY() pair removes the toy store card and, more quietly, the three blank dates, since a blank compares as January 0, 1900 and fails the test. Drop the second pair and the answer becomes the card that already expired."
+        },
+        {
+          "name": "Version check",
+          "text": "MINIFS arrived in Excel 2019 and is in Google Sheets. On Excel 2016 the same answer needs =SMALL(IF(($E$5:$E$14>0)*($C$5:$C$14>=TODAY()),$C$5:$C$14),1) array-entered with Ctrl+Shift+Enter, then the same INDEX and MATCH around it."
+        },
+        {
+          "name": "Two cards on the same date",
+          "text": "MATCH returns the first one it finds, which means the card higher in the list wins. If a household has duplicates like that, sort the card list by remaining balance descending and the tie resolves in favor of the card with more money on it."
+        }
+      ],
+      "example": {
+        "formula": "=INDEX($A$5:$A$14,MATCH(MINIFS($C$5:$C$14,$E$5:$E$14,\">0\",$C$5:$C$14,\">=\"&TODAY()),$C$5:$C$14,0))",
+        "result": "Hardware",
+        "explanation": "The earliest date that is both funded and still ahead is November 25, so MINIFS returns that date, MATCH locates it in row 13, and INDEX reads the name across. Move Hardware's expiry to December 20 and the cell returns Coffee Roaster instead, because November 30 becomes the earliest live date and the coffee card's 16.50 takes over the top spot."
+      },
+      "tips": [
+        "Watch the quotes around >0. An unquoted 0 is an equality test, so MINIFS looks for cards whose balance is exactly zero and the nested formula names the cinema card, which is the opposite of the question you asked.",
+        "Leave the answer cell beside the totals in B38 rather than inside the Rank column. A single cell that says Hardware is a decision; a column of ranks is a report, and reports get skimmed."
+      ]
+    },
+    {
+      "title": "What the 0.00 Audit Cannot See",
+      "content": "B37 subtracts the summed redeemed column from the ledger total. Zero means the two blocks agree about how much has been spent, and it is the only cell on the page that notices a card name spelled two different ways in two different places.\n\nIt does not notice a row entered twice. Duplicate the 12.25 purchase from November 16 and both sides of the audit rise by 12.25, so B37 still reads 0.00 while Home Goods reports 27.75 left instead of 40.00. No formula on this sheet catches that. Counting your receipts against the ledger rows does.",
+      "steps": [
+        {
+          "name": "Duplicate row 29 and watch the audit stay quiet",
+          "text": "E6 falls to 27.75, B34 falls to 325.25, and B37 stays at 0.00. Both blocks counted the extra 12.25, so they still agree, and agreement is all the audit tests."
+        },
+        {
+          "name": "Now break a name instead",
+          "text": "Retype the card in one ledger row as Home Goods Inc. E6 falls to 22.75, B34 rises to 349.75, and B37 reports 12.25. That number is the amount stranded in a row that no card claims, and it is the failure the audit was built for."
+        },
+        {
+          "name": "A negative balance is not a bug",
+          "text": "Log a 31.00 purchase against Pet Supply, which holds 25.75, and the row reads minus 5.25. That is the cash the cashier took for the difference, recorded as if the card paid it. B34 falls to 332.25, so the total is understated by exactly the cash portion."
+        },
+        {
+          "name": "The date that arrives as text",
+          "text": "Paste the toy store expiry from an order email and it can land as text. Excel treats text as larger than any number, so C11<TODAY() returns FALSE, F11 and G11 return #VALUE!, and B35 drops to 0.00 because no row matches Expired any more. B36 climbs back to 337.50 and the block looks healthy while 45.00 is dead."
+        },
+        {
+          "name": "TODAY() is volatile",
+          "text": "Every recalculation re-reads the clock, so a card flips from Use first to Expired at midnight without anyone touching the file. Excel uses the machine clock. Google Sheets uses the time zone under File > Settings, which is why a sheet shared across two time zones can disagree with itself by a day near midnight."
+        },
+        {
+          "name": "What to check when the audit is clean",
+          "text": "That 540.00 minus 202.50 equals 337.50 in B34, which confirms the two totals belong to the same sheet of cards. Then read the ledger row count against your receipts. Neither check is a formula, and between them they cover the failure the formula cannot see."
+        }
+      ],
+      "example": {
+        "formula": "=$B$33-SUM($D$5:$D$14)",
+        "result": "0.00",
+        "explanation": "The ledger total and the summed redeemed column agree at 202.50. Duplicate a ledger row and the formula still returns 0.00 at 214.75, because a pasted row is counted by both sides. The cell answers one question only: does every dollar in the ledger belong to a card in the list."
+      },
+      "tips": [
+        "Keep the audit cell visible rather than tucked into a corner. A cell that reads 0.00 on a good day is only useful if you see it often enough to notice the day it doesn't.",
+        "Delete the ledger row of a purchase you returned rather than typing a negative amount. A negative ledger row shows up in the redeemed total as a correction and in the card's balance as spend that never happened, which is fine, but it also flows into any monthly spending total you build on the same block."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "SUMIFS",
+      "slug": "sumifs",
+      "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "COUNTIFS",
+      "slug": "countifs",
+      "description": "COUNTIFS counts cells that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "TODAY",
+      "slug": "today",
+      "description": "TODAY returns the current date, updated each time the worksheet recalculates."
+    },
+    {
+      "name": "MINIFS",
+      "slug": "minifs",
+      "description": "MINIFS returns the minimum value in a range that meets one or more criteria across corresponding criteria ranges."
+    },
+    {
+      "name": "INDEX",
+      "slug": "index",
+      "description": "INDEX returns the value at a specified position in a range or array."
+    },
+    {
+      "name": "MATCH",
+      "slug": "match",
+      "description": "MATCH searches for a specified item in a range and returns its relative position."
+    }
+  ],
+  "summary": "Ten cards, eight columns and a 13-row ledger turn 540.00 of plastic into three numbers that mean different things: 337.50 remaining, 45.00 expired, 292.50 spendable. The status formula is where the sheet earns its keep, because an empty expiry cell reads as January 0, 1900, and testing the date before testing for emptiness quietly writes off 101.00 of good money. The rank column is a trap in the other direction, ordering dates rather than dollars, so its top two places belong to an emptied card and an expired one while the first useful card sits third. The trade-off is upkeep. Every purchase needs a row, the ranges only grow when you widen them, and the audit cell proves only that the two blocks agree, never that the ledger is complete.",
+  "nextSteps": [
+    "Enter the three no-expiry cards first, leave their date cells empty, and confirm the status column reads No expiry before adding any card that does expire",
+    "Put the INDEX and MINIFS answer in a labeled cell near the totals, then spend the card it names this week rather than building the rest of the sheet first",
+    "Set the 30-day warning to whatever window matches your shopping rhythm, and re-check B35 and B36 on the first of each month so an expiry never arrives unnoticed"
+  ],
+  "relatedTutorials": [
+    "holiday-gift-budget-tracker",
+    "black-friday-return-window-tracker",
+    "thanksgiving-shopping-list-formulas"
+  ]
+}
