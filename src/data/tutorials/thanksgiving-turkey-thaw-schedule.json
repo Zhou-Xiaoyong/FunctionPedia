@@ -1,0 +1,311 @@
+{
+  "slug": "thanksgiving-turkey-thaw-schedule",
+  "title": "Thanksgiving Turkey Thaw Schedule: Every Bird Needs Two Dates",
+  "description": "A Thanksgiving turkey thaw schedule for 73 pounds across five birds: a start window each, a guard for the fresh pickup, and the WORKDAY error worth two days.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "ROUNDUP",
+    "IF",
+    "WORKDAY",
+    "MIN",
+    "MAX",
+    "TEXT",
+    "TODAY"
+  ],
+  "intro": "Five birds and 73 pounds are split between two houses, and the only one with a deadline before Saturday is the 22-pounder. At 24 hours per 4 to 5 pounds it needs six days in a refrigerator at 40°F or below, or five if you trust the fast end of that range, so it goes in on Friday, November 20 and no later than Saturday, November 21. Everything else on this sheet can wait until Sunday.",
+  "tags": [
+    "Thanksgiving",
+    "Turkey Thaw",
+    "Date Math",
+    "Meal Planning"
+  ],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Excel 2016 or later, or Google Sheets. Nothing here needs a dynamic array or a function newer than 2016, so an old copy runs the whole page",
+    "One row per bird and a single serve date in one cell, since every start date on the sheet is a subtraction from that cell rather than a date typed by hand",
+    "Column E and column G formatted as dates before the formulas go in, because a subtraction between two date serials in a General cell shows a five-digit number"
+  ],
+  "sections": [
+    {
+      "title": "Seven Days Out, One Subtraction per Bird",
+      "content": "Thanksgiving is Thursday, November 26, 2026. A frozen turkey thaws at roughly 24 hours for every 4 to 5 pounds, which puts a 22-pound bird at six days at the slow end and five at the fast end. Six days before the 26th is Friday the 20th. Five days is Saturday the 21st. Two dates, one bird, and both of them are correct.\n\nThat is the part most thaw charts skip. They print a single number of days, you subtract, and you land on a date with no margin in either direction. A thaw date is really a corridor. Start on the late edge and Thursday morning becomes an emergency. Start on the early edge and the bird sits thawed in the refrigerator, where it keeps one to two days before it has to be cooked.\n\nThe sheet below tracks five birds totaling 73 pounds across two houses, which is why it is a sheet instead of a note taped to the freezer door. One cell holds the serve date, one holds the check date, and every start date on the page is built from those two.",
+      "steps": [
+        {
+          "name": "B2, the serve date",
+          "text": "11/26/2026. Format this cell as a date before typing anything else, then build every start date as a subtraction from it. Move the meal to Wednesday the 25th and all ten dates on the sheet shift together. Nothing else needs editing."
+        },
+        {
+          "name": "B1, the check date",
+          "text": "11/19/2026. Type it rather than reaching for TODAY(), so the status column reads the same for you tonight as it does on this page. Once the sheet is yours and you check it daily, swap in TODAY() and the column goes live on its own."
+        },
+        {
+          "name": "A5:C9, five birds in three columns",
+          "text": "Main bird 22 Fridge, Second bird 16 Fridge, Bone-in breast 9 Fridge, Fresh pickup 12 Fresh, Sister's bird 14 Fridge. Column C is a two-word vocabulary and it is the only place the sheet accounts for a bird that was never frozen."
+        },
+        {
+          "name": "D5, days at the slow end",
+          "text": "6 for the 22-pounder. ROUNDUP rather than plain division, because half a day in a refrigerator is not half a thaw. Five and a half days of thaw time rounds up to six nights of shelf space, and the extra night is free.",
+          "formula": "=ROUNDUP($B5/4,0)"
+        },
+        {
+          "name": "E5, the earliest date it can go in",
+          "text": "11/20/2026, a Friday. Serve date minus the slow day count. Go earlier than this and the bird is thawed too long before it cooks.",
+          "formula": "=$B$2-$D5"
+        },
+        {
+          "name": "F5, days at the fast end",
+          "text": "5. Same weight, the other end of the 4-to-5-pound range.",
+          "formula": "=ROUNDUP($B5/5,0)"
+        },
+        {
+          "name": "G5, the last date it can go in",
+          "text": "11/21/2026, a Saturday. This is the cell that matters, because missing it does not ruin dinner, it changes the method.",
+          "formula": "=$B$2-$F5"
+        },
+        {
+          "name": "B11, total weight",
+          "text": "73. Worth having on the page, because two refrigerators and 73 pounds of raw poultry is a space problem before it is a timing problem.",
+          "formula": "=SUM($B$5:$B$9)"
+        },
+        {
+          "name": "B12, last call for the whole sheet",
+          "text": "11/21/2026. The earliest last-chance date on the page. Read it as: nothing in either house has to move before November 21, and the 22-pounder is the reason for that date.",
+          "formula": "=MIN($G$5:$G$9)"
+        }
+      ],
+      "example": {
+        "formula": "=$B$2-ROUNDUP($B5/4,0)",
+        "result": "11/20/2026",
+        "explanation": "Friday, six days before the meal, on the 22-pound bird. Change 22 to 16 in B5 and the same formula returns 11/22/2026, because 16 divided by 4 is exactly 4 and ROUNDUP leaves a whole number alone. Exact multiples of 4 are the boundary worth testing first. They do not pick up a phantom day, and the 16-pounder is also the row where the fast end collapses onto the same date."
+      },
+      "tips": [
+        "Format column E and column G as dates before filling the formulas down. A subtraction between two date serials in a General cell shows 46,000-something, and the reflex is to retype it by hand, which is how a date turns into text that no later formula can use.",
+        "The printed USDA thaw table runs one day longer than this arithmetic at the bottom of each bracket, so a bird sitting at exactly 12, 16 or 20 pounds gets an extra day there. Add that day in column D by hand instead of rewriting the formula for every row."
+      ]
+    },
+    {
+      "title": "The Layout: Nine Columns, Three of Them Typed",
+      "content": "Three columns are typed and six are arithmetic. The typed ones are the bird, its weight, and the handling word. Everything else derives from those three plus the two dates at the top, which is the argument for the sheet over a note: a thaw date typed by hand goes stale the moment someone buys a bigger bird or adds a guest.\n\nColumns D and F hold day counts, E and G hold dates, H reads the calendar and I turns pounds into hours.",
+      "steps": [
+        {
+          "name": "Row 4, the headers",
+          "text": "Bird, Weight, Handling, Days slow, Fridge in, Days fast, Last call, Status, Cold water across A4:I4. Data starts at row 5, so every range below runs 5 to 9 and grows by hand when a sixth bird appears."
+        },
+        {
+          "name": "H5, the only cell most people read",
+          "text": "One of four strings: No thaw, Cold water, In the fridge now, or Move it followed by a date. Nesting order matters more than the strings do, and the next section takes it apart.",
+          "formula": "=IF($C5=\"Fresh\",\"No thaw\",IF($B$1>$G5,\"Cold water\",IF($B$1>=$E5,\"In the fridge now\",\"Move it \"&TEXT($E5,\"mm/dd\"))))"
+        },
+        {
+          "name": "I5, pounds to hours",
+          "text": "11. Half an hour per pound is the cold-water rule, so the conversion is a division and nothing else.",
+          "formula": "=$B5/2"
+        },
+        {
+          "name": "Why B1 and B2 are absolute",
+          "text": "$B$1 and $B$2 carry both dollar signs in every formula on the page. Drag a status formula down one row without them and the check date becomes whatever sits beside the next bird, which is a weight. The formula still returns something. That something is wrong on four rows."
+        },
+        {
+          "name": "The fixed range that will bite you",
+          "text": "$B$5:$B$9 is a fixed range, not a whole column. Type a sixth bird in row 10 and the total weight in B11 still reads 73, because one formula is looking at rows 5 to 9 and will not notice. Write the ranges as $B$5:$B$40 now and stop thinking about it."
+        },
+        {
+          "name": "Table or plain cells",
+          "text": "Ctrl+T over A4:I9 makes the list a Table and lets new formulas use Structured References such as Table1[[#This Row],[Weight]]. Google Sheets has no Tables, so a formula copied between the two apps has to keep the A1 style. The date cells at the top stay outside the Table either way."
+        },
+        {
+          "name": "Freeze the top three rows",
+          "text": "Select A5 and use View > Freeze Panes in Excel or View > Freeze in Sheets. The serve date and the headers both scroll away at the same moment, and the serve date is the one value you need to see while editing a formula in row 8."
+        }
+      ],
+      "example": {
+        "formula": "=ROUNDUP($B5/5,0)",
+        "result": "5",
+        "explanation": "Five days at the fast end for the same 22 pounds, which is where the corridor comes from. 22 divided by 5 is 4.4, and ROUNDUP pushes it to 5. The two day counts differ by one on this bird and by zero on the 16-pounder, where 16/4 and 16/5 both round to 4. That bird has a single-date window and no slack, so read column G before column E on those rows."
+      },
+      "tips": [
+        "Keep the handling word in column C short and fixed: Fridge or Fresh. Every IF on the sheet compares it as an exact string, so a cell reading fridge lower-case still works, while one reading Fresh, picked up Tuesday quietly stops matching and the row falls through to the thaw arithmetic.",
+        "Put the two dates in labeled cells above the list rather than typing 11/26/2026 into nine formulas. The value of the whole page is that one edit moves ten dates at once."
+      ]
+    },
+    {
+      "title": "Two Dates per Bird, and the Day They Cross",
+      "content": "Column H compares the check date to the two dates in E and G. On November 19 it reads Move it 11/20 for the main bird, Move it 11/22 for the 16-pounder and for the sister's 14-pounder, Move it 11/23 for the breast, and No thaw for the fresh pickup.\n\nSet the check date to November 22 and the column flips in two rows. The main bird reads Cold water, because both of its dates are now behind you. The 16-pounder reads In the fridge now. That flip is the reason for two date columns instead of one, and it is the only moment where the difference between them shows up as a different instruction.",
+      "steps": [
+        {
+          "name": "Test the last call first",
+          "text": "The outer comparison is $B$1>$G5, the last date, not the first. Reverse those two branches and a bird that has already missed its window reads In the fridge now, which is the one answer that gets a turkey cooked at midnight.",
+          "formula": "=IF($B$1>$G5,\"Cold water\",IF($B$1>=$E5,\"In the fridge now\",\"Move it \"&TEXT($E5,\"mm/dd\")))"
+        },
+        {
+          "name": "The >= on column E is not decoration",
+          "text": "With >=, a check date equal to the fridge date reads In the fridge now. With >, it reads Move it. On the 16-pounder those are the same day, so the strict version tells you to move a bird that is already in the refrigerator, on the only day it could have moved."
+        },
+        {
+          "name": "Run the check date forward",
+          "text": "11/22 gives Cold water for the main bird and In the fridge now for the 16-pounder and the sister's bird. 11/23 adds the 16-pounder to the cold-water list and turns the breast to In the fridge now. 11/24 puts three birds in the cooler and leaves only the breast and the fresh pickup alone."
+        },
+        {
+          "name": "What Cold water actually costs",
+          "text": "Nothing in dollars, and eleven hours of attention on the 22-pounder. The label is a change of method, not a verdict on the bird, which is why it belongs in the status column next to a number of hours instead of a red warning."
+        },
+        {
+          "name": "TEXT keeps the year off the label",
+          "text": "\"mm/dd\" prints 11/20 rather than 11/20/2026, which keeps the status column narrow enough to read at a glance. Use \"mm/dd/yyyy\" if the sheet spans two holidays, since a New Year bird would otherwise read Move it 12/29 with no year to anchor it."
+        },
+        {
+          "name": "Google Sheets difference",
+          "text": "TEXT format codes and the & operator behave the same in Sheets, so this formula pastes across unchanged. What does not travel is the Table structure, and TODAY() reads the spreadsheet time zone under File > Settings rather than the machine clock, so a sheet shared across two time zones can disagree with itself near midnight."
+        }
+      ],
+      "example": {
+        "formula": "=IF($C5=\"Fresh\",\"No thaw\",IF($B$1>$G5,\"Cold water\",IF($B$1>=$E5,\"In the fridge now\",\"Move it \"&TEXT($E5,\"mm/dd\"))))",
+        "result": "Move it 11/20",
+        "explanation": "Entered on row 5 with a check date of 11/19/2026. The fresh test fails, 11/19 is not past 11/21, and 11/19 has not reached 11/20, so the last branch runs and TEXT prints the fridge date without a year. On row 8 the first branch wins and the cell reads No thaw, which is the only place on the sheet that knows a bird can arrive never frozen."
+      },
+      "tips": [
+        "Do not build a separate days-remaining column beside the status. Two columns that answer the same question make the reader compare them, and the status column already carries the date that matters.",
+        "Read B12 before the status column. If the sheet says nothing has to move before 11/21, then every Move it 11/22 and Move it 11/23 in the list is information rather than a task, and the difference is what keeps people from thawing a bird four days early out of anxiety."
+      ]
+    },
+    {
+      "title": "Two Formulas That Return a Plausible Wrong Date",
+      "content": "Two formulas on this sheet will hand you a date that looks right and is wrong by enough to matter. Neither one raises an error, and both survive a casual read of the page.\n\nThe first is the day count on the fresh row. A bird picked up on Tuesday the 24th was never frozen, so it has no thaw time at all, and ROUNDUP(12/4) has no way to know that. It returns 3, column E returns 11/23, and the status column tells you to move a bird into the refrigerator the day before you buy it.\n\nThe second is WORKDAY, which is the function most people reach for on date arithmetic because it sounds like the careful choice.",
+      "steps": [
+        {
+          "name": "Write the day count the obvious way",
+          "text": "3, on the fresh pickup row. Twelve pounds, four pounds a day, and no idea that the bird is sitting in a store cooler rather than a freezer.",
+          "formula": "=ROUNDUP($B8/4,0)"
+        },
+        {
+          "name": "Watch it become a date",
+          "text": "11/23/2026 in E8 and Move it 11/23 in H8. The bird is bought on 11/24. Nothing on the sheet objects, because every formula did exactly what it was asked."
+        },
+        {
+          "name": "Guard the row in front of the arithmetic",
+          "text": "0 days, so E8 falls back to the serve date and the status column takes the No thaw branch before it ever reads the dates.",
+          "formula": "=IF($C8=\"Fresh\",0,ROUNDUP($B8/4,0))"
+        },
+        {
+          "name": "The serve date then leaks into a summary",
+          "text": "MAX of column E returns 11/26/2026, because the fresh row now carries the serve date in a date column. Excluding row 8 gives 11/23, which is the breast and the real answer to when the last bird has to go in. Any MIN or MAX over a column with a guarded row in it needs the guard applied to the whole expression, not just to the visible cell."
+        },
+        {
+          "name": "Now try the careful-looking function",
+          "text": "11/18/2026, two days before the correct date. Six working days back from Thursday the 26th walks past the weekend and lands on the previous Wednesday.",
+          "formula": "=WORKDAY($B$2,-$D5)"
+        },
+        {
+          "name": "Why it lands there",
+          "text": "WORKDAY counts Monday to Friday only. Between 11/20 and 11/26 sit a Saturday and a Sunday, so six working days reach back to 11/18 while six calendar days stop at 11/20. A refrigerator does not close for the weekend."
+        },
+        {
+          "name": "What the two days cost",
+          "text": "The 22-pounder thawed on 11/18 is done by 11/24 and sits two days before it cooks, which is the entire one-to-two-day window a thawed bird gets. Nothing looks wrong until Thursday, and by then the answer is to cook it or lose it."
+        },
+        {
+          "name": "WORKDAY with a holiday list is worse",
+          "text": "Adding a fourth argument pushes the date further back for every holiday in the list, and a grocery chain's closure has nothing to do with how fast a bird thaws. Use WORKDAY for shipping cutoffs and filing dates. Use plain subtraction for anything measured in refrigerator time."
+        }
+      ],
+      "example": {
+        "formula": "=WORKDAY($B$2,-$D5)",
+        "result": "11/18/2026",
+        "explanation": "Six working days before Thursday, November 26, 2026. The formula skips Saturday the 21st and Sunday the 22nd, so it reaches back past them to Wednesday the 18th. The correct start for the same bird is 11/20/2026, and the two days between them are the difference between a bird that cooks on Thursday and a bird that has been thawed since Tuesday."
+      },
+      "tips": [
+        "If you want a business-day calculation anywhere near this sheet, put it in a separate column and label it. The moment a calendar count and a working-day count share a column, one of them is being read as the other.",
+        "Check any row with a handling word other than Fridge before trusting the summary cells. The whole-row guard is what keeps MAX and MIN from reporting a date that belongs to a bird with no thaw schedule at all."
+      ]
+    },
+    {
+      "title": "When the Window Is Gone: Eleven Hours and 22 Water Changes",
+      "content": "The status column says Cold water on the main bird from November 22 onward, and that is not a failure state. Thirty minutes per pound in a cooler of cold water, changed every half hour, is the other approved method, and it works on a bird no refrigerator could rescue at that point.\n\nFor 22 pounds that is 11 hours and 22 changes of water. Start at 6 a.m. and the bird is ready at 5 p.m. Start at 11 a.m. and you are cooking at 10 p.m.",
+      "steps": [
+        {
+          "name": "I5, hours per bird",
+          "text": "11 on the main bird, 8 on the 16-pounder, 7 on the sister's 14-pounder, 4.5 on the breast. One division, filled down, and the column tells you what the rest of your day looks like.",
+          "formula": "=$B5/2"
+        },
+        {
+          "name": "The same number as a clock time",
+          "text": "0.458333 in a General cell, which is 11 hours expressed as a fraction of a day. Format the cell as [h]:mm and it reads 11:00 instead. The brackets keep the hours from rolling into a day count once a bird passes 24.",
+          "formula": "=$B5/2/24"
+        },
+        {
+          "name": "22 changes is the real cost",
+          "text": "The half hour is not a suggestion about freshness, it is what keeps the water colder than the bird. Put a repeating 30-minute timer on your phone before the bird goes in, not after the first change."
+        },
+        {
+          "name": "Keep the bird in a leak-proof bag",
+          "text": "Submerged, bag sealed, water cold. A bird sitting directly in the cooler water absorbs it, and no formula on this sheet will tell you that happened."
+        },
+        {
+          "name": "The fallback that skips thawing entirely",
+          "text": "Cooking a turkey from frozen is allowed, and it takes roughly 50% longer than the thawed time for the same bird. On a 22-pounder that is the difference between a four-hour roast and six, so the decision has to be made in the morning rather than at 3 p.m."
+        },
+        {
+          "name": "What to do tonight",
+          "text": "Read B12. If it returns 11/21, the correct action is none, and that is worth writing down because the instinct seven days out is to move a bird early and lose two days of shelf life for nothing."
+        }
+      ],
+      "example": {
+        "formula": "=$B5/2",
+        "result": "11.0",
+        "explanation": "Half an hour per pound times 22 pounds is 660 minutes, which is 11.0 hours. The 9-pound breast returns 4.5 on the same formula, which is why the breast is the one bird you can still decide about on Wednesday morning and cook on Thursday. There is no version of this where the big bird gets the small bird's four and a half hours, and that gap is the whole planning problem."
+      },
+      "tips": [
+        "Write the cooler start time into a cell rather than onto a scrap of paper, and add a column for it if more than one bird ever needs the method. Eleven hours is long enough that the start time is a real commitment.",
+        "Use the refrigerator for anything you can plan a week ahead and accept the shelf space it costs, since six days of a 22-pounder occupies a shelf that a week of groceries also wants. The cooler is for the bird you forgot. It trades a day of attention for the space."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "ROUNDUP",
+      "slug": "roundup",
+      "description": "ROUNDUP rounds a number up to a specified number of decimal places, always away from zero."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "WORKDAY",
+      "slug": "workday",
+      "description": "WORKDAY returns the date that is a given number of working days before or after a start date, skipping Saturdays and Sundays and optionally a list of holidays."
+    },
+    {
+      "name": "MIN",
+      "slug": "min",
+      "description": "MIN returns the smallest value in a range of cells."
+    },
+    {
+      "name": "MAX",
+      "slug": "max",
+      "description": "MAX returns the largest value in a range of cells."
+    },
+    {
+      "name": "TEXT",
+      "slug": "text",
+      "description": "TEXT converts a number or date into text using a user-supplied format code, so the displayed value can be concatenated or presented in a custom format."
+    },
+    {
+      "name": "TODAY",
+      "slug": "today",
+      "description": "TODAY returns the current date, updated each time the worksheet recalculates."
+    }
+  ],
+  "summary": "A 22-pound frozen turkey needs six days in a refrigerator at the slow end of the USDA range and five at the fast end, which makes the thaw date a corridor between November 20 and November 21 rather than a single day. The sheet turns that into two date columns, a status column that reads the check date against both, and one MIN cell that says nothing in either house has to move before the 21st. Two formulas on the page return plausible wrong answers: ROUNDUP on a fresh bird that was never frozen, and WORKDAY, which walks back past a weekend and starts the 22-pounder two days early, spending the entire one-to-two-day margin a thawed bird gets. The trade-off is the method itself. Refrigerator thawing costs six days of shelf space and almost no attention, and the cooler costs eleven hours of attention on one day.",
+  "nextSteps": [
+    "Enter your own weights in column B and read B12 before touching anything else, since that single cell tells you whether you have a task this weekend or a task next week",
+    "Test the fresh row against the guard by first writing =ROUNDUP($B8/4,0) and watching it produce a start date before the pickup, then adding the IF and confirming the status flips to No thaw",
+    "Set the check date to TODAY() once the sheet is live, and check column H every morning so a bird never crosses from Move it to Cold water without you seeing it happen"
+  ],
+  "relatedTutorials": [
+    "thanksgiving-cooking-timeline-formulas",
+    "thanksgiving-recipe-scaling-formulas",
+    "thanksgiving-shopping-list-formulas"
+  ]
+}
