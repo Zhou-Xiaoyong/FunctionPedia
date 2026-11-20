@@ -1,0 +1,317 @@
+{
+  "slug": "thanksgiving-turkey-quantity-per-person",
+  "title": "Thanksgiving Turkey Quantity: How Many Pounds of Turkey per Person by Cut",
+  "description": "How many pounds of turkey per person depends on the cut. A Thanksgiving quantity sheet that turns 14 guests and 6 pounds of leftovers into 26, 20, or 14.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "INDEX",
+    "MATCH",
+    "CEILING",
+    "ROUNDUP",
+    "SUMPRODUCT",
+    "IF",
+    "MAX"
+  ],
+  "intro": "Fourteen guests and a chart that says 1 pound of turkey per person put 14 pounds on the shopping list. A 14-pound whole bird gives back about 7 pounds of meat, half a pound a guest with nothing left for Friday. Fourteen pounds of boneless breast gives back 14, which is twice the dinner. The gap between those two carts is the rate table, and this sheet runs all three cuts against the same guest count so the cart and the plate stop disagreeing.",
+  "tags": [
+    "Thanksgiving",
+    "Turkey",
+    "Quantity",
+    "Serving Size"
+  ],
+  "estimatedTime": "11 min read",
+  "prerequisites": [
+    "Excel 2016 or later, or Google Sheets. INDEX, MATCH, CEILING and SUMPRODUCT all predate 2016, so nothing here needs Microsoft 365",
+    "One rate table and three plan rows, because the page is a lookup from a cut name to two numbers, and a rate typed inside a formula cannot be audited against anything",
+    "A guest count and a leftover target in pounds of meat, entered before any formula goes in, since every number below is downstream of those two cells"
+  ],
+  "sections": [
+    {
+      "title": "Fourteen Guests and One Number From a Chart",
+      "content": "Fourteen people, one chart, and a cart that is wrong by twelve pounds.\n\nThe chart says 1 pound of turkey per person, so the list says 14 pounds. Put a 14-pound whole bird in that cart and about 7 pounds of meat comes off it, half a pound a guest with nothing left for Friday. Put 14 pounds of boneless breast in the same cart and the plate holds 14 pounds of meat, twice what the table eats.\n\nThe chart is not wrong. It answers a narrower question than the one you asked, because 1 pound per person is a rate for a bird with the bones still in it. A bone-in breast needs three quarters of that. A boneless breast needs half. Three cuts, three rates, one number printed under a photograph of a roasted turkey.\n\nThis sheet keeps the rate and the share of purchased weight that comes back as meat in one table, then runs all three cuts against the same guest count. Fourteen guests, 6 pounds of leftover meat, and a store that sells whole birds in 2-pound steps.",
+      "steps": [
+        {
+          "name": "B1, the eaters",
+          "text": "14. Type the number of people who will sit down, not the number you invited. A list of 20 that settles at 14 is a 6-pound swing on the whole-bird plan, which is 3 extra pounds of meat nobody planned around."
+        },
+        {
+          "name": "B2, the leftovers you actually want",
+          "text": "6. Pounds of meat, not pounds of bird. A pound of carved turkey costs two pounds of whole bird, and the fourth section is about what happens when that unit gets dropped."
+        },
+        {
+          "name": "B3, the step the store sells in",
+          "text": "2. Whole birds arrive in steps of about two pounds, so 19.73 is an answer no case will honor."
+        },
+        {
+          "name": "A5:C8, the rate table",
+          "text": "Cut in A, pounds to buy per person in B, share of that weight you expect to carve in C. Whole turkey 1.00 and 0.50, bone-in breast 0.75 and 0.65, boneless breast 0.50 and 1.00. Column C is an estimate and it belongs in a cell for that reason: measure one bird on your own counter, and if it gives back 55 percent rather than 50, one edit moves all three plans."
+        },
+        {
+          "name": "C11, the guests' share of the purchase",
+          "text": "14.00 on the whole-bird row. The cut name in B11 is the only thing the formula looks at.",
+          "formula": "=$B$1*INDEX($B$6:$B$8,MATCH($B11,$A$6:$A$8,0))"
+        },
+        {
+          "name": "D11, leftovers converted into purchase weight",
+          "text": "12.00. Six pounds of meat sitting on a bird that is half bone is twelve pounds of bird.",
+          "formula": "=$B$2/INDEX($C$6:$C$8,MATCH($B11,$A$6:$A$8,0))"
+        },
+        {
+          "name": "E11, the row total",
+          "text": "26.00. Not 19.73 and not 20. The unrounded number matters because the next cell is the only one on the row that rounds.",
+          "formula": "=C11+D11"
+        },
+        {
+          "name": "F11, the number that goes on the list",
+          "text": "26.",
+          "formula": "=CEILING(E11,$B$3)"
+        },
+        {
+          "name": "G11, the meat that comes back",
+          "text": "13.00. Seven for the table, six for Friday.",
+          "formula": "=F11*INDEX($C$6:$C$8,MATCH($B11,$A$6:$A$8,0))"
+        }
+      ],
+      "example": {
+        "formula": "=$B$2/INDEX($C$6:$C$8,MATCH($B11,$A$6:$A$8,0))",
+        "result": "12.00",
+        "explanation": "Entered on row 11 with 6 in B2. MATCH finds Whole turkey at position 1 of the rate table, INDEX reads 0.50 from column C, and 6 divided by 0.50 is 12. Type 3 into B2 and the same cell returns 6.00, F11 drops to 20, and G11 reads 10.00: seven pounds for the table and three for Friday, which is the smallest leftover number the row accepts without going short."
+      },
+      "tips": [
+        "Keep the rate table above the plan block and never retype a rate inside a formula. A 0.65 sitting in G12 is invisible the day you swap cuts, and it cannot be checked against the table three rows up.",
+        "Type the cut name in column B by pointing at A6:A8 rather than by typing it again. MATCH compares strings exactly, so Whole Turkey with two capitals is a different cut from Whole turkey, and the failure shows up in five cells at once."
+      ]
+    },
+    {
+      "title": "The Layout: Seven Columns, Two of Them Typed",
+      "content": "Nine numbers and three words are typed on this page. Everything else is five formulas dragged down three rows, which is why a fifteenth guest costs one edit.\n\nThe plan block starts at row 10 because the rate table needs room above it. Column A names the plan, column B names the cut, and columns C through G turn one into the other. Column F is the only number a store recognizes. Columns C, D, E and G exist to prove F is right.",
+      "steps": [
+        {
+          "name": "Row 10, the headers",
+          "text": "Plan, Cut, Guests lb, Leftover lb, Total lb, Buy lb, Meat lb across A10:G10. Three plans start at row 11, so every range below runs 11 to 13."
+        },
+        {
+          "name": "Column B is the whole lookup",
+          "text": "Bone-in breast and Boneless breast share nine characters and sit next to each other in the table. Exact matching keeps them apart. A trailing space from a pasted name does not, and that row goes to #N/A while the other two keep reporting totals."
+        },
+        {
+          "name": "C11 to G13, five formulas",
+          "text": "Written once in row 11 and filled down. Every one of them keys off $B11, the cut name, so a row follows its cut rather than its position on the page."
+        },
+        {
+          "name": "Why the table range wears both dollar signs",
+          "text": "$A$6:$A$8, $B$6:$B$8 and $C$6:$C$8 are locked on purpose. Ranges without the dollar signs happen to survive on the three rows you have, because the table and the block slide down together, and that is exactly why the mistake reaches a live sheet. Add a fourth plan in row 14 and its lookup has slid to A9:A11, which is empty."
+        },
+        {
+          "name": "The fixed range in row 15",
+          "text": "$F$11:$F$13 stops at row 13. A fourth plan sits outside every summary on the page and the spread cell still reports 12."
+        },
+        {
+          "name": "Ctrl+T, or nothing",
+          "text": "Turning A10:G13 into a Table lets new formulas say Table1[[#This Row],[Buy lb]] instead of F11. Google Sheets has no Tables, so a file that travels between the two apps keeps the A1 references."
+        },
+        {
+          "name": "Freeze at A11",
+          "text": "Select A11 and use View > Freeze Panes in Excel or View > Freeze in Sheets. Rows 1 through 10 stay put, so the guest count and the rate table are both visible while you edit row 13."
+        }
+      ],
+      "example": {
+        "formula": "=$B$1*INDEX($B$6:$B$8,MATCH($B11,$A$6:$A$8,0))",
+        "result": "14.00",
+        "explanation": "MATCH returns 1 for Whole turkey, INDEX reads 1.00, and 14 people at a pound each is 14.00 pounds of purchase weight. Change B11 to Boneless breast and the same cell returns 7.00, because MATCH now returns 3 and INDEX reads 0.50. Nothing in the formula knows what a turkey is. It knows row 3 of a table."
+      },
+      "tips": [
+        "Keep the plan block under the rate table rather than on a second sheet. The argument of this page is that 26 and 14 pounds can be the same dinner, and that argument only lands when both numbers sit on one screen.",
+        "Put the spread cell in row 15 with a label, not in a card at the top of the sheet. A 12.00 on its own is trivia. The same 12.00 under column F is a comparison the reader can trace back to two rows."
+      ]
+    },
+    {
+      "title": "Same 13 Pounds of Meat, 26 and 14 Pounds of Bird",
+      "content": "Rows 12 and 13 are copies of row 11 with a different cut name, and the two of them turn the sheet into a decision.\n\nColumn F reads 26, 20 and 14. Column G reads 13.00, 13.00 and 14.00. Twelve pounds of difference in the cart, one pound of difference on the plate, and the plan that overshoots is overshooting because of rounding rather than appetite.\n\nRead those two columns together and the question stops being how much turkey to buy. It becomes which shape of turkey you want to handle at 11 a.m. on Thursday.",
+      "steps": [
+        {
+          "name": "Row 12, bone-in breasts",
+          "text": "10.50 in C, 9.23 in D, 19.73 in E, 20 in F, 13.00 in G. The rate is three quarters of a pound per person, which is why C12 is smaller than C11 while F12 is still large: most of that row is leftovers, because a 65 percent carve turns 6 pounds of meat into 9.23 pounds of breast."
+        },
+        {
+          "name": "Row 13, boneless breasts",
+          "text": "7.00, 6.00, 13.00, 14, 14.00. The share is 1.00, so the leftover column is the one place on the page where the number passes through unchanged."
+        },
+        {
+          "name": "B15, the spread",
+          "text": "12. Two plans deliver the same 13 pounds of meat from carts that differ by 12 pounds.",
+          "formula": "=MAX($F$11:$F$13)-MIN($F$11:$F$13)"
+        },
+        {
+          "name": "B16, the wiring check",
+          "text": "40.00. 26 at half, 20 at 65 percent, 14 at all of it. Nobody needs this total. It is the cell that proves column F and column C are paired in the right order.",
+          "formula": "=SUMPRODUCT($F$11:$F$13,$C$6:$C$8)"
+        },
+        {
+          "name": "Sort column F and watch the check move",
+          "text": "40.00 becomes 46.00 with the rows reordered: 14 at 0.50, 20 at 0.65, 26 at 1.00. SUMPRODUCT pairs by position and has no idea the rows are named, so a sort converts a check into a plausible wrong answer."
+        },
+        {
+          "name": "0.4875 against 0.5000",
+          "text": "The whole-bird rate delivers 1.00 times 0.50, which is half a pound of meat per guest. The bone-in rate delivers 0.75 times 0.65, or 0.4875. That is 0.2 ounces short per person, 0.18 pounds across 14 guests, and nothing on the sheet flags it. Rates are calibrated in purchase pounds, so two rates that look equivalent in meat are not."
+        },
+        {
+          "name": "Where the boneless plan spends its extra pound",
+          "text": "G13 reads 14.00 because F13 is 14 and the share is 1.00. The ceiling to a 2-pound step added a pound of turkey rather than a pound of bone, and on the boneless plan that pound lands on the plate."
+        }
+      ],
+      "example": {
+        "formula": "=SUMPRODUCT($F$11:$F$13,$C$6:$C$8)",
+        "result": "40.00",
+        "explanation": "26 times 0.50 is 13, 20 times 0.65 is 13, and 14 times 1.00 is 14. Sort the plan block so the smallest cart comes first and the same cell returns 46.00 with no error and no warning, because 14 pairs with 0.50 and 26 pairs with 1.00. The total is now 6 pounds of meat that no plan on the sheet actually produces."
+      },
+      "tips": [
+        "Compare column G before column F. The cart is what you carry and G is what the table eats, so G is the only column that answers whether the dinner works.",
+        "Do not add a fourth plan for half a bird. A half turkey is a cut, not a rate, and it needs its own row in the rate table with its own share before any formula here can size it."
+      ]
+    },
+    {
+      "title": "The Column That Is in the Wrong Unit",
+      "content": "Column D holds pounds of meat. Columns C, E and F hold pounds of bird. Drop that one division and the sheet still calculates, still rounds, and buys 20 pounds for a dinner that needs 26.\n\nThe error stays quiet because both columns are labeled in pounds. Nothing on the page separates meat from bird except the header you typed.",
+      "steps": [
+        {
+          "name": "Write the leftovers the obvious way",
+          "text": "20.00. Fourteen for the guests, six for Friday, and a number that looks like a plan.",
+          "formula": "=C11+$B$2"
+        },
+        {
+          "name": "Round it and put it on the list",
+          "text": "20, so the cart holds a single 20-pound bird and F11 agrees with the arithmetic."
+        },
+        {
+          "name": "Read the meat column",
+          "text": "10.00. The table eats 7, Friday gets 3, and the 6 pounds you budgeted became 3 without a single error anywhere on the sheet."
+        },
+        {
+          "name": "Find the missing 3 pounds",
+          "text": "They are bone. A 20-pound bird is 10 pounds of meat, and the leftover allowance was written in meat, so it needed 12 pounds of bird to survive the trip through column C."
+        },
+        {
+          "name": "The same slip in the other direction",
+          "text": "Keep the table but type 1.00 into B11 for the boneless plan: 14 pounds plus 6 gives 20 pounds of boneless breast, and because the share is 1.00 the meat column reads 20.00 against a 13-pound target. Seven extra pounds, on the cut where extra weight is pure meat."
+        },
+        {
+          "name": "Why the share has to live in the table",
+          "text": "Put 0.50 into the formulas as a constant and the boneless plan asks for 12 pounds of breast to make 6 pounds of meat it would have made from 6. The row reads 20 pounds instead of 13 and the error travels quietly into both summary cells."
+        },
+        {
+          "name": "The number the row was built to deliver",
+          "text": "Guests' meat plus leftover meat. Row 11 is 7 plus 6, or 13.00, and G11 reads 13.00 on the nose. Anything that pulls G under that line is a short dinner, whether it came from a rate, a share or a rounding step."
+        }
+      ],
+      "example": {
+        "formula": "=C11+$B$2",
+        "result": "20.00",
+        "explanation": "Six pounds added to fourteen as though both were pounds of bird. F11 follows to 20, G11 falls to 10.00, and the row ends up 3 pounds of meat short of the 13 it was built for. The repaired version divides before it adds, and the difference between the two is 6 pounds of purchase weight and 3 pounds of meat."
+      },
+      "tips": [
+        "Label the header Meat lb rather than Leftovers lb. A header is the only thing keeping two units apart on this page, and it gets read more often than any formula in the row.",
+        "If you want a sandwich count, put it in a separate column at a quarter pound of meat each and keep it out of column D. Two units inside one column is the mistake this section is about."
+      ]
+    },
+    {
+      "title": "Rounding to What the Store Actually Stocks",
+      "content": "CEILING turns 19.73 into 20, and 20 pounds of bone-in breast is roughly three pieces, because each one weighs about 7. A shelf is not a number line, and the last column is where a plan meets a case.\n\nA 22-pound bird sits where the 20 was supposed to be, and 22 times 0.65 is 14.30 pounds of meat. That extra 1.3 pounds is not a formula error. It is the distance between what the sheet asked for and what the store had.",
+      "steps": [
+        {
+          "name": "CEILING against ROUNDUP",
+          "text": "Both round up, and only one of them knows the shelf. ROUNDUP(14.6,0) returns 15, a weight no whole bird is sold at. CEILING(14.6,2) returns 16, and 16 is a bird.",
+          "formula": "=ROUNDUP(14.6,0)"
+        },
+        {
+          "name": "The same input through CEILING",
+          "text": "16. The difference between the two functions is invisible on 19.73, where both return 20, and obvious one decimal later.",
+          "formula": "=CEILING(14.6,$B$3)"
+        },
+        {
+          "name": "When the case skips your number",
+          "text": "20 is the answer and 18 and 22 are the birds. Overwrite F12 with 22, G12 recomputes to 14.30, and you are carrying 1.3 pounds more meat than planned with 1.3 pounds less shelf space."
+        },
+        {
+          "name": "Bone-in breasts come three to a plan",
+          "text": "19.73 pounds at 7 pounds a piece is 2.8 pieces, so the case sells 3, or 21 pounds, and G12 moves to 13.65. The sheet's 20 was correct arithmetic about a product that does not exist."
+        },
+        {
+          "name": "Boneless roasts are 3 pounds each",
+          "text": "14 pounds is 4.67 roasts, so 5, or 15 pounds, and G13 goes to 15.00. Two pounds of meat over target, which is what a 3-pound increment does to a 14-pound plan."
+        },
+        {
+          "name": "Two 13-pound birds are the same 26 pounds",
+          "text": "13. F11 is already a multiple of 2, so the halves add back exactly. What changes is the kitchen: two pans, two thermometers, and a refrigerator that has to hold both.",
+          "formula": "=ROUNDUP($F11/2,0)"
+        },
+        {
+          "name": "The check that reads Enough at exactly 13",
+          "text": "Enough. 13 against 6 plus 7, which is the tightest pass on the page. Trim one pound anywhere and the same cell flips to Short.",
+          "formula": "=IF($G11>=$B$2+$B$1*INDEX($B$6:$B$8,MATCH($B11,$A$6:$A$8,0))*INDEX($C$6:$C$8,MATCH($B11,$A$6:$A$8,0)),\"Enough\",\"Short\")"
+        },
+        {
+          "name": "CEILING in both apps",
+          "text": "CEILING.MATH(number, significance) returns the same result in Excel and Google Sheets, so paste that version into a file that gets opened in both. Excel still accepts the older CEILING and labels it a compatibility function. Sheets has no Tables, so keep references in A1 style and the file survives the trip."
+        }
+      ],
+      "example": {
+        "formula": "=CEILING($E12,$B$3)",
+        "result": "20",
+        "explanation": "19.73 pounds against a 2-pound step. ROUNDUP returns 20 on the same cell, which is why the difference rarely shows up on a sheet this size. It shows up at 14.6, where ROUNDUP returns 15 and CEILING returns 16, and only one of those is a bird a store can sell you."
+      },
+      "tips": [
+        "Put the real step in B3 rather than assuming 2. A case that jumps from 18 straight to 22 has a 4-pound step at the top of its range, and the sheet is only as honest as that cell.",
+        "Overwrite column F with the weight on the label while you are still in the store, then read G. Column F is the one formula column here that is allowed to be typed over, because the label outranks the plan."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "INDEX",
+      "slug": "index",
+      "description": "INDEX returns the value at a specified position in a range or array."
+    },
+    {
+      "name": "MATCH",
+      "slug": "match",
+      "description": "MATCH searches for a specified item in a range and returns its relative position."
+    },
+    {
+      "name": "CEILING",
+      "slug": "ceiling",
+      "description": "CEILING rounds a number up, away from zero, to the nearest multiple of a specified significance."
+    },
+    {
+      "name": "ROUNDUP",
+      "slug": "roundup",
+      "description": "ROUNDUP rounds a number up to a specified number of decimal places, always away from zero."
+    },
+    {
+      "name": "SUMPRODUCT",
+      "slug": "sumproduct",
+      "description": "SUMPRODUCT multiplies corresponding components of one or more arrays and returns the sum of those products. It is also widely used for conditional sums and counts without array-entry."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "MAX",
+      "slug": "max",
+      "description": "MAX returns the largest value in a range of cells."
+    }
+  ],
+  "summary": "Fourteen guests plus 6 pounds of leftover meat come to 13 pounds of turkey on the plate, and the three plans on this sheet reach that 13 from 26, 20 and 14 pounds of purchase weight. The number doing the work is the share in column C, because a whole bird gives back about half its weight as meat while a boneless breast gives back all of it. Two errors survive a casual read. Leftovers written in meat pounds get added straight to bird pounds, which buys 20 pounds and delivers 10. And a rounded answer can be a product the case does not sell, since a 20-pound bone-in plan is really three 7-pound pieces. The trade-off is that every plan rests on a carve-out share you have not measured on your own bird, and a 5-point miss on that share moves the whole-bird plan by 1.3 pounds.",
+  "nextSteps": [
+    "Type your guest count and leftover target into B1 and B2, then read column G across all three plans before deciding anything, since G is the only column that answers whether the dinner works",
+    "Buy one bird, weigh the meat you carve, and put the real share into C6, because a single measurement turns an estimate into a number that fits your own carving rather than a chart",
+    "Take the sheet to the store and overwrite column F with the weights on the labels, then read G12 and G13 to see how far the case pushed you off the plan"
+  ],
+  "relatedTutorials": [
+    "thanksgiving-shopping-list-formulas",
+    "thanksgiving-recipe-scaling-formulas",
+    "thanksgiving-cooking-timeline-formulas"
+  ]
+}
