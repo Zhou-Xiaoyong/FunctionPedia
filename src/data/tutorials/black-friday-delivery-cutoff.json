@@ -1,0 +1,314 @@
+{
+  "slug": "black-friday-delivery-cutoff",
+  "title": "Black Friday Delivery Cutoff: Order by November 25, Not November 28",
+  "description": "Black Friday delivery cutoff math for six orders: the WORKDAY formula that returns the real last order date, and the plain subtraction that runs days late.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "WORKDAY",
+    "WORKDAY.INTL",
+    "NETWORKDAYS",
+    "IF",
+    "TEXT",
+    "TODAY"
+  ],
+  "intro": "An order placed on Black Friday with one business day of handling and two days in transit lands December 1 if the count goes your way. Run the same order through WORKDAY and it lands December 2, one day past the date on the card. The cutoff for that date was November 25, two days before the sale opened, and one row on this sheet is already past its cutoff before anything gets bought.",
+  "tags": [
+    "Black Friday",
+    "Delivery Dates",
+    "Workday Math",
+    "Holiday Shipping"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "Excel 2016 or later, or Google Sheets. WORKDAY, NETWORKDAYS, IF and TEXT all exist in both with the same argument order, so one sheet works in either file",
+    "The handling and transit numbers from the retailer's own shipping page, typed rather than guessed. A range like 'ships in 2 to 4 business days' becomes the top number, 4, or the verdict column reports a delivery you will not get",
+    "A willingness to type the closed dates instead of trusting a list you remember, because a holiday missing from that block does not throw an error. It silently shifts every date above it by one business day"
+  ],
+  "sections": [
+    {
+      "title": "The Cutoff Is a Formula, Not a Feeling",
+      "content": "Black Friday is Friday, November 27, 2026, and Thanksgiving is the day before it. That adjacency is the whole problem. Anything ordered before Thursday has to clear a four-day hole in the shipping calendar, and anything ordered on the sale day inherits a warehouse that has been dark and a carrier that is about to drown in parcels.\n\nThe date that matters on this sheet is not the ship date. It is the last day you can click Buy and still have the thing in your hands by the date you need it. Those are two different dates, and only one of them is ever printed by a retailer.\n\nSix orders sit in rows 5 through 10, each with a handling time, a transit time and a date it has to beat. Column H walks backwards from that date and returns the cutoff. For the headphones, needed December 1 with one business day of handling and two days of transit, the cutoff is November 25, which is four days from today and two days before the price drops.",
+      "steps": [
+        {
+          "name": "B1, the check date",
+          "text": "11/21/2026. A Saturday, and the day this sheet was built. Type the date rather than using TODAY() so the numbers below reproduce exactly. The moment the sheet is live, swap in TODAY() and the verdict column starts aging on its own."
+        },
+        {
+          "name": "K3, one label over the holiday block",
+          "text": "The word Closed, underlined once. Everything in K4 through K6 is a date the warehouse or the carrier does not work, and every formula on this page points at that range by absolute reference."
+        },
+        {
+          "name": "K4:K6, the closed dates",
+          "text": "11/26/2026, 12/25/2026, 01/01/2027. Thanksgiving Day, Christmas Day and New Year's Day, which is the short list of days most US carriers run no regular pickup or delivery. Warehouses add their own. If yours also closes the Friday after Thanksgiving, add 11/27/2026 and row 7 below moves three days."
+        },
+        {
+          "name": "Row 4, nine headers",
+          "text": "Item, Order date, Handling, Transit, Ships on, Arrives, Needed by, Latest order date, Verdict. Nothing here is decorative. Each column answers a question the row above it cannot."
+        },
+        {
+          "name": "A5:A10, six items",
+          "text": "Winter boots, Wool throw, Photo calendar, Kids' sled, Standing desk, Headphones. Plain names, no order numbers, so the sheet reads at a glance while you are on the phone with a returns desk."
+        },
+        {
+          "name": "C5:D10, the two numbers you have to go find",
+          "text": "Handling in column C, transit in column D, both in business days. Boots 1 and 3, wool throw 2 and 5, photo calendar 5 and 4, sled 1 and 6, desk 2 and 7, headphones 1 and 2. Neither number is on a product page. Both are on the shipping page, one click away from the price."
+        },
+        {
+          "name": "G5:G10, the date each item has to beat",
+          "text": "12/04, 12/11, 12/10, 12/08, 12/18, 12/01. The headphones date is the hard one. It was set by a birthday, not by the shipping calendar."
+        },
+        {
+          "name": "H5, the cutoff",
+          "text": "The latest order date that still lands on the date in G. Negative days walk backwards from the deadline, and the holiday range does the skipping.",
+          "formula": "=WORKDAY($G5,-($C5+$D5),$K$4:$K$6)"
+        },
+        {
+          "name": "I5, the verdict",
+          "text": "Compares the date you plan to order against the cutoff. TEXT keeps the date readable inside a sentence, and the two branches separate a plan from a loss.",
+          "formula": "=IF($B5<=$H5,\"Order by \"&TEXT($H5,\"mm/dd\"),\"Cutoff was \"&TEXT($H5,\"mm/dd\"))"
+        }
+      ],
+      "example": {
+        "formula": "=WORKDAY($G10,-($C10+$D10),$K$4:$K$6)",
+        "result": "11/25/2026",
+        "explanation": "The headphones, needed 12/01/2026, with one day of handling and two of transit. Three business days back from December 1 is November 30, then November 27, then November 25, because November 26 is Thanksgiving and the holiday block skips it. Remove 11/26 from K and the same formula returns 11/26/2026, a Thursday on which nothing moves. The holiday entry is worth exactly one day here and it is the day that separates a plan that works from one that does not."
+      },
+      "tips": [
+        "Keep the needed-by dates as real dates, not text. A cell reading 12/1 as text makes WORKDAY return #VALUE!, and the error looks like a formula problem rather than a typing problem.",
+        "If a retailer posts its own last-order date for delivery by a holiday, put that date in a cell beside G and compare your cutoff to it. Their number is a promise about their warehouse; this sheet is arithmetic about the same window, and when the two disagree the warehouse is usually right."
+      ]
+    },
+    {
+      "title": "The Layout: Nine Columns, Five Typed",
+      "content": "Five columns are typed and four do arithmetic. The typed ones are item, order date, handling, transit and needed by. Everything else derives from those five plus the closed dates in K.\n\nThat split is the argument for the sheet over a note on the fridge. A cutoff typed by hand goes stale the day a retailer changes its handling time or a second item joins the list. Here the cutoff is downstream of two numbers you can re-read in ten seconds on the shipping page.\n\nThe fourth typed column is the one people skip. Transit in column D is a business-day count, not a delivery window in calendar days, and the two are not interchangeable. A three-day transit that starts on a Thursday afternoon finishes on Tuesday, not Sunday.",
+      "steps": [
+        {
+          "name": "A, the item",
+          "text": "Six rows, one item each. If two sizes of the same thing ship from different warehouses with different handling times, they get two rows, because the row is the shipping promise rather than the product."
+        },
+        {
+          "name": "B, the order date",
+          "text": "11/27/2026 on five rows, 11/28/2026 on the desk, 11/21/2026 on the photo calendar. These are the dates you would actually click Buy, not the dates you placed an order, so the column doubles as a test of any plan you are considering."
+        },
+        {
+          "name": "C, handling in business days",
+          "text": "Between 1 and 5 on this list. Custom printing is the slow one at 5, which is why the photo calendar is the only row ordered before the sale instead of on it."
+        },
+        {
+          "name": "D, transit in business days",
+          "text": "2 for the headphones, 7 for the desk. Heavy freight is slower than a padded envelope and the difference is four rows' worth of cutoff."
+        },
+        {
+          "name": "E, ships on",
+          "text": "Order date plus handling, weekends and closed dates skipped. This is the column the shipping confirmation email will eventually confirm, which makes it the one worth checking against reality.",
+          "formula": "=WORKDAY($B5,$C5,$K$4:$K$6)"
+        },
+        {
+          "name": "F, arrives",
+          "text": "Ship date plus transit, using the same closed-date block. Two WORKDAY calls chained, not one call adding both numbers, so the middle date stays visible.",
+          "formula": "=WORKDAY($E5,$D5,$K$4:$K$6)"
+        },
+        {
+          "name": "G, needed by",
+          "text": "Typed per item. A date typed without a year inherits the current one, so 12/1 entered in a hurry becomes December 1 of this year and looks correct in every case except the year it is not."
+        },
+        {
+          "name": "H, latest order date",
+          "text": "The same two numbers subtracted instead of added, walking backwards from G. Column H is the only cell on the sheet you need on the day you buy."
+        },
+        {
+          "name": "I, verdict",
+          "text": "Reads B against H. Six rows, six answers: Order by 11/30, 12/02, 11/27, 11/27, 12/07, and one Cutoff was 11/25."
+        }
+      ],
+      "example": {
+        "formula": "=WORKDAY($B7,$C7,$K$4:$K$6)",
+        "result": "11/30/2026",
+        "explanation": "The photo calendar, ordered Saturday 11/21 with five business days of handling. The count runs Monday 11/23, Tuesday 11/24, Wednesday 11/25, then skips Thanksgiving on 11/26, then Friday 11/27 and Monday 11/30. Five handling days end on the last Monday in November. Take 11/26 out of K and this cell returns 11/27/2026, which is the Friday the print shop was closed, and every date downstream of it moves up by three calendar days while looking perfectly reasonable."
+      },
+      "tips": [
+        "Format E, F, G and H as dates before any formula goes in. A WORKDAY result in a General cell shows five digits, and the reflex is to retype it, which turns a live date into text that no later formula can read.",
+        "Give the sheet one row per shipping promise, not one row per product. Two colors of the same jacket that ship from different warehouses will produce two different cutoffs, and averaging them produces a number that describes neither."
+      ]
+    },
+    {
+      "title": "The Order Date Is Not Day One",
+      "content": "WORKDAY counts business days forward from the day after the start date. That single convention is where most cutoff estimates lose a day, and losing a day in late November costs a week.\n\nOrder the boots on Friday, November 27 with one business day of handling and the ship date is Monday, November 30. Not Saturday the 28th, since Saturday is not a business day, and not Friday itself, because the start date is never counted as day one. The formula returns 11/30/2026 and the warehouse agrees.\n\nThe desk row starts on a Saturday, which is the other half of the same rule. Ordered 11/28 with two business days of handling, it ships Tuesday, December 1: Monday is day one, Tuesday is day two, and the weekend at the start is skipped rather than shifted.",
+      "steps": [
+        {
+          "name": "B5, a Friday order",
+          "text": "11/27/2026. Left as typed, the cell is the sale day. Change it to 11/25 and the ship date in E5 stays on 11/27, because Wednesday to Friday is a single business day once Thursday is closed. Two calendar days of earlier ordering buy nothing on this row."
+        },
+        {
+          "name": "C5, one business day",
+          "text": "This is the number a retailer prints as 'ships within 1 business day'. It is a promise about the ship date, not about arrival, and treating the two as the same thing is the second most common way a cutoff comes out early."
+        },
+        {
+          "name": "E5, the ship date",
+          "text": "11/30/2026. Friday plus one business day is Monday, because the weekend is in between and the start date does not count."
+        },
+        {
+          "name": "F5, arrival",
+          "text": "12/03/2026. Monday plus three business days of transit is Thursday, skipping nothing."
+        },
+        {
+          "name": "The composition check",
+          "text": "One WORKDAY adding both numbers should return the same date as two WORKDAY calls chained. If they disagree, the holiday range is anchored to the wrong cells.",
+          "formula": "=WORKDAY($B5,$C5+$D5,$K$4:$K$6)"
+        },
+        {
+          "name": "B9, the Saturday order",
+          "text": "11/28/2026. Ordering on a weekend does not push the count forward by two days, it just means day one is Monday."
+        },
+        {
+          "name": "E9, the Saturday result",
+          "text": "12/01/2026. Two business days from Saturday the 28th, counted Monday and Tuesday. A cutoff built on calendar subtraction would have called this order a day earlier than it is."
+        },
+        {
+          "name": "C8, the range problem",
+          "text": "The sled ships 'in 1 to 2 business days'. Enter 2, not 1, and not the middle. A range is a promise at its slow end, and the sheet is a worst-case check or it is nothing."
+        }
+      ],
+      "example": {
+        "formula": "=WORKDAY($B5,$C5+$D5,$K$4:$K$6)",
+        "result": "12/03/2026",
+        "explanation": "Same date as F5, which is the point. Four business days from Friday 11/27 is Thursday 12/03 whether you add the two counts first or chain the two calls. That agreement is the cheapest test on the sheet: if the one-step version and the ship-then-transit version ever differ, a reference is off, usually because K4:K6 was written as a relative range and slid one row when the formula filled down."
+      },
+      "tips": [
+        "Write $K$4:$K$6 with both dollars on every formula. Fill a relative K4:K6 down six rows and the last row reads K9:K11, which is empty, so the holiday quietly disappears and only the rows near the bottom are wrong.",
+        "If you need Saturday delivery, WORKDAY.INTL takes a weekend argument and a string of 7 characters. A weekend string of '0000011' treats Saturday and Sunday as closed, and '0000001' opens Saturday. Most ground services do not run Saturday at all, so confirm the option exists before planning around it."
+      ]
+    },
+    {
+      "title": "Why Plain Subtraction Is Never Conservative",
+      "content": "The obvious formula for a cutoff is the deadline minus the total days: the needed-by date, less handling, less transit. It is also wrong on every row of this sheet except one, and it is wrong in the direction that costs money. It hands you a later cutoff than you have.\n\nThe reason is unit mismatch. Handling and transit are counted in business days, while a subtraction moves in calendar days. Going back seven business days from a Friday means going back more than seven calendar days, because two weekends sit inside that span. The subtraction skips nothing and lands on a date that looks plausible in a Friday column.\n\nOn the headphones the error is three days and it points the wrong way. Five minus three plus the deadline gives Saturday, November 28, a date no warehouse ships on and three days after the real cutoff of November 25. Somebody reading 11/28 would wait for the sale, order on the 28th, and hand over a birthday gift on December 5.",
+      "steps": [
+        {
+          "name": "J4, a temporary header",
+          "text": "Plain subtraction. Label it and plan to delete it, so the column does not survive into next year as a second opinion nobody can date."
+        },
+        {
+          "name": "J5, the wrong formula",
+          "text": "Deadline minus the total day count, no functions at all. It returns a date for every row, which is exactly why it survives in real spreadsheets.",
+          "formula": "=$G5-($C5+$D5)"
+        },
+        {
+          "name": "Row 5, the boots, where it agrees",
+          "text": "11/30/2026, the same as column H. Four business days of lead time and no weekend inside the window is the one case where both methods land together, and one agreeing row is enough to convince a reader the method is sound."
+        },
+        {
+          "name": "Row 6, the wool throw, where it drifts",
+          "text": "12/04/2026 against a real cutoff of 12/02/2026. Two days late, which is the difference between ordering on Thursday and ordering on Wednesday."
+        },
+        {
+          "name": "Row 7, the photo calendar",
+          "text": "12/01/2026 against 11/27/2026. Four days late, and the wrong answer falls after Black Friday, which makes it feel safer than it is."
+        },
+        {
+          "name": "Row 10, the headphones",
+          "text": "11/28/2026 against 11/25/2026. Three days late and a Saturday, on a row where the deadline is already tight."
+        },
+        {
+          "name": "Delete column J",
+          "text": "Once the comparison is made, remove it. A wrong answer kept beside a right one gets read on the morning it matters."
+        }
+      ],
+      "example": {
+        "formula": "=$G6-($C6+$D6)",
+        "result": "12/04/2026",
+        "explanation": "The wool throw, needed 12/11/2026, with two days of handling and five of transit. Seven calendar days back is Friday, December 4. The real cutoff is Wednesday, December 2, and the gap is two weekend days that the subtraction spent as if they were transit days. Order on the 4th as the wrong column suggests and the package ships 12/08, arrives 12/15, and misses by four days without a single error message anywhere on the sheet."
+      },
+      "tips": [
+        "Compare the two columns before you trust either. A row where they agree tells you the lead time contains no weekend, which is useful on its own: those are the rows where a day of slippage does the least damage.",
+        "Do not patch the subtraction by adding a fudge factor of two days. It happens to fix the wool throw, over-corrects the boots and still misses the headphones, and no one reading the formula later will know where the two came from."
+      ]
+    },
+    {
+      "title": "Already Past the Cutoff: Three Cells to Change",
+      "content": "The headphones row is past its cutoff on the day the sheet is built. Needed December 1, cutoff November 25, sale November 27. Waiting for the price means paying for speed instead, and the sheet can tell you how much speed you need before you open a checkout page.\n\nThree levers, all of them in columns C and D. Cut transit from two days to one and the order placed on Black Friday arrives December 1, exactly on the deadline with zero slack. Switch to ship-to-store and transit becomes 0 while handling stays at 1, which puts the item in your hands November 30. Replace the item with something digital and both numbers go to 0, which is the only version of this that survives a deadline already in the past.\n\nThe formula for the first lever is a NETWORKDAYS count between the ship date and the deadline, minus one. It returns the maximum transit the calendar will allow, so you know whether to buy overnight or two-day before you compare prices.",
+      "steps": [
+        {
+          "name": "F10, the arrival you have now",
+          "text": "12/02/2026. One day past the deadline in G10, which is why the verdict in I10 reads Cutoff was 11/25 rather than a plan."
+        },
+        {
+          "name": "The transit ceiling",
+          "text": "Business days between the ship date and the deadline, less one, because the arrival day itself is not transit time. One day is all the calendar offers.",
+          "formula": "=NETWORKDAYS($E10,$G10,$K$4:$K$6)-1"
+        },
+        {
+          "name": "D10, set to 1",
+          "text": "The transit ceiling, typed into the transit column. F10 flips to 12/01/2026 and the cutoff in H10 moves from 11/25 to 11/27, because one day of transit instead of two buys two calendar days of waiting."
+        },
+        {
+          "name": "The same test on the wool throw",
+          "text": "The ceiling formula returns 8 there against 5 days actually needed, which is the other kind of answer. That row has three business days of cushion and no decision to make."
+        },
+        {
+          "name": "The pickup variant",
+          "text": "Set D to 0 and leave C at 1. F10 becomes 11/30/2026, the ship date and the pickup date are the same cell, and the deadline gets met without paying for transit at all."
+        },
+        {
+          "name": "The digital variant",
+          "text": "Both C and D at 0 returns the order date. WORKDAY with zero days does not move, so a gift card bought on 11/27 shows 11/27 as its arrival, which is correct for an email and wrong for a box."
+        },
+        {
+          "name": "What the sheet cannot tell you",
+          "text": "Whether the warehouse actually shipped on the date in column E. Enter the ship date from the confirmation email into a spare column and compare. Two rows of disagreement is enough to know the handling number needs raising."
+        }
+      ],
+      "example": {
+        "formula": "=NETWORKDAYS($E10,$G10,$K$4:$K$6)-1",
+        "result": "1",
+        "explanation": "Ship date 11/30/2026, deadline 12/01/2026. NETWORKDAYS counts both endpoints and returns 2, so one business day of transit is the ceiling. Set D10 to 1 and the package arrives on the deadline with nothing to spare. Set it to 2, which is what the standard shipping option quotes, and it arrives a day late. That single integer is the whole purchasing decision, and it takes less time to compute than to read the retailer's shipping chart."
+      },
+      "tips": [
+        "When the ceiling comes back at 0 or below, the deadline is gone and no shipping option fixes it. That is the moment to change the item rather than the speed, and a gift card or a handmade coupon is honest in a way that a late parcel is not.",
+        "Rebuild the ceiling formula for a second item if the two items share a shipment. A combined order ships when the slowest item is ready, so the handling number for the whole box is the largest handling number in it, not the average."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "WORKDAY",
+      "slug": "workday",
+      "description": "WORKDAY returns the date that is a given number of working days before or after a start date, skipping Saturdays and Sundays and optionally a list of holidays."
+    },
+    {
+      "name": "WORKDAY.INTL",
+      "slug": "workday-intl",
+      "description": "WORKDAY.INTL returns the date that is a given number of working days before or after a start date, with a customizable weekend (a weekend code or a 7-character string) and optional holidays."
+    },
+    {
+      "name": "NETWORKDAYS",
+      "slug": "networkdays",
+      "description": "NETWORKDAYS counts the number of working days between two dates, inclusive of both endpoints, skipping Saturdays and Sundays and optionally a list of holidays."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "TEXT",
+      "slug": "text",
+      "description": "TEXT converts a number or date into text using a user-supplied format code, so the displayed value can be concatenated or presented in a custom format."
+    },
+    {
+      "name": "TODAY",
+      "slug": "today",
+      "description": "TODAY returns the current date, updated each time the worksheet recalculates."
+    }
+  ],
+  "summary": "Six Black Friday orders, nine columns and one formula per row turn a shipping page into a cutoff date. Column H walks backwards from the date you need the thing, and the holiday block in K is what makes that walk skip Thanksgiving instead of spending it. The plain subtraction most people write instead returns a later cutoff on five of the six rows, by two days on the wool throw, four on the photo calendar and three on the headphones, and never once raises an error. The trade-off is upkeep. This sheet is only as good as the handling and transit numbers typed into columns C and D, so it rewards ten seconds on a retailer's shipping page and punishes a guess about how long a warehouse takes. When the cutoff has already passed, the transit ceiling in section five tells you which shipping speed still works, and a ceiling of zero tells you to change the item rather than the speed.",
+  "nextSteps": [
+    "Fill columns C and D from the shipping pages of the three stores you actually buy from, then look at column I before you look at the sale page, since a cutoff earlier than November 27 is a decision rather than a date",
+    "Copy the sheet to a second tab and set column B to 12/01/2026 across the board, which shows the cutoffs after the Black Friday crush and is the version worth keeping for the rest of December",
+    "Replace B1 with TODAY() once the sale week is over, add a column for the ship date from each confirmation email, and compare it to column E so the handling numbers get corrected for next year"
+  ],
+  "relatedTutorials": [
+    "black-friday-price-tracker",
+    "black-friday-return-window-tracker",
+    "count-working-days-between-dates"
+  ]
+}
