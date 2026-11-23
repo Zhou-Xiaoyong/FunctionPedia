@@ -1,0 +1,286 @@
+{
+  "slug": "thanksgiving-ingredient-swap-sheet",
+  "title": "Thanksgiving Ingredient Swap Sheet: How Much Dried Sage for 1 Tablespoon of Fresh?",
+  "description": "A Thanksgiving ingredient swap sheet for the last three days: 1 tbsp of fresh sage becomes 1 level tsp dried, scaled by a ratio cell rather than by memory.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "INDEX",
+    "MATCH",
+    "IF",
+    "IFERROR",
+    "COUNTIFS",
+    "ROUND",
+    "INT",
+    "MOD",
+    "VLOOKUP"
+  ],
+  "intro": "One tablespoon of fresh sage is three teaspoons of leaf and one teaspoon of dried, so the jar in the cabinet covers the stuffing on a level teaspoon. The swap is easy. The amount is where the dish goes wrong, because a substitution chart names the herb and stays quiet about the factor of three. This sheet keeps twelve of those factors in a column and returns the measurement for the ingredient you are missing in one cell.",
+  "tags": [
+    "Thanksgiving",
+    "Ingredient Substitutions",
+    "Unit Conversion",
+    "Holiday Cooking"
+  ],
+  "estimatedTime": "13 min read",
+  "prerequisites": [
+    "Excel 2016 or later, or Google Sheets. Everything here except the Ctrl+Shift+Enter note works in both, and that note applies only to Excel 2019 and earlier",
+    "The recipe open beside you, with the herb and dairy amounts written as numbers rather than as 1 tbsp plus 1 tsp in a single cell",
+    "Five minutes with the cabinet door open, because column D is a claim about what you own and every formula below it inherits that claim"
+  ],
+  "sections": [
+    {
+      "title": "One Tablespoon of Fresh Sage Is One Teaspoon Dried",
+      "content": "The Monday before Thanksgiving: the stuffing recipe asks for 1 tablespoon of fresh sage, the store shelf is bare, and there is a jar of dried sage in the cabinet from last year. Fresh sage carries about three times the punch by volume, so 1 tablespoon, which is 3 teaspoons, becomes 1 level teaspoon of the dried. Use the tablespoon instead of the teaspoon and the stuffing carries three times the sage the recipe called for.\n\nThat is the whole answer. What people miss is not the swap, it is the arithmetic. A substitution chart says dried sage may stand in for fresh and never says how much, so the swap gets made one to one, and the dish comes out tasting like a cough drop.\n\nThe factor of three exists because drying removes water. A tablespoon of fresh leaf is mostly water and the air between leaves; the same leaf dried collapses to a third of the volume and keeps its oils. The ratio holds closely enough for sage, thyme, rosemary, oregano and marjoram, which is why a single column covers the whole herb shelf.\n\nOne recipe does not earn a spreadsheet. The week does. The same dinner wants cornstarch replaced with flour at double the volume, a stick of butter replaced with oil at three quarters, and brown sugar standing in for granulated at one to one. Four multipliers, four chances to point one the wrong way, and hands covered in bread cubes when the question arrives.\n\nSo the sheet is three cells and one table. B1 to B3 hold what the recipe asks for, A13 to E25 hold the ratios, and B4 through B8 turn the two into a measurement a spoon can hit.",
+      "steps": [
+        {
+          "name": "B1, the ingredient",
+          "text": "Fresh sage, typed the way A14 spells it. The lookup is an exact text match, so Fresh Sage with a capital S finds nothing and B6 reads Not in the table. If that sounds fragile, put data validation on B1 with its list pointed at A14:A25, which also stops a stray space after sage from breaking the match."
+        },
+        {
+          "name": "B2, the amount",
+          "text": "1. A number, not 1 tbsp. This cell exists to be multiplied, and a cell holding text returns #VALUE! in B4 with a message that mentions nothing about units."
+        },
+        {
+          "name": "B3, the unit",
+          "text": "tbsp, lowercase and singular. Only cup, tbsp and tsp pass the three tests in B4. Tablespoons with an s falls through all of them and lands on #N/A."
+        }
+      ],
+      "example": {
+        "formula": "=ROUND($B$4*INDEX($C$14:$C$25,$B$5),2)",
+        "result": "1",
+        "explanation": "Three teaspoons of fresh sage times the 1/3 stored in C14. B4 holds the recipe amount converted to teaspoons, B5 holds the position of the row the lookup found, and the product is one level teaspoon. Change B2 to 4 and the same formula returns 4, which is where the display problem in the fourth section starts."
+      },
+      "tips": [
+        "Write 1 tbsp plus 1 tsp as 4 with B3 set to tsp, not as 1.33 with B3 set to tbsp. Two additions in your head is where the first error usually enters, and this one survives every later check because the total looks plausible.",
+        "A ratio is dimensionless only when both sides share a unit. 48 teaspoons to a cup and 3 to a tablespoon are the only conversions the sheet needs, and they sit inside one formula in B4 so they cannot drift apart."
+      ]
+    },
+    {
+      "title": "The Layout: Twelve Rows, Five Columns, One Base Unit",
+      "content": "The table runs A13 to E25. Column A is the ingredient the recipe names, B is what you actually have, C is the multiplier in teaspoons, D is whether it is in the house today, and E is the sentence the sheet would otherwise forget to say.\n\nEvery amount lives in teaspoons before anything gets compared. A cup is 48, a tablespoon is 3, a teaspoon is 1, and B4 does that conversion once so no other cell has to think about it. Skip it and the sheet still returns a number. Apply the 1/3 for dried sage to 1 tablespoon as though the tablespoon were a teaspoon and B7 returns 0.33, a third of a teaspoon, in a cell that looks like a finished answer.\n\nStore the ratios as formulas. Typing 0.33 into C14 instead of =1/3 costs 0.0033 of a teaspoon per teaspoon, which is nothing in the pot and visible on screen: 4 tablespoons of fresh sage comes to 3.96 teaspoons, and B8 prints 1 tbsp + 0.96 tsp. Nobody owns a 0.96 teaspoon. Type =1/3 and the column stays exact until B8 rounds it at the end.\n\nTwelve rows are not a pantry inventory. They are the swaps this dinner needs, ordered the way the recipes tend to fail: herbs first, then thickeners, then fats, then dairy. The order matters more than it looks. MATCH returns the first row that passes all three tests, so when an ingredient has two substitutes the higher row wins and the lower one becomes a note for next year.",
+      "steps": [
+        {
+          "name": "A13:E13, five headers",
+          "text": "Ingredient, Substitute, Ratio, In pantry, Note. Nothing decorative, and no merged cells, since a merged header changes nothing about the ranges but makes every column letter argument harder to follow."
+        },
+        {
+          "name": "A14:A25, twelve ingredients",
+          "text": "Fresh sage, Fresh thyme, Dried thyme, Cornstarch, All-purpose flour, Butter, Buttermilk, Pumpkin pie spice, Heavy cream, Granulated sugar, Sour cream, Whole milk. Each one is the ingredient a recipe asks for, never the substitute."
+        },
+        {
+          "name": "B14:B25, the substitutes",
+          "text": "Dried sage, Dried thyme, Fresh thyme, All-purpose flour, Cornstarch, Vegetable oil, Milk plus lemon juice, Cinnamon plus ginger plus allspice, Half-and-half, Brown sugar, Plain Greek yogurt, Evaporated milk plus water. Two-part blends live in one cell and get their instructions in column E."
+        },
+        {
+          "name": "C14:C25, the ratios",
+          "text": "=1/3, =1/3, 3, 2, =1/2, =3/4, empty, empty, 1, 1, 1, empty. Type the fractions as formulas so the column carries a third rather than a rounded decimal, and leave the three empty cells empty instead of typing 0."
+        },
+        {
+          "name": "D14:D25, the pantry flags",
+          "text": "Nine Yes and three No on this cabinet, the No rows being Dried thyme's fresh alternative, All-purpose flour's cornstarch alternative and Whole milk's evaporated alternative. Restrict the column with data validation to Yes and No, because a stray y in D17 removes that row from the lookup with no warning at all."
+        },
+        {
+          "name": "E14:E25, the notes",
+          "text": "One sentence per row. The two-part rows carry their full instructions here: 1 tbsp lemon juice plus milk to the cup, rested five minutes; 1/2 tsp cinnamon plus 1/4 tsp ginger plus 1/8 tsp allspice."
+        },
+        {
+          "name": "B4, teaspoons",
+          "text": "3 on the sage line, and the single place where unit conversion happens on this sheet.",
+          "formula": "=$B$2*IF($B$3=\"cup\",48,IF($B$3=\"tbsp\",3,IF($B$3=\"tsp\",1,NA())))"
+        },
+        {
+          "name": "Freeze Panes at A3",
+          "text": "View > Freeze Panes with A3 selected keeps B1 to B3 on screen while you scroll to row 25. In Google Sheets the same command sits under View > Freeze > Up to row 2."
+        }
+      ],
+      "example": {
+        "formula": "=$B$2*IF($B$3=\"cup\",48,IF($B$3=\"tbsp\",3,IF($B$3=\"tsp\",1,NA())))",
+        "result": "3",
+        "explanation": "1 tbsp times 3. The nested IF reads B3 in order and stops at the first match, so tbsp never reaches the teaspoon test. Type Tablespoons in B3 and all three comparisons fail, NA() fires, and B4 carries #N/A into B7, B8 and B10. That error is the good outcome: it says the unit was not recognized instead of assuming 1 and quietly returning a third of the right amount."
+      },
+      "tips": [
+        "Fill C downward with the Fill Handle only after the first two ratios are right, then read C16 and C22 out loud. The three empty ratio cells are part of the design, and a Fill Handle drag will not leave them empty if you select through them.",
+        "A Yes in column D is true for one afternoon. Retype the column next November instead of inheriting it, because a stale Yes sends you looking for a jar you finished in January, at the moment the pan is already hot."
+      ]
+    },
+    {
+      "title": "The Lookup: Two Tests, One Array, and a Zero That Looks Like a Measurement",
+      "content": "MATCH takes one lookup value. This sheet has two conditions, the ingredient and whether it is in the cabinet, so both tests get multiplied into an array of ones and zeros and MATCH is asked for the first 1.\n\n($A$14:$A$25=$B$1) is TRUE on the rows naming your ingredient. ($D$14:$D$25=\"Yes\") is TRUE on the rows you own. TRUE times TRUE is 1, anything times FALSE is 0, and MATCH(1, ..., 0) returns the position of the first surviving row. Position, not row number: Fresh sage sits in row 14 and the formula returns 1.\n\nThat distinction is where a whole-column INDEX goes wrong without raising anything. INDEX($B:$B,$B$5) reads position 1 as row 1 and returns B1, which holds the ingredient you just typed, so B6 tells you to use fresh sage instead of fresh sage. Keep the range inside INDEX identical to the range inside MATCH and the positions stay honest.\n\nThe third test, ($C$14:$C$25<>\"\"), is what keeps the sheet from lying quietly. Buttermilk has a row, the row says Yes, and the ratio cell is empty on purpose because that swap is two parts, one tablespoon of lemon juice plus milk to the cup. Without the third factor MATCH stops on that row, B7 multiplies 60 teaspoons by an empty cell and returns 0.00, and B8 prints 0 tsp. A zero teaspoon is the worst output the sheet could produce, because it looks like a measurement.\n\nIFERROR turns the no-match case into a zero, and B6 reads that zero as one of three messages. A row exists with a Yes flag and no ratio, so the answer is a two-part swap and the note in E has it. A row exists but nothing in the cabinet is flagged, so the answer is that none is available. No row exists at all, so the ingredient is not in the table.\n\nDried thyme is the case that surprises people. The table does contain Dried thyme, in B15, as the substitute for fresh thyme. COUNTIFS only reads column A, where Dried thyme appears once on a row flagged No, so the answer is None in the pantry. That happens to be true, and it is not the reason the formula says it.",
+      "steps": [
+        {
+          "name": "B5, the matched position",
+          "text": "1. Zero means nothing passed all three tests, which is a state the rest of the block is built to handle rather than an error to fix.",
+          "formula": "=IFERROR(MATCH(1,($A$14:$A$25=$B$1)*($D$14:$D$25=\"Yes\")*($C$14:$C$25<>\"\"),0),0)"
+        },
+        {
+          "name": "B6, the answer in words",
+          "text": "Dried sage. The three branches are the pantry case, the two-part case and the unknown ingredient, in that order.",
+          "formula": "=IF($B$5>0,INDEX($B$14:$B$25,$B$5),IF(COUNTIFS($A$14:$A$25,$B$1,$D$14:$D$25,\"Yes\")>0,\"Two-part swap - see note\",IF(COUNTIFS($A$14:$A$25,$B$1)>0,\"None in the pantry\",\"Not in the table\")))"
+        },
+        {
+          "name": "B7, the amount in teaspoons",
+          "text": "1 on the headline case, 6 for cornstarch, 18 for a stick of butter. The IF on B5 keeps an empty string in the cell when the lookup failed, so nothing multiplies a zero.",
+          "formula": "=IF($B$5=0,\"\",ROUND($B$4*INDEX($C$14:$C$25,$B$5),2))"
+        },
+        {
+          "name": "Test one: B1 to Buttermilk",
+          "text": "B2 at 1.25 and B3 at cup gives 60 teaspoons in B4, then B5 returns 0, B6 reads Two-part swap - see note, and B7 and B8 go blank. The note in E20 is where the actual answer lives."
+        },
+        {
+          "name": "Test two: B1 to Dried thyme",
+          "text": "B6 reads None in the pantry, because the only row naming dried thyme is flagged No. Change D16 to Yes and the same cell reads Fresh thyme within a keystroke."
+        },
+        {
+          "name": "Test three: B1 to Cream of tartar",
+          "text": "B6 reads Not in the table. This is the message to trust when a swap genuinely does not exist, and it is why the two-part branch sits in front of it."
+        }
+      ],
+      "example": {
+        "formula": "=IFERROR(MATCH(1,($A$14:$A$25=$B$1)*($D$14:$D$25=\"Yes\")*($C$14:$C$25<>\"\"),0),0)",
+        "result": "1",
+        "explanation": "One row survives all three tests, and it is the first row of the range, so the position is 1 although the row is 14. Delete the third factor and Buttermilk takes that position instead: 7. B7 would then multiply by an empty cell and return 0.00, which flows into a display that reads 0 tsp."
+      },
+      "tips": [
+        "Microsoft 365 and Google Sheets evaluate this MATCH with no special entry. Excel 2019 and earlier want Ctrl+Shift+Enter, and the symptom of forgetting is #N/A on an ingredient printed in plain text four rows below the formula, which is the most misleading cell on the sheet.",
+        "Do not wrap the conditions in separate IF functions. IF inside an array context returns FALSE for the rows that fail, FALSE already multiplies as zero, and the wrapper adds length without changing a single result."
+      ]
+    },
+    {
+      "title": "From 4.00 Teaspoons to 1 Tbsp + 1 Tsp",
+      "content": "B7 returns a decimal in teaspoons. For the headline case that is 1.00, which measures fine. For 4 tablespoons of fresh sage, a double batch of stuffing, it is 4.00, and four teaspoons is a number a cook has to translate back into spoons before touching a drawer.\n\nB8 does the translation with three thresholds. At 96 teaspoons and above it prints cups. Between 3 and 96 it prints whole tablespoons plus whatever is left in teaspoons. Below 3 it prints teaspoons. The 96 is deliberate. A cup is 48 teaspoons, so a 48 threshold would print 1 cups for the one quantity that should read 1 cup, and 2 cups is the first value where the plural is correct.\n\nINT and MOD split the amount. For 4.00, INT(4/3) is 1 tablespoon and MOD(4,3) is 1 teaspoon, printed as 1 tbsp + 1 tsp. For 18.00 the remainder is zero, the plus sign and the teaspoon half never print, and the cell reads 6 tbsp. That conditional concatenation is the part people leave out, which is how a sheet ends up saying 6 tbsp + 0 tsp to someone reading it in a hurry.\n\nTwo rows have no ratio at all. Buttermilk wants 1 tablespoon of lemon juice plus enough milk to make 1 cup, rested five minutes. Pumpkin pie spice wants 1/2 teaspoon cinnamon, 1/4 ginger and 1/8 allspice, which adds to 7/8 of a teaspoon replacing 1 teaspoon, so the blend lands 12.5 percent short on volume before flavor joins the argument. No single multiplier describes either one, so C20 and C21 stay empty and the instructions live in E.\n\nThe empty ratio is also why the lookup carries three tests instead of two. Both rows say Yes, both are in the table, and both are useless to a formula that only knows how to multiply.\n\nHeavy cream to half-and-half is the mirror case: a clean ratio of 1 that still fails in one place. It thickens a pan sauce and never whips, so the number is right and the swap is wrong. Column E says so, and no formula will ever catch it.",
+      "steps": [
+        {
+          "name": "B8, the measurement",
+          "text": "1 tsp on the headline case. Reads B7, so it inherits every rounding decision made there.",
+          "formula": "=IF($B$7=\"\",\"\",IF($B$7>=96,ROUND($B$7/48,2)&\" cups\",IF($B$7>=3,INT($B$7/3)&\" tbsp\"&IF(MOD($B$7,3)>0,\" + \"&ROUND(MOD($B$7,3),2)&\" tsp\",\"\"),$B$7&\" tsp\")))"
+        },
+        {
+          "name": "B2 to 4, the double batch",
+          "text": "B4 goes to 12, B7 to 4.00, and B8 prints 1 tbsp + 1 tsp. That single line is the reason the display formula exists: 4.00 is correct and unusable at the same time."
+        },
+        {
+          "name": "A stick of butter, 8 tbsp",
+          "text": "B4 at 24, B5 at 6, B7 at 18.00, B8 at 6 tbsp. The MOD branch evaluates to zero, so the second half of the string never renders."
+        },
+        {
+          "name": "4 cups of sugar",
+          "text": "B4 at 192, B7 at 192.00, B8 at 4 cups. The cups branch is the only one that fires above 96, and 192 is where it earns its place."
+        },
+        {
+          "name": "C20 and C21, left empty",
+          "text": "Buttermilk and pumpkin pie spice. Do not type 1 to fill the gap. A 1 in C20 sends B8 to '1.25 cups' for a swap that needs lemon juice, which is a wrong answer with a confident unit on it."
+        }
+      ],
+      "example": {
+        "formula": "=IF($B$7=\"\",\"\",IF($B$7>=96,ROUND($B$7/48,2)&\" cups\",IF($B$7>=3,INT($B$7/3)&\" tbsp\"&IF(MOD($B$7,3)>0,\" + \"&ROUND(MOD($B$7,3),2)&\" tsp\",\"\"),$B$7&\" tsp\")))",
+        "result": "1 tbsp + 1 tsp",
+        "explanation": "With B2 at 4, B7 holds 4.00. INT(4/3) returns 1 whole tablespoon and MOD(4,3) returns 1 teaspoon, so the conditional text joins them with a plus sign. Set B2 back to 1 and the same formula prints 1 tsp, because 1 fails the >=3 test and falls to the last branch. The number of decimals never changes; only the unit in front of it does."
+      },
+      "tips": [
+        "The cups branch starts at 96 rather than 48 because the formula appends the literal word cups. Any value from 48 to 95.99 would print 1 cups, which is the kind of detail that makes a reader distrust the rest of the sheet.",
+        "Test the display on awkward amounts before trusting it. 2.5 teaspoons prints 2.5 tsp, 95 prints 31 tbsp + 2 tsp, and 95.5 prints 31 tbsp + 2.5 tsp. Rounding to the nearest quarter teaspoon is a different decision from rounding to two decimals, and this sheet does not make it."
+      ]
+    },
+    {
+      "title": "The 40-Minute Version, and What to Do Once It Is in the Bowl",
+      "content": "If it is the night before and there is no time for a lookup table, one formula and a short table will cover the herb shelf. The VLOOKUP below assumes B3 is tbsp, reads the first row that matches the ingredient by name, and ignores every flag on the sheet.\n\nIt gives up two things. It cannot see the pantry column, so it will name dried sage you do not own, and it cannot skip the two rows with empty ratios, so buttermilk returns 0 instead of a message. For one swap tonight that is a fair trade. It stops being one on the fourth missing ingredient.\n\nThen there is the case the sheet exists to prevent. One tablespoon of dried sage went into the stuffing where one teaspoon belonged. B9 holds what actually went in, 3, B10 divides it by the 1.00 in B7, and the multiplier is 3.00.\n\nWhat that number means: the herb load is three times the target, so the base has to triple to bring the concentration back down. Six cups of bread cubes become 18. Salt, butter and stock scale with it, and the pan in front of you holds what it holds while the oven has no room for a second one. That is why tripling almost never happens.\n\nThe fallback when the base cannot grow: stop seasoning. Pull the salt back, add a splash of stock and a knob of butter to round the edges, and serve more gravy than planned. It will taste like sage. That is survivable, and it is the argument for keeping the ratio in a cell rather than in memory, because memory is exactly what failed at four in the afternoon.\n\nWrite the miss into column E. That note is the only part of the sheet that gains value each year, and next November it turns into a line on the shopping list instead of a decision at the stove.",
+      "steps": [
+        {
+          "name": "The one-formula version",
+          "text": "1, for the sage case. Hardcoded 3 assumes tablespoons in B3, and the wrapper keeps a missing ratio from surfacing as a number.",
+          "formula": "=IFERROR(ROUND($B$2*3*VLOOKUP($B$1,$A$14:$C$25,3,FALSE),2),\"no ratio\")"
+        },
+        {
+          "name": "B9, what actually went in",
+          "text": "3, typed in teaspoons. Convert first, because 1 tbsp of dried sage that should have been 1 tsp is the failure this cell exists to price."
+        },
+        {
+          "name": "B10, the base multiplier",
+          "text": "3.00. Every component of the base has to grow by this factor, not just the bread.",
+          "formula": "=IF($B$7=\"\",\"\",ROUND($B$9/$B$7,2))"
+        },
+        {
+          "name": "B11, swaps you can actually make",
+          "text": "7. Twelve rows minus three out of stock minus two two-part blends. This is the number worth reading before a store run, not after.",
+          "formula": "=COUNTIFS($D$14:$D$25,\"Yes\",$C$14:$C$25,\"<>\")"
+        },
+        {
+          "name": "B12, two-part blends on hand",
+          "text": "2. Buttermilk and pumpkin pie spice. Both are answers, neither one is a multiplier, and the count keeps them from vanishing into the seven above.",
+          "formula": "=COUNTIFS($D$14:$D$25,\"Yes\",$C$14:$C$25,\"\")"
+        },
+        {
+          "name": "E, the note that pays for itself",
+          "text": "One line: 11/23/2026, used dried sage at 1:1, stuffing too strong. Next year the row reads differently and the jar gets bought in October."
+        }
+      ],
+      "example": {
+        "formula": "=IF($B$7=\"\",\"\",ROUND($B$9/$B$7,2))",
+        "result": "3",
+        "explanation": "3 teaspoons in, 1.00 teaspoon wanted, so the pot carries triple the sage. Multiply the rest of the base by 3 to restore the original concentration: 6 cups of bread cubes become 18, with salt and fat scaled the same way. If the pan will not take 18 cups, the multiplier is information rather than an instruction, and the practical answer is to hold the salt back and let the sage be the loudest thing on the plate."
+      },
+      "tips": [
+        "VLOOKUP needs the lookup column to be the first column of the range, which A is. Point it at B14:C25 and it returns #N/A on every row, because Excel searches the first column of whatever range you hand it.",
+        "Keep B9 empty until something goes wrong. A cell pre-filled with 1 makes the multiplier read 1.00 on a correct batch, and a sheet that always agrees with you is a sheet you stop reading."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "INDEX",
+      "slug": "index",
+      "description": "INDEX returns the value at a specified position in a range or array."
+    },
+    {
+      "name": "MATCH",
+      "slug": "match",
+      "description": "MATCH searches for a specified item in a range and returns its relative position."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "IFERROR",
+      "slug": "iferror",
+      "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise."
+    },
+    {
+      "name": "COUNTIFS",
+      "slug": "countifs",
+      "description": "COUNTIFS counts cells that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "ROUND",
+      "slug": "round",
+      "description": "ROUND rounds a number to a specified number of decimal places."
+    },
+    {
+      "name": "INT",
+      "slug": "int",
+      "description": "INT rounds a number down to the nearest integer, toward negative infinity."
+    },
+    {
+      "name": "MOD",
+      "slug": "mod",
+      "description": "MOD returns the remainder after dividing a number by a divisor. The sign of the result always matches the sign of the divisor."
+    },
+    {
+      "name": "VLOOKUP",
+      "slug": "vlookup",
+      "description": "VLOOKUP (Vertical Lookup) is a built-in function in Excel and Google Sheets that searches for a value in the first column of a table and returns a value in the same row from a specified column."
+    }
+  ],
+  "summary": "Twelve rows, five columns, one base unit. The table converts every recipe amount to teaspoons, keeps each swap as a fraction rather than a decimal, and lets a three-test MATCH pick the first substitute that is both in the cabinet and multiplier-shaped. The cells that carry the argument are C14, where a third beats 0.33 by two hundredths of a teaspoon per teaspoon, and C20, which stays empty because buttermilk needs lemon juice plus milk and no single number can say that. The display step is where the sheet becomes usable: 4.00 teaspoons is a decimal, 1 tbsp + 1 tsp is a measurement. The trade-off is upkeep. A Yes in column D expires the moment the jar does, the ratios cover twelve ingredients and not a pantry, and the sheet answers in a shrug for anything it has never seen. Twelve rows is a small enough lie to maintain for a dinner that comes once a year, and cheaper than measuring dried sage with a tablespoon.",
+  "nextSteps": [
+    "Type your own twelve rows into A14:E25 before Wednesday, then set B1 to the ingredient you are most likely to run out of and read B8, which should be a real spoon measurement rather than a decimal",
+    "Run the three test cases on B1 (Buttermilk, Dried thyme, Cream of tartar) and confirm B6 says Two-part swap, None in the pantry and Not in the table in that order",
+    "Keep B9 empty until a swap goes wrong, then type the teaspoons that actually went in and let B10 tell you whether the base can absorb it or the salt needs to come back"
+  ],
+  "relatedTutorials": [
+    "thanksgiving-recipe-scaling-formulas",
+    "thanksgiving-dietary-restriction-sheet",
+    "thanksgiving-shopping-list-formulas"
+  ]
+}
