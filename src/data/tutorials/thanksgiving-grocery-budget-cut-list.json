@@ -1,0 +1,314 @@
+{
+  "slug": "thanksgiving-grocery-budget-cut-list",
+  "title": "Thanksgiving Grocery Bill Over Budget? The Formula That Picks What Goes Back",
+  "description": "A $155 Thanksgiving grocery budget, a $194.10 receipt, and $39.10 to cut. Four formulas rank each line by cost per plate and name the four items to put back.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "SUM",
+    "SUMIFS",
+    "SUMPRODUCT",
+    "IFERROR",
+    "IF",
+    "RANK.EQ",
+    "FILTER",
+    "TEXTJOIN"
+  ],
+  "intro": "The register said $194.10 and the note in your phone said $155.00. That is $39.10 to give back, and the obvious move, shaving 20 percent off every line, saves $38.82 and takes 3.2 pounds off a 16-pound turkey. The cut has to land on whole items instead. Four items in this cart add up to $48.46, and the sheet below finds them by dividing each line total by the number of plates it feeds.",
+  "tags": [
+    "Thanksgiving",
+    "Grocery Budget",
+    "Cost per Plate",
+    "Holiday Spending"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "Excel 2016 or later, or Google Sheets. Every formula here except the last one works in both, and the last one needs Excel 2021, Microsoft 365, or any version of Sheets",
+    "The receipt or the online cart open in a second window, with one row per line item rather than one row per department. A subtotal typed as Dairy is a row no cost-per-plate formula can read",
+    "A guest count you are willing to defend, since the plates column turns every line total into a number that can be compared with a dessert"
+  ],
+  "sections": [
+    {
+      "title": "$194.10 Against a $155 Budget, and Why 20 Percent Is the Wrong Cut",
+      "content": "The receipt total is $194.10. The number written at the top of the list is $155.00. The difference is $39.10, and that gap is 20.1 percent of the basket, which is where the flat-percent reflex starts.\n\nTake 20 percent off every line and the savings come to $38.82. Twenty-eight cents short of the gap, and spread evenly, so $6.37 of it comes out of a turkey priced at $1.99 a pound. That is 3.2 pounds of bird. Nobody at the table notices a $2.40 tub of ice cream lose 48 cents. Everyone notices a smaller turkey.\n\nA grocery bill over budget is a set of whole items, not a percentage. Only some of those items can leave the cart without changing the dinner, and that is a property of the item rather than of its price. The sheet carries that property in a column and then spends the $39.10 on the lines least likely to be missed.",
+      "steps": [
+        {
+          "name": "B1, the budget",
+          "text": "155.00, typed as a number and formatted as currency. Type the dollar sign and Excel stores text, which makes B3 return #VALUE! in a cell that looks like it should work."
+        },
+        {
+          "name": "B2, the receipt total",
+          "text": "194.10. Type 194.1 and let the format show the zero. Check this number against the printed total rather than re-adding column B, because a typo here is the one error the rest of the sheet cannot detect."
+        },
+        {
+          "name": "B3, the gap",
+          "text": "39.10. The only number in the summary block that both formulas downstream read.",
+          "formula": "=$B$2-$B$1"
+        },
+        {
+          "name": "Row 4, eight headers",
+          "text": "Item, Total, Plates, Removable, Cost per Plate, Cut Ahead, Running Cut, Cut. Nothing decorative. Each column answers a question the column beside it cannot."
+        },
+        {
+          "name": "A5:A21, seventeen lines",
+          "text": "One row per receipt line, in the order the register printed them. Keep that order. The formulas do the sorting, and a hand-sorted list is a list nobody can check against the receipt."
+        },
+        {
+          "name": "B5:B21, the line totals",
+          "text": "31.84 for the turkey down to 6.99 for the apples, adding to 194.10. These are typed from the receipt, not calculated from a quantity column, because a quantity column invites a unit-price error into every row at once."
+        },
+        {
+          "name": "C5:C21, plates fed",
+          "text": "How many people the item puts food in front of, whether that is a dinner plate or an appetizer plate. The turkey is 12, the rolls are 14, the candles are 0. That zero is doing real work in the next column."
+        },
+        {
+          "name": "D5:D21, the removable flag",
+          "text": "Yes or No, nothing else. Nine rows are Yes and eight are No on this basket. This column is the only place on the sheet where judgment is allowed, and every number below it inherits that judgment."
+        }
+      ],
+      "example": {
+        "formula": "=$B$2-$B$1",
+        "result": "39.10",
+        "explanation": "194.10 minus 155.00. A flat 20 percent across the basket returns 38.82, which is 28 cents short of this cell and comes out of the one item that defines the meal. The gap is a dollar amount, and it gets paid back with whole items."
+      },
+      "tips": [
+        "Delete any quantity column before you start. Grocery receipts print quantity on some lines and weight on others, and a Qty times Unit Price column silently disagrees with the printed total on every weighted item, which is most of the produce.",
+        "If the receipt has a store discount line, leave it out of column B and subtract it from the total instead. A negative line in the basket gives one row a cost per plate below zero and quietly reorders the whole cut list."
+      ]
+    },
+    {
+      "title": "The Layout: Eight Columns, Four of Them Formulas",
+      "content": "Seventy-one cells are typed and fifty-one are calculated. The typed ones are the item, the total, the plate count and the flag. The calculated ones are the four right-hand columns, and they exist in this order because each one feeds the next.\n\nThe block at the top holds the three numbers you will read while working: the budget, the total, the gap. Nothing else goes up there. A summary block that grows a row every time someone has an idea is the reason people stop trusting the sheet.\n\nThe column that carries the argument is Cost per Plate. A line total answers how much money left the account. Cost per Plate answers what that money bought, and those two answers put the cheese board and the potatoes in different orders.",
+      "steps": [
+        {
+          "name": "E5, cost per plate",
+          "text": "2.65 on the turkey, 2.37 on the cheese board, 0.46 on the rolls. Three items have no plates at all and return #DIV/0! without the wrapper.",
+          "formula": "=IFERROR($B5/$C5,999)"
+        },
+        {
+          "name": "F5, dollars cut ahead of this row",
+          "text": "0 on the candles, 29.47 on the cheese board, 48.46 on the wine. This is the running total of everything that would go back before this item does.",
+          "formula": "=SUMPRODUCT(($D$5:$D$21=\"Yes\")*(($E$5:$E$21>$E5)+(($E$5:$E$21=$E5)*(ROW($E$5:$E$21)<ROW($E5))))*$B$5:$B$21)"
+        },
+        {
+          "name": "G5, running cut including this row",
+          "text": "12.99 on the candles, 48.46 on the cheese board. Read against B3 to see how far past the gap a run of cuts lands.",
+          "formula": "=F5+$B5"
+        },
+        {
+          "name": "H5, the verdict",
+          "text": "Put back or Keep, and Not cuttable on the eight rows flagged No. The test is on the column to its left, not on the item's own price.",
+          "formula": "=IF($D5=\"No\",\"Not cuttable\",IF($F5<$B$3,\"Put back\",\"Keep\"))"
+        },
+        {
+          "name": "B23, the cut total",
+          "text": "48.46. Four rows, 24.96 percent of the receipt, and none of the twelve dinner plates.",
+          "formula": "=SUMIFS($B$5:$B$21,$H$5:$H$21,\"Put back\")"
+        },
+        {
+          "name": "B24, the cushion",
+          "text": "9.36. The cut overshoots the gap, and that is not an error. It is what happens when items are sold in whole units.",
+          "formula": "=$B$23-$B$3"
+        },
+        {
+          "name": "B25, cost per guest after the cuts",
+          "text": "12.14, against 16.18 before. C5 is the turkey's plate count, which is the dinner headcount this basket was built around.",
+          "formula": "=($B$2-$B$23)/$C$5"
+        },
+        {
+          "name": "Freeze at A5",
+          "text": "View > Freeze Panes, with A5 selected, so the gap in B3 stays on screen while you scroll to apples on row 21. In Sheets the same command sits under View > Freeze."
+        }
+      ],
+      "example": {
+        "formula": "=IFERROR($B12/$C12,999)",
+        "result": "2.37",
+        "explanation": "The cheese board, 18.99 for 8 appetizer plates. On row 15 the same formula returns 999, because three candles feed nobody and the division throws #DIV/0!. The wrapper is not cosmetic: without it those three rows carry an error, SUMPRODUCT in column F propagates the error into every row it touches, and the whole sheet reads #DIV/0! from row 5 down."
+      },
+      "tips": [
+        "999 is a sentinel, not a price. It sorts every zero-plate item to the front of the cut order, which is where paper plates belong, and it never gets displayed as a real cost because the format is currency with two decimals and the number is visibly absurd.",
+        "Fill E through H down from row 5 with the Fill Handle, then check the last row. Ranges written without dollar signs slide, and F21 reading $E$24:$E$40 returns 0 with no error at all."
+      ]
+    },
+    {
+      "title": "The Removable Flag, or Why the Turkey Ranks Worse Than the Wine",
+      "content": "Rank this basket by cost per plate and the turkey comes fourth from the bottom, behind only the candles, the paper plates and the roasting pan. It is the worst value of anything edible on the sheet. A 16-pound bird feeds 12 for $31.84, which is $2.65 a plate, and the cheese board feeds 8 for $18.99, which is $2.37.\n\nFollow that ranking and the fourth item to go back is the turkey. The sheet is right about the arithmetic and wrong about the dinner, because cost per plate measures how efficiently a dollar becomes food and says nothing about which food the day requires.\n\nThe flag in column D is that missing fact. Nine rows are removable and eight are not, and the eight include the turkey, the potatoes, the butter, the gravy, the sausage, the celery and onions, the apples and the cranberries. Once those are excluded from the pool, the ranking starts at the candles and never reaches the bird.",
+      "steps": [
+        {
+          "name": "I4, a temporary header",
+          "text": "Rank, all rows. Plan to delete this column after the comparison, so it does not survive into next year as a second opinion nobody can date."
+        },
+        {
+          "name": "I5, the naive rank",
+          "text": "4 on the turkey, 5 on the cheese board, 9 on the ice cream. Descending, so rank 1 is the worst value per plate.",
+          "formula": "=RANK.EQ($E5,$E$5:$E$21,0)"
+        },
+        {
+          "name": "I15, the tie",
+          "text": "1. So do I16 and I18, because the candles, the paper plates and the roasting pan all carry the same 999 and RANK.EQ gives tied values the same rank."
+        },
+        {
+          "name": "I12, where the numbering jumps",
+          "text": "5 on the cheese board. The three tied rows consumed ranks 1, 2 and 3 between them, so the next distinct value receives 5 and ranks 4 never exist on this sheet."
+        },
+        {
+          "name": "D, the fix",
+          "text": "No on the turkey, Yes on the cheese board. The flag does not change a single number in column E. It changes which rows column F is allowed to look at."
+        },
+        {
+          "name": "Two items, 0.17 cents apart",
+          "text": "Potatoes at 0.7492 per plate and cider at 0.7475. Nothing in the arithmetic separates them, and one is the starch under the meal while the other is a drink. A sheet that ranks by value alone will happily put the potatoes back first."
+        }
+      ],
+      "example": {
+        "formula": "=RANK.EQ($E5,$E$5:$E$21,0)",
+        "result": "4",
+        "explanation": "The turkey at 2.6533 per plate, third behind the three zero-plate rows. A cut order built on this column removes the candles, the paper plates, the roasting pan and then a $31.84 bird, which saves more than the $39.10 gap on its own and leaves twelve people with side dishes. The formula is correct and the answer is unusable, which is the case for keeping a judgment column next to a calculated one."
+      },
+      "tips": [
+        "Use RANK.EQ rather than RANK. Both exist in Excel and in Google Sheets, both return the same number here, and only RANK.EQ is the one still documented as supported going forward.",
+        "Type the flag with data validation limited to Yes and No. A stray y in D12 drops that row out of every SUMPRODUCT condition in column F, and the row keeps a blank verdict instead of raising anything."
+      ]
+    },
+    {
+      "title": "Dollars Ahead: A Column That Survives Ties",
+      "content": "Ranking fails this sheet twice. It ranks the turkey as a cut candidate, which the flag already handled. It also breaks on the three-way tie at 999, and that one leaves the gap only partly closed.\n\nA cut line built on ranks reads the cumulative dollars and asks where the gap is crossed. With ranks 1, 1, 1 and then 5, that formula returns 2, meaning cut everything at rank 2 or better. Rank 2 does not exist. The three rank-1 rows come to $29.47, the cheese board sits at rank 5 untouched, and the basket lands $9.63 over budget with a verdict column that reads like a completed job.\n\nColumn F replaces the rank with a sum. For each row it adds the line totals of every removable row that sits ahead of it in cut order, where ahead means a higher cost per plate, or the same cost per plate and an earlier row. Ties resolve by position, every row gets a distinct cumulative, and the verdict becomes a single comparison against B3.",
+      "steps": [
+        {
+          "name": "F5, the accumulation",
+          "text": "0. The candles are first in cut order and nothing sits ahead of them.",
+          "formula": "=SUMPRODUCT(($D$5:$D$21=\"Yes\")*(($E$5:$E$21>$E5)+(($E$5:$E$21=$E5)*(ROW($E$5:$E$21)<ROW($E5))))*$B$5:$B$21)"
+        },
+        {
+          "name": "F16, the second tied row",
+          "text": "12.99. The candles are ahead of the paper plates by row order alone, which is the part of the formula doing the tie-breaking."
+        },
+        {
+          "name": "F18, the third",
+          "text": "24.48. Three rows at the same 999, three different totals ahead of them, and no duplicated rank to break."
+        },
+        {
+          "name": "F12, the cheese board",
+          "text": "29.47. Everything ahead of it is the three zero-plate rows, which is $9.63 short of the gap, so this row is needed and gets cut.",
+          "formula": "=SUMPRODUCT(($D$5:$D$21=\"Yes\")*(($E$5:$E$21>$E12)+(($E$5:$E$21=$E12)*(ROW($E$5:$E$21)<ROW($E12))))*$B$5:$B$21)"
+        },
+        {
+          "name": "F14, the wine",
+          "text": "48.46. The gap is already covered before this row is reached, so the verdict flips to Keep and the wine stays in the cart."
+        },
+        {
+          "name": "H, the verdict, restated",
+          "text": "Put back while the rows ahead of you are still short of the gap. The moment they are not, you are done, and every row after that reads Keep."
+        },
+        {
+          "name": "One check on the whole column",
+          "text": "48.46. The largest value in F plus the row it belongs to should equal B23, or a range in the SUMPRODUCT is off by a row.",
+          "formula": "=MAX($G$5:$G$21)"
+        }
+      ],
+      "example": {
+        "formula": "=SUMPRODUCT(($D$5:$D$21=\"Yes\")*(($E$5:$E$21>$E12)+(($E$5:$E$21=$E12)*(ROW($E$5:$E$21)<ROW($E12))))*$B$5:$B$21)",
+        "result": "29.47",
+        "explanation": "Three removable rows have a higher cost per plate than the cheese board, and they total 12.99 plus 11.49 plus 4.99. Nothing else on the sheet beats 2.3737 except the turkey and the potatoes, both flagged No and therefore multiplied by zero. That zero is the flag doing its work inside an array formula, where it is invisible unless you select the formula and press F9 on the middle section in the formula bar."
+      },
+      "tips": [
+        "The comparison in the array is exact, so 999 equals 999 and the tie-break fires. It would not fire on two floats that differ in the fifteenth decimal, which is why cost per plate is divided once in column E and every later column reads that cell instead of dividing again.",
+        "Google Sheets evaluates this SUMPRODUCT identically, and there is no array-entry step in either app. Excel 2016 handles it too, since nothing here is a dynamic array function."
+      ]
+    },
+    {
+      "title": "The $9.36 Cushion, and the 24 Hours the Receipt Is Still Good For",
+      "content": "Four items go back for $48.46 against a $39.10 gap. The basket lands at $145.64, $9.36 under budget, and the dinner comes to $12.14 a guest instead of $16.18.\n\nThe cushion is not sloppiness. Grocery items are sold in whole units, so the cut list stops on whichever item first clears the gap, and $18.99 of cheese board is a bigger step than the $9.63 still owed. The alternative is worse on both counts. Cut the three zero-plate rows for $29.47 and add a $9.98 tub of ice cream, which closes the gap within 35 cents, and you give up 12 plates to save $39.45. The rank order gives up 8 plates and saves $48.46.\n\nOne cut on this list is visible to a guest. The cheese board feeds 8 as an appetizer, and if it is already open on the counter the verdict has to move to the next name, which is the wine at $21.98. That version cuts $51.45 and leaves a cushion of $12.35, and it is the version to run if the board is already plated.",
+      "steps": [
+        {
+          "name": "B23, the total going back",
+          "text": "48.46. Four rows: cheese board 18.99, candles 12.99, paper plates 11.49, roasting pan 4.99.",
+          "formula": "=SUMIFS($B$5:$B$21,$H$5:$H$21,\"Put back\")"
+        },
+        {
+          "name": "The list itself, in one formula",
+          "text": "Cheese board kit, Candles, 3, Paper plates and napkins, Disposable roasting pan, in sheet order rather than cut order. Excel 2021 and Microsoft 365 only, plus every version of Sheets, where FILTER and TEXTJOIN have existed since 2017.",
+          "formula": "=TEXTJOIN(\", \",TRUE,FILTER($A$5:$A$21,$H$5:$H$21=\"Put back\"))"
+        },
+        {
+          "name": "H14, the wine, if the board is open",
+          "text": "Keep becomes Put back once the cheese board row is flagged No. B23 moves to 51.45 and B24 to 12.35, both without an edit to any formula."
+        },
+        {
+          "name": "The plate count you are protecting",
+          "text": "12. The turkey row is the only one that sets it, and the four returned items feed 0, 0, 0 and 8 of those plates before the cuts are made."
+        },
+        {
+          "name": "Already paid: what the return desk takes",
+          "text": "All four are unopened and non-perishable, so 48.46 comes back in one trip with the receipt in hand. Return windows on grocery non-food items are typically 30 to 90 days, and the store's own policy page states which, so read that rather than assume a number."
+        },
+        {
+          "name": "Already paid: what is gone",
+          "text": "The turkey at 31.84. Cutting it clears the gap twice over and leaves twelve people with potatoes, so it is the one line an over-budget grocery run has to absorb rather than solve."
+        }
+      ],
+      "example": {
+        "formula": "=TEXTJOIN(\", \",TRUE,FILTER($A$5:$A$21,$H$5:$H$21=\"Put back\"))",
+        "result": "Cheese board kit, Candles, 3, Paper plates and napkins, Disposable roasting pan",
+        "explanation": "FILTER returns the four matching rows in sheet order, so the cheese board from row 12 leads the candles from row 15 even though the candles are cut first. TEXTJOIN with TRUE as its second argument drops the empty cells a 17-row range would otherwise leave behind, and the whole result writes into one cell that can be pasted into a text message before you walk back into the store."
+      },
+      "tips": [
+        "Run the formula before you open the package on anything on the list. A return needs the item unopened, and a cheese board that has been unwrapped turns a $48.46 trip into a $29.47 trip with $9.63 still owed.",
+        "Save the receipt as a photo the same day. Most stores will reprint from the card, but a printed receipt with the store number and the date on it is the version a customer service desk accepts without a manager.",
+        "If the gap came from something you can still cancel, cancel it before the cut list runs. Removing a $40 item that has not left the shelf is a cheaper fix than returning four that have."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "SUMIFS",
+      "slug": "sumifs",
+      "description": "SUMIFS adds values that satisfy multiple criteria across one or more ranges."
+    },
+    {
+      "name": "SUMPRODUCT",
+      "slug": "sumproduct",
+      "description": "SUMPRODUCT multiplies corresponding components of one or more arrays and returns the sum of those products. It is also widely used for conditional sums and counts without array-entry."
+    },
+    {
+      "name": "IFERROR",
+      "slug": "iferror",
+      "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "RANK.EQ",
+      "slug": "rank-eq",
+      "description": "RANK.EQ returns the rank (position) of a number in a list, giving tied values the same rank. It is the modern replacement for the legacy RANK function."
+    },
+    {
+      "name": "FILTER",
+      "slug": "filter",
+      "description": "FILTER extracts rows from a range that meet a condition, returning a dynamic array of matching results. It's the array-era replacement for complex IF/INDEX combinations."
+    },
+    {
+      "name": "TEXTJOIN",
+      "slug": "textjoin",
+      "description": "TEXTJOIN joins text from multiple ranges or strings using a delimiter you specify, with an option to ignore empty cells."
+    }
+  ],
+  "summary": "Seventeen receipt lines, a $155 budget and a $39.10 gap come down to four items worth $48.46. The column that finds them divides each line total by the plates it feeds, and the column that turns that score into a cut list accumulates dollars instead of ranking rows, because three items with no plates share a 999 and a rank-based cut line stops after them with $9.63 still owed. The flag in column D carries the one piece of judgment no formula can supply: the turkey is the worst value per plate in the cart and also the reason anyone is at the table. The trade-off is the cushion. Cutting in rank order overshoots the gap by $9.36, and buying that precision back costs 12 plates instead of 8, so the overshoot stays. When the card has already been swiped, the four items are unopened and non-perishable, which makes the cut list a return list for as long as the receipt is fresh.",
+  "nextSteps": [
+    "Type your own receipt into rows 5 to 21 and read column H before you leave the parking lot, since the four names it returns are worth more than the 28 cents a flat 20 percent would have saved",
+    "Copy the sheet to a second tab and set D to No on the cheese board and the wine, then watch B23 climb to 51.45, which is the version to run when the appetizer has already been opened",
+    "Keep the file for the December holidays, replace the line items with the next grocery run, and change B1 only. The four formulas and the flag column do not need to be rebuilt"
+  ],
+  "relatedTutorials": [
+    "thanksgiving-shopping-list-formulas",
+    "thanksgiving-grocery-price-comparison",
+    "thanksgiving-dinner-cost-per-guest"
+  ]
+}
