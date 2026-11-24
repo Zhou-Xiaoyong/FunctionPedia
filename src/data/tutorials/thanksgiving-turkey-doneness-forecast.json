@@ -1,0 +1,271 @@
+{
+  "slug": "thanksgiving-turkey-doneness-forecast",
+  "title": "Thanksgiving Turkey Forecast: Will 141°F at 3 PM Make a 4:30 Serve Time?",
+  "description": "A Thanksgiving turkey forecast from two probe readings: degrees per minute, the projected 165, and the arithmetic behind 43 minutes of lost serve time.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "IF",
+    "IFERROR",
+    "TEXT",
+    "COUNT",
+    "MIN",
+    "MAX"
+  ],
+  "intro": "At three in the afternoon the thigh reads 141°F, the oven has held 325°F since 11:30, and the table is set for 4:30. At the pace of the last half hour the bird needs 103 more minutes, which puts 165°F at 4:43 PM and the carving at 5:13. That forecast is two divisions, and it is the only number in the kitchen that changes its mind every time you open the door.",
+  "tags": [
+    "Thanksgiving",
+    "Turkey",
+    "Cooking Time",
+    "Holiday Cooking"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "An instant-read thermometer, because the whole sheet is built on numbers that come off a probe rather than off a clock. A leave-in probe with a cord works better, since it avoids opening the door",
+    "Excel 2016 or later, or Google Sheets. Every formula here runs identically in both, and section 5 notes the one formatting default that differs",
+    "The bird already in the oven and two readings taken at least 20 minutes apart. One reading cannot produce a rate, and this sheet refuses to guess one"
+  ],
+  "sections": [
+    {
+      "title": "The Bird Is at 141°F at 3 PM. Dinner Is at 4:30.",
+      "content": "Two numbers decide the evening. How fast the meat is gaining temperature, and how much temperature is left to gain. The oven setting, the size of the bird, whether the foil is on, the brand of the pan, all of that is already cooked into those two numbers, which is why the forecast starts at the probe and not at a chart.\n\nDegrees per minute comes from the last two readings. From 2:30 to 3:00 the thigh climbed from 134 to 141, so 7 degrees in 30 minutes, or 0.2333 degrees a minute. Minutes remaining is the gap to the target divided by that rate: 24 degrees at 0.2333 is 102.86 minutes.\n\nAdd 103 minutes to 3:00 PM. The bird reaches 165 at 4:42:51, the rest takes 30 minutes on the board, and the first plate is 43 minutes behind the plan. Nothing about that changes because the oven says 325 and the recipe says four hours.\n\nThe USDA roasting chart gives 4 to 4¼ hours unstuffed at 325°F for a bird this size, which puts the finish between 3:30 and 3:45 PM. The probe says 4:43. A chart is an average of thousands of ovens, and one bird in one oven is not an average, which is the entire argument for typing four numbers instead of reading a table.",
+      "steps": [
+        {
+          "name": "B2, in the oven",
+          "text": "11:30 AM as a time value, not as text. This cell does no arithmetic on the day of the cook, and it earns its place in section 5, where it becomes next year's start time after the drift is known."
+        },
+        {
+          "name": "B3, the serve time",
+          "text": "4:30 PM, formatted h:mm AM/PM. Every verdict on the sheet compares against this one cell, so when the family pushes dinner to five you edit B3 and the lateness recalculates in three other places at once."
+        },
+        {
+          "name": "B4, the rest",
+          "text": "30, in whole minutes. The rest happens after the oven, not inside the cook time, and B6 subtracts it. Skip that subtraction and the sheet tells you the bird is fine at 4:43 while it is still 43 minutes from the cutting board."
+        },
+        {
+          "name": "B5, the target",
+          "text": "165. This is the USDA number for the innermost part of the thigh, and no formula below projects anything lower. Carryover heat during the rest pushes the reading a few degrees higher, which is a reason to stop at 165 and never a reason to stop at 158."
+        },
+        {
+          "name": "B6, out of the oven by",
+          "text": "=B3-B4/1440 returns 4:00 PM. The division converts 30 minutes into the fraction of a day that Excel stores in a time cell. Drop it and you subtract 30 full days, so the cell still reads 4:30 PM with a date a month in the past, and nothing on screen looks wrong."
+        },
+        {
+          "name": "The one-cell version",
+          "text": "=IFERROR($A$16+(165-$B$16)*($A$16-$A$15)/($B$16-$B$15),\"\") returns 4:43 PM from the last two readings with no helper columns. Note what is missing: no 1440. Both time differences were already measured in days, so the conversion cancels itself out, and the formula reduces to the temperature gap times the minutes between readings divided by the degrees gained."
+        }
+      ],
+      "example": {
+        "formula": "=IFERROR($A$16+(165-$B$16)*($A$16-$A$15)/($B$16-$B$15),\"\")",
+        "result": "4:43 PM",
+        "explanation": "The last two readings are 2:30 at 134 and 3:00 at 141. Twenty-four degrees still owed, times 30 minutes between probes, divided by the 7 degrees those 30 minutes bought, gives 102.86 minutes. Add that to the 3:00 PM serial and the cell holds 0.69643, which only reads as a clock time once the cell is formatted h:mm AM/PM. In General format it looks like a random decimal."
+      },
+      "tips": [
+        "Probe the thickest part of the thigh without touching bone. Bone conducts heat and reads hotter than the meat around it, so a reading taken against the bone can make a bird look further along than it is.",
+        "Take both readings in the same spot. A rate built from a thigh reading and a breast reading measures the difference between two cuts, not the speed of the oven."
+      ]
+    },
+    {
+      "title": "The Layout: Four Readings and Two Columns That Matter",
+      "content": "Rows 12 to 16 hold the log: a header row and four checkpoints. Columns A and B are typed, C through F are formulas, and only D and E ever need to be read during the cook. F exists so the number arrives as minutes instead of as a time you have to compare against another time in your head.\n\nThe 1440 in column C is the one piece of arithmetic people get wrong. Excel stores 3:00 PM as 0.625, the share of a day that has passed, so subtracting two time cells returns a slice of a day, not a count of minutes. Multiply by 1440 and 0.0208333 becomes 30.\n\nThe trap underneath that is text. Paste a time off a web page or a text message and the cell may look right and be text, in which case the subtraction returns #VALUE! and the IFERROR wrapper turns the whole row blank. A blank in column D is a data problem every time, never a formula problem, and the fix is to retype the cell rather than to debug the sheet.\n\nNothing here is merged and nothing is color-coded to mean something. The verdict lives in one cell, B8, and it is the only cell anyone reads standing at the oven.",
+      "steps": [
+        {
+          "name": "Row 12, the headers",
+          "text": "A12 Time, B12 Thigh, C12 Minutes, D12 Per minute, E12 Projected 165, F12 Min vs plan. Format column E as h:mm AM/PM because it holds a clock time. Format column F as 0.0 because it holds a count of minutes, and 43.0 next to a clock time reads as a measurement rather than as a typo."
+        },
+        {
+          "name": "A13:B16, the readings",
+          "text": "1:30 PM and 112, 2:00 PM and 124, 2:30 PM and 134, 3:00 PM and 141. Temperatures are plain numbers with no degree sign, because a cell holding 141°F as text returns #VALUE! in every formula that follows."
+        },
+        {
+          "name": "C14, minutes since the last reading",
+          "text": "=(A14-A13)*1440 returns 30. Copy down through C16 and the column reads 30, 30, 30. Leave C13 empty, since the first checkpoint has nothing behind it to subtract."
+        },
+        {
+          "name": "D14, degrees per minute",
+          "text": "=(B14-B13)/C14 returns 0.4, formatted 0.0000. Four decimals look excessive for a kitchen and are the point: the useful range on this sheet runs from 0.05 to 0.6, and a single decimal rounds a dying rate into a healthy one."
+        },
+        {
+          "name": "E14, the projection",
+          "text": "=$A$14+($B$5-$B$14)/($D$14*1440) returns 3:43 PM. The rate is per minute and the serial is per day, which is what the 1440 in the denominator repairs. Copy down to E16 and the three projections read 3:43, 4:03, 4:43."
+        },
+        {
+          "name": "F14, minutes against the plan",
+          "text": "=(E14-$B$6)*1440 returns -17.5. Negative means early and positive means late, and that sign convention is worth keeping because it survives arithmetic that a label like EARLY or LATE does not."
+        },
+        {
+          "name": "B8, the verdict",
+          "text": "=IF(COUNT($D$13:$D$16)<2,\"Need two readings\",IF($F$16<=0,\"On plan\",\"Late by \"&TEXT($F$16,\"0\")&\" min\")) returns Late by 43 min. The COUNT guard matters more than it looks: with one reading the sheet has no rate at all, and without the guard it would print On plan because F16 sits empty and empty reads as zero."
+        },
+        {
+          "name": "B18 and B19, the health check",
+          "text": "=IFERROR($D$16/$D$15,\"\") returns 0.70 and =IFERROR((MAX($E$14:$E$16)-MIN($E$14:$E$16))*1440,\"\") returns 60.35. One tells you whether the rate is falling, the other tells you how far apart your own projections have drifted. Both are covered in the next section, and both are the reason this sheet is not just a calculator."
+        }
+      ],
+      "example": {
+        "formula": "=(A14-A13)*1440",
+        "result": "30",
+        "explanation": "Two adjacent time cells differ by 0.0208333, which is 30 minutes expressed as a share of a day. Multiply by 1440, the number of minutes in a day, and the cell returns 30. The same 1440 appears in E and F for the same reason, and nowhere else, so if a projection lands in 1971 or returns a number in the hundreds of thousands, a missing or doubled 1440 is the first thing to check."
+      },
+      "tips": [
+        "Freeze the header row with View > Freeze Panes before the bird goes in. By the fourth reading the sheet is scrolled and the column labels matter more than they did at the start.",
+        "Put the four readings in as you take them, not from memory at the end. The rate is built from the interval between probes, and a remembered time is where a 30-minute window quietly becomes a 40-minute one."
+      ]
+    },
+    {
+      "title": "The Projection Moves the Wrong Way",
+      "content": "At 2:00 PM the sheet said 3:43. At 2:30 it said 4:03. At 3:00 it said 4:43. The bird gained 17 degrees in that hour and the forecast slid an hour later, which is the counterintuitive part: the closer the meat gets to done, the later the estimate of when it gets there becomes.\n\nThe rate column explains it. 0.4000, then 0.3333, then 0.2333. Surface moisture evaporates as the bird heats, and evaporation removes heat as fast as the oven delivers it, so the curve flattens before it ends. A roast that climbs 12 degrees in its first half hour is not going to climb 12 degrees in the next half hour, and a forecast that assumes otherwise is reading the past as if it were the future.\n\nB18 compares the newest window to the one before it. At 0.70 the rate has lost 30 percent in 30 minutes, and that single ratio tells you which end of the range to believe. Below 1 the newest projection is the optimistic edge, not the middle.\n\nThere is a second, quieter problem. A 30-minute window reports the average of the last 30 minutes, so it cannot see the next 30. By the time the flattening shows up in column D, the bird has already been flattening for half an hour, which is exactly the lag that turned a 17-minute cushion at 2:00 into a 43-minute deficit at 3:00.",
+      "steps": [
+        {
+          "name": "B18, the decay ratio",
+          "text": "=IFERROR($D$16/$D$15,\"\") returns 0.70. This is the number to glance at before trusting column E. A ratio at or above 1 means the bird is speeding up, which is unusual and usually means someone opened the oven and the probe moved."
+        },
+        {
+          "name": "B19, the spread",
+          "text": "=IFERROR((MAX($E$14:$E$16)-MIN($E$14:$E$16))*1440,\"\") returns 60.35. Three projections from the same bird, 90 minutes apart, disagree by an hour. Read the spread before you quote a finish time to anyone, because a single number carries a confidence the data does not have."
+        },
+        {
+          "name": "Shorten the window after 145°F",
+          "text": "Take the last two readings 15 minutes apart instead of 30 and the lag halves. The cost is noise: a 2-degree probe error becomes 0.13 degrees a minute over 15 minutes and 0.07 over 30, so the shorter window buys responsiveness and pays for it in jitter. Use 30-minute windows below 140 and 15-minute windows above it."
+        },
+        {
+          "name": "Do not average the windows",
+          "text": "Averaging 0.4000 and 0.2333 gives 0.3167, which projects 4:16 PM. That is 27 minutes earlier than the latest window projects, and it is wrong in the direction that hurts. Averaging is for measurements that bounce around a true value; a rate that is trending downward is not bouncing, it is telling you something."
+        },
+        {
+          "name": "Read the stall before raising the heat",
+          "text": "A rate near zero for two windows usually means the probe is in a pocket of fat or against a bone rather than that the bird has stopped cooking. Move the probe, take one reading, and let the next window decide. Raising the oven on a bad reading burns the outside of a bird that was 10 degrees further along than the sheet believed."
+        }
+      ],
+      "example": {
+        "formula": "=($B$16-$B$15)/$C$16",
+        "result": "0.2333",
+        "explanation": "134 to 141 is 7 degrees across 30 minutes. The formula returns 0.233333 and the cell shows 0.2333 under a 0.0000 format. Compare it to the 0.4000 two rows up and the story of the afternoon is in those two numbers, not in the temperature, which climbed the whole time and looked reassuring."
+      },
+      "tips": [
+        "Quote the projection, not the temperature. A table hearing 141 assumes dinner is close; a table hearing 4:43 understands it is not, and the second sentence is the one that lets people decide whether to open another bottle.",
+        "Keep the old rows when you re-read. Deleting a checkpoint to tidy the sheet destroys the only record of how the rate behaved, which is the input for next year's start time."
+      ]
+    },
+    {
+      "title": "Forty-Three Minutes Late: Three Moves and What Each One Buys",
+      "content": "The forecast is not a verdict until you decide what to spend. There are three levers after 3:00 PM, and they are not equal: one buys minutes at exactly one for one, one buys a large block of minutes on an assumption nobody has tested, and one has no formula at all.\n\nThe rest is the honest lever. Cutting B4 from 30 to 20 moves the verdict from 42.9 minutes late to 32.9, because the serving clock starts when the bird comes out, not when it finishes resting. It buys exactly the minutes you give up and not one more. A 20-pound bird that rests for 10 minutes is a bird that bleeds across the board and carves ragged.\n\nThe oven is the big lever and the unverifiable one. B21 holds a speedup multiplier, 1.5 by default, and nothing in this workbook knows whether 400°F actually cooks this bird 50 percent faster. It is a guess the sheet is honest enough to keep in its own input cell instead of burying inside a formula.\n\nBoth moves together land at 4:29 PM with a minute of slack. A minute is not a cushion, and the sheet saying On plan by 1 min is a warning rather than a win.",
+      "steps": [
+        {
+          "name": "B4, cut the rest",
+          "text": "Change 30 to 20. F16 goes from 42.9 to 32.9, B6 moves from 4:00 to 4:10, and nothing in the cooking math changes. The rest is the only lever that does not touch the bird."
+        },
+        {
+          "name": "B21, the speedup you expect",
+          "text": "1.5, typed as a plain number. Keep it in a cell of its own so the assumption is visible, labelled, and easy to reset to 1 the moment the next reading proves it false."
+        },
+        {
+          "name": "B22, the new finish",
+          "text": "=$A$16+($B$5-$B$16)/($D$16*$B$21)/1440 returns 4:09 PM. Raising the heat by half turns 102.86 minutes of runway into 68.57, which is the largest single gain available at 3:00 PM."
+        },
+        {
+          "name": "B23, the serve time that implies",
+          "text": "=$B$22+$B$4/1440 returns 4:29 PM with the rest already cut to 20. Read B23 rather than B22, because the clock that matters is the one on the wall at dinner, not the one on the oven."
+        },
+        {
+          "name": "B24, the verdict",
+          "text": "=IF($B$23<=$B$3,\"On plan by \"&TEXT(($B$3-$B$23)*1440,\"0\")&\" min\",\"Still late by \"&TEXT(($B$23-$B$3)*1440,\"0\")&\" min\") returns On plan by 1 min. Change B21 back to 1.0 and the same cell reads Still late by 9 min, which is the honest cost of leaving the oven alone."
+        },
+        {
+          "name": "Tent the breast",
+          "text": "400°F for the last half hour browns skin well before the thigh catches up. A foil tent over the breast from the moment the heat goes up keeps the leaner cut from drying while the thigh does the work. This step has no cell in it, and it is the one that decides whether the rescued bird is worth eating."
+        },
+        {
+          "name": "Test the assumption 15 minutes later",
+          "text": "At a rate of 0.35 the thigh should clear 146 by 3:15 PM. If it reads 144, the multiplier was fiction: set B21 to 1.0, take the 4:43 finish, and move to section 5 instead of waiting for a bird that is not coming."
+        }
+      ],
+      "example": {
+        "formula": "=$A$16+($B$5-$B$16)/($D$16*$B$21)/1440",
+        "result": "4:09 PM",
+        "explanation": "The same projection as E16 with 0.2333 multiplied by the 1.5 in B21. The remaining 24 degrees now take 68.57 minutes instead of 102.86, so the cell returns 16:08:34 and displays as 4:09 PM. The 28 seconds matter: at h:mm precision a 4:08:34 finish is printed as 4:09, and reading B22 as 4:08 would hand you a minute that does not exist."
+      },
+      "tips": [
+        "Any move that buys less than 15 minutes is not worth the quality it costs. Ten minutes off the rest is a real trade; ten minutes off the roast is a bird carved at 155.",
+        "Decide once. Fiddling with the heat every 10 minutes resets the oven's recovery and makes the next reading unreadable, which is how a recoverable 43 minutes becomes a 90-minute one."
+      ]
+    },
+    {
+      "title": "If It Is Already 4:30 and the Bird Is at 152",
+      "content": "No cell in this workbook fixes a bird that is 13 degrees short with guests at the door. At that point the question changes from when to how, and the answer stops being arithmetic.\n\nThe one thing that does not move is 165. A bird pulled at 152 and rested for 20 minutes is still under the number the USDA sets for the thigh, and carryover is not a substitute for it. The fix for a late turkey is a different order of serving, not a lower target.\n\nServe in courses. Gravy, mashed potatoes over a pot of simmering water, stuffing, rolls, the cranberry sauce, all of it is ready and none of it improves by waiting for the bird. The turkey is the last thing to arrive and the only thing that cannot be held.\n\nThen take the bird apart. Heat has a shorter distance to travel through a piece than through a whole carcass, and separating the legs and the breast from the frame exposes surfaces that were previously insulated. Slice the breast across the grain and finish the slices in a skillet with butter and a splash of stock. A half-inch slice reaches 165 in a few minutes where the whole breast needs another half hour, and the slices come out juicier than a breast that spent 40 extra minutes in the oven.\n\nWrite the numbers down before the plates are cleared. The chart said 3:30 and the bird finished at 4:43, which is 73 minutes of drift this oven produces on this size of bird. Next year the start time is a formula, not an opinion.",
+      "steps": [
+        {
+          "name": "Serve what is ready",
+          "text": "Everything except the bird. Announcing a 20-minute delay with a full table and hot sides is a normal Thanksgiving; announcing it with an empty table and a bird at 152 is a different evening."
+        },
+        {
+          "name": "Carve off the frame",
+          "text": "Legs first, then the breast in one piece, then the frame back in the oven if you want it for stock. Every cut shortens the path the heat has to travel."
+        },
+        {
+          "name": "Finish the slices in a pan",
+          "text": "Half-inch slices, a hot skillet, butter and a splash of stock, 3 to 4 minutes a side until the center reads 165. Check one slice with the probe rather than trusting the clock, since pan temperature varies more than oven temperature does."
+        },
+        {
+          "name": "Log the drift",
+          "text": "Type today's date beside the four readings. The gap between the chart's 3:30 and the probe's 4:43 is the single most useful number this sheet produces, and it only exists if someone writes it down tonight."
+        },
+        {
+          "name": "Next year's start time",
+          "text": "=$B$2-($E$16-$B$6) returns 10:47 AM. The bird took 42.86 minutes longer than planned, so it goes in 42.86 minutes earlier. On a different bird, retype B2 and E16 and the cell recalculates without a single assumption about minutes per pound."
+        }
+      ],
+      "example": {
+        "formula": "=$B$2-($E$16-$B$6)",
+        "result": "10:47 AM",
+        "explanation": "B2 holds 11:30 AM and the projected finish overshot the out-of-oven time by 42.86 minutes. Subtracting that from the start gives 10:47:09, displayed as 10:47 AM. This is the only cell on the sheet that is worth more than the meal it rescued, because it is the one that runs again next November without anyone redoing the chart."
+      },
+      "tips": [
+        "Serve the gravy in a pitcher, not a boat. A late bird means seconds and thirds spread over 40 minutes, and gravy that sits in a boat on the table is cold by the second pass.",
+        "Keep the foil you tented the breast with. It goes back over the carved slices on the platter while the second batch finishes in the pan."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "IFERROR",
+      "slug": "iferror",
+      "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise."
+    },
+    {
+      "name": "TEXT",
+      "slug": "text",
+      "description": "TEXT converts a number or date into text using a user-supplied format code, so the displayed value can be concatenated or presented in a custom format."
+    },
+    {
+      "name": "COUNT",
+      "slug": "count",
+      "description": "COUNT counts the number of cells that contain numbers within a specified range."
+    },
+    {
+      "name": "MIN",
+      "slug": "min",
+      "description": "MIN returns the smallest value in a range of cells."
+    },
+    {
+      "name": "MAX",
+      "slug": "max",
+      "description": "MAX returns the largest value in a range of cells."
+    }
+  ],
+  "summary": "Eight input cells, four checkpoints, and one division that gets repeated every half hour. The sheet turns two probe readings into degrees per minute, multiplies that rate back out to the 165 in B5, and compares the result against an out-of-oven time that already has the rest subtracted from it. The cells that carry the argument are E14 through E16, where the same bird produces three finish times an hour apart, and B18, where the ratio 0.70 says which of the three to believe. Everything after that is a spending decision. Cutting the rest buys minutes at one for one. Raising the heat buys a large block of them on a multiplier nobody has verified, which is why B21 sits in its own cell instead of inside the formula. The trade-off is that the forecast is only as good as the probe placement and the interval between readings, and a bird that stalls hard will still surprise you between checkpoints. Four numbers every 30 minutes is a small price for knowing at 2:00 PM what the table is going to hear at 4:30.",
+  "nextSteps": [
+    "Fill in B2 through B5 and the four checkpoints from your last turkey before the next one, then change B5 to 170 and watch which projections move. That sensitivity is what makes the sheet useful in the first hour, when there is still time to change the start time",
+    "Set B21 to 1.0 for the first year and leave it there. A speedup multiplier you have not measured is a story you are telling yourself, and the 4:43 finish is more useful than an optimistic 4:09 that turns out to be wrong",
+    "Take a reading at 140°F and again 15 minutes later, and compare the two windows with B18. One bird will teach you whether 30-minute windows are long enough in your oven, and that answer does not transfer from anyone else's kitchen"
+  ],
+  "relatedTutorials": [
+    "thanksgiving-cooking-timeline-formulas",
+    "thanksgiving-turkey-thaw-schedule",
+    "thanksgiving-turkey-quantity-per-person"
+  ]
+}
