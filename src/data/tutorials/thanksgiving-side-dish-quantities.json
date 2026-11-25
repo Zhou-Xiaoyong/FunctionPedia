@@ -1,0 +1,249 @@
+{
+  "slug": "thanksgiving-side-dish-quantities",
+  "title": "Thanksgiving Side Dish Quantities for 14 Guests: Five Rows, One Buy Column",
+  "description": "Thanksgiving side dish quantities for 14 guests, five rows: a per-row kid weight, a ROUNDUP buy column, and why 6 pounds of potatoes means 10 in the cart.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "SUM",
+    "IF",
+    "ROUND",
+    "ROUNDUP",
+    "IFERROR",
+    "MAX",
+    "TEXT"
+  ],
+  "intro": "The guest list says 14. The mashed potato row on this sheet asks for 12 people, the pie row asks for 14, and the wine row asks for 10, and all three are correct. Once the weights are in cells, the shopping list is six pounds of potatoes, nine cups of stuffing, 28 rolls, 14 slices of pie and 20 glasses of wine, which is twelve items in the cart instead of a guess.",
+  "tags": [
+    "Thanksgiving",
+    "Side Dishes",
+    "Quantities",
+    "Grocery Shopping"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "A guest list you can split into adults and kids. The split does not have to be exact; it only has to be typed once, because every row below reads those two cells",
+    "Excel 2016 or later, or Google Sheets. The one formula that needs a different syntax in Sheets is noted where it appears",
+    "The pack sizes from the store you are actually shopping at. A 5-pound bag and a 10-pound bag produce different answers from the same appetite, and no formula guesses which shelf you are standing in front of"
+  ],
+  "sections": [
+    {
+      "title": "Fourteen Guests, Twelve Eaters, Twenty Glasses",
+      "content": "Ten adults and four kids are coming Thursday. Mashed potatoes and stuffing are ordered for twelve people, rolls and pie for fourteen, wine for ten. The gap between those numbers is the entire reason this sheet has a weight column instead of a single headcount.\n\nA seven-year-old eats about half a portion of mash and a full slice of pie, and drinks nothing from the wine count. Type one headcount at the top and you have to pick which of those three is true for every row, and two of them will be wrong.\n\nSo the sheet keeps two typed cells and one weight per row. The weights live in column D and they are ordinary numbers, which matters more than it sounds: a 0 in that column means the row ignores the kids, and an empty cell means the same thing by accident. Section 2 shows where an accidental blank stays invisible all the way through the cart.\n\nEverything downstream reads the same two cells in B2 and B3, so a kid who brings a friend is a one-cell edit. Change B3 from 4 to 5 and the potato row moves from 6.00 to 6.25, the roll row from 28 to 30, and the pie row from 14 to 15, which is still two pies. That last one is worth noticing before you trust any quantity chart, including this one.",
+      "steps": [
+        {
+          "name": "B2, the adults",
+          "text": "10, typed as a plain number. No \"10 adults\" in the cell. Text that looks like a count is the single most common reason a quantity column returns zero."
+        },
+        {
+          "name": "B3, the kids",
+          "text": "4. Keep this as a count of people, not of portions. The portions are what column D decides, and mixing the two ideas in one cell is how a sheet ends up buying 12 pies."
+        },
+        {
+          "name": "B1, the total",
+          "text": "=SUM(B2:B3) returns 14. This cell is for the seating chart and the text message to your sister. No formula below it reads B1, because a total that ignores ages cannot price a plate."
+        },
+        {
+          "name": "Column D, the kid weight",
+          "text": "0.5 on the potato and stuffing rows, 1 on the rolls and pie rows, 0 on the wine row. Five numbers that encode the only real judgment in this workbook."
+        }
+      ],
+      "example": {
+        "formula": "=B$2+B$3*D11",
+        "result": "12",
+        "explanation": "Ten adults plus four kids at half weight. The dollar signs on B$2 and B$3 lock the columns but not the rows, so the formula copied down to D15 becomes =B$2+B$3*D15 and picks up the zero on the wine row on its own. Without those locks the reference walks off the guest cells by row 13 and every row after it multiplies a pack size by a kid count."
+      },
+      "tips": [
+        "Type the weights as decimals, not as text like \"half\". A cell holding the word half is ignored by the multiplication and the row quietly reverts to a full portion per kid.",
+        "If the count arrives as a pasted list of names, put it in a spare range and use COUNTA on that range to fill B2. Counting rows of names is more reliable than transcribing a number from a group chat."
+      ]
+    },
+    {
+      "title": "The Layout: Five Rows and the Column That Buys",
+      "content": "The table occupies A10 through I15. Columns A through D and F are typed, E and G through I are formulas, and the only column anyone reads in the store is G.\n\nRow 10 is the header: Dish, Rate per adult, Unit, Kid weight, Need, Pack size, Buy, Spare, Spare percent. Row 11 mashed potatoes, 12 stuffing, 13 rolls, 14 pie, 15 wine.\n\nThe rate in column B is per adult and the pack in column F is in the same unit as the rate. That consistency is not cosmetic. A rate in pounds next to a pack size in ounces produces a buy count that is off by a factor of sixteen and still looks like a plausible small number.\n\nColumn E multiplies the rate by the eaters on that row. Column G divides the need by the pack and rounds up, because a store sells whole bags. Column H subtracts the need from what the bags contain, and column I expresses that surplus as a percentage so the worst row stands out without a chart.\n\nOne formula does the work in G, and it is the only cell in the sheet that is worth memorizing.",
+      "steps": [
+        {
+          "name": "E11, the need",
+          "text": "=ROUND(B11*(B$2+B$3*D11),2) returns 6.00 pounds. The ROUND is there because rates like 0.75 and 0.33 carry float noise through a multiplication and leave a cell reading 8.999999999. Two decimals is enough to shop with."
+        },
+        {
+          "name": "G11, the buy column",
+          "text": "=IFERROR(ROUNDUP(E11/F11,0),0) returns 2 bags. Copy it down through G15 and the column fills with 2, 1, 3, 2, 4."
+        },
+        {
+          "name": "H11, the spare",
+          "text": "=G11*F11-E11 returns 4.00 pounds. This is what you carry home and do not cook, in the row's own unit, which is why the column has no total at the bottom. Four pounds of potatoes and four slices of pie do not add to anything."
+        },
+        {
+          "name": "I11, the spare as a share",
+          "text": "=IFERROR((G11*F11-E11)/E11,\"\") returns 66.7 percent under a 0.0% format. Column I is the one that makes the potato row look like what it is."
+        },
+        {
+          "name": "B7, the cart line",
+          "text": "=\"Cart: \"&SUM(G11:G15)&\" items, \"&TEXT(MAX(I11:I15),\"0%\")&\" spare on the worst row\" returns Cart: 12 items, 67% spare on the worst row. One sentence, and it names the row you should reconsider before you leave the house."
+        }
+      ],
+      "example": {
+        "formula": "=IFERROR(ROUNDUP(E11/F11,0),0)",
+        "result": "2",
+        "explanation": "Six pounds needed, five pounds per bag, so 1.2 bags. ROUNDUP turns 1.2 into 2 because half a bag is not a thing a store will sell you. Drop the IFERROR and a blank pack size in F gives #DIV/0! across the column, which is the correct error and a useless one at 8 p.m."
+      },
+      "tips": [
+        "Leave F blank for an item you buy loose, such as potatoes from a bin. ROUNDUP then returns the guard value 0, which reads as no bags to buy, and H shows the full need as the shortfall. It is a crude signal, and it beats a silent 1.",
+        "Format column G as a whole number. A cell reading 2.0000001 bags is a formula problem the reader will try to solve with the mouse."
+      ]
+    },
+    {
+      "title": "Six Pounds of Potatoes, Ten Pounds in the Cart",
+      "content": "The potato row is the one that costs money. Six pounds are needed, the bag holds five, and ROUNDUP buys two bags, which is ten pounds. Four pounds of raw potato come home and do not get cooked.\n\nPeeled and boiled, six pounds of raw potato yield about 4.5 pounds of mash, or nine cups. The four spare pounds become another three pounds of mash and roughly six cups, so the surplus is not a rounding crumb. It is a second pan.\n\nThat surplus percentage in column I is 66.7, and it is high for a structural reason: the pack is 83 percent of the need. Any item whose pack size sits just under the requirement gets doubled by the round, and the pattern repeats across a whole store. Rolls land at 28.6 percent spare and pie at 14.3, both acceptable. Stuffing comes in at 11.1 because a one-pound loaf yields about 10 cups against a need of 9.\n\nThe fix is not a better formula. It is a different pack: six pounds of loose potatoes, weighed at the scale, at a higher price per pound and no waste. The trade-off is real in both directions, and it is the one decision on this sheet where the cheaper total is not automatically the right answer.\n\nThere is a second problem hiding in this row, and it is worse than the extra bag. Blank the kid weight in D14, the pie row. E14 falls from 14 slices to 10, and ROUNDUP(10/8) still returns 2 pies, exactly as it did with the correct 14. A four-slice error disappears into a rounding step. If the answer looks right, the column underneath can still be wrong.",
+      "steps": [
+        {
+          "name": "H11, the pounds you carry",
+          "text": "=G11*F11-E11 returns 4.00. Read it in the row's unit before deciding anything: four pounds of potatoes is a decision, and four bags of rolls would be a different one."
+        },
+        {
+          "name": "The finished weight",
+          "text": "=ROUND(E11*0.75,1) returns 4.5 pounds of mash from six pounds raw. The 0.75 is peeling loss and water, and it is the number that tells you whether the pot you own is big enough."
+        },
+        {
+          "name": "The cups that surplus becomes",
+          "text": "=ROUND(H11*0.75*2,0) returns 6 cups from the four spare pounds, using two cups of mash per finished pound. Six cups is a 9x13 pan with an inch of mash in it."
+        },
+        {
+          "name": "Decide with the percent, not the pounds",
+          "text": "Column I at 66.7 percent means the buy column overshot by two thirds. At 10 percent it means the round was kind. Sort by that column, not by H, because H compares pounds with slices."
+        },
+        {
+          "name": "Weigh it loose when the pack is under 85 percent",
+          "text": "If F divided by E sits below 0.85, the round is about to double your purchase. Potatoes at 5 against 6 qualify. Stuffing at 10 against 9 does not."
+        }
+      ],
+      "example": {
+        "formula": "=ROUNDUP(E11/F11,0)",
+        "result": "2",
+        "explanation": "1.2 bags rounds to 2. Multiply back and the cell in G holds a purchase of 10 pounds against a need of 6, a 67 percent overshoot that no amount of careful shopping recovers, because the bag was already the wrong size when you picked it up."
+      },
+      "tips": [
+        "Buy the second bag only if you have a use for six cups of mash: a second pan, shepherd's pie on Friday, or potato cakes. Otherwise the spare is a garbage bag with extra steps.",
+        "If you weigh loose potatoes, put the scale weight into E11 as a typed override and set F11 to that same number. G then reads 1, and the spare column tells the truth instead of describing a bag you did not buy."
+      ]
+    },
+    {
+      "title": "Wine: Four Bottles at Five Ounces, Five at Six",
+      "content": "The wine row does not use the kid weight the way the others do. D15 is 0, so four kids contribute nothing and 10 adults at two glasses each give 20 glasses. That part is straightforward.\n\nThe bottle count is where people guess wrong, and the guess is almost always low. A 750 ml bottle holds 25.36 fluid ounces, not 25 and not a round 5 glasses. At a 5-ounce pour that is 5.07 glasses per bottle, so 20 glasses needs 3.94 bottles and rounds to 4. At a 6-ounce pour it is 4.23 glasses per bottle, so the same 20 glasses needs 4.73 bottles and rounds to 5.\n\nOne ounce of pour size, one extra bottle. The glassware on the table decides which answer is correct, and the sheet cannot see your glassware, which is why the pour size sits in its own cell instead of inside the formula.\n\nThere is a quieter case worth running before the store. Take one adult off the drinking count, which is what actually happens at most Thanksgivings, and the row drops to 18 glasses. At five ounces that is 3.55 bottles, still 4. The fifth bottle appears only when the pour grows, never when a guest declines.",
+      "steps": [
+        {
+          "name": "B18, the pour",
+          "text": "5, in fluid ounces, typed as a plain number with the unit in a label cell beside it. A cell holding \"5 oz\" breaks the multiplication and returns #VALUE! in every row that reads it."
+        },
+        {
+          "name": "G15, the bottles",
+          "text": "=IFERROR(ROUNDUP(E15*$B$18*29.5735/750,0),0) returns 4. The 29.5735 converts ounces to milliliters and the 750 converts back to bottles, and the pair cancels only if both are present."
+        },
+        {
+          "name": "Change B18 to 6",
+          "text": "The same cell returns 5 and nothing else in the table moves. Wine is the one row where an input edit changes one number and no total, which makes it a safe cell to experiment with."
+        },
+        {
+          "name": "Glasses per bottle, for the label",
+          "text": "=ROUND(750/29.5735/$B$18,1) returns 5.1 at a five-ounce pour. Put it next to the pour cell so the number on the bottle is not mistaken for a serving count."
+        },
+        {
+          "name": "Keep D15 at 0, not blank",
+          "text": "A zero and an empty cell both remove the kids from this row, and only one of them is intentional. The blank is what you will copy down from the pie row by accident in section 3."
+        }
+      ],
+      "example": {
+        "formula": "=IFERROR(ROUNDUP(E15*$B$18*29.5735/750,0),0)",
+        "result": "4",
+        "explanation": "Twenty glasses at five ounces is 100 ounces, which is 2,957.35 milliliters, which is 3.94 bottles. ROUNDUP gives 4. Set B18 to 6 and the same arithmetic returns 4.73 and 5 bottles, because 20 six-ounce pours no longer fit in four bottles by roughly three quarters of one."
+      },
+      "tips": [
+        "In Google Sheets this formula is identical. The difference shows up when you copy it down a column of blanks: Excel 365 spills and Sheets wants ARRAYFORMULA around the range, so keep the buy column filled row by row rather than as one array.",
+        "Count non-drinkers as a cell rather than by editing D15, or the next reader of the sheet will not know whether the zero meant kids or abstainers."
+      ]
+    },
+    {
+      "title": "Gravy: One-Third Cup per Eater, and the Roux Behind It",
+      "content": "Gravy is the only item where the headcount gives you a target and the pan gives you a limit. At a third of a cup per eater, 12 eaters need 3.96 cups, which rounds to 4.\n\nThe thickening is a ratio, not a guess: one tablespoon of fat and one tablespoon of flour bind one cup of stock. Four cups of gravy means four tablespoons of fat and four tablespoons of flour, and a roasting pan that gives you six tablespoons of fat supports six cups.\n\nThe unit conversion is where this goes wrong on paper. Six tablespoons is 0.375 cup, which sounds like a splash, and dividing by the 0.0625 cup in a tablespoon returns six cups of capacity. The same arithmetic read backwards is a trap: a pan with a quarter cup of fat yields four tablespoons and four cups, and a recipe that calls for six cups of stock will produce a thin gravy that never comes together.\n\nIf the pan is short, melted butter closes the gap one tablespoon at a time. That is the entire substitution, and it is the reason to know the fat number before the bird comes out rather than after the stock is already in the pan.\n\nFive rows, twelve items, and one rule that survives the trip to the store: buy to the pack, not to the appetite, and read the spare column before you read the total. The potato row will be the one that surprises you, and it will surprise you every year until you start weighing them loose.",
+      "steps": [
+        {
+          "name": "B24, the gravy the table needs",
+          "text": "=ROUNDUP(0.33*(B$2+B$3*0.5),0) returns 4 cups. The 0.5 is the same kid weight the potato row uses, typed here rather than referenced, so the two decisions can differ without breaking each other."
+        },
+        {
+          "name": "B25, the fat in the pan",
+          "text": "0.375, in cups, from six tablespoons. Type it in cups because the ratio is expressed in cups of stock, and mixing tablespoons with cups is how a gravy doubles."
+        },
+        {
+          "name": "B26, the capacity",
+          "text": "=B25/0.0625 returns 6 cups. Six cups of capacity against a need of four leaves two cups of slack, which is the margin that lets you feed the one guest who asks for extra."
+        },
+        {
+          "name": "B27, the verdict",
+          "text": "=IF(B26>=B24,\"Pan covers the table\",\"Add \"&TEXT(B24-B26,\"0\")&\" tbsp butter\") returns Pan covers the table. Drop B25 to 0.1875 and the same cell returns Add 1 tbsp butter, because three tablespoons of fat cover three of the four cups the table needs. The shortfall in cups and the shortfall in tablespoons are the same number, which is what makes this a one-line fix instead of a conversion problem."
+        },
+        {
+          "name": "The 8 o'clock check",
+          "text": "Four bottles, six pounds of loose potatoes, one loaf, three packs of rolls, two pies, four cups of gravy. If the store is out of the loose potatoes, take the two bags and plan the second pan instead of driving to a second store."
+        }
+      ],
+      "example": {
+        "formula": "=B25/0.0625",
+        "result": "6",
+        "explanation": "0.375 cups of pan fat divided by 0.0625 cups per tablespoon is six tablespoons, and six tablespoons of fat binds six cups of stock. The division looks like a unit conversion and is really the whole gravy plan: the numerator is what the bird gave you and the result is how far it stretches."
+      },
+      "tips": [
+        "Whisk the flour into cold stock before it meets the fat. Dumping dry flour into hot fat gives lumps that no whisk recovers, and the sheet will still say four cups.",
+        "Hold back half a cup of stock. Gravy thickens as it sits, and the cell that said four cups at 3 p.m. is describing a sauce that will be stiffer by the time it reaches the table."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "ROUND",
+      "slug": "round",
+      "description": "ROUND rounds a number to a specified number of decimal places."
+    },
+    {
+      "name": "ROUNDUP",
+      "slug": "roundup",
+      "description": "ROUNDUP rounds a number up to a specified number of decimal places, always away from zero."
+    },
+    {
+      "name": "IFERROR",
+      "slug": "iferror",
+      "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise."
+    },
+    {
+      "name": "MAX",
+      "slug": "max",
+      "description": "MAX returns the largest value in a range of cells."
+    },
+    {
+      "name": "TEXT",
+      "slug": "text",
+      "description": "TEXT converts a number or date into text using a user-supplied format code, so the displayed value can be concatenated or presented in a custom format."
+    }
+  ],
+  "summary": "Two typed cells and five rows of quantities, and the sheet answers the question a quantity chart answers badly: how much of each thing do I actually put in the cart. The weight column is the part worth keeping, because a kid counts as half a portion of mash, a full slice of pie and no wine, and a single headcount has no way to say that. The buy column does the second half of the job, converting a need into whole bags, loaves and bottles, and the spare column is where the honest news lives. Six pounds of potatoes become ten because the bag holds five, and four pounds of raw potato turn into six cups of mash that nothing on the table needs. Wine behaves the opposite way: at five ounces a pour, four bottles cover twenty glasses with almost nothing left, and at six ounces the same twenty glasses need five. The trade-off is that every rate here is a starting ratio in a cell, not a rule from a chart, so the sheet is only as good as the two rates you leave alone and the pack sizes you type. Weigh the potatoes loose, buy to the pack for everything else, and read column I before column G.",
+  "nextSteps": [
+    "Put your own pack sizes in column F before the next holiday. A 10-pound bag of potatoes turns the same six-pound need into one purchase and a 40 percent spare, which changes the answer more than any assumption in column B",
+    "Set B18 to 6 and watch only the wine row move. That single experiment shows why the pour size belongs in a cell, and it takes less time than reading a label in the store aisle",
+    "Copy the sheet for a non-holiday dinner and set every kid weight to 1. If the spare column suddenly reads 30 percent or more across four rows, the rates in column B are too generous for a weeknight and you have found free margin rather than a shopping problem"
+  ],
+  "relatedTutorials": [
+    "thanksgiving-turkey-quantity-per-person",
+    "thanksgiving-shopping-list-formulas",
+    "thanksgiving-dinner-cost-per-guest"
+  ]
+}
