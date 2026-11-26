@@ -1,0 +1,237 @@
+{
+  "slug": "black-friday-coupon-stacking-order",
+  "title": "Black Friday Coupon Stacking: Two Valid Coupons, $5.41 Apart on a $291.49 Cart",
+  "description": "Black Friday coupon stacking is an order-of-operations problem: a $291.49 cart ends $5.41 apart on tax and total, and a $150 minimum reverses the winner.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "SUM",
+    "IF",
+    "ROUND",
+    "IFERROR",
+    "TEXT"
+  ],
+  "intro": "Four items add to $291.49, and two promo codes both qualify: 20% off the cart and $25 off orders over $150. Applied one way the order costs $225.37, applied the other way it costs $230.78, and neither coupon changed. This sheet computes both orders side by side and shows where the $5.41 goes.",
+  "tags": [
+    "Black Friday",
+    "Coupon Stacking",
+    "Discount Order",
+    "Checkout Math"
+  ],
+  "estimatedTime": "12 min read",
+  "prerequisites": [
+    "A cart you can price before you check out. Screenshot the subtotal; the sheet needs one number, not a login",
+    "The two codes and their fine print. A percent code and a dollar code behave differently, and the minimum spend belongs in its own cell rather than in your head",
+    "Excel 2016 or later, or Google Sheets. Every formula here is identical in both; the one place the apps differ is noted in section 2"
+  ],
+  "sections": [
+    {
+      "title": "The Same Cart, Two Orders, Five Dollars",
+      "content": "The cart holds running shoes at $84.99, a fleece at $59.50, headphones at $129.00 and a three-pack of socks at $18.00. That is $291.49. Code SAVE20 takes 20% off the cart. Code TAKE25 takes $25 off orders over $150. Both qualify, and both are entered at the same checkout page.\n\nIf the site applies the percent first, the cart drops to $233.19 and then loses $25, which is $208.19. If it applies the dollars first, the cart drops to $266.49 and then loses 20%, which is $213.19. Same cart, same codes, $5.00 between them before tax and $5.41 after.\n\nThe gap does not grow with the cart. Run the same two codes against $500 of merchandise and the difference is still $5.00, because percent-then-dollars always comes out ahead by the dollar coupon multiplied by the percent rate. Twenty-five dollars times 0.20 is five dollars, and no subtotal changes that product. That is the whole reason this sheet is small enough to build between now and midnight.\n\nWhat you cannot control is the sequence. The checkout engine applies its own order, and the promo terms rarely say which one that is. What you can control is which codes you enter and whether the cart clears a minimum. Section 4 is where the second one turns a $20 win into a $20 loss.",
+      "steps": [
+        {
+          "name": "B11 to B14, the item prices",
+          "text": "84.99, 59.50, 129.00, 18.00, typed as plain numbers with no dollar signs. A cell holding \"$84.99\" as text is ignored by SUM and disappears from the subtotal without an error."
+        },
+        {
+          "name": "B15, the subtotal",
+          "text": "=SUM(B11:B14) returns 291.49. Everything downstream reads this cell, so if the cart changes, this is the only number that has to be right."
+        },
+        {
+          "name": "B17, the percent coupon",
+          "text": "0.20, formatted as a percentage so it reads 20%. Type 20 here by mistake and the first formula returns a negative total in the thousands, which at least fails loudly."
+        },
+        {
+          "name": "B18, the dollar coupon",
+          "text": "25. The units matter: this cell is dollars, B17 is a rate, and swapping them is the most common way a hand-built discount sheet produces nonsense."
+        }
+      ],
+      "example": {
+        "formula": "=ROUND($B$15*(1-$B$17),2)-$B$18",
+        "result": "208.19",
+        "explanation": "291.49 times 0.80 is 233.192, rounded to the cent at 233.19, minus 25. Retailers round at each step, and the ROUND sitting between the two discounts is what keeps the formula honest about that. Drop the ROUND and the cell shows 208.192, which is the same money and the wrong number to compare against a receipt."
+      },
+      "tips": [
+        "Keep the percent as 0.20 in the cell and use percentage formatting for the display. A cell that stores the number 20 and a percent format shows 2000%, and every formula reading it is off by a factor of a hundred.",
+        "If the codes are listed as \"20% off $75 or more\", the 75 belongs in its own cell too, even when your cart is nowhere near it. The cell costs nothing and it stops the next cart from being evaluated against a rule you remembered wrong."
+      ]
+    },
+    {
+      "title": "The Layout: Two Input Blocks and a Five-Column Comparison",
+      "content": "The sheet occupies A10 through E28 with three blocks stacked vertically. The item block runs A10 to B15 and ends in the subtotal. The coupon block runs A17 to B23 and holds the two codes, the minimum, the tax rate and the shipping rule. The comparison block runs A25 to E28 and is the only part anyone reads at checkout.\n\nRow 25 is the header of the comparison block: Order, After coupons, Tax, Shipping, Total. Row 26 is percent first, row 27 is dollars first, and E28 holds the single number the whole page is about, which is the difference between the two totals.\n\nSeven cells are typed and eight are formulas. The typed ones are the four prices, the two coupons and the tax rate, and none of them is a number the sheet could derive for itself. The formula cells are the subtotal, the four columns of the comparison block, the minimum toggle and the gap.\n\nInside the comparison block, column B is the post-coupon merchandise total, column C is the tax on that total, column D is shipping, and column E adds the three together. Splitting tax and shipping into their own columns is what makes section 3 possible, because the order of the coupon only changes one of them.",
+      "steps": [
+        {
+          "name": "A10 and B10, the headers",
+          "text": "\"Item\" and \"Price\". Row 10 stays a header row; the formulas start at row 11 so that inserting a fifth item above the subtotal does not need a rewrite."
+        },
+        {
+          "name": "B26, percent first, with the minimum check",
+          "text": "=ROUND($B$15*(1-$B$17),2)-IF(($B$15*IF($B$20=1,1-$B$17,1))>=$B$19,$B$18,0) returns 208.19. The nested IF picks which subtotal the minimum is tested against, and B20 decides which one that is."
+        },
+        {
+          "name": "B27, dollars first",
+          "text": "=ROUND(($B$15-IF($B$15>=$B$19,$B$18,0))*(1-$B$17),2) returns 213.19. Here the minimum is always tested against the full cart, because the dollar coupon is the first thing that happens."
+        },
+        {
+          "name": "C27, the tax on that total",
+          "text": "=ROUND($B$27*$B$21,2) returns 17.59. Tax is computed on the discounted amount, not the sticker total, which is why the 20% code also shrinks the tax bill."
+        },
+        {
+          "name": "E28, the gap",
+          "text": "=$E$27-$E$26 returns 5.41. Positive means dollars first is the expensive order. If this cell ever reads 0, one of the two coupon cells is blank."
+        }
+      ],
+      "example": {
+        "formula": "=ROUND(($B$15-IF($B$15>=$B$19,$B$18,0))*(1-$B$17),2)",
+        "result": "213.19",
+        "explanation": "The cart clears the $150 minimum before any discount, so the $25 comes off first and leaves 266.49. Twenty percent of that is 53.298, which lands the cell on 213.19. Reverse the two steps and the same three inputs give 208.19, and that 5.00 is the dollar coupon multiplied by the discount rate."
+      },
+      "tips": [
+        "In Google Sheets every formula on this page returns the same value. The difference appears if you try to fill both order rows with one array formula: Excel 365 spills it down the block, and Sheets wants ARRAYFORMULA wrapped around it. Two ordinary formulas in two rows avoid the question entirely.",
+        "Format B26 through E27 as currency with two decimals as soon as you build them. A cell reading 208.192 is the same money, and it will still make you distrust the sheet in the checkout line."
+      ]
+    },
+    {
+      "title": "Tax and Shipping Eat Half the Gap",
+      "content": "The $5.00 becomes $5.41 because sales tax follows the discounted total. Percent first pays $17.18 in tax on $208.19, dollars first pays $17.59 on $213.19, and 8.25% of the $5 difference is 41 cents. Small, and it moves in the same direction as the merchandise, so it never cancels the win.\n\nShipping is the column that can cancel it. The store in this example ships free at $75 post-discount and charges $8.95 below that. At a $291.49 cart neither order comes close to the threshold, so the column reads zero twice and the comparison is clean.\n\nNow shrink the cart to $121.90. Percent first finishes at $72.52 in merchandise, which is $2.48 short of free shipping, so column D adds $8.95 and the order costs $81.47. Dollars first finishes at $77.52, clears the threshold, and costs $77.52. The stack that saved $5.00 on merchandise now costs $3.95 more at checkout.\n\nThat flip needs the post-coupon total to sit within about $5 of the threshold, and it is worth checking on a small cart because it is invisible on a large one. The same $8.95 also explains why a code that pushes you under a free-shipping line is worse than no code at all.",
+      "steps": [
+        {
+          "name": "C26, tax on the percent-first total",
+          "text": "=ROUND($B$26*$B$21,2) returns 17.18. ROUND to the cent here rather than at the end of the chain, because the receipt rounds the tax line."
+        },
+        {
+          "name": "D26, shipping",
+          "text": "=IF($B$26>=$B$22,0,$B$23) returns 0. Set B22 to 250 and the same cell returns 8.95, and E26 jumps by exactly that amount."
+        },
+        {
+          "name": "E26, the door total",
+          "text": "=$B$26+$C$26+$D$26 returns 225.37. This is the number to compare with your bank alert, not the merchandise column."
+        },
+        {
+          "name": "The $121.90 test",
+          "text": "Type 121.90 into B11, clear B12 through B14, and leave B22 at 75. B26 reads 72.52 and D26 reads 8.95, so E26 is 81.47. E27 reads 77.52 with no shipping, and the winner has swapped."
+        },
+        {
+          "name": "B22 stays before tax",
+          "text": "Free-shipping thresholds are usually tested on merchandise, sometimes before and sometimes after discounts. Set B22 to whichever number the terms use, and leave tax out of it either way."
+        }
+      ],
+      "example": {
+        "formula": "=IF($B$26>=$B$22,0,$B$23)",
+        "result": "0",
+        "explanation": "208.19 clears a $75 threshold, so the cell returns zero shipping rather than a blank. The zero matters: SUM and subtotal formulas that ignore text will still add this cell, and a blank in column D makes the total column look like it is missing a step."
+      },
+      "tips": [
+        "In the states that tax shipping, add 8.25% of the $8.95, which is 74 cents, to the total on a sub-threshold cart. That is enough to change a close comparison, and it is the first thing to check when your total disagrees with the confirmation email by under a dollar.",
+        "If two orders are within a dollar of each other, stop optimizing the coupon and look at the return policy instead. A 5% restocking fee on a $129 item is $6.45, which is more than the entire gap this sheet is chasing."
+      ]
+    },
+    {
+      "title": "The $150 Minimum That Reverses the Winner",
+      "content": "Coupon minimums are usually tested on the merchandise total before discounts, and sometimes after. That single convention decides whether the cheaper order on paper is even legal. Cell B20 is the switch: 0 means the minimum is checked against the full cart, 1 means it is checked against the subtotal the coupon sees at that moment.\n\nTake a $160 cart with B20 set to 1. Percent first gives $128.00 in merchandise, and $128 is below the $150 minimum, so the $25 code is rejected and the order stays at $128.00. Dollars first takes $25 off the full $160, which clears the minimum, and then takes 20% of $135.00, which is $108.00. The order that lost $5 on the large cart wins by $20 here, and it wins because a coupon disappeared.\n\nRejections are silent. The store shows a red line of text under the promo box, the total updates without the discount, and nothing in the cart says the order you chose was the expensive one. The only way to see it is to compute both orders, which is what B26 and B27 do.\n\nSet B20 back to 0 and the same $160 cart goes to $128.00 against $108.00 only if the terms say the minimum is measured before discounts. Read that line in the promo details once, set the cell, and the sheet stops guessing.\n\nThe minimum also creates a filler trap. A $130 cart with the $25 code needs $20 more to qualify, and a $25 filler gets there: $155 becomes $124.00 after the percent, which is $99.00 against $104.00 for the untouched $130 cart. You save $5 in cash and take home $25 of merchandise, so the filler is only a win if the item was already on the list. If it was not, the sheet just paid you $5 to buy something.",
+      "steps": [
+        {
+          "name": "B19, the minimum",
+          "text": "150. Leave it as a number in dollars, not in the coupon text, so the check in B26 has something to compare against."
+        },
+        {
+          "name": "B20, the convention",
+          "text": "0 or 1. This is the only cell on the sheet whose correct value comes from reading the fine print rather than from arithmetic."
+        },
+        {
+          "name": "B11, the $160 test",
+          "text": "Clear B12 to B14 and type 160 into B11. B15 follows, and both comparison rows recalculate from that one cell."
+        },
+        {
+          "name": "B26 at B20 = 1",
+          "text": "Returns 128.00, and the $25 coupon is gone. Widen column B once and the cell shows the whole story."
+        },
+        {
+          "name": "B27 at the same settings",
+          "text": "Returns 108.00. The IF inside it tests the full cart, because that is the subtotal the dollar coupon is applied to, and that asymmetry is the entire mechanism."
+        }
+      ],
+      "example": {
+        "formula": "=ROUND(($B$15-IF($B$15>=$B$19,$B$18,0))*(1-$B$17),2)",
+        "result": "108",
+        "explanation": "With 160 in B15 the minimum clears at 160, so the $25 comes off and leaves 135.00. Twenty percent off that is 108.00. The percent-first row on the same sheet reads 128.00 because its minimum test runs against 128, fails, and drops the coupon, which is a $20 swing caused by where the test happens, not by the size of either discount."
+      },
+      "tips": [
+        "If the promo box rejects a code and the cart was close to the minimum, add a filler only if it clears the line by a few dollars. A $25 filler against a $20 shortfall leaves $5 of slack, and one return or one out-of-stock item puts you back under the line at checkout.",
+        "Set B20 to 1 and watch B26 on the $291.49 cart. It still reads 208.19, because 233.19 clears $150 either way. The switch only bites on carts between about $150 and $188, which is exactly where most Black Friday carts land."
+      ]
+    },
+    {
+      "title": "One Code Only: the $125 Crossover",
+      "content": "Many checkouts allow a single promo code, and the choice is arithmetic. A 20% code is worth 20% of the cart; the $25 code is worth $25 no matter what. They are equal at $125, because 25 divided by 0.20 is 125.\n\nBelow $125 the dollar coupon wins, and it is not close on a thin cart: $96 of merchandise gives $19.20 off from the percent code and $25.00 from the dollar code. Above $125 the percent code pulls ahead and never looks back, since every extra dollar of cart adds 20 cents to it and nothing to the other.\n\nThat crossover is the one number worth remembering from this page. Twenty percent sounds like the bigger offer, and on a $96 cart it is the smaller one by $5.80.\n\nWhat the sheet cannot see is the exclusions list. A percent code that skips the two items you actually want is worth less than its headline, and the fix is to price the excluded items separately and run the comparison on what remains. That takes a second column of typed prices, which is more work than most people do at 11 p.m. The trade-off is honest: the arithmetic here is exact, and the input it depends on is the one number the store controls.",
+      "steps": [
+        {
+          "name": "B30, the crossover",
+          "text": "=$B$18/(1-$B$17) returns 125. The denominator is the discount rate, not the coupon value, so 25 divided by 0.20 is the break-even cart."
+        },
+        {
+          "name": "B31, the verdict",
+          "text": "=IF($B$15>$B$30,\"Take the percent\",\"Take the dollars\") returns Take the percent at 291.49 and Take the dollars at 96."
+        },
+        {
+          "name": "B32, the difference in dollars",
+          "text": "=ROUND($B$15-$B$18-($B$15*(1-$B$17)),2) returns 33.30 at 291.49, which is 266.49 left after the dollars minus 233.19 left after the percent. If that cell reads under a dollar, enter whichever code the page accepts first and move on."
+        },
+        {
+          "name": "B33, the one-line gap check",
+          "text": "=TEXT($B$18*(1-$B$17)*(1+$B$21),\"$0.00\") returns $5.41. The dollar coupon times the discount rate, with tax on top, is the entire difference between the two orders on any cart above the minimum."
+        },
+        {
+          "name": "Guard the blank coupon cell",
+          "text": "=IFERROR(ROUND($B$15*(1-$B$17),2)-$B$18,\"Check the coupon cells\") returns 208.19. Clear B17 and the sheet refuses politely instead of pricing the cart at full retail."
+        }
+      ],
+      "example": {
+        "formula": "=IF($B$15>$B$30,\"Take the percent\",\"Take the dollars\")",
+        "result": "Take the percent",
+        "explanation": "At 291.49 the percent code is worth 58.30 and the dollar code is worth 25, so the verdict is not close. Type 96 into B11 and the same cell returns Take the dollars, because 20% of 96 is 19.20 against a flat 25."
+      },
+      "tips": [
+        "A blank B17 is the quiet failure mode: 1 minus blank is 1, the formula returns the full subtotal minus the dollar coupon, and nothing errors. #VALUE! at least announces itself; a missing discount does not.",
+        "Keep the two coupon cells on the same sheet as the prices for the whole weekend. The gap is always the same $5.00 before tax on any cart that clears both minimums, so the interesting column is shipping, not the discount."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "ROUND",
+      "slug": "round",
+      "description": "ROUND rounds a number to a specified number of decimal places."
+    },
+    {
+      "name": "IFERROR",
+      "slug": "iferror",
+      "description": "IFERROR returns a custom result when a formula generates an error, and the formula result otherwise."
+    },
+    {
+      "name": "TEXT",
+      "slug": "text",
+      "description": "TEXT converts a number or date into text using a user-supplied format code, so the displayed value can be concatenated or presented in a custom format."
+    }
+  ],
+  "summary": "Two valid coupons are worth $5.41 in the wrong order on a $291.49 cart, and that gap is fixed at the dollar coupon multiplied by the percent rate, which is $5.00 in merchandise and 41 cents in tax. The sheet computes both orders in five columns so tax and shipping stay visible: tax follows the discount and widens the gap slightly, while an $8.95 shipping charge can erase it on a cart that finishes within $5 of the free-shipping line. The convention that matters most is where a coupon minimum is tested, because a $160 cart drops a $25 code if the test runs after the percent and reverses the winner by $20. Set that switch from the promo terms, not from a guess. The recommendation is the plain one: build the two-row comparison, keep the percent as a rate in its own cell, and trust the shipping column more than the discount column. The trade-off is that none of this touches the exclusions list, which can quietly make the better code worth less than its headline.",
+  "nextSteps": [
+    "Set B20 to 1 and type 160 into B11, then read both totals. Watching the $25 coupon vanish from one row and not the other is faster than reading the promo terms twice, and it tells you which convention your store uses",
+    "Add a fourth column for the price you saw in October, the way the Black Friday price tracker does, and the sheet stops measuring discounts against a compare-at price the seller picked",
+    "Run the $121.90 cart once before you check out on a small order. If the cheaper stack lands under the free-shipping threshold, the $8.95 charge decides the order and the coupon does not"
+  ],
+  "relatedTutorials": [
+    "black-friday-price-tracker",
+    "black-friday-return-window-tracker",
+    "holiday-gift-budget-tracker"
+  ]
+}
