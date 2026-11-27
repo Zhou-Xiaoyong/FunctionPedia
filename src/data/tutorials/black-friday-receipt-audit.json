@@ -1,0 +1,289 @@
+{
+  "slug": "black-friday-receipt-audit",
+  "title": "Black Friday Receipt Audit: $95.00 Owed, $75.00 Still Claimable, $20.00 Gone",
+  "description": "A Black Friday receipt audit for seven line items: one formula per row finds $95.00 owed on an $899.89 subtotal, and $20.00 of it is already outside the window.",
+  "category": "Use Cases & Templates",
+  "functions": [
+    "SUMPRODUCT",
+    "MAX",
+    "ROUND",
+    "IF",
+    "TODAY",
+    "SUM",
+    "ISTEXT"
+  ],
+  "intro": "Seven lines, a subtotal of $899.89, and two prices for the same headphones: $149.99 on the shelf card, $179.99 on the receipt. The register charged a pre-sale price on two rows and the price fell after purchase on three more, which is $95.00 in claims once the overlap between those two facts is removed. One row has been dead for eight days, and the sheet says so before you write the email.",
+  "tags": [
+    "Black Friday",
+    "Receipt Audit",
+    "Price Adjustment",
+    "Refund"
+  ],
+  "estimatedTime": "13 min read",
+  "prerequisites": [
+    "Excel 2016 or later, or Google Sheets. SUMPRODUCT, MAX, ROUND, IF, TODAY and ISTEXT all exist in both apps with the same argument order",
+    "The receipt itself, as a PDF or a photo, because column D has to hold the unit price from the paper rather than the price you remember agreeing to",
+    "Each store's price adjustment policy, read once. It is a separate page from the return policy and usually a shorter window, often 14 days where returns allow 30"
+  ],
+  "sections": [
+    {
+      "title": "Two Prices on One Line Item",
+      "content": "Shelf card $149.99. Receipt $179.99. That gap is not a discount you missed, it is a register error, and stores correct those whenever you can show the tag.\n\nThe rest of the list is a different problem. The air fryer rang up at $79.99, which was the correct price on the day, and it is $59.99 today. Nothing went wrong at the register. The price moved after you paid, and the money you can ask for is a price adjustment.\n\nBoth are real claims and both have a deadline, but they are not the same request. A register error is a billing correction, and most stores will process it weeks or months later as long as the tag is provable. A price adjustment is a policy with a clock that starts on the purchase date, and when that clock runs out the money is gone no matter how clean your evidence is.\n\nSo the sheet keeps them in separate columns. Column H measures the receipt against the shelf price. Column I measures it against today's price. Neither formula knows what the store's policy says, which is the entire reason column G exists.",
+      "steps": [
+        {
+          "name": "B6:B12, the quantities",
+          "text": "1 on five rows, 2 on the coat and the lamp, 3 on the blocks. Leave a quantity blank and that row's overcharge computes to zero, which reads like a clean line rather than a missing one."
+        },
+        {
+          "name": "C6:C12, the expected unit price",
+          "text": "149.99, 79.99, 89.99, 199.99, 24.99, 84.99, 34.99. The shelf price after any posted promo is applied, per unit. This is the number you are claiming against, so it has to be the tag you photographed, not the price you remember from October."
+        },
+        {
+          "name": "D6:D12, the charged unit price",
+          "text": "179.99, 79.99, 99.99, 199.99, 24.99, 84.99, 39.99. The unit price on the receipt line, not the line total. A $199.98 line for two coats at $99.99 goes in as 99.99 with a 2 in column B, or the quantity gets multiplied in twice."
+        },
+        {
+          "name": "E6:E12, today's price",
+          "text": "149.99, 59.99, 99.99, 229.99, 19.99, 84.99, 34.99. The current listing for the same item. The vacuum is up $30.00 from what you paid, and that single row is what breaks a naive total in section 3."
+        },
+        {
+          "name": "H6, the overcharge",
+          "text": "Thirty dollars on the headphones. MAX is doing real work here: on any row where you paid less than the tag, the inner subtraction is negative and MAX returns zero instead of a signed number that would later cancel someone else's claim.",
+          "formula": "=MAX(0,ROUND(($D6-$C6)*$B6,2))"
+        },
+        {
+          "name": "I6, the drop",
+          "text": "Same shape, column E instead of column C. On the vacuum this returns 0 rather than minus 30.00, which is the whole point of the clamp.",
+          "formula": "=MAX(0,ROUND(($D6-$E6)*$B6,2))"
+        }
+      ],
+      "example": {
+        "formula": "=MAX(0,ROUND(($D6-$C6)*$B6,2))",
+        "result": "30.00",
+        "explanation": "One hundred seventy-nine ninety-nine against the $149.99 on the shelf card, times one unit. ROUND sits inside MAX so the cell holds a whole-cent figure, which is the number a clerk can match against the paper in your hand. Both halves matter: drop the MAX and a row where the tag was higher than the charge produces a negative that quietly shrinks the total instead of flagging a miscopied price."
+      },
+      "tips": [
+        "Photograph the shelf tag before you walk to the register. The tag is the only evidence in a register dispute and it is replaced by Monday morning. A timestamped photo beats the receipt, because the receipt only proves what you paid, not what you were shown.",
+        "The 'You saved $142.00' line printed under a Black Friday total is computed against the regular price, not against anything you did. It is a marketing figure and it has no place in this sheet, where every claim has to survive a clerk reading the line item."
+      ]
+    },
+    {
+      "title": "The Layout: Seven Typed Columns, Five That Compute",
+      "content": "Header in row 5, data in rows 6 through 12, twelve columns from A to L. Seven columns get typed and five are formulas. That split is what makes the sheet usable on the day of the sale, because the only cells you touch while standing at a counter are the charged price in D and the current price in E.\n\nColumns H through L are the five formulas, and they never need editing once they are filled down. Column J is the one you read at the counter. Columns K and L are the ones you read the following week, when the store has answered or has not.",
+      "steps": [
+        {
+          "name": "Row 5, headers",
+          "text": "Item, Qty, Expected, Charged, Now, Purchased, Window, Overcharge, Drop, Claim, Deadline, Status across A5:L5. Data starts in row 6, so every range below runs $6:$12 until you add a row at the bottom."
+        },
+        {
+          "name": "Column A, the item",
+          "text": "Headphones, Air fryer, Winter coat, Robot vacuum, Building blocks, Running shoes, Desk lamp. Plain names with no model numbers, because the row exists to match a receipt line and the receipt says 'DESK LAMP' in eight characters."
+        },
+        {
+          "name": "Column F, the purchase date",
+          "text": "11/27/2026 on six rows and 10/20/2026 on the air fryer. Type the year. A date entered as 10/20 during a November session stores October 20 of this year, which happens to be correct here and is wrong on any receipt from last season."
+        },
+        {
+          "name": "Column G, the adjustment window",
+          "text": "14, 30, 30, 14, 30, 14, 21. Calendar days, from the price adjustment policy rather than the return policy. Stores publish them as two different numbers and the adjustment one is usually the shorter."
+        },
+        {
+          "name": "Column J, the claim",
+          "text": "30.00 on the headphones and 15.00 on the blocks. One cell answers the question you actually have, which is how much this row is worth.",
+          "formula": "=MAX($H6,$I6)"
+        },
+        {
+          "name": "Column K, the deadline",
+          "text": "12/11/2026 on the headphones and 11/19/2026 on the air fryer. Purchase date plus the window, in plain calendar arithmetic. No WORKDAY here, because an adjustment policy does not pause for a weekend.",
+          "formula": "=$F6+$G6"
+        },
+        {
+          "name": "Column L, the status",
+          "text": "Open four times, Expired once, No claim twice. Four states in one nesting, and the zero-claim test comes first so a row with nothing to claim never reports a deadline that does not matter.",
+          "formula": "=IF($J6=0,\"No claim\",IF($K6<TODAY(),\"Expired\",IF($K6-TODAY()<=7,\"This week\",\"Open\")))"
+        }
+      ],
+      "example": {
+        "formula": "=$F7+$G7",
+        "result": "11/19/2026",
+        "explanation": "October 20 plus thirty calendar days on the air fryer. Against a check date of November 27 that cell is eight days in the past, and the $20.00 on the same row is the only claim on this sheet that no email will recover. The formula has no error handling because a past date is a perfectly valid date, which is exactly why the status column has to carry the verdict."
+      },
+      "tips": [
+        "Format F and K as dates before anything is typed into them. A date entered into a cell formatted as Text stays a string, and K then returns #VALUE! on the first row you fill. Set the column format first, then enter the dates.",
+        "Ctrl+T turns A5:L12 into a Table in Excel and formulas written afterward can use names like Table1[[#This Row],[Charged]] that grow with it. Google Sheets has no Tables, so a row typed below row 12 sits outside every range on this page until you extend them by hand."
+      ]
+    },
+    {
+      "title": "The Claim Is the Larger Number, Never the Sum",
+      "content": "Column H totals $60.00 and column I totals $75.00. Add them and the sheet claims $135.00, which is $40.00 more than anyone owes you.\n\nThe overlap is structural rather than a data error. Both columns start from the charged price in D and both end in dollars. Column H measures D against the shelf price C, column I measures D against today's price E. On the headphones, E has fallen back to exactly C, so both formulas return $30.00 for the same thirty-dollar loss. The lamp does the same thing at $10.00: 39.99 charged, 34.99 on the tag, 34.99 today.\n\nThere is a rule under this and it holds on every row you add. If E is at or above C, then D minus E can never exceed D minus C, so the drop column can never be larger than the overcharge. If E falls below C, the drop is the larger number and it already contains the register error. The claim for a row is the maximum of the two, in both directions.\n\nAsking for both is worse than asking for the wrong amount. A $60.00 request against a $30.00 problem gets read as an error and answered with a denial of the whole email, and the second reply is harder to get than the first.",
+      "steps": [
+        {
+          "name": "J6, the maximum of two claims",
+          "text": "Thirty dollars, not sixty. Fill it down and the column totals $95.00 across seven rows.",
+          "formula": "=MAX($H6,$I6)"
+        },
+        {
+          "name": "B20, the total claim",
+          "text": "95.00. This is the number that goes in the email, and it should equal the sum of column J and nothing else.",
+          "formula": "=SUM($J$6:$J$12)"
+        },
+        {
+          "name": "The naive total, for comparison",
+          "text": "135.00. Keep it in a spare cell for one minute and then delete it, because a wrong figure left beside a right one gets read on the morning it matters.",
+          "formula": "=SUM($H$6:$H$12)+SUM($I$6:$I$12)"
+        },
+        {
+          "name": "Which rows double",
+          "text": "The headphones at 30.00 and the lamp at 10.00, and that is the whole $40.00. The coat contributes nothing here because its current price of 99.99 equals what was charged, so its drop is zero. The vacuum contributes nothing because its price went up."
+        },
+        {
+          "name": "The rows with no claim at all",
+          "text": "The running shoes at 84.99 came in at the shelf price and have not moved, so H, I and J are all zero. Two rows on this list are like that, and they stay in the table rather than being deleted, since deleting a row renumbers everything below it and breaks the ranges."
+        },
+        {
+          "name": "What the number is not",
+          "text": "It is not the tax on those dollars. A refund of $95.00 carries between $0 and about $8.50 of sales tax depending on the state, and the store computes that at whatever rate it charged. Leave tax out of the sheet and let the credit come back the way the original charge went out."
+        }
+      ],
+      "example": {
+        "formula": "=MAX($H6,$I6)",
+        "result": "30.00",
+        "explanation": "Two formulas returning the same thirty dollars for two descriptions of one loss. On the blocks the same cell returns 15.00 from column I alone, because the shelf price and the charged price were identical there and the entire claim is a price move. One column, two mechanisms, and the maximum picks whichever one applies."
+      },
+      "tips": [
+        "Run both totals before you send anything. A $135.00 ask against a $95.00 problem gets escalated to someone with less authority than the person who answered the first email, and escalations cost days you may not have.",
+        "Keep column I even on a receipt where nothing dropped. It is the column that tells you an item is now cheaper than you paid, and that changes what you do with the item even when the deadline for the difference has closed."
+      ]
+    },
+    {
+      "title": "The Audit Cell: $899.89 Against the Printed Subtotal",
+      "content": "Nothing so far proves the table matches the receipt. A missing line and a price Excel read as text both produce a total that looks like a total, and both leave you claiming less than you are owed.\n\nB15 multiplies quantity by charged price across all seven rows. B16 takes the subtotal printed on the receipt, typed from the paper. B17 subtracts one from the other and should read 0.00.\n\nWhen it does not, the size of the gap is the size of the problem. A $12.99 shipping upgrade that sat above the tax and never made it into your seven rows puts 12.99 in B17, and that amount is missing from every figure on this page including the $95.00.\n\nThe other failure is text. Prices copied out of a PDF receipt arrive with things attached: a currency symbol, a trailing space, sometimes a non-breaking space that no normal cleanup touches. Paste one of those into column D and B15 returns #VALUE! instead of a total. That error is the good outcome. The bad one is a text price in a cell that some other formula sums quietly, and the quiet version is the one that costs money at the counter.",
+      "steps": [
+        {
+          "name": "B15, the computed spend",
+          "text": "899.89. SUMPRODUCT rather than a helper column, because it weights each row by its quantity in one expression and it fails loudly when a cell holds text.",
+          "formula": "=SUMPRODUCT($D$6:$D$12,$B$6:$B$12)"
+        },
+        {
+          "name": "B16, the printed subtotal",
+          "text": "899.89, typed from the receipt rather than copied. This is the only cell on the sheet that cannot be derived, and it is the one that makes the audit mean anything."
+        },
+        {
+          "name": "B17, the audit",
+          "text": "0.00. Format it as currency and do not hide it. A zero here is the proof that the seven rows are the receipt, and it takes two seconds to check after every edit.",
+          "formula": "=$B$15-$B$16"
+        },
+        {
+          "name": "B18 and B19, the two claim totals",
+          "text": "60.00 and 75.00. Neither is the number you send. They are here because the gap between them is the argument in section 3, and because a category total is easier to defend than a combined one.",
+          "formula": "=SUM($H$6:$H$12)"
+        },
+        {
+          "name": "B24, the text count",
+          "text": "0 on clean data. One hit here with B15 reading #VALUE! tells you where to look without scrolling the column twice.",
+          "formula": "=SUMPRODUCT(--ISTEXT($D$6:$D$12))"
+        }
+      ],
+      "example": {
+        "formula": "=$B$15-$B$16",
+        "result": "0.00",
+        "explanation": "Seven unit prices weighted by quantity against the subtotal the register printed. A zero means the table is the receipt. Type 12.99 into B16 as if the receipt carried a shipping line you skipped, and the cell reads minus 12.99, which is a missing row rather than a math error. That sign is the tell: a positive gap means your table is short, a negative one means the paper has something you never entered."
+      },
+      "tips": [
+        "For a price that arrived as text with a leading space, =VALUE(TRIM($D6)) converts it in place. TRIM does not remove a non-breaking space, which is CHAR(160), so a cell that survives the fix needs SUBSTITUTE($D6,CHAR(160),\"\") before VALUE will read it.",
+        "SUMPRODUCT errors on text while SUM skips it without a word. On a sheet whose entire job is proving an amount, the error is the feature, so use SUMPRODUCT for every total here even where SUM would return a number."
+      ]
+    },
+    {
+      "title": "The Row That Expired Eight Days Ago",
+      "content": "The air fryer is the honest row. Bought October 20, thirty-day adjustment window, deadline November 19. Today is November 27. The $20.00 is real, the price really did fall to $59.99, and none of that matters because the window closed eight days ago.\n\nFour rows are still open, worth $75.00 between them, and all four come due inside December. The earliest is December 11. The status formula compares the deadline to TODAY(), which recalculates on every edit, so the sheet ages on its own and the $75.00 falls as the month moves without anyone touching a cell.\n\nThe boundary is worth fixing in your head before you rely on it. A 30-day window includes day 30. The status cell reads Expired on day 31, not on day 30, because the test is K<TODAY() and on the last valid day the two dates are equal. Flip it to <= and a row due today reports Expired, which costs you the one day the policy actually gave you.\n\nIf a row has already closed, part of the loss may not be subject to that clock at all. A price adjustment is a policy. A register error is a billing correction, and stores generally will fix one whenever the tag is provable, window or no window. That is the fallback: split what is already dead into the part that was a price move and the part that was a wrong ring, and ask for the second part as a correction rather than an adjustment. If the store still refuses, a card dispute runs from the statement date instead of the purchase date, which buys a longer runway at the cost of the relationship with the store.",
+      "steps": [
+        {
+          "name": "K7, the deadline",
+          "text": "11/19/2026. Purchase date plus window, nothing subtracted for weekends, because an adjustment policy counts calendar days and the store's clock does not stop on a Saturday.",
+          "formula": "=$F7+$G7"
+        },
+        {
+          "name": "L7, the verdict",
+          "text": "Expired. The comparison is against TODAY() and the operators matter at the boundary, which is where every dispute on this sheet will be argued.",
+          "formula": "=IF($K7<TODAY(),\"Expired\",\"Open\")"
+        },
+        {
+          "name": "B21, what is still reachable",
+          "text": "75.00 across four rows. The double unary in front of the date test turns TRUE and FALSE into 1 and 0, so the multiplication keeps only the claims whose deadline has not passed.",
+          "formula": "=SUMPRODUCT(($K$6:$K$12>=TODAY())*$J$6:$J$12)"
+        },
+        {
+          "name": "B22, what is gone",
+          "text": "20.00, the air fryer. The complement of B21 against B20, which means the two cells always add back to the total claim and a discrepancy between them is a status string that stopped matching.",
+          "formula": "=$B$20-$B$21"
+        },
+        {
+          "name": "The boundary test",
+          "text": "Change L7 to <= and set the deadline to today. The row flips to Expired on its last legal day. Put it back to < and the same row reports Open, which is the correct reading of a 30-day policy."
+        },
+        {
+          "name": "Which rows move first",
+          "text": "The headphones close on 12/11, the lamp on 12/18, the coat and the blocks on 12/27. Sort column K ascending once and the order of the emails is decided for you."
+        }
+      ],
+      "example": {
+        "formula": "=IF($K7<TODAY(),\"Expired\",\"Open\")",
+        "result": "Expired",
+        "explanation": "November 19 against November 27 is negative eight, so the first branch wins. The same formula on the headphones row returns Open with fourteen days left, and on the vacuum returns No claim from the guard in the full version, since a row worth nothing should not be advertising a deadline."
+      },
+      "tips": [
+        "TODAY() reads the operating system clock in Excel but the spreadsheet's own time zone in Google Sheets, set under File > Settings. A file built in one zone and opened in another can disagree by a day, which only ever matters on the last day of a window, and that is the day you will be using it.",
+        "Send the request on the last day, not the day after. Nothing on this sheet reminds you except column L, and column L is only as fresh as the last time you opened the file, which is a poor substitute for a calendar entry with the earliest deadline on it."
+      ]
+    }
+  ],
+  "functionsUsed": [
+    {
+      "name": "SUMPRODUCT",
+      "slug": "sumproduct",
+      "description": "SUMPRODUCT multiplies corresponding components of one or more arrays and returns the sum of those products. It is also widely used for conditional sums and counts without array-entry."
+    },
+    {
+      "name": "MAX",
+      "slug": "max",
+      "description": "MAX returns the largest value in a range of cells."
+    },
+    {
+      "name": "ROUND",
+      "slug": "round",
+      "description": "ROUND rounds a number to a specified number of decimal places."
+    },
+    {
+      "name": "IF",
+      "slug": "if",
+      "description": "IF performs a logical test and returns one value if true and another if false."
+    },
+    {
+      "name": "TODAY",
+      "slug": "today",
+      "description": "TODAY returns the current date, updated each time the worksheet recalculates."
+    },
+    {
+      "name": "SUM",
+      "slug": "sum",
+      "description": "SUM adds all the numbers in a range of cells and returns the total."
+    },
+    {
+      "name": "ISTEXT",
+      "slug": "istext",
+      "description": "ISTEXT returns TRUE if the supplied value is text, and FALSE otherwise."
+    }
+  ],
+  "summary": "Twelve columns and five formulas turn a Black Friday receipt into a claim per row, split into the two things a store treats differently: a register error measured against the shelf tag, and a price adjustment measured against today's listing. On this $899.89 receipt the overcharges total $60.00 and the price drops total $75.00, but the real claim is $95.00, because two rows report the same dollars under both headings and adding the columns asks for $40.00 that nobody owes. The audit cell is the part worth keeping: your table against the printed subtotal, zero when the rows are the receipt and a signed gap when they are not. The trade-off is column G. Every deadline on this sheet comes from a policy page you have to read and type in, and a sheet filled with a guessed 30 days looks confident, and is wrong on exactly the row that mattered.",
+  "nextSteps": [
+    "Type B16 from the paper before you type anything else, then check B17 after every edit. A table that does not tie to the subtotal invalidates every claim below it, and the check takes two seconds",
+    "Sort column K ascending and put the earliest four deadlines into a calendar with a reminder two days before each. Column L only updates when the file is open, and these windows close in December",
+    "Copy the sheet for a Cyber Monday receipt the same way, changing only the purchase dates and windows, since nothing in columns A through J refers to Black Friday by name"
+  ],
+  "relatedTutorials": [
+    "black-friday-coupon-stacking-order",
+    "black-friday-return-window-tracker",
+    "cyber-monday-subscription-tracker"
+  ]
+}
